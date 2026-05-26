@@ -1,0 +1,4 @@
+interface:
+  display_name: "Team Skill Creator"
+  short_description: "Plan and create team Skills"
+  default_prompt: "Use $team-skill-creator to decide whether this request should become a Skill and create it after approval."

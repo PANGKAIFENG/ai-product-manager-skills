@@ -1,0 +1,4 @@
+interface:
+  display_name: "Skill 评审器"
+  short_description: "按证据和团队标准评审 Skill"
+  default_prompt: "Use $skill-reviewer to review this Skill，输出证据分层的问题、评分卡和具体优化建议。"
