@@ -9,12 +9,20 @@ import re
 from dataclasses import dataclass
 from difflib import SequenceMatcher
 from pathlib import Path
+from typing import Any
+
+try:
+    import yaml
+except ImportError:  # pragma: no cover - fallback for minimal Python envs.
+    yaml = None
 
 
 DEFAULT_ROOTS = [
+    Path("/Users/linctex/.config/skillshare/skills"),
     Path("/Users/linctex/.codex/skills"),
-    Path("/Users/linctex/.codex/skills/.system"),
+    Path("/Users/linctex/.claude/skills"),
     Path("/Users/linctex/.agents/skills"),
+    Path("/Users/linctex/.codex/skills/.system"),
 ]
 
 
@@ -23,6 +31,9 @@ class Skill:
     name: str
     description: str
     path: Path
+    root: Path
+    source: str
+    frontmatter: dict[str, Any]
 
 
 def normalize_name(value: str) -> str:
@@ -40,11 +51,48 @@ def tokens(value: str) -> set[str]:
     }
 
 
-def parse_frontmatter(skill_md: Path) -> tuple[str, str]:
+def source_label(root: Path, import_roots: set[Path]) -> str:
+    resolved = root.expanduser().resolve()
+    if resolved in import_roots:
+        return "import"
+    mapping = {
+        Path("/Users/linctex/.config/skillshare/skills").resolve(): "skillshare-canonical",
+        Path("/Users/linctex/.codex/skills").resolve(): "codex-target",
+        Path("/Users/linctex/.claude/skills").resolve(): "claude-target",
+        Path("/Users/linctex/.agents/skills").resolve(): "agents",
+        Path("/Users/linctex/.codex/skills/.system").resolve(): "codex-system",
+    }
+    return mapping.get(resolved, "custom")
+
+
+def frontmatter_summary(frontmatter: dict[str, Any]) -> dict[str, Any]:
+    summary: dict[str, Any] = {}
+    for key in ["name", "description", "metadata", "license"]:
+        if key in frontmatter:
+            summary[key] = frontmatter[key]
+    extra_keys = sorted(set(frontmatter) - set(summary))
+    if extra_keys:
+        summary["extra_keys"] = extra_keys
+    return summary
+
+
+def parse_frontmatter(skill_md: Path) -> tuple[str, str, dict[str, Any]]:
     text = skill_md.read_text(encoding="utf-8", errors="replace")
     match = re.match(r"^---\n(.*?)\n---", text, re.DOTALL)
     if not match:
-        return skill_md.parent.name, ""
+        return skill_md.parent.name, "", {}
+
+    if yaml is not None:
+        try:
+            parsed = yaml.safe_load(match.group(1)) or {}
+            if isinstance(parsed, dict):
+                name = str(parsed.get("name") or skill_md.parent.name)
+                description = parsed.get("description") or ""
+                if not isinstance(description, str):
+                    description = str(description)
+                return name, re.sub(r"\s+", " ", description).strip(), parsed
+        except Exception:
+            pass
 
     name = skill_md.parent.name
     description_lines: list[str] = []
@@ -71,7 +119,8 @@ def parse_frontmatter(skill_md: Path) -> tuple[str, str]:
             elif line:
                 in_description = False
 
-    return name, " ".join(description_lines).strip()
+    description = " ".join(description_lines).strip()
+    return name, description, {"name": name, "description": description}
 
 
 def iter_skill_dirs(root: Path) -> list[Path]:
@@ -86,17 +135,27 @@ def iter_skill_dirs(root: Path) -> list[Path]:
     return sorted(set(dirs))
 
 
-def load_skills(roots: list[Path]) -> list[Skill]:
+def load_skills(roots: list[Path], import_roots: set[Path]) -> list[Skill]:
     skills: list[Skill] = []
     seen: set[Path] = set()
     for root in roots:
+        resolved_root = root.expanduser().resolve()
         for skill_dir in iter_skill_dirs(root):
             resolved = skill_dir.resolve()
             if resolved in seen:
                 continue
             seen.add(resolved)
-            name, description = parse_frontmatter(skill_dir / "SKILL.md")
-            skills.append(Skill(name=name, description=description, path=resolved))
+            name, description, frontmatter = parse_frontmatter(skill_dir / "SKILL.md")
+            skills.append(
+                Skill(
+                    name=name,
+                    description=description,
+                    path=resolved,
+                    root=resolved_root,
+                    source=source_label(resolved_root, import_roots),
+                    frontmatter=frontmatter,
+                )
+            )
     return sorted(skills, key=lambda item: item.name)
 
 
@@ -126,12 +185,16 @@ def score_skill(skill: Skill, query_name: str, query_description: str) -> dict:
     return {
         "name": skill.name,
         "path": str(skill.path),
+        "root": str(skill.root),
+        "source": skill.source,
         "description": skill.description,
+        "frontmatter": frontmatter_summary(skill.frontmatter),
         "score": round(score, 3),
         "name_similarity": round(name_ratio, 3),
         "token_overlap": round(token_overlap, 3),
         "description_similarity": round(description_ratio, 3),
         "exact_name": exact_name,
+        "exact-name": exact_name,
     }
 
 
@@ -140,12 +203,14 @@ def main() -> int:
     parser.add_argument("--name", default="", help="Candidate skill name or title.")
     parser.add_argument("--description", default="", help="Candidate trigger description or request summary.")
     parser.add_argument("--root", action="append", default=[], help="Additional root to scan.")
+    parser.add_argument("--import-root", action="append", default=[], help="Imported Skill source root to scan and label as import.")
     parser.add_argument("--limit", type=int, default=8, help="Maximum matches to print.")
     parser.add_argument("--json", action="store_true", help="Emit JSON instead of text.")
     args = parser.parse_args()
 
-    roots = DEFAULT_ROOTS + [Path(root).expanduser() for root in args.root]
-    skills = load_skills(roots)
+    import_roots = {Path(root).expanduser().resolve() for root in args.import_root}
+    roots = DEFAULT_ROOTS + [Path(root).expanduser() for root in args.root] + list(import_roots)
+    skills = load_skills(roots, import_roots)
     matches = [score_skill(skill, args.name, args.description) for skill in skills]
     matches.sort(key=lambda item: item["score"], reverse=True)
     matches = matches[: max(args.limit, 1)]
@@ -157,6 +222,7 @@ def main() -> int:
             "description": args.description,
         },
         "roots": [str(root) for root in roots],
+        "import_roots": [str(root) for root in sorted(import_roots)],
         "matches": matches,
     }
 
@@ -176,6 +242,7 @@ def main() -> int:
             flags.append("HIGH_OVERLAP")
         flag_text = f" [{' '.join(flags)}]" if flags else ""
         print(f"- {match['name']} score={match['score']}{flag_text}")
+        print(f"  source: {match['source']} root={match['root']}")
         print(f"  path: {match['path']}")
         if match["description"]:
             print(f"  description: {match['description'][:240]}")

@@ -14,6 +14,7 @@ A team-ready Skill should provide:
 - Output format or deliverable contract.
 - Definition of Done.
 - Evaluation readiness through smoke prompts, checks, or regression cases.
+- Provenance notes when the Skill was imported, cloned, or merged from another repository, marketplace, plugin, or local source.
 
 The headings do not need to match exactly, but the behavior must be present.
 
@@ -70,6 +71,8 @@ Move fragile, repeated, format-exact, or deterministic logic into `scripts/`.
 
 Move templates, boilerplate, images, fonts, and static resources into `assets/`.
 
+For imported Skills, keep upstream resource files intact when practical, but make the local `SKILL.md` the stable team-facing contract. Do not copy a marketplace Skill without checking whether an existing local Skill already covers the same trigger space.
+
 ## Context Budget
 
 Treat context budget as a quality gate:
@@ -114,3 +117,5 @@ A generated Skill is not ready while it contains:
 - No output format for non-trivial tasks.
 - References or scripts that are not mentioned in `SKILL.md`.
 - Claims of validation without command output or observed evidence.
+
+Imported Skills are also not ready while they lack source repo, commit/version, plugin/package, original path, license status, and merge notes.

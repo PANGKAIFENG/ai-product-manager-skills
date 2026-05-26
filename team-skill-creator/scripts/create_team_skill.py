@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import shlex
 import subprocess
 import sys
 from pathlib import Path
@@ -116,7 +117,7 @@ def main() -> int:
         command.extend(["--resources", ",".join(resources)])
 
     if args.dry_run:
-        print(" ".join(command))
+        print(shlex.join(command))
         return 0
 
     result = run_command(command)

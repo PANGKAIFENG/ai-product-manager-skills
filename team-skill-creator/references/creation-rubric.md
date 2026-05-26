@@ -60,11 +60,28 @@ Ask at most 5 questions. If optional details are missing, proceed with explicit 
 
 Before proposing a new Skill, scan:
 
+- `/Users/linctex/.config/skillshare/skills`
 - `/Users/linctex/.codex/skills`
+- `/Users/linctex/.claude/skills`
 - `/Users/linctex/.codex/skills/.system`
 - `/Users/linctex/.agents/skills`
+- Any import root from a Git clone, marketplace download, plugin, or local Skill source.
 
 If an existing Skill covers at least 70% of the need, recommend updating or extending it instead of creating a new Skill.
+
+## Import Decision Gate
+
+When the source is an existing Skill from another repo or marketplace, decide whether to import, merge, replace, or reject it. Compare:
+
+- Trigger contract and false-positive risk.
+- Workflow completeness and missing gates.
+- Resource split across `SKILL.md`, `references/`, `scripts/`, and `assets/`.
+- Validation and eval readiness.
+- Context budget and duplication.
+- Maintainability and ownership.
+- Provenance, license, and update path.
+
+Prefer merging overlapping Skills over creating duplicates. Preserve the upstream name only for new imports; keep the existing local name when it is already the user-facing habit. Always record source repo, commit/version, plugin/package, original path, license status, import date, and merge notes.
 
 ## Creation Decision Checklist
 
@@ -74,6 +91,7 @@ The `Creation Decision` must include:
 - Whether to create a Skill.
 - Candidate name.
 - Similar existing Skills and overlap risk.
+- Source candidate, best base, merge decision, borrowed strengths, provenance, and install/sync plan for import tasks.
 - Trigger and non-trigger examples.
 - Resource plan for `SKILL.md`, `references/`, `scripts/`, and `assets/`.
 - Minimum eval checklist.
