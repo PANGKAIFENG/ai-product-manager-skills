@@ -1,9 +1,26 @@
 ---
 name: generate-drawio-diagram
-description: 生成可在 Draw.io 中直接编辑的架构图和流程图，输出标准 .drawio 文件（mxfile XML）
+description: >
+  Draw.io 图示生成器 / 架构图流程图：当用户要把模块架构、系统架构、AI 协作链路、业务流程或核心步骤
+  生成可编辑 Draw.io 图时使用。可用中文唤起：“画一张架构图”“生成 Draw.io”“给我流程图”
+  “输出 .drawio 文件”。主输出是标准 .drawio mxfile XML，不是静态截图或普通 SVG。
 metadata:
   tags: drawio, diagram, architecture, flowchart, mxgraph
 ---
+
+# Draw.io 图示生成器（generate-drawio-diagram）
+
+## 目标
+
+把用户描述的系统架构、业务流程或 AI 协作链路转换成可编辑的 Draw.io `.drawio` 文件。重点不是做一张静态好看的图，而是生成结构清晰、节点可继续编辑、关系可追踪的 mxGraph 图示资产。
+
+## 中文速查
+
+- 中文名：Draw.io 图示生成器 / 架构图流程图
+- 英文稳定名：`generate-drawio-diagram`
+- 你可以这样叫我：`画一张架构图`、`生成 Draw.io`、`给我流程图`、`输出 .drawio 文件`
+- 适合：需要后续在 Draw.io、VSCode Draw.io 插件或 diagrams.net 中继续编辑的架构图和流程图
+- 不适合：只要一张不可编辑 PNG、纯 Mermaid 图，或需要真实设计稿视觉表现的场景
 
 ## When to use
 
@@ -44,6 +61,18 @@ metadata:
 生成 `.drawio` 文件后，如需 Markdown 可渲染的 `.drawio.svg`：
 1. 在 Draw.io 中打开 `.drawio`，菜单 → Extras → Edit Diagram → File → Export as SVG（勾选 "Include a copy of my diagram"）
 2. 或使用项目已有的 `sync-drawio-svg.sh` hook
+
+## 验收标准
+
+- 交付路径存在，文件扩展名为 `.drawio`，内容是完整 `<mxfile>` XML。
+- Draw.io、diagrams.net 或 VSCode Draw.io 插件可以打开并继续编辑。
+- 图中节点、泳道、判断和连线能覆盖用户给出的核心结构，不遗漏关键主流程。
+- 所有边的 `source` / `target` 都指向存在的节点 ID，节点 ID 不重复。
+- 布局符合所选图类型：架构总图用横向泳道，流程图用横向主线和外置分支。
+
+## 评测与验证方式
+
+生成后至少做文本级验证：检查 XML 闭合、ID 唯一、边引用有效、特殊字符已转义。若本地环境有 Draw.io CLI 或可视化预览工具，应再打开或导出一次确认文件可读。
 
 ---
 

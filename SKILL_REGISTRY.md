@@ -1,10 +1,10 @@
 # Skill Registry
 
-这个文件用于解释每个已纳入 GitHub 管理的 Skill 是什么、适合什么时候用、当前维护状态和公开风险。
+这个文件用于解释每个已纳入 GitHub 管理的 Skill 是什么、中文怎么叫、什么时候用、什么时候不用、当前维护状态和公开风险。
 
 真实 Skill 目录保持在仓库根目录，确保 `skillshare` 同步和 Skill 触发名称稳定。`categories/` 只提供 GitHub 阅读时的分类入口，并通过 `.skillignore` 从 skillshare 发现结果中排除。
 
-状态含义：
+## 状态含义
 
 - `core`: 个人 Skill 体系的核心能力，优先维护。
 - `active`: 常用能力，适合加入目标工具白名单。
@@ -17,28 +17,28 @@
 | 分类目录 | 中文分类 | 适用边界 |
 | --- | --- | --- |
 | `categories/01-product-prd/` | 产品与 PRD | 需求结构化、PRD 起草、PRD 评审和交付准备。 |
-| `categories/02-collaboration-thinking/` | 认知与协作 | 复杂问题校准、假设挑战、方向收敛和协作模式选择。 |
+| `categories/02-collaboration-thinking/` | 认知与协作 | 复杂问题校准、假设挑战、方案压力测试和协作模式选择。 |
 | `categories/03-engineering-practice/` | 工程实践 | 通用编码规范、实现约束和研发质量基线。 |
 | `categories/04-architecture-visualization/` | 架构图与可视化 | 架构图、流程图、系统关系图和可编辑图示资产。 |
 | `categories/05-project-governance/` | 项目治理 | 项目级规范、共享模板、目录治理和上游 proposal。 |
 | `categories/06-skill-governance/` | Skill 治理 | Skill 创建、审查、版本维护、触发边界和质量评估。 |
 | `categories/07-web-artifacts/` | Web Artifact | 复杂交互式前端 Artifact 的生成与打包。 |
 
-## 已纳入 Skill
+## 中文检索表
 
-| Skill | 分类 | 状态 | 用途 | 备注 |
-| --- | --- | --- | --- | --- |
-| `prd-architect` | 产品与 PRD | active | 根据需求复杂度选择 `PRD-lite`、`PRD-standard` 或 `PRD-ai-native`，并决定草稿/讨论/确认阶段。 | 适合产品需求从想法进入文档结构时触发。 |
-| `ai-collaboration-calibration` | 认知与协作 | active | 在复杂问题上先校准问题定义、挑战假设、识别反模式，避免直接进入执行模式。 | 适合方案变复杂、方向不确定、需要反驳或压力测试时使用。 |
-| `coding-standards` | 工程实践 | keep | TypeScript、JavaScript、React、Node.js 的通用编码规范和最佳实践。 | 目前偏通用，后续可结合个人项目栈收敛。 |
-| `generate-drawio-diagram` | 架构图与可视化 | active | 生成可在 Draw.io 中编辑的 `.drawio` 架构图或流程图。 | 适合架构、流程和 AI 协作链路图。 |
-| `grill-me` | 认知与协作 | active | 通过一问一答压力测试方案或设计，按决策树澄清分支、依赖、假设和失败模式。 | 适合发送方案前做反方追问，也适合架构、产品、流程设计的 hard questions。 |
-| `honeycomb-change-proposer` | 项目治理 | keep | 将 Honeycomb 共享模板、managed path 或安装包问题整理成上游 proposal。 | 低频但专业，适合保留。 |
-| `prd-review` | 产品与 PRD | active | 从 PM、研发、测试视角评审第一版 PRD，输出修订建议和可回填草案。 | 通常与 handoff/PRD 文件一起使用。 |
-| `project-guidelines-example` | 示例模板 | review | 项目专属 Skill 示例，展示架构、目录、测试、部署等项目指南结构。 | 当前不是标准 frontmatter 结构，建议后续决定是否重写为模板 Skill。 |
-| `skill-reviewer` | Skill 治理 | core | 审查、评分和改进 Codex/Agent Skill，检查触发边界、输入输出、工具边界、资源和评估。 | 这是维护整个 Skill 库的核心工具。 |
-| `team-skill-creator` | Skill 治理 | core | 在创建 Skill 前判断应做 Prompt/Workflow/Tool/Plugin/App/Skill，并按团队标准创建与验证。 | 这是新增 Skill 的入口工具。 |
-| `web-artifacts-builder` | Web Artifact | keep | 用 React、Tailwind、shadcn/ui 等创建复杂 HTML Artifact 并打包为单文件。 | 带 Apache 2.0 license；公开前仍需单独审查用途和依赖。 |
+| Skill | 中文名 | 你可以这样说 | 适合什么时候用 | 不适合什么时候用 | 状态 |
+| --- | --- | --- | --- | --- | --- |
+| `prd-architect` | PRD 架构师 / 需求文档起草 | “帮我写 PRD”“帮我选 PRD 模板”“把这个需求整理成 PRD” | 从想法、脑暴或需求草稿进入 PRD 结构；需要判断 `PRD-lite`、`PRD-standard`、`PRD-ai-native` 和文档成熟度。 | 已有完整 PRD 要评审；直接编码；单纯画 UI。 | active |
+| `prd-review` | PRD 评审 / 需求评审 | “帮我审 PRD”“从研发测试视角挑问题”“这个需求文档能不能交付开发” | 已有 PRD/handoff，需要找阻断项、冲突、不可实现点、不可测试点，并给修订草案。 | 从零写 PRD；只做语言润色。 | active |
+| `ai-collaboration-calibration` | 协作校准 / 认知校准 | “先别执行，帮我看清问题”“挑战我的假设”“这个方案是不是想错了” | 复杂问题进入执行前，先校准问题定义、领域定位、隐藏假设和方案裂缝。 | 翻译、摘要、格式转换、明确的小改动。 | active |
+| `grill-me` | 方案拷问 / 压力测试 | “拷问我的方案”“压力测试这个设计”“这个方案哪里会翻车” | 已有方案但担心盲点，需要一问一答澄清依赖、分支、取舍和失败模式。 | 直接写最终方案；泛泛总结；不希望互动追问。 | active |
+| `coding-standards` | 编码规范 / 工程规范 | “按编码规范实现”“帮我检查代码规范”“这个实现有没有工程坏味道” | TypeScript、JavaScript、React、Node.js 的实现约束、代码评审、重构建议和质量基线。 | 深度框架专用规则或业务专属规范；这类应沉淀为项目 Skill。 | keep |
+| `generate-drawio-diagram` | Draw.io 图示生成器 / 架构图流程图 | “画一张架构图”“生成 Draw.io”“输出 .drawio 文件” | 需要可在 Draw.io、VSCode Draw.io 插件或 diagrams.net 中继续编辑的架构图/流程图。 | 只要不可编辑 PNG、纯 Mermaid 图或视觉设计稿。 | active |
+| `honeycomb-change-proposer` | Honeycomb 变更提案 / 上游 proposal | “整理成 Honeycomb 上游提案”“这个模板问题该不该回上游” | 共享模板、managed path、安装包或本地 override 出现问题，需要证据化、归因并沉淀上游建议。 | 纯项目内 PRD、纯目录整理、未经确认直接修改上游仓库。 | keep |
+| `project-guidelines-example` | 项目指南 Skill 示例 / 项目专属 Skill 模板 | “给我一个项目 Skill 模板”“项目指南型 Skill 怎么组织” | 参考项目级 Skill 如何表达架构、目录、代码模式、测试和部署约束。 | 直接作为真实项目规范套用；必须先替换示例事实。 | review |
+| `skill-reviewer` | Skill 评审器 / Skill 审计 | “帮我 review 这个 Skill”“检查这个 SKILL.md”“优化 Skill 触发描述” | 评审 Skill 触发边界、输入输出、工具边界、资源组织、评估设计和复用风险。 | 创建新 Skill；创建或导入应使用 `team-skill-creator`。 | core |
+| `team-skill-creator` | 团队 Skill 创建器 / 能力沉淀判断 | “帮我创建一个 Skill”“这个能力要不要沉淀成 Skill”“导入这个 GitHub Skill” | 新建、导入、合并、评估一个可复用能力是否应成为 Skill，并按团队标准验证。 | 已有 Skill 只需要评审；一次性任务。 | core |
+| `web-artifacts-builder` | Web Artifact 构建器 / 复杂交互页面 | “做一个复杂交互页面”“生成 React Artifact”“打包成单文件 HTML” | 多组件、状态管理、路由、shadcn/ui、Tailwind CSS、React 18、单文件 HTML 打包。 | 简单 HTML 片段、静态单页、普通网页开发。 | keep |
 
 ## 推荐白名单
 

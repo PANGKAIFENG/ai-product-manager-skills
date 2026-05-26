@@ -1,9 +1,21 @@
 ---
 name: honeycomb-change-proposer
-description: Use when Codex needs to turn Honeycomb shared-template, managed-path, or installation-packaging problems into a formal upstream proposal, including shared-vs-local classification, drift evidence, and MR-ready summary text.
+description: >
+  Honeycomb 变更提案 / 上游 proposal：当用户在项目中发现 Honeycomb 共享模板、managed path、
+  安装包治理或本地 override/drift 问题，需要整理成可提交上游的正式 proposal 时使用。
+  可用中文唤起：“整理成 Honeycomb 上游提案”“这个模板问题该不该回上游”“帮我写 proposal”
+  “判断这是共享问题还是本地问题”。不用于直接修改上游仓库或创建 MR。
 ---
 
-# honeycomb-change-proposer
+# Honeycomb 变更提案（honeycomb-change-proposer）
+
+## 中文速查
+
+- 中文名：Honeycomb 变更提案 / 上游 proposal
+- 英文稳定名：`honeycomb-change-proposer`
+- 你可以这样叫我：`整理成 Honeycomb 上游提案`、`这个模板问题该不该回上游`、`帮我写 proposal`、`判断这是共享问题还是本地问题`
+- 适合：共享模板、managed path、安装包或本地 override 出现问题，需要证据化、归因并沉淀上游建议
+- 不适合：纯项目内 PRD、纯目录整理、未经确认直接修改上游仓库
 
 ## Overview
 

@@ -4,7 +4,7 @@
 
 ## Skills
 
-| Skill | 状态 | 用途 |
-| --- | --- | --- |
-| [`prd-architect`](../../prd-architect/) | active | 选择合适的 PRD 模板与交付深度。 |
-| [`prd-review`](../../prd-review/) | active | 从 PM、研发、测试视角评审 PRD 并产出修订建议。 |
+| Skill | 中文名 | 可以这样说 | 状态 | 用途 |
+| --- | --- | --- | --- | --- |
+| [`prd-architect`](../../prd-architect/) | PRD 架构师 / 需求文档起草 | “帮我写 PRD”“帮我选 PRD 模板” | active | 选择合适的 PRD 模板与交付深度。 |
+| [`prd-review`](../../prd-review/) | PRD 评审 / 需求评审 | “帮我审 PRD”“从研发测试视角挑问题” | active | 从 PM、研发、测试视角评审 PRD 并产出修订建议。 |

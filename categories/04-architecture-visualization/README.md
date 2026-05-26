@@ -4,6 +4,6 @@
 
 ## Skills
 
-| Skill | 状态 | 用途 |
-| --- | --- | --- |
-| [`generate-drawio-diagram`](../../generate-drawio-diagram/) | active | 生成可在 Draw.io 中直接编辑的 `.drawio` 架构图或流程图。 |
+| Skill | 中文名 | 可以这样说 | 状态 | 用途 |
+| --- | --- | --- | --- | --- |
+| [`generate-drawio-diagram`](../../generate-drawio-diagram/) | Draw.io 图示生成器 / 架构图流程图 | “画一张架构图”“生成 Draw.io” | active | 生成可在 Draw.io 中直接编辑的 `.drawio` 架构图或流程图。 |

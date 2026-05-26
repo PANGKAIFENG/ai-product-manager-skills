@@ -1,23 +1,51 @@
-# Project Guidelines Skill (Example)
+---
+name: project-guidelines-example
+description: >
+  项目指南 Skill 示例 / 项目专属 Skill 模板：当用户想理解“项目级 Skill 应该怎么写”、需要一个包含架构、
+  目录结构、代码模式、测试要求和部署流程的示例时使用。可用中文唤起：“给我一个项目 Skill 模板”
+  “项目指南型 Skill 怎么组织”“我想把项目约束沉淀成 Skill”。这是示例模板，不应当作为真实项目规范直接套用。
+---
 
-This is an example of a project-specific skill. Use this as a template for your own projects.
+# 项目指南 Skill 示例（project-guidelines-example）
+
+## 中文速查
+
+- 中文名：项目指南 Skill 示例 / 项目专属 Skill 模板
+- 英文稳定名：`project-guidelines-example`
+- 你可以这样叫我：`给我一个项目 Skill 模板`、`项目指南型 Skill 怎么组织`、`我想把项目约束沉淀成 Skill`
+- 适合：参考一个项目级 Skill 如何表达架构、目录、代码模式、测试和部署约束
+- 不适合：真实项目执行规范；落地前必须替换成当前项目的真实技术栈、路径和工作流
+
+这是一个项目专属 Skill 的示例。可以把它当作模板参考，但不要把示例里的业务、路径和技术栈当成真实项目事实。
 
 Based on a real production application: [Zenith](https://zenith.chat) - AI-powered customer discovery platform.
 
 ---
 
-## When to Use
+## 何时使用
 
-Reference this skill when working on the specific project it's designed for. Project skills contain:
-- Architecture overview
-- File structure
-- Code patterns
-- Testing requirements
-- Deployment workflow
+当你想为某个具体项目建立“项目级 Skill”时参考它。项目级 Skill 通常包含：
+- 架构概览
+- 文件结构
+- 代码模式
+- 测试要求
+- 部署流程
+
+如果是为真实项目创建新 Skill，应先替换所有示例内容，并补充项目自己的触发边界、禁区和验证方式。
+
+## 验收标准
+
+当把这个示例改造成真实项目 Skill 时，必须满足：
+
+- frontmatter 的 `name` 与目录名一致，`description` 能用用户自然语言触发。
+- 架构、目录、命令、测试、部署和外部服务都来自真实项目，不保留示例事实。
+- 明确适用场景和不适用场景，避免任何项目都套同一份模板。
+- 写出项目真实的验证命令、失败处理方式和交付完成标准。
+- 不包含公司密钥、客户数据、内部 URL、不可公开仓库地址或其他敏感信息。
 
 ---
 
-## Architecture Overview
+## 架构概览
 
 **Tech Stack:**
 - **Frontend**: Next.js 15 (App Router), TypeScript, React
@@ -52,7 +80,7 @@ Reference this skill when working on the specific project it's designed for. Pro
 
 ---
 
-## File Structure
+## 文件结构
 
 ```
 project/
@@ -87,7 +115,7 @@ project/
 
 ---
 
-## Code Patterns
+## 代码模式
 
 ### API Response Format (FastAPI)
 
@@ -217,7 +245,7 @@ export function useApi<T>(
 
 ---
 
-## Testing Requirements
+## 测试要求
 
 ### Backend (pytest)
 

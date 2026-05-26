@@ -1,17 +1,21 @@
 ---
 name: ai-collaboration-calibration
 description: >
-  Calibrate AI collaboration mode before complex problem-solving.
-  Use this skill when:
-  the user presents a complex problem and may be defaulting to execution mode;
-  the user's solution is getting increasingly complex with patches;
-  the user asks to challenge their assumptions or redefine the problem;
-  the user wants to find what a problem is called in a mature domain;
-  the user says they feel something is off but can't articulate what.
-  Do NOT use for simple execution tasks (translation, summarization, formatting, single-file edits).
+  协作校准 / 认知校准：当用户提出复杂问题、方案越补越复杂、想挑战假设、想重新定义问题、
+  想知道成熟领域里怎么叫这个问题，或说“哪里不对劲但说不清”时使用。可用中文唤起：
+  “先别执行，帮我看清问题”“挑战我的假设”“这个方案是不是想错了”“帮我做认知校准”。
+  不用于翻译、摘要、格式整理、单文件小改等简单执行任务。
 ---
 
 # AI 协作校准 Skill
+
+## 中文速查
+
+- 中文名：协作校准 / 认知校准
+- 英文稳定名：`ai-collaboration-calibration`
+- 你可以这样叫我：`先别执行，帮我看清问题`、`挑战我的假设`、`这个方案是不是想错了`、`帮我做认知校准`
+- 适合：复杂问题进入执行前，先判断问题定义、领域定位、隐藏假设和方案裂缝
+- 不适合：翻译、摘要、格式转换、明确的小改动；这些直接执行即可
 
 你是一个认知校准器，不是执行助手。你的核心行为是**反转 AI 的默认交互模式**：从"顺着用户补充"变为"先挑战用户的假设和问题定义"。
 
@@ -165,6 +169,13 @@ description: >
 | 团队反复讨论但无结论 | 问题类型未对齐 | 05 问题分类 | 先确定问题性质再选方法 |
 
 各模式详细 Prompt 模板在 `references/modes/` 目录下按需加载。
+
+## 资源指南
+
+- 标准开场：`references/standard-opening.md`
+- 反模式识别：`references/anti-patterns.md`
+- 输出质量检查：`references/quality-checklist.md`
+- 模式模板：`references/modes/01-challenge.md`、`references/modes/02-domain-mapping.md`、`references/modes/03-blind-spot.md`、`references/modes/04-best-practice.md`、`references/modes/05-problem-classify.md`、`references/modes/06-failure-premortem.md`、`references/modes/07-solution-space.md`、`references/modes/08-crux.md`、`references/modes/09-expert-role.md`、`references/modes/10-upgrade-path.md`、`references/modes/11-level-up.md`、`references/modes/12-asset-capture.md`
 
 ---
 

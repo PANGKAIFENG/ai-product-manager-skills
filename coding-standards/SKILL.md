@@ -1,41 +1,72 @@
 ---
 name: coding-standards
-description: Universal coding standards, best practices, and patterns for TypeScript, JavaScript, React, and Node.js development.
+description: >
+  编码规范 / 工程规范：当用户要写、改、评审或约束 TypeScript、JavaScript、React、Node.js 代码质量时使用。
+  可用中文唤起：“按编码规范实现”“帮我检查代码规范”“这个实现有没有工程坏味道”“别过度设计”。
+  重点覆盖可读性、简单性、类型安全、不可变更新、错误处理、API 设计、测试和性能基本线。
 ---
 
-# Coding Standards & Best Practices
+# 编码规范与工程最佳实践（coding-standards）
 
-Universal coding standards applicable across all projects.
+适用于多数项目的通用编码规范。正文中的技术名词、API 名称和代码示例保留英文，说明文字优先中文。
 
-## Code Quality Principles
+## 中文速查
 
-### 1. Readability First
-- Code is read more than written
-- Clear variable and function names
-- Self-documenting code preferred over comments
-- Consistent formatting
+- 中文名：编码规范 / 工程规范
+- 英文稳定名：`coding-standards`
+- 你可以这样叫我：`按编码规范实现`、`帮我检查代码规范`、`这个实现有没有工程坏味道`、`别过度设计`
+- 适合：TypeScript、JavaScript、React、Node.js 的实现约束、代码评审、重构建议和质量基线
+- 不适合：某个框架或业务域的深度专用规则；那类规则应沉淀成项目专属 Skill
+
+## 输出与交付物
+
+使用这个 Skill 时，最终交付物应是可直接落到代码或评审意见里的工程约束，而不是泛泛讲原则：
+
+- 写代码：实现结果应体现类型安全、清晰命名、明确错误处理、可测试边界和最小必要抽象。
+- 改代码：说明改动如何降低复杂度、重复、隐式状态或不可维护风险。
+- 做 review：输出具体文件/位置、问题影响、建议修复方式和必要测试。
+- 定规范：给出团队可执行的规则、反例、例外条件和迁移建议。
+
+## 验收标准
+
+- 代码能通过项目已有 lint、typecheck、test 或等价检查。
+- 没有为了“规范”引入与需求无关的抽象、框架或目录迁移。
+- 关键失败路径有错误处理，关键业务路径有测试或明确测试建议。
+- 评审意见能落到具体代码行为，不停留在“可读性更好”“建议优化”这类空泛表达。
+
+## 资源指南
+
+本 Skill 当前是单文件通用规范，没有额外 `references/` 或 `scripts/`。如果某个项目需要更强约束，应创建项目级 Skill 承接项目目录、框架、测试命令和业务约束。
+
+## 代码质量原则
+
+### 1. 可读性优先
+- 代码被阅读的次数远多于被编写的次数
+- 变量和函数名必须清楚表达意图
+- 优先写自解释代码，而不是依赖注释补救
+- 格式必须一致
 
 ### 2. KISS (Keep It Simple, Stupid)
-- Simplest solution that works
-- Avoid over-engineering
-- No premature optimization
-- Easy to understand > clever code
+- 使用能工作的最简单方案
+- 避免过度工程化
+- 不做过早优化
+- 易理解优先于炫技
 
 ### 3. DRY (Don't Repeat Yourself)
-- Extract common logic into functions
-- Create reusable components
-- Share utilities across modules
-- Avoid copy-paste programming
+- 将通用逻辑抽到函数
+- 创建可复用组件
+- 在模块间共享工具函数
+- 避免复制粘贴式编程
 
 ### 4. YAGNI (You Aren't Gonna Need It)
-- Don't build features before they're needed
-- Avoid speculative generality
-- Add complexity only when required
-- Start simple, refactor when needed
+- 不提前实现尚未被需要的功能
+- 避免投机式抽象
+- 只有真实需求出现时再引入复杂度
+- 先简单落地，再在需要时重构
 
-## TypeScript/JavaScript Standards
+## TypeScript / JavaScript 规范
 
-### Variable Naming
+### 变量命名
 
 ```typescript
 // ✅ GOOD: Descriptive names
@@ -49,7 +80,7 @@ const flag = true
 const x = 1000
 ```
 
-### Function Naming
+### 函数命名
 
 ```typescript
 // ✅ GOOD: Verb-noun pattern
@@ -63,7 +94,7 @@ function similarity(a, b) { }
 function email(e) { }
 ```
 
-### Immutability Pattern (CRITICAL)
+### 不可变更新模式（关键）
 
 ```typescript
 // ✅ ALWAYS use spread operator
@@ -79,7 +110,7 @@ user.name = 'New Name'  // BAD
 items.push(newItem)     // BAD
 ```
 
-### Error Handling
+### 错误处理
 
 ```typescript
 // ✅ GOOD: Comprehensive error handling
@@ -105,7 +136,7 @@ async function fetchData(url) {
 }
 ```
 
-### Async/Await Best Practices
+### Async/Await 最佳实践
 
 ```typescript
 // ✅ GOOD: Parallel execution when possible
@@ -121,7 +152,7 @@ const markets = await fetchMarkets()
 const stats = await fetchStats()
 ```
 
-### Type Safety
+### 类型安全
 
 ```typescript
 // ✅ GOOD: Proper types
@@ -142,9 +173,9 @@ function getMarket(id: any): Promise<any> {
 }
 ```
 
-## React Best Practices
+## React 最佳实践
 
-### Component Structure
+### 组件结构
 
 ```typescript
 // ✅ GOOD: Functional component with types
@@ -178,7 +209,7 @@ export function Button(props) {
 }
 ```
 
-### Custom Hooks
+### 自定义 Hooks
 
 ```typescript
 // ✅ GOOD: Reusable custom hook
@@ -200,7 +231,7 @@ export function useDebounce<T>(value: T, delay: number): T {
 const debouncedQuery = useDebounce(searchQuery, 500)
 ```
 
-### State Management
+### 状态管理
 
 ```typescript
 // ✅ GOOD: Proper state updates
@@ -213,7 +244,7 @@ setCount(prev => prev + 1)
 setCount(count + 1)  // Can be stale in async scenarios
 ```
 
-### Conditional Rendering
+### 条件渲染
 
 ```typescript
 // ✅ GOOD: Clear conditional rendering
@@ -225,7 +256,7 @@ setCount(count + 1)  // Can be stale in async scenarios
 {isLoading ? <Spinner /> : error ? <ErrorMessage error={error} /> : data ? <DataDisplay data={data} /> : null}
 ```
 
-## API Design Standards
+## API 设计规范
 
 ### REST API Conventions
 

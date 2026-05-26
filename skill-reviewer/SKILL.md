@@ -1,30 +1,42 @@
 ---
 name: skill-reviewer
-description: Review, audit, and improve Codex/agent Skills for team standardization. Use when the user asks to check a Skill, review SKILL.md, decide whether a capability should become a Skill, find Skill design issues, produce concrete optimization suggestions, or validate trigger-only descriptions, input/output contracts, workflow gates, context budget, tool boundaries, progressive disclosure, bundled resources, evaluation readiness, evidence levels, and governance.
+description: >
+  Skill 评审 / Skill 审计：当用户要检查、评审、优化 Codex/Agent Skill 或 SKILL.md 时使用。
+  可用中文唤起：“帮我 review 这个 Skill”“检查这个 SKILL.md”“这个能力适不适合做成 Skill”
+  “优化 Skill 触发描述”“看下这个 Skill 有没有问题”。重点检查触发边界、输入输出、工作流门槛、
+  工具边界、context budget、资源拆分、评估准备度和治理风险。
 ---
 
-# Skill Reviewer
+# Skill 评审器（skill-reviewer）
+
+## 中文速查
+
+- 中文名：Skill 评审器 / Skill 审计
+- 英文稳定名：`skill-reviewer`
+- 你可以这样叫我：`帮我 review 这个 Skill`、`检查这个 SKILL.md`、`这个能力适不适合做成 Skill`、`优化 Skill 触发描述`
+- 适合：评审 Skill 质量、触发边界、输入输出、工具边界、资源组织、评估设计和团队复用风险
+- 不适合：直接创建新 Skill；创建或导入新 Skill 优先用 `team-skill-creator`
 
 ## Overview
 
-Use this Skill as the team Skill reviewer. Treat a Skill as a reusable capability unit, not as a long prompt. Review from the target goal backward: trigger contract, input/output contract, workflow gates, tool boundary, bundled resources, context budget, evaluation loop, and governance must all support the intended outcome.
+使用这个 Skill 做团队级 Skill 评审。把 Skill 当作可复用能力单元，而不是一段长提示词。从目标倒推：触发契约、输入输出契约、工作流门槛、工具边界、随包资源、context budget、评估闭环和治理方式都必须服务于目标结果。
 
 ## Workflow
 
-1. Locate the artifact. Prefer a Skill directory containing `SKILL.md`; if the user only provides text, review the text and state that directory/resource checks are unavailable.
-2. Establish review context before final recommendations: target users, business/domain goal, expected trigger prompts, runtime environment, required tools, inputs/outputs, failure cost, reuse frequency, and current pain points.
-3. If critical context is missing, ask at most 5 concrete questions. Do not block on optional context; if the user asks for a quick review, continue with explicit assumptions.
-4. When a local Skill directory or `SKILL.md` path is available, run the deterministic check:
+1. 定位待评审对象。优先使用包含 `SKILL.md` 的 Skill 目录；如果用户只提供文本，就评审文本并说明目录/资源检查不可用。
+2. 在给最终建议前建立评审上下文：目标用户、业务/领域目标、预期触发语、运行环境、所需工具、输入输出、失败成本、复用频率和当前痛点。
+3. 如果缺少关键上下文，最多问 5 个具体问题。不要因可选上下文阻塞；如果用户要求快速评审，就在明确假设下继续。
+4. 当本地 Skill 目录或 `SKILL.md` 路径可用时，运行确定性检查：
 
 ```bash
 python3 <this-skill>/scripts/check_skill.py /path/to/skill-or-SKILL.md
 ```
 
-5. Build an Evidence Summary as you inspect: files read, commands run, deterministic findings, observed facts, inferred judgments, and assumptions.
-6. For team delivery, scoring, non-trivial optimization, context-budget concerns, or cross-ecosystem metadata, read `references/team-skill-rubric.md`.
-7. For industry-grade review, cross-harness artifacts, or questions about best practices, read `references/industry-skill-patterns.md`.
-8. Inspect `references/`, `scripts/`, `assets/`, eval files, or sample prompts only when needed to verify claims made by `SKILL.md`.
-9. Output prioritized findings and concrete repair options. When the user asks for optimization, prefer executable patches, rewritten sections, script suggestions, or eval checklists over commentary alone.
+5. 边检查边建立 Evidence Summary：读了哪些文件、跑了哪些命令、确定性发现、直接观察、推断判断和假设。
+6. 涉及团队交付、评分、非平凡优化、context budget 或跨生态元数据时，读取 `references/team-skill-rubric.md`。
+7. 涉及行业级评审、跨 harness 资产或最佳实践问题时，读取 `references/industry-skill-patterns.md`。
+8. 只有在需要验证 `SKILL.md` 声明时，才深入检查 `references/`、`scripts/`、`assets/`、eval 文件或示例 prompt。
+9. 输出按优先级排序的问题和具体修复方案。用户要求优化时，优先给可执行 patch、重写段落、脚本建议或 eval 清单，而不是只评论。
 
 ## Context Intake
 

@@ -1,9 +1,21 @@
 ---
 name: prd-architect
-description: Use when Codex needs to choose and structure the right PRD template for a requirement, including PRD-lite, PRD-standard, or PRD-ai-native, and decide draft stage, assumptions, and handoff readiness.
+description: >
+  PRD 架构师 / 需求文档起草：当用户要把一个产品想法、需求草稿、脑暴结果或功能说明整理成 PRD 时使用。
+  可用中文唤起：“帮我写 PRD”“帮我选 PRD 模板”“把这个需求整理成 PRD”“判断该用轻量 PRD 还是标准 PRD”。
+  负责选择 PRD-lite、PRD-standard、PRD-ai-native，判断草稿/讨论中/已确认阶段，并明确假设、边界和 handoff 准备度。
+  不用于直接编码、单纯画 UI，或评审一份已经写好的 PRD。
 ---
 
-# prd-architect
+# PRD 架构师（prd-architect）
+
+## 中文速查
+
+- 中文名：PRD 架构师 / 需求文档起草
+- 英文稳定名：`prd-architect`
+- 你可以这样叫我：`帮我写 PRD`、`帮我选 PRD 模板`、`把这个需求整理成 PRD`、`这个需求该用哪种 PRD`
+- 适合：需求还在成型，需要先判断文档深度、PRD 类型、当前成熟度和后续 handoff 接口
+- 不适合：已经有完整 PRD 要评审，改用 `prd-review`；只要 UI 线框或直接编码也不应触发
 
 ## Overview
 

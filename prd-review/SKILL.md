@@ -1,9 +1,20 @@
 ---
 name: prd-review
-description: Use when Codex needs to review a first-draft PRD against handoff context, from PM, engineering, and testing lenses, and produce actionable revisions, open questions, and a revision draft.
+description: >
+  PRD 评审 / 需求评审：当用户已有 PRD 初稿、handoff、需求文档或产品方案，需要从 PM、研发、测试视角找缺口、
+  冲突、不可实现点和不可测试点时使用。可用中文唤起：“帮我审 PRD”“从研发和测试视角挑问题”
+  “这个需求文档能不能交付开发”“帮我给 PRD 出修改草案”。不用于凭空生成 PRD 初稿；从零起草优先用 prd-architect。
 ---
 
-# prd-review
+# PRD 评审（prd-review）
+
+## 中文速查
+
+- 中文名：PRD 评审 / 需求评审
+- 英文稳定名：`prd-review`
+- 你可以这样叫我：`帮我审 PRD`、`从研发测试视角挑问题`、`这个需求文档能不能交付开发`、`帮我补一版修订草案`
+- 适合：已经有 PRD/handoff，需要发现阻断项、重要缺口、验收不可测、工程无法落地的地方
+- 不适合：从零写 PRD，改用 `prd-architect`；只做语言润色时不需要触发
 
 ## Overview
 

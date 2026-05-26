@@ -1,38 +1,50 @@
 ---
 name: team-skill-creator
-description: Plan and create team-standard Codex Skills. Use when the user has a repeatable capability request and wants to decide whether it should be a Prompt, Workflow, Tool, Plugin, App, or Skill; check for similar existing Skills; clarify requirements; produce a Creation Decision; create a new Skill only after user confirmation; and validate the result with system and team Skill checks.
+description: >
+  团队 Skill 创建器 / 能力沉淀判断：当用户想把一个可重复能力沉淀下来，或不确定应该做成 Prompt、
+  Workflow、Tool、Plugin、App 还是 Skill 时使用。可用中文唤起：“帮我创建一个 Skill”
+  “这个能力要不要沉淀成 Skill”“把这个流程固化成 Skill”“导入这个 GitHub Skill”。会先查重、
+  澄清关键需求、给 Creation Decision，只有用户确认后才创建，并运行系统和团队校验。
 ---
 
-# Team Skill Creator
+# 团队 Skill 创建器（team-skill-creator）
+
+## 中文速查
+
+- 中文名：团队 Skill 创建器 / 能力沉淀判断
+- 英文稳定名：`team-skill-creator`
+- 你可以这样叫我：`帮我创建一个 Skill`、`这个能力要不要沉淀成 Skill`、`把这个流程固化成 Skill`、`导入这个 GitHub Skill`
+- 适合：新建、导入、合并、评估一个可复用能力是否应成为 Skill，并按团队标准验证
+- 不适合：已经有 Skill 只需要评审，改用 `skill-reviewer`；一次性任务不应创建 Skill
 
 ## Overview
 
-Use this Skill as the team Skill factory. It adds team gates around the system `skill-creator`: first decide whether a request should become a Skill, then clarify only what matters, create or import only after confirmation, and validate the result with both system and team checks.
+使用这个 Skill 做团队级 Skill 工厂。它在系统 `skill-creator` 外增加团队门槛：先判断请求是否真的应该变成 Skill，只澄清关键问题，只有确认后才创建或导入，并用系统和团队检查一起验证结果。
 
-It also handles import-style creation where the proposed new Skill comes from a Git repository, marketplace download, local clone, or another agent's Skill directory. In that case, treat the upstream Skill as a source candidate, not as an automatically accepted final artifact.
+它也处理“导入式创建”：候选 Skill 来自 Git 仓库、市场下载、本地 clone 或另一个 agent 的 Skill 目录。此时把上游 Skill 当作候选来源，而不是自动接受为最终产物。
 
-Do not replace the system `.system/skill-creator`. Use it as the baseline for Codex Skill structure and scaffolding.
+不要替换系统 `.system/skill-creator`。应把它作为 Codex Skill 结构和脚手架的基线。
 
 ## Workflow
 
-1. Capture the request and restate the intended repeatable capability in one sentence.
-2. Run the similarity scan before recommending a new Skill. Scan Skillshare canonical source, Codex, Claude, `.agents`, system Skills, and any import source root:
+1. 捕获用户请求，并用一句话复述想沉淀的可复用能力。
+2. 推荐创建新 Skill 前先跑相似度扫描。扫描 Skillshare 源目录、Codex、Claude、`.agents`、系统 Skills，以及任何导入来源目录：
 
 ```bash
 python3 <this-skill>/scripts/inspect_existing_skills.py --name "<candidate-name>" --description "<request summary>"
 python3 <this-skill>/scripts/inspect_existing_skills.py --name "<candidate-name>" --description "<request summary>" --import-root /path/to/imported/skills --json
 ```
 
-3. Classify the best implementation shape. For non-trivial or ambiguous requests, read `references/creation-rubric.md`.
-4. If critical context is missing, ask at most 5 concrete questions. Do not ask for information that can be discovered from local files.
-5. Produce a `Creation Decision` before writing files. Include the recommended shape, whether to create or import a Skill, trigger examples, non-trigger examples, resource plan, eval checklist, risks, and the exact confirmation needed. For import candidates, also include the source candidate, best base, merge decision, borrowed strengths, provenance, and install/sync plan.
-6. Create a Skill only after explicit user confirmation. Use:
+3. 判断最佳实现形态。对非平凡或模糊请求，读取 `references/creation-rubric.md`。
+4. 如果缺少关键上下文，最多问 5 个具体问题。不要询问可以从本地文件中发现的信息。
+5. 写文件前先输出 `Creation Decision`。包含推荐形态、是否创建或导入 Skill、触发示例、非触发示例、资源计划、eval 清单、风险和需要的明确确认。对导入候选，还要包含来源候选、最佳基底、合并决策、借鉴点、来源记录和安装/同步计划。
+6. 只有用户明确确认后才创建 Skill。使用：
 
 ```bash
 python3 <this-skill>/scripts/create_team_skill.py --name "<skill-name>" --description "<trigger description>" --resources scripts,references --path /Users/linctex/.codex/skills
 ```
 
-7. Replace scaffold placeholders, validate with both checks, and use `skill-reviewer` for a final review before calling a team-facing or high-value Skill ready:
+7. 替换脚手架占位符，运行两类校验，并在宣布团队级或高价值 Skill ready 前用 `skill-reviewer` 做最终评审：
 
 ```bash
 python3 /Users/linctex/.codex/skills/.system/skill-creator/scripts/quick_validate.py /Users/linctex/.codex/skills/<skill-name>

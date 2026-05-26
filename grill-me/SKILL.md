@@ -1,57 +1,68 @@
 ---
 name: grill-me
-description: Interview the user relentlessly about a plan or design until reaching shared understanding, resolving each branch of the decision tree. Use when the user wants to stress-test a plan, get grilled on a design, pressure-test tradeoffs, or mentions "grill me".
+description: >
+  方案拷问 / 压力测试：当用户有一个产品方案、架构设计、计划或决策，想被连续追问、反方挑战、
+  压测取舍和失败模式时使用。可用中文唤起：“拷问我的方案”“压力测试这个设计”“帮我问 hard questions”
+  “这个方案哪里会翻车”“grill me”。目标是一问一答把决策树走清楚，不是直接替用户写最终方案。
 ---
 
-# Grill Me
+# 方案拷问（grill-me）
+
+## 中文速查
+
+- 中文名：方案拷问 / 压力测试
+- 英文稳定名：`grill-me`
+- 你可以这样叫我：`拷问我的方案`、`压力测试这个设计`、`帮我问 hard questions`、`这个方案哪里会翻车`、`grill me`
+- 适合：已有方案但担心盲点，需要按依赖、假设、分支和失败模式逐个追问
+- 不适合：直接写最终方案、泛泛总结文档、没有互动空间的一次性输出
 
 ## Overview
 
-Use this Skill to pressure-test a plan or design through a focused interview. The goal is shared understanding, not a long list of disconnected questions.
+使用这个 Skill 对方案或设计做聚焦访谈式压力测试。目标是达成共同理解，而不是抛出一长串互不相干的问题。
 
 ## Workflow
 
-1. Restate the plan or design being grilled in one sentence.
-2. Identify the main decision branches, dependencies, assumptions, and likely failure modes.
-3. Ask one question at a time. Wait for the user's answer before continuing unless the answer can be discovered locally.
-4. For each question, provide your recommended answer or current hypothesis so the user can accept, reject, or refine it.
-5. If a question can be answered by exploring the codebase or local docs, inspect them instead of asking.
-6. Resolve branches in dependency order. Do not jump to downstream choices while upstream constraints are still unstable.
-7. Summarize settled decisions, remaining open questions, and any plan changes when the grilling session ends or pauses.
+1. 用一句话复述正在被拷问的方案或设计。
+2. 找出主要决策分支、依赖、隐含假设和可能失败模式。
+3. 一次只问一个问题；除非答案能从本地代码或文档中直接发现，否则等待用户回答后再继续。
+4. 每个问题都要给出你的推荐答案或当前假设，让用户可以接受、否定或修正。
+5. 如果问题可以通过读取代码库、PRD、ADR 或本地文档回答，先去查证，不要把可查问题丢给用户。
+6. 按依赖顺序解决分支；上游约束还不稳定时，不要跳到下游细节。
+7. 当拷问暂停或结束时，汇总结论、被否掉的选项、仍未解决的问题和计划变化。
 
 ## Context Intake
 
-Use available artifacts first: PRDs, issues, code, docs, ADRs, diagrams, logs, and prior user messages. Ask only for missing information that changes a real decision.
+优先使用已有材料：PRD、issue、代码、文档、ADR、图、日志和之前的对话。只问那些会改变真实决策的缺失信息。
 
 ## Output
 
-The live output is one question at a time with a recommended answer. The closing output is a concise decision log:
+过程输出是一问一答，并且每个问题都附带推荐答案。结束输出是一份简洁决策记录：
 
-- Settled decisions.
-- Rejected options and why.
-- Open questions.
-- Recommended next step.
+- 已确认决策
+- 被否掉的选项及原因
+- 仍未解决的问题
+- 推荐下一步
 
 ## Definition of Done
 
-- Important branches have been explored in a sensible order.
-- Each asked question had a reason and a recommended answer.
-- Codebase-answerable questions were answered by inspection.
-- The user has a decision log or a clear next unresolved question.
+- 关键分支已经按合理顺序探索。
+- 每个问题都有追问理由和推荐答案。
+- 能从代码库或本地文档回答的问题已经查证。
+- 用户拿到决策记录，或至少明确下一个尚未解决的问题。
 
 ## Evaluation
 
 Smoke prompts:
 
-- `Grill me on this architecture plan.`
-- `Pressure-test my proposal before I send it.`
-- `Ask me hard questions about this design.`
+- `拷问一下这个架构方案。`
+- `我发出去前，帮我压力测试这份方案。`
+- `针对这个设计问我 hard questions。`
 
 Non-trigger prompts:
 
-- `Write the final proposal for this plan.`
-- `Summarize this PRD without interviewing me.`
+- `直接帮我写最终方案。`
+- `不要追问，只总结这个 PRD。`
 
 ## Resources
 
-- `references/provenance.md` records the upstream source, local overlap, and merge notes.
+- `references/provenance.md` 记录上游来源、本地重叠和合并说明。
