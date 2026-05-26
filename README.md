@@ -16,14 +16,14 @@
 
 ## 第一批导入
 
-本次先导入 10 个高价值 Skill，覆盖产品/PRD、协作校准、工程规范、图示生成、Skill 管理和 Web Artifact 生产。
+当前已导入 11 个高价值 Skill，覆盖产品/PRD、协作校准、方案压力测试、工程规范、图示生成、Skill 管理和 Web Artifact 生产。
 
 ## 分类导航
 
 | 分类目录 | 中文分类 | 包含 Skill |
 | --- | --- | --- |
 | `categories/01-product-prd/` | 产品与 PRD | `prd-architect`, `prd-review` |
-| `categories/02-collaboration-thinking/` | 认知与协作 | `ai-collaboration-calibration` |
+| `categories/02-collaboration-thinking/` | 认知与协作 | `ai-collaboration-calibration`, `grill-me` |
 | `categories/03-engineering-practice/` | 工程实践 | `coding-standards` |
 | `categories/04-architecture-visualization/` | 架构图与可视化 | `generate-drawio-diagram` |
 | `categories/05-project-governance/` | 项目治理 | `honeycomb-change-proposer`, `project-guidelines-example` |
@@ -36,6 +36,7 @@
 | `ai-collaboration-calibration` | 认知与协作 | active |
 | `coding-standards` | 工程实践 | keep |
 | `generate-drawio-diagram` | 架构图与可视化 | active |
+| `grill-me` | 认知与协作 | active |
 | `honeycomb-change-proposer` | 项目治理 | keep |
 | `prd-review` | 产品与 PRD | active |
 | `project-guidelines-example` | 示例模板 | review |

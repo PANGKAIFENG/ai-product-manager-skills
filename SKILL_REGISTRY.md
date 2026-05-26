@@ -24,7 +24,7 @@
 | `categories/06-skill-governance/` | Skill 治理 | Skill 创建、审查、版本维护、触发边界和质量评估。 |
 | `categories/07-web-artifacts/` | Web Artifact | 复杂交互式前端 Artifact 的生成与打包。 |
 
-## 第一批
+## 已纳入 Skill
 
 | Skill | 分类 | 状态 | 用途 | 备注 |
 | --- | --- | --- | --- | --- |
@@ -32,6 +32,7 @@
 | `ai-collaboration-calibration` | 认知与协作 | active | 在复杂问题上先校准问题定义、挑战假设、识别反模式，避免直接进入执行模式。 | 适合方案变复杂、方向不确定、需要反驳或压力测试时使用。 |
 | `coding-standards` | 工程实践 | keep | TypeScript、JavaScript、React、Node.js 的通用编码规范和最佳实践。 | 目前偏通用，后续可结合个人项目栈收敛。 |
 | `generate-drawio-diagram` | 架构图与可视化 | active | 生成可在 Draw.io 中编辑的 `.drawio` 架构图或流程图。 | 适合架构、流程和 AI 协作链路图。 |
+| `grill-me` | 认知与协作 | active | 通过一问一答压力测试方案或设计，按决策树澄清分支、依赖、假设和失败模式。 | 适合发送方案前做反方追问，也适合架构、产品、流程设计的 hard questions。 |
 | `honeycomb-change-proposer` | 项目治理 | keep | 将 Honeycomb 共享模板、managed path 或安装包问题整理成上游 proposal。 | 低频但专业，适合保留。 |
 | `prd-review` | 产品与 PRD | active | 从 PM、研发、测试视角评审第一版 PRD，输出修订建议和可回填草案。 | 通常与 handoff/PRD 文件一起使用。 |
 | `project-guidelines-example` | 示例模板 | review | 项目专属 Skill 示例，展示架构、目录、测试、部署等项目指南结构。 | 当前不是标准 frontmatter 结构，建议后续决定是否重写为模板 Skill。 |
@@ -41,11 +42,12 @@
 
 ## 推荐白名单
 
-第一批里建议优先加入 Codex/Claude 常用白名单：
+当前建议优先加入 Codex/Claude 常用白名单：
 
 - `prd-architect`
 - `prd-review`
 - `ai-collaboration-calibration`
+- `grill-me`
 - `generate-drawio-diagram`
 - `skill-reviewer`
 - `team-skill-creator`
