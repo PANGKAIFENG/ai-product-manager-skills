@@ -2,6 +2,8 @@
 
 这个文件用于解释每个已纳入 GitHub 管理的 Skill 是什么、适合什么时候用、当前维护状态和公开风险。
 
+真实 Skill 目录保持在仓库根目录，确保 `skillshare` 同步和 Skill 触发名称稳定。`categories/` 只提供 GitHub 阅读时的分类入口，并通过 `.skillignore` 从 skillshare 发现结果中排除。
+
 状态含义：
 
 - `core`: 个人 Skill 体系的核心能力，优先维护。
@@ -9,6 +11,18 @@
 - `keep`: 低频但有明确价值，保留版本管理。
 - `review`: 需要进一步确认质量、来源、触发边界或是否仍然需要。
 - `private-only`: 含内部业务、流程或数据语义，不应公开发布。
+
+## 分类体系
+
+| 分类目录 | 中文分类 | 适用边界 |
+| --- | --- | --- |
+| `categories/01-product-prd/` | 产品与 PRD | 需求结构化、PRD 起草、PRD 评审和交付准备。 |
+| `categories/02-collaboration-thinking/` | 认知与协作 | 复杂问题校准、假设挑战、方向收敛和协作模式选择。 |
+| `categories/03-engineering-practice/` | 工程实践 | 通用编码规范、实现约束和研发质量基线。 |
+| `categories/04-architecture-visualization/` | 架构图与可视化 | 架构图、流程图、系统关系图和可编辑图示资产。 |
+| `categories/05-project-governance/` | 项目治理 | 项目级规范、共享模板、目录治理和上游 proposal。 |
+| `categories/06-skill-governance/` | Skill 治理 | Skill 创建、审查、版本维护、触发边界和质量评估。 |
+| `categories/07-web-artifacts/` | Web Artifact | 复杂交互式前端 Artifact 的生成与打包。 |
 
 ## 第一批
 
