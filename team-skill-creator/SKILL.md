@@ -4,7 +4,8 @@ description: >
   团队 Skill 创建器 / 能力沉淀判断：当用户想把一个可重复能力沉淀下来，或不确定应该做成 Prompt、
   Workflow、Tool、Plugin、App 还是 Skill 时使用。可用中文唤起：“帮我创建一个 Skill”
   “这个能力要不要沉淀成 Skill”“把这个流程固化成 Skill”“导入这个 GitHub Skill”。会先查重、
-  澄清关键需求、给 Creation Decision，只有用户确认后才创建，并运行系统和团队校验。
+  对齐 GitHub Skill 仓库分类和目标应用 Skill 目录，澄清关键需求、给 Creation Decision，
+  只有用户确认后才创建，并运行系统和团队校验。
 ---
 
 # 团队 Skill 创建器（team-skill-creator）
@@ -13,6 +14,7 @@ description: >
 
 - 中文名：团队 Skill 创建器 / 能力沉淀判断
 - 英文稳定名：`team-skill-creator`
+- 分类：Skill/Agent 治理
 - 你可以这样叫我：`帮我创建一个 Skill`、`这个能力要不要沉淀成 Skill`、`把这个流程固化成 Skill`、`导入这个 GitHub Skill`
 - 适合：新建、导入、合并、评估一个可复用能力是否应成为 Skill，并按团队标准验证
 - 不适合：已经有 Skill 只需要评审，改用 `skill-reviewer`；一次性任务不应创建 Skill
@@ -21,6 +23,8 @@ description: >
 
 使用这个 Skill 做团队级 Skill 工厂。它在系统 `skill-creator` 外增加团队门槛：先判断请求是否真的应该变成 Skill，只澄清关键问题，只有确认后才创建或导入，并用系统和团队检查一起验证结果。
 
+默认治理链路是：GitHub 线上 Skill 仓库 `PANGKAIFENG/skill` 的默认分支 -> 已刷新到该分支的本地 checkout -> 本地 `multica-skill` 目录 -> Codex/Claude 可引用目录。GitHub 线上仓库是唯一标准源，负责先查重、分类、版本化、中文可发现性和云端留存；本地 checkout 只是读写工作副本；`multica-skill` 负责给 Multica 应用使用；Codex/Claude 目录负责让本机 agent 运行时可引用。`skillshare sync` 只是可选的分发辅助，不是默认必走步骤。
+
 它也处理“导入式创建”：候选 Skill 来自 Git 仓库、市场下载、本地 clone 或另一个 agent 的 Skill 目录。此时把上游 Skill 当作候选来源，而不是自动接受为最终产物。
 
 不要替换系统 `.system/skill-creator`。应把它作为 Codex Skill 结构和脚手架的基线。
@@ -28,23 +32,24 @@ description: >
 ## Workflow
 
 1. 捕获用户请求，并用一句话复述想沉淀的可复用能力。
-2. 推荐创建新 Skill 前先跑相似度扫描。扫描 Skillshare 源目录、Codex、Claude、`.agents`、系统 Skills，以及任何导入来源目录：
+2. 推荐创建新 Skill 前先跑相似度和分类扫描。前置先确认本地 checkout 指向 `git@github.com:PANGKAIFENG/skill.git` 或用户指定的 GitHub Skill 仓库，`git fetch` 后对齐线上默认分支，再扫描该 checkout、`multica-skill`、Codex、Claude、`.agents`、系统 Skills，以及任何导入来源目录：
 
 ```bash
 python3 <this-skill>/scripts/inspect_existing_skills.py --name "<candidate-name>" --description "<request summary>"
-python3 <this-skill>/scripts/inspect_existing_skills.py --name "<candidate-name>" --description "<request summary>" --import-root /path/to/imported/skills --json
+python3 <this-skill>/scripts/inspect_existing_skills.py --name "<candidate-name>" --description "<request summary>" --catalog-root /Users/linctex/.config/skillshare/skills --multica-root /path/to/multica-skill --import-root /path/to/imported/skills --json
 ```
 
 3. 判断最佳实现形态。对非平凡或模糊请求，读取 `references/creation-rubric.md`。
-4. 如果缺少关键上下文，最多问 5 个具体问题。不要询问可以从本地文件中发现的信息。
-5. 写文件前先输出 `Creation Decision`。包含推荐形态、是否创建或导入 Skill、触发示例、非触发示例、资源计划、eval 清单、风险和需要的明确确认。对导入候选，还要包含来源候选、最佳基底、合并决策、借鉴点、来源记录和安装/同步计划。
-6. 只有用户明确确认后才创建 Skill。使用：
+4. 为候选 Skill 选择分类和发布状态。优先复用 GitHub Skill 仓库 `SKILL_REGISTRY.md` 里的分类；需要新分类时，说明为什么现有分类不够，并把 `categories/README.md`、对应分类 README 和 registry 更新纳入计划。
+5. 如果缺少关键上下文，最多问 5 个具体问题。不要询问可以从本地文件中发现的信息。
+6. 写文件前先输出 `Creation Decision`。包含推荐形态、是否创建或导入 Skill、触发示例、非触发示例、分类归属、发布状态、资源计划、eval 清单、风险和需要的明确确认。对导入候选，还要包含来源候选、最佳基底、合并决策、借鉴点、来源记录和安装/同步计划。
+7. 只有用户明确确认后才创建 Skill。使用：
 
 ```bash
 python3 <this-skill>/scripts/create_team_skill.py --name "<skill-name>" --description "<trigger description>" --resources scripts,references --path /Users/linctex/.codex/skills
 ```
 
-7. 替换脚手架占位符，运行两类校验，并在宣布团队级或高价值 Skill ready 前用 `skill-reviewer` 做最终评审：
+8. 替换脚手架占位符，运行两类校验，并在宣布团队级或高价值 Skill ready 前用 `skill-reviewer` 做最终评审：
 
 ```bash
 python3 /Users/linctex/.codex/skills/.system/skill-creator/scripts/quick_validate.py /Users/linctex/.codex/skills/<skill-name>
@@ -85,7 +90,23 @@ Use this flow when the user wants to add Skills from another repository, marketp
 5. Default policy: preserve the upstream name for new imports; when similar Skills exist, merge rather than duplicate; retain the local name if renaming would break existing Skillshare habits.
 6. Preserve provenance in a concise `references/provenance.md` or a `metadata.provenance` frontmatter object. At minimum include source repo, commit/version, plugin/package, original path, license status, import date, and merge notes.
 7. Copy all required upstream resources (`references/`, `scripts/`, `assets/`, templates, and directly linked markdown files). Rewrite paths only when needed to keep references one level away and mentioned from `SKILL.md`.
-8. After import or merge, run system validation and `skill-reviewer`; fix P0/P1, record P2 if intentionally deferred; sync through Skillshare only after validation is acceptable.
+8. After import or merge, run system validation and `skill-reviewer`; fix P0/P1, record P2 if intentionally deferred; then distribute to the confirmed targets. Prefer direct copy/import into GitHub checkout, `multica-skill`, Codex, and Claude directories; use `skillshare sync` only when it is the explicitly chosen distribution mechanism.
+
+## GitHub Catalog / Multica Sync
+
+Treat the user's GitHub Skill repository online default branch as the source of truth. The local checkout is valid only after its remote, branch, and ahead/behind state are checked against GitHub. It is the classification layer and durable upstream for shareable Skills, not merely a target after local creation.
+
+When creating, importing, or updating a Skill:
+
+1. First refresh or inspect the GitHub Skill checkout against `origin/main` or the configured upstream. If it is behind, update before deciding; if it has dirty local edits, report them before changing files.
+2. Compare the request against the GitHub Skill catalog, including `SKILL_REGISTRY.md`, `categories/`, and same-name directories.
+3. Decide whether the existing GitHub Skill should be optimized, whether a new Skill should be added, or whether the request should be absorbed into another Skill.
+4. Choose one existing category before writing. If no category fits, propose a new category with an English folder slug, Chinese label, boundary, and target Skills.
+5. Keep stable English `name:` and folder slugs. Add Chinese discoverability through `SKILL_REGISTRY.md`, category README files, and the `中文速查` section.
+6. After validation, keep these copies aligned when applicable: the GitHub checkout ready to push, the local `multica-skill` directory, `/Users/linctex/.codex/skills`, and `/Users/linctex/.claude/skills`.
+7. For Multica, prefer the application's supported import/list flow or a confirmed `multica-skill` directory over copying into an unknown database-backed workspace.
+8. Do not silently overwrite app/workspace/runtime Skills with the same name. First compare the current Multica copy, the GitHub catalog copy, and the Codex/Claude copies, then choose `new`, `merge-into-existing`, `replace-with-source`, or `do-not-import`.
+9. Use `skillshare sync` only as an optional implementation detail when the user explicitly wants to use it or when the target paths are known to be managed by Skillshare. Do not present it as the required default path.
 
 ## Context Intake
 
@@ -97,6 +118,8 @@ Confirm these inputs before recommending creation, or record them as assumptions
 - Tool, API, file-write, credential, network, and production side effects.
 - Minimum validation path: smoke prompts, non-trigger prompts, deterministic checks, and regression cases when needed.
 - For imports: source repo, commit/version, original path, license, exact-name overlaps, similar Skills, chosen base, borrowed strengths, and sync targets.
+- Catalog placement: GitHub remote/upstream status, update decision, category, Chinese name, status (`core`, `active`, `keep`, `review`, or `private-only`), and category README/registry updates.
+- App/runtime distribution targets: GitHub checkout, local `multica-skill`, Codex/Claude/other runtime paths, Multica workspace/API/UI import, and any app-local Skill root.
 
 Ask only for missing information that changes the creation decision or generated Skill structure.
 
@@ -121,7 +144,9 @@ For planning, use:
 - Merge decision: <new / merge-into-existing / replace-with-source / do-not-import>
 - Borrowed strengths: <what will be absorbed from each source>
 - Provenance: <repo, commit/version, plugin/package, original path, license>
-- Install/sync plan: <canonical source path and targets>
+- Category/status: <existing or proposed category, Chinese label, public/private status>
+- GitHub source status: <remote URL, branch/upstream, ahead/behind/dirty status>
+- Install/sync plan: <GitHub checkout path, multica-skill path, Codex/Claude targets, optional skillshare command if used>
 - Trigger examples: <3-5 examples>
 - Non-trigger examples: <2-3 examples>
 - Required context: <known / missing>
@@ -139,6 +164,7 @@ After creation, use:
 - Key files: <SKILL.md, references, scripts, agents/openai.yaml>
 - Imported from: <repo, commit/version, plugin/package, original paths, license>
 - Merge decision: <new / merge-into-existing / replace-with-source / do-not-import>
+- Category/status: <category and catalog status applied>
 - Commands run: <init, validate, reviewer checks>
 - Validation result: <pass/fail with key output>
 - Remaining work: <missing references, scripts, evals, review items>
@@ -152,7 +178,8 @@ A team Skill creation task is complete only when one of these is true:
 - The request is classified as not needing a Skill, with a concrete alternative.
 - A `Creation Decision` is delivered and awaits confirmation.
 - A confirmed Skill is created, placeholders are removed, system validation passes, team checker results are reported, and remaining review or regression work is explicit.
-- An imported Skill is either merged, rejected with reason, or installed into canonical Skillshare source with required resources, provenance, validation results, and sync plan.
+- An imported Skill is either merged, rejected with reason, or installed into canonical Skillshare source with required resources, provenance, category/status decision, validation results, and sync plan.
+- GitHub catalog, `multica-skill`, and Codex/Claude distribution work is either completed or explicitly left as a named follow-up with the exact target path/API/UI path and reason.
 
 ## Resource Guide
 

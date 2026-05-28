@@ -15,6 +15,7 @@ A team-ready Skill should provide:
 - Definition of Done.
 - Evaluation readiness through smoke prompts, checks, or regression cases.
 - Provenance notes when the Skill was imported, cloned, or merged from another repository, marketplace, plugin, or local source.
+- Catalog notes when the Skill is part of a shared GitHub catalog: category, Chinese name, status, and public/private decision.
 
 The headings do not need to match exactly, but the behavior must be present.
 
@@ -119,3 +120,5 @@ A generated Skill is not ready while it contains:
 - Claims of validation without command output or observed evidence.
 
 Imported Skills are also not ready while they lack source repo, commit/version, plugin/package, original path, license status, and merge notes.
+
+Catalog-managed Skills are also not ready when they are missing an explicit category/status decision or when the GitHub registry/category files and runtime/app sync plan disagree about the Skill name or destination.

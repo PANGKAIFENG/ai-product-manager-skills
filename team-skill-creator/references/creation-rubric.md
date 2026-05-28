@@ -60,6 +60,9 @@ Ask at most 5 questions. If optional details are missing, proceed with explicit 
 
 Before proposing a new Skill, scan:
 
+- The user's GitHub Skill online repository first. Use the refreshed local checkout only after checking remote URL, branch/upstream, ahead/behind, and dirty state.
+- The GitHub catalog files in that checkout, including `SKILL_REGISTRY.md`, `categories/`, and same-name Skill directories.
+- The target local `multica-skill` directory when the Skill should appear inside Multica.
 - `/Users/linctex/.config/skillshare/skills`
 - `/Users/linctex/.codex/skills`
 - `/Users/linctex/.claude/skills`
@@ -68,6 +71,18 @@ Before proposing a new Skill, scan:
 - Any import root from a Git clone, marketplace download, plugin, or local Skill source.
 
 If an existing Skill covers at least 70% of the need, recommend updating or extending it instead of creating a new Skill.
+
+## Catalog Placement Gate
+
+Before creating or importing, choose the GitHub catalog placement:
+
+- Source status: remote URL, branch/upstream, ahead/behind, dirty state, and whether fetch was attempted.
+- GitHub action: optimize existing, add new, merge into another Skill, or keep local/private only.
+- Category: existing category slug and Chinese label from `SKILL_REGISTRY.md`; if none fits, proposed new category slug, label, and boundary.
+- Status: `core`, `active`, `keep`, `review`, or `private-only`.
+- Discoverability updates: `中文速查`, `SKILL_REGISTRY.md`, `categories/README.md`, and the category README.
+
+Keep English `name:` and folder slugs stable. Do not move real Skill directories under category folders; categories are reading/navigation metadata and should remain excluded from skill discovery when the catalog uses `.skillignore`.
 
 ## Import Decision Gate
 
@@ -83,6 +98,16 @@ When the source is an existing Skill from another repo or marketplace, decide wh
 
 Prefer merging overlapping Skills over creating duplicates. Preserve the upstream name only for new imports; keep the existing local name when it is already the user-facing habit. Always record source repo, commit/version, plugin/package, original path, license status, import date, and merge notes.
 
+## Runtime / App Sync Gate
+
+When the target is a local app or managed workspace:
+
+- Identify whether the app reads runtime local folders, a workspace database/API, or both.
+- Prefer the confirmed local `multica-skill` directory or supported import/list command or UI/API over copying into an unknown internal store.
+- Compare current app/workspace copy before overwriting same-name Skills.
+- Record the exact distribution target: GitHub checkout, `multica-skill`, Codex path, Claude path, app workspace/API/UI import, or app-local Skill root.
+- Verify with the narrowest available check: target directory listing, app CLI/API list, UI import result, or `skillshare sync --json` only if Skillshare is explicitly used.
+
 ## Creation Decision Checklist
 
 The `Creation Decision` must include:
@@ -92,6 +117,8 @@ The `Creation Decision` must include:
 - Candidate name.
 - Similar existing Skills and overlap risk.
 - Source candidate, best base, merge decision, borrowed strengths, provenance, and install/sync plan for import tasks.
+- Category/status and GitHub action decision.
+- Distribution targets and verification method, especially for Multica, Codex, Claude, or other app-backed Skill stores.
 - Trigger and non-trigger examples.
 - Resource plan for `SKILL.md`, `references/`, `scripts/`, and `assets/`.
 - Minimum eval checklist.
