@@ -61,6 +61,15 @@ Record at least:
 - Do not let viral claims drive the report unless stronger evidence supports them.
 - If using X systematically, prefer official API access. Without API access, clearly mark the search as partial.
 
+## WeChat and Semi-Closed Discovery Rules
+
+- Treat WeChat Official Account articles as practitioner or market context unless the author is the primary source, the article contains original implementation detail, or claims are verified elsewhere.
+- Use Sogou Weixin, Web search, OpenCLI adapters, and third-party APIs primarily for candidate discovery. Search result snippets are not enough for core conclusions.
+- Prefer original `mp.weixin.qq.com` articles with account name, publish date, and full text available. Mark reposts, unattributed summaries, and AI-generated digest pages as weak or discovery-only.
+- If a direct link triggers anti-spider, login, captcha, phone confirmation, or paywall, do not bypass it. Record the source as `verify later`.
+- When forwarding or syncing an article to Obsidian through WeChat, record the action as ingestion provenance, not evidence strength. The synced article still needs normal source quality screening.
+- Non-official API output must include provider, access date, returned fields, original URL availability, and known limitations.
+
 ## Persona and Application Claims
 
 - Label persona-specific takeaways as interpretation when they are inferred from evidence rather than directly stated by sources.

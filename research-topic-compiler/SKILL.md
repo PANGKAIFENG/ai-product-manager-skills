@@ -29,11 +29,13 @@ description: >
 - 先解析用户画像，再决定解释方式、案例选择、实践任务和应用转化。
 - Obsidian 是内部基线和默认沉淀位置，不是唯一研究渠道。
 - 外部渠道动态选择，不默认全开；根据主题类型、证据缺口、时效性和可信度要求启用。
+- 研究前可以先做 `Pre-Research Source Expansion`：用公开搜索、垂直 API、RSS、产品/市场目录等渠道扩充候选来源，再筛选进入正式证据矩阵。
 - 结论必须能回到证据矩阵；`05_研究报告` 是第一阅读入口，`02_证据与卡片` 是按需深挖层。
 - 系统学习不是重型课程仓库；默认保持轻量，只有触发条件满足时才建议独立学习包文件。
 - 用户画像只影响解释深度、案例选择、输出结构和实践任务，不覆盖用户当前明确要求。
 - 研究必须能转成行动：判断、方案、模板、任务、PRD、Workflow、Eval、Checklist、SOP、路线图或实践练习。
 - 用户补充的新渠道可以进入渠道库，但要先判断适用主题、访问条件、证据强度和风险。
+- 微信公众号、X、私域社区、付费库等渠道默认只能做公开候选发现；任何登录态读取、客户端转发、发送到 Obsidian 同步号或第三方服务的动作，都需要当前 run 的明确授权和可见确认点。
 
 ## Input / Context Intake
 
@@ -96,6 +98,38 @@ Application Mode 必须把核心结论转成用户当前工作中的至少一种
 - 模板：PRD 片段、Workflow 表、Eval 指标、接口草案、SOP、风险矩阵。
 - 任务：最小实践、验证动作、下一步调研、团队分工。
 
+## Pre-Research Source Expansion
+
+在 Obsidian 内部基线扫描之前，先判断是否需要扩充前置来源。详细规则见 `references/pre-research-source-expansion.md`。
+
+启用信号：
+
+- 用户资料不足、`笔记同步助手` 中没有足够种子文章，或用户明确希望“不要依赖我提前收集输入”。
+- 主题高度依赖中文实践文章、产品案例、市场反馈、近期趋势或封闭平台内容。
+- 研究目标是系统学习、产品判断、竞品/行业调研或应用转化，需要先扩大候选面再筛选。
+
+默认产物是 `Candidate Source Table`，不要直接把搜索结果当结论：
+
+```markdown
+| Title | Channel | Author/account | Date | URL/access | Snippet | Relevance | Quality | Recommended action |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+```
+
+推荐动作只能是：
+
+- `read now`：公开可读、质量足够，进入证据卡片。
+- `sync to Obsidian`：适合进入 `笔记同步助手` 或 Research Project，但需要授权的同步动作。
+- `verify later`：有价值但受登录、API、反爬、付费或来源不明限制。
+- `skip`：重复、低质、SEO、疑似转载或与研究问题弱相关。
+
+微信公众号处理边界：
+
+- 可默认尝试公开候选发现，例如搜狗微信、Web 搜索、OpenCLI Weixin adapter 或已授权的第三方 API。
+- 搜狗微信适合发现候选标题、摘要、时间和跳转线索；它可能触发反爬，不能假设可稳定抓全文。
+- 第三方公众号 API 只在用户提供 token 或明确允许使用时启用；标注服务商、访问时间、字段范围和可靠性限制。
+- WeWe RSS/RSSHub 类工具适合已知公众号的持续订阅，不适合无边界全网搜索。
+- 打开微信客户端、搜索公众号文章、转发给 `Obsidian @笔记同步科技` 或其他同步号属于有副作用的发送/同步动作；即使用户偏好自动化，也要在当前 run 明确授权，且默认在发送前停下确认。不要静默发送。
+
 ## Persona-Adaptive Output
 
 按解析出的 `role` 调整输出重点。角色未知时先用通用解释，不要假设用户是工程师或产品经理。
@@ -121,12 +155,13 @@ Application Mode 必须把核心结论转成用户当前工作中的至少一种
 2. 解析用户画像。按 `User Context Resolution` 选择通用解释或 persona-adaptive 输出。
 3. 判断研究模式和深度。非平凡主题先读 `references/research-depth-rubric.md`，推荐 `L1-L5`，并说明是否启用 Learning Pack 或 Application Mode。
 4. 选择渠道。读取 `references/channel-selection-rubric.md` 和 `references/channel-registry.md`，根据主题动态选择 Obsidian 之外的渠道。
-5. 先输出 `Research Run Plan`。包含推荐深度、研究模式、用户画像摘要、主题类型、核心问题、渠道选择、每个渠道启用或不启用的理由、样本量、写入位置、凭据或访问限制。
-6. 做 Obsidian 内部基线扫描。查 `笔记同步助手`、`03_Resources`、已有 Research Project、主题卡片、规则和模板，确认已有沉淀、证据缺口和重复研究风险。
-7. 做外部发现与筛选。只读取公开或用户授权内容；GitHub 仅读文档、源码、配置、issues 和 discussions，默认不执行第三方代码。
-8. 建立证据矩阵。按“研究问题 × 来源 × 结论 × 证据强度 × 对当前用户的启发 × 扩展阅读”组织。
-9. 写入或更新 Obsidian Research Project。默认输出 `00_研究定义` 到 `05_研究报告`；深度专题可增加 `06_外部渠道研究`、`07_行业案例对照`、`08_最佳实践与应用模板`、`09_更新日志`；只在触发条件满足时建议 `10-12` 学习包文件。
-10. 输出最终摘要。给出研究报告入口、用户画像适配方式、核心结论、关键证据、应用转化、仍需验证、下一步建议和新增渠道候选。
+5. 判断是否启用 `Pre-Research Source Expansion`。当内部输入不足、主题依赖外部生态或用户要求扩源时，先生成候选来源表和筛选建议。
+6. 先输出 `Research Run Plan`。包含推荐深度、研究模式、用户画像摘要、主题类型、核心问题、渠道选择、前置扩源渠道、每个渠道启用或不启用的理由、样本量、写入位置、凭据或访问限制。
+7. 做 Obsidian 内部基线扫描。查 `笔记同步助手`、`03_Resources`、已有 Research Project、主题卡片、规则和模板，确认已有沉淀、证据缺口和重复研究风险。
+8. 做外部发现与筛选。只读取公开或用户授权内容；GitHub 仅读文档、源码、配置、issues 和 discussions，默认不执行第三方代码。
+9. 建立证据矩阵。按“研究问题 × 来源 × 结论 × 证据强度 × 对当前用户的启发 × 扩展阅读”组织。
+10. 写入或更新 Obsidian Research Project。默认输出 `00_研究定义` 到 `05_研究报告`；深度专题可增加 `06_外部渠道研究`、`07_行业案例对照`、`08_最佳实践与应用模板`、`09_更新日志`；只在触发条件满足时建议 `10-12` 学习包文件。
+11. 输出最终摘要。给出研究报告入口、用户画像适配方式、核心结论、关键证据、应用转化、仍需验证、下一步建议和新增渠道候选。
 
 ## L5 Automation Handling
 
@@ -160,6 +195,7 @@ L5 automation 的默认安全边界：
 - Recommended depth: <L1 / L2 / L3 / L4 / L5, with reason>
 - Topic type: <平台能力 / 开源工程 / 产品竞品 / 学术方法 / 政策合规 / 市场趋势 / 其他>
 - Core questions: <按理解型 / 判断型 / 设计型 / 实践型 / 复盘型组织>
+- Pre-research expansion: <是否启用 + 候选渠道 + 预期候选数 + 是否需要授权同步>
 - Channels selected: <渠道 + 启用理由 + 样本量>
 - Channels skipped: <未启用渠道 + 原因>
 - Access needs: <GitHub token / X token / login / paywall / none>
@@ -267,6 +303,7 @@ L5 automation 的默认安全边界：
 - `references/user-context-standards.md`：解析用户画像和 persona-adaptive 输出边界。
 - `references/default-user-profile.md`：本地默认用户画像；仅作为默认配置，不写死主逻辑。
 - `references/learning-pack-standards.md`：轻量系统学习包标准。
+- `references/pre-research-source-expansion.md`：研究前扩源、候选来源筛选和微信公众号/同步渠道边界。
 - `references/channel-selection-rubric.md`：按主题选择渠道。
 - `references/channel-registry.md`：预置渠道库和后续补录位置。
 - `references/source-quality-rules.md`：证据强度、来源筛选、引用和封闭渠道处理规则。

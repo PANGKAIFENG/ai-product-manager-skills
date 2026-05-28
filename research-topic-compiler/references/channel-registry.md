@@ -109,7 +109,11 @@ This registry lists reusable research channels. Add new channels here when the u
 
 | Channel | Best for | Access | Evidence level | Query method | Risks | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 微信公众号文章 | Chinese practitioner essays and product analysis | Public/login | Weak/Medium | Sogou/Web/Obsidian sync | Hard to search, reposts | Prefer original author/source |
+| 微信公众号文章 | Chinese practitioner essays, product analysis, terminology discovery, local practice signals | Public/login | Weak/Medium | Sogou Weixin, Web search, OpenCLI Weixin adapter, authorized API, Obsidian sync | Hard to search, anti-spider, reposts, login friction | Prefer original author/source; use snippets for candidate screening only |
+| 搜狗微信搜索 | Broad discovery of WeChat article candidates by topic | Public/anti-spider | Context/Weak | `weixin.sogou.com/weixin?type=2&query=<topic>` | Redirects may hit anti-spider; metadata can be incomplete | Good for candidate table; do not assume stable full-text retrieval |
+| 第三方公众号 API | Programmatic WeChat article search/detail when user authorizes provider/token | API/paid/login | Context/Weak/Medium | Provider-specific search/detail endpoints | Compliance, freshness, quota, field quality, dependency risk | Record provider, access date, fields, and original URL availability |
+| WeWe RSS / RSSHub 微信源 | Ongoing monitoring of known public accounts | Local/API/login | Context/Weak/Medium | RSS feed by known account | Not broad topic search; may require login/session | Use for L5 watchlists and known-account subscriptions |
+| 微信客户端转发到 Obsidian 同步号 | User-approved ingestion into `笔记同步助手` | User-authorized login | Context | Manual/UI-assisted forwarding to `Obsidian @笔记同步科技` | Side effects, login/phone confirmation, wrong recipient risk | Never silent-send; stop before final send unless current run explicitly authorizes it |
 | 知乎 | Chinese user discussion and expert commentary | Public/login | Weak | Web search | Opinion-heavy | Use as weak signal |
 | 掘金 / CSDN / 博客园 | Chinese developer tutorials and issues | Public | Weak/Medium | Web search | Copy-paste content | Use for implementation pain, not authority |
 | InfoQ / 机器之心 / 量子位 / 36氪 | Chinese tech news and analysis | Public | Medium/Weak | Site/Web search | Media framing | Use for discovery and local context |
