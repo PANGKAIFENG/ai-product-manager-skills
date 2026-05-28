@@ -36,6 +36,8 @@ Record at least:
 - Cross-check social or community claims with official, implementation, or repeated independent evidence.
 - Avoid using search snippets as evidence when the full source is accessible.
 - Mark stale sources when the topic changes quickly.
+- Do not let user persona or application needs upgrade weak evidence into stable conclusions.
+- When applying a conclusion to the user's context, separate the evidence-backed claim from the inferred implication.
 
 ## Closed and Sensitive Sources
 
@@ -58,6 +60,12 @@ Record at least:
 - Use social sources to discover new projects, arguments, authors, launch timing, and user pain.
 - Do not let viral claims drive the report unless stronger evidence supports them.
 - If using X systematically, prefer official API access. Without API access, clearly mark the search as partial.
+
+## Persona and Application Claims
+
+- Label persona-specific takeaways as interpretation when they are inferred from evidence rather than directly stated by sources.
+- Application templates such as PRD snippets, workflows, evals, SOPs, roadmaps, and interface drafts can be generated from synthesis, but they must cite the evidence-backed principles they depend on.
+- If a conclusion is useful for the user's context but supported only by trend or community evidence, mark it as a candidate judgment or experiment, not a stable recommendation.
 
 ## Citation in Reports
 
