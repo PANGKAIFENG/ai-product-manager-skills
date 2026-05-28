@@ -30,19 +30,18 @@
 | 参考项目级 Skill 怎么写 | “给我一个项目 Skill 模板”“项目指南型 Skill 怎么组织” | [`project-guidelines-example`](project-guidelines-example/) | review |
 | 评审、优化一个 Skill | “帮我 review 这个 Skill”“检查这个 SKILL.md” | [`skill-reviewer`](skill-reviewer/) | core |
 | 创建、导入、沉淀新 Skill | “帮我创建一个 Skill”“这个能力要不要沉淀成 Skill” | [`team-skill-creator`](team-skill-creator/) | core |
-| 生成复杂交互式 Web Artifact | “做一个复杂交互页面”“生成 React Artifact” | [`web-artifacts-builder`](web-artifacts-builder/) | keep |
+| 解构复杂概念并生成决策看板 | “帮我解构一个概念”“做行业演进看板” | [`concept-lens-dashboard`](concept-lens-dashboard/) | active |
 
 ## 分类导航
 
 | 分类目录 | 中文分类 | 包含 Skill |
 | --- | --- | --- |
-| [categories/01-product-prd/](categories/01-product-prd/) | 产品与 PRD | `prd-architect`, `prd-review` |
+| [categories/01-product-prd/](categories/01-product-prd/) | 产品与 PRD | `concept-lens-dashboard`, `prd-architect`, `prd-review` |
 | [categories/02-collaboration-thinking/](categories/02-collaboration-thinking/) | 认知与协作 | `ai-collaboration-calibration`, `grill-me` |
 | [categories/03-engineering-practice/](categories/03-engineering-practice/) | 工程实践 | `coding-standards` |
 | [categories/04-architecture-visualization/](categories/04-architecture-visualization/) | 架构图与可视化 | `generate-drawio-diagram` |
 | [categories/05-project-governance/](categories/05-project-governance/) | 项目治理 | `honeycomb-change-proposer`, `project-guidelines-example` |
 | [categories/06-skill-governance/](categories/06-skill-governance/) | Skill 治理 | `skill-reviewer`, `team-skill-creator` |
-| [categories/07-web-artifacts/](categories/07-web-artifacts/) | Web Artifact | `web-artifacts-builder` |
 | [categories/08-research-learning/](categories/08-research-learning/) | 研究学习 | `research-topic-compiler` |
 
 ## 管理原则

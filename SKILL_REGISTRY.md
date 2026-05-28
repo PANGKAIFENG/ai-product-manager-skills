@@ -16,19 +16,19 @@
 
 | 分类目录 | 中文分类 | 适用边界 |
 | --- | --- | --- |
-| `categories/01-product-prd/` | 产品与 PRD | 需求结构化、PRD 起草、PRD 评审和交付准备。 |
+| `categories/01-product-prd/` | 产品与 PRD | 复杂概念解构、需求结构化、PRD 起草、PRD 评审和交付准备。 |
 | `categories/02-collaboration-thinking/` | 认知与协作 | 复杂问题校准、假设挑战、方案压力测试和协作模式选择。 |
 | `categories/03-engineering-practice/` | 工程实践 | 通用编码规范、实现约束和研发质量基线。 |
 | `categories/04-architecture-visualization/` | 架构图与可视化 | 架构图、流程图、系统关系图和可编辑图示资产。 |
 | `categories/05-project-governance/` | 项目治理 | 项目级规范、共享模板、目录治理和上游 proposal。 |
 | `categories/06-skill-governance/` | Skill 治理 | Skill 创建、审查、版本维护、触发边界和质量评估。 |
-| `categories/07-web-artifacts/` | Web Artifact | 复杂交互式前端 Artifact 的生成与打包。 |
 | `categories/08-research-learning/` | 研究学习 | 专题研究、系统学习、多渠道证据、Obsidian Research Project 和研究报告。 |
 
 ## 中文检索表
 
 | Skill | 中文名 | 你可以这样说 | 适合什么时候用 | 不适合什么时候用 | 状态 |
 | --- | --- | --- | --- | --- | --- |
+| `concept-lens-dashboard` | 概念透镜看板 / 高阶概念解构 | “帮我解构一个概念”“做行业演进看板”“PM 技术评审提问脚本” | 冷启动或基于材料研究复杂概念、行业演进、技术/商业范式断代，输出带来源的 PM 决策矩阵和 Tailwind + Alpine.js HTML 看板。 | 一句话百科解释、无需来源引用的轻量回答、长期运行的 SaaS 管理后台或通用前端应用。 | active |
 | `prd-architect` | PRD 架构师 / 需求文档起草 | “帮我写 PRD”“帮我选 PRD 模板”“把这个需求整理成 PRD” | 从想法、脑暴或需求草稿进入 PRD 结构；需要判断 `PRD-lite`、`PRD-standard`、`PRD-ai-native` 和文档成熟度。 | 已有完整 PRD 要评审；直接编码；单纯画 UI。 | active |
 | `prd-review` | PRD 评审 / 需求评审 | “帮我审 PRD”“从研发测试视角挑问题”“这个需求文档能不能交付开发” | 已有 PRD/handoff，需要找阻断项、冲突、不可实现点、不可测试点，并给修订草案。 | 从零写 PRD；只做语言润色。 | active |
 | `ai-collaboration-calibration` | 协作校准 / 认知校准 | “先别执行，帮我看清问题”“挑战我的假设”“这个方案是不是想错了” | 复杂问题进入执行前，先校准问题定义、领域定位、隐藏假设和方案裂缝。 | 翻译、摘要、格式转换、明确的小改动。 | active |
@@ -40,12 +40,12 @@
 | `project-guidelines-example` | 项目指南 Skill 示例 / 项目专属 Skill 模板 | “给我一个项目 Skill 模板”“项目指南型 Skill 怎么组织” | 参考项目级 Skill 如何表达架构、目录、代码模式、测试和部署约束。 | 直接作为真实项目规范套用；必须先替换示例事实。 | review |
 | `skill-reviewer` | Skill 评审器 / Skill 审计 | “帮我 review 这个 Skill”“检查这个 SKILL.md”“优化 Skill 触发描述” | 评审 Skill 触发边界、输入输出、工具边界、资源组织、评估设计和复用风险。 | 创建新 Skill；创建或导入应使用 `team-skill-creator`。 | core |
 | `team-skill-creator` | 团队 Skill 创建器 / 能力沉淀判断 | “帮我创建一个 Skill”“这个能力要不要沉淀成 Skill”“导入这个 GitHub Skill” | 新建、导入、合并、评估一个可复用能力是否应成为 Skill，并按团队标准验证。 | 已有 Skill 只需要评审；一次性任务。 | core |
-| `web-artifacts-builder` | Web Artifact 构建器 / 复杂交互页面 | “做一个复杂交互页面”“生成 React Artifact”“打包成单文件 HTML” | 多组件、状态管理、路由、shadcn/ui、Tailwind CSS、React 18、单文件 HTML 打包。 | 简单 HTML 片段、静态单页、普通网页开发。 | keep |
 
 ## 推荐白名单
 
 当前建议优先加入 Codex/Claude 常用白名单：
 
+- `concept-lens-dashboard`
 - `prd-architect`
 - `prd-review`
 - `ai-collaboration-calibration`
@@ -59,7 +59,6 @@
 
 - `coding-standards`
 - `honeycomb-change-proposer`
-- `web-artifacts-builder`
 
 建议继续评审：
 
