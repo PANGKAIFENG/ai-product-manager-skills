@@ -56,6 +56,8 @@ python3 /Users/linctex/.codex/skills/.system/skill-creator/scripts/quick_validat
 python3 -B /Users/linctex/.codex/skills/skill-reviewer/scripts/check_skill.py /Users/linctex/.codex/skills/<skill-name>
 ```
 
+9. 验证通过后默认发布到 GitHub 标准源：只暂存本次 Skill 相关文件和必要索引文件，提交到当前分支，推送到 `origin/main` 或配置的上游分支，并用远端树验证新 Skill、分类和 registry 已出现在 GitHub 默认分支。除非用户明确要求“仅本地草稿”或 push 被权限/网络/冲突阻塞，否则不要把创建任务标记为完成。
+
 ## Decision Gates
 
 Prefer a Skill when the task is repeated, has stable failure modes, needs domain or team context, benefits from bundled resources, and can be evaluated with smoke prompts or deterministic checks.
@@ -107,6 +109,20 @@ When creating, importing, or updating a Skill:
 7. For Multica, prefer the application's supported import/list flow or a confirmed `multica-skill` directory over copying into an unknown database-backed workspace.
 8. Do not silently overwrite app/workspace/runtime Skills with the same name. First compare the current Multica copy, the GitHub catalog copy, and the Codex/Claude copies, then choose `new`, `merge-into-existing`, `replace-with-source`, or `do-not-import`.
 9. Use `skillshare sync` only as an optional implementation detail when the user explicitly wants to use it or when the target paths are known to be managed by Skillshare. Do not present it as the required default path.
+
+## GitHub Publish Gate
+
+After a confirmed Skill create, import, merge, or update passes validation, publish it by default:
+
+1. Re-check `git status --short --branch`, `git rev-list --left-right --count <upstream>...HEAD`, and the configured remote before staging.
+2. Stage only the files created or modified for this Skill plus required catalog files such as `README.md`, `SKILL_REGISTRY.md`, `categories/README.md`, and the relevant category README. Never use `git add .` in a dirty catalog checkout.
+3. Run deterministic checks before commit: system `quick_validate.py`, team `skill-reviewer/scripts/check_skill.py`, and `git diff --cached --check`.
+4. Commit with a concise message such as `Add <skill-name> skill`, `Update <skill-name> skill`, or `Import <skill-name> skill`.
+5. Push to `origin/main` or the configured upstream branch.
+6. Fetch and verify the remote default branch contains the Skill directory and all required catalog entries, for example with `git ls-tree -r --name-only origin/main`.
+7. If push fails because of authentication, remote rejection, network failure, protected branch policy, or conflicting local changes, stop and report the exact blocker, staged/committed state, and the command needed to finish. Do not silently downgrade to local-only completion.
+
+Only skip this gate when the user explicitly asks for a local draft, private-only experiment, or no-push mode. In that case, the final answer must say the Skill is not published to GitHub and name the exact follow-up required.
 
 ## Context Intake
 
@@ -167,6 +183,7 @@ After creation, use:
 - Category/status: <category and catalog status applied>
 - Commands run: <init, validate, reviewer checks>
 - Validation result: <pass/fail with key output>
+- GitHub publish: <commit hash, push target, remote verification result, or explicit no-push reason>
 - Remaining work: <missing references, scripts, evals, review items>
 - Next regression: <real prompts or sample artifacts>
 ```
@@ -177,8 +194,8 @@ A team Skill creation task is complete only when one of these is true:
 
 - The request is classified as not needing a Skill, with a concrete alternative.
 - A `Creation Decision` is delivered and awaits confirmation.
-- A confirmed Skill is created, placeholders are removed, system validation passes, team checker results are reported, and remaining review or regression work is explicit.
-- An imported Skill is either merged, rejected with reason, or installed into canonical Skillshare source with required resources, provenance, category/status decision, validation results, and sync plan.
+- A confirmed Skill is created, placeholders are removed, system validation passes, team checker results are reported, relevant files are committed and pushed to the GitHub default branch, remote verification passes, and remaining review or regression work is explicit.
+- An imported Skill is either rejected with reason, or merged/installed with required resources, provenance, category/status decision, validation results, GitHub commit/push, remote verification, and sync plan.
 - GitHub catalog, `multica-skill`, and Codex/Claude distribution work is either completed or explicitly left as a named follow-up with the exact target path/API/UI path and reason.
 
 ## Resource Guide
