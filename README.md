@@ -2,7 +2,7 @@
 
 这是我用于统一管理个人常用 Agent Skills 的仓库。目标不是收集越多越好，而是让常用 Skill 能被中文自然唤起、能看懂用途、能版本化维护。
 
-当前仓库采用 `skillshare` 兼容结构：每个 Skill 保持为根目录下的独立文件夹，避免因为物理分组目录影响安装、同步和触发名称。分类、中文名、唤起语、状态和用途通过 [SKILL_REGISTRY.md](SKILL_REGISTRY.md) 和 [categories/](categories/) 维护。
+当前仓库是 GitHub 管理的 Skill catalog，同时保持 `skillshare` 兼容结构：每个 Skill 保持为根目录下的独立文件夹，避免因为物理分组目录影响安装、同步和触发名称。分类、中文名、唤起语、状态和用途通过 [SKILL_REGISTRY.md](SKILL_REGISTRY.md) 和 [categories/](categories/) 维护。
 
 ## 为什么名称仍保留英文
 
@@ -22,6 +22,7 @@
 | 写 PRD、选 PRD 模板 | “帮我写 PRD”“这个需求该用哪种 PRD” | [`prd-architect`](prd-architect/) | active |
 | 审 PRD、挑需求缺口 | “帮我审 PRD”“从研发测试视角挑问题” | [`prd-review`](prd-review/) | active |
 | 复杂问题先别急着执行 | “先别执行，帮我看清问题”“挑战我的假设” | [`ai-collaboration-calibration`](ai-collaboration-calibration/) | active |
+| 系统研究主题、整理学习报告 | “系统研究这个主题”“整理到 Obsidian”“做一个深度专题” | [`research-topic-compiler`](research-topic-compiler/) | active |
 | 拷问方案、压力测试设计 | “拷问我的方案”“这个方案哪里会翻车” | [`grill-me`](grill-me/) | active |
 | 按工程规范写或审代码 | “按编码规范实现”“检查代码有没有工程坏味道” | [`coding-standards`](coding-standards/) | keep |
 | 生成可编辑架构图/流程图 | “画一张架构图”“生成 Draw.io” | [`generate-drawio-diagram`](generate-drawio-diagram/) | active |
@@ -42,11 +43,12 @@
 | [categories/05-project-governance/](categories/05-project-governance/) | 项目治理 | `honeycomb-change-proposer`, `project-guidelines-example` |
 | [categories/06-skill-governance/](categories/06-skill-governance/) | Skill 治理 | `skill-reviewer`, `team-skill-creator` |
 | [categories/07-web-artifacts/](categories/07-web-artifacts/) | Web Artifact | `web-artifacts-builder` |
+| [categories/08-research-learning/](categories/08-research-learning/) | 研究学习 | `research-topic-compiler` |
 
 ## 管理原则
 
-- GitHub 仓库是精选 Skill 的版本库，不是本机所有 Skill 的原样倾倒。
-- `skillshare` 负责把这些 Skill 同步到 Codex、Claude 等目标工具。
+- GitHub 线上仓库是精选 Skill 的标准源，不是本机所有 Skill 的原样倾倒。
+- `skillshare` 可以作为把这些 Skill 分发到 Codex、Claude 等目标工具的实现方式，但不是唯一同步机制。
 - 常用/收藏 Skill 应通过 `skillshare target include` 白名单控制，而不是删除低频 Skill。
 - 含公司流程、业务数据、客户数据或内部系统语义的 Skill 默认标记为 `private-only`。
 - 发布到 ClawHub 前必须单独检查许可证、敏感信息、适用边界和 README 说明。

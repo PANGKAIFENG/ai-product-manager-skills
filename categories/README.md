@@ -11,3 +11,4 @@
 | [05-project-governance](05-project-governance/) | 项目治理 | Honeycomb、上游提案、项目指南、模板治理 | `honeycomb-change-proposer`, `project-guidelines-example` |
 | [06-skill-governance](06-skill-governance/) | Skill 治理 | 创建 Skill、评审 Skill、触发描述、能力沉淀 | `skill-reviewer`, `team-skill-creator` |
 | [07-web-artifacts](07-web-artifacts/) | Web Artifact | 复杂交互页面、React Artifact、shadcn/ui、单文件 HTML | `web-artifacts-builder` |
+| [08-research-learning](08-research-learning/) | 研究学习 | 专题研究、系统学习、Obsidian、证据矩阵、研究报告 | `research-topic-compiler` |

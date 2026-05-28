@@ -1,0 +1,72 @@
+# Source Quality Rules
+
+Use these rules when building the evidence matrix and writing conclusions.
+
+## Evidence Strength
+
+| Level | Source type | Can support |
+| --- | --- | --- |
+| A | Official docs, standards, regulator docs, source code, release notes, filings, reproducible benchmarks | Core definitions, mechanisms, constraints, timelines |
+| B | Maintainer issues/discussions, engineering blogs, SDK examples, package metadata, credible technical reports | Implementation patterns, adoption friction, best practices |
+| C | Reputable secondary analysis, high-quality tutorials, analyst reports, structured reviews | Market interpretation, learning path, product comparison |
+| D | Community posts, X, Reddit, HN, forums, newsletters, videos | Trend signals, pain discovery, hypotheses |
+| E | Unverified claims, reposts, SEO pages, anonymous screenshots | Discovery only; do not use for core conclusions |
+
+Label each important claim with its strongest supporting evidence level.
+
+## Source Metadata
+
+Record at least:
+
+- Title or repository name.
+- Author, company, maintainer, or community.
+- URL or local path.
+- Access date.
+- Publish or update date when available.
+- Channel.
+- Evidence level.
+- Why it was included.
+- What claim it supports.
+
+## Screening Rules
+
+- Prefer primary sources for definitions and platform behavior.
+- Prefer implementation evidence for engineering claims.
+- Prefer recent sources when product behavior, APIs, pricing, law, or market state can change.
+- Cross-check social or community claims with official, implementation, or repeated independent evidence.
+- Avoid using search snippets as evidence when the full source is accessible.
+- Mark stale sources when the topic changes quickly.
+
+## Closed and Sensitive Sources
+
+- Use only content the user is authorized to access.
+- Do not bypass paywalls, login flows, API limits, or robots restrictions.
+- Do not put private customer data, workspace content, or confidential excerpts into public-facing files.
+- If a private source shaped the conclusion, summarize at the right abstraction level and mark it as private evidence.
+- If exact citation is unsafe, cite the artifact class and access date, for example: `Private customer-support export, reviewed 2026-05-28`.
+
+## GitHub Rules
+
+- Default to reading docs, examples, issues, discussions, config, release notes, and source structure.
+- Do not run third-party code unless the user explicitly asks and the risk is acceptable.
+- Check recency with commits/releases when maintainability matters.
+- Stars and forks are weak adoption signals; combine them with issue activity, release cadence, ecosystem usage, and documentation quality.
+
+## X and Social Rules
+
+- Treat X, Reddit, HN, Discord, Slack, and comments as weak evidence unless confirmed elsewhere.
+- Use social sources to discover new projects, arguments, authors, launch timing, and user pain.
+- Do not let viral claims drive the report unless stronger evidence supports them.
+- If using X systematically, prefer official API access. Without API access, clearly mark the search as partial.
+
+## Citation in Reports
+
+Use short citations inside `05_研究报告`:
+
+```markdown
+### 关键依据
+
+- [Source title](path-or-url) - Evidence A/B/C; supports <claim>.
+```
+
+Use `02_证据与卡片` for fuller notes, source comparison, and source-by-source detail.
