@@ -1,6 +1,6 @@
 ---
 name: agent-trace-diagnoser
-description: "Agent trace 诊断器：当用户提供 trace、日志 JSON、agent 执行记录或说“看下这个日志/trace，定位根因”时使用；输出核心根因、trace 证据链、可能对应的文件/行和修复建议，默认只读分析，不修改文件。"
+description: "Agent trace 诊断器：当用户提供 trace、日志 JSON、agent 执行记录或说“看下这个日志/trace，定位根因”时使用；必须用中文输出核心根因、trace 证据链、可能对应的文件/行和修复建议，默认只读分析，不修改文件。"
 ---
 
 # Agent Trace Diagnoser
@@ -16,37 +16,39 @@ description: "Agent trace 诊断器：当用户提供 trace、日志 JSON、agen
 
 ## Overview
 
-Use this Skill to diagnose agent execution traces without jumping straight to code edits. The goal is to explain the core root cause, distinguish primary failures from fallback noise, map the likely bug to concrete files and line ranges when a repository is available, and recommend fixes.
+使用这个 Skill 诊断 agent 执行 trace，而不是直接进入代码修改。目标是说明核心根因，区分主链路失败和 fallback 噪声，在仓库可用时映射到具体文件/行，并给出修复建议。
 
-Default mode is read-only. Do not modify files unless the user explicitly asks for implementation after the diagnosis.
+默认模式是只读分析。除非用户在诊断后明确要求实现修复，否则不要修改文件。
+
+最终诊断内容必须使用中文输出；只有用户明确要求英文或其它语言时，才切换输出语言。
 
 ## Workflow
 
-1. Confirm the input artifact and user constraint.
-   - Accept trace JSON files, copied logs, terminal excerpts, tool-call transcripts, network traces, or screenshots converted to text.
-   - If the user says "不要修改文件", "只说明问题", or similar, do not edit or generate repo changes.
-   - If a trace file path is provided, inspect only enough of the file to reconstruct the event sequence.
-2. Reconstruct the execution timeline.
-   - Identify user intent, selected capability or skill, first failing step, retries, fallback tools, terminal errors, and final user-visible failure.
-   - Separate direct causes from downstream symptoms.
-   - Treat the earliest failed intended path as the primary root-cause candidate unless later evidence disproves it.
-3. Classify failure layers.
-   - Planning or routing: wrong skill/tool chosen, wrong capability boundary, missing policy guardrail.
-   - Skill/tool implementation: bad input handling, parser failure, dependency issue, path bug, unsupported media, fragile fallback.
-   - Environment: permissions, missing binaries, read-only directories, network limits, temp path ownership, credentials.
-   - Output policy: misleading summary, hidden failure, unsafe next action, omitted limitation.
-4. Build an evidence chain.
-   - Quote or paraphrase exact trace facts: command, status code, exception code, file URL, content type, size, fallback transition, missing dependency.
-   - Avoid over-weighting the final error if it happened after a fallback.
-   - Mark facts as `confirmed`, `inferred`, or `needs verification`.
-5. Map to possible code locations.
-   - Search the active repo for unique strings from the trace: skill name, CLI path, error code, fallback command, function names, config keys, and output messages.
-   - Report exact file and line only when read in the current turn.
-   - If the runtime path differs from the local repo, label the mapping as "likely source location" and state the path mismatch.
-6. Give repair guidance without editing.
-   - Recommend the smallest conceptual fix first.
-   - Include test or eval coverage that would prevent regression.
-   - Mention operational guardrails when needed, such as avoiding `webfetch` for binary PDFs or avoiding runtime builds in read-only skill installs.
+1. 确认输入材料和用户约束。
+   - 接收 trace JSON、复制的日志、终端片段、工具调用记录、网络 trace，或从截图转换出的文本。
+   - 如果用户说“不要修改文件”“只说明问题”等，只做只读分析，不生成代码改动。
+   - 如果用户提供 trace 文件路径，只读取足够重建事件顺序的内容。
+2. 重建执行时间线。
+   - 识别用户意图、被选中的 capability/skill、第一个失败步骤、重试、fallback 工具、终端错误和最终用户可见失败。
+   - 分离直接原因和下游症状。
+   - 除非后续证据推翻，否则把“预期主链路里最早失败的步骤”作为第一根因候选。
+3. 分类失败层级。
+   - 规划或路由：选错 skill/tool、能力边界错误、缺少 policy guardrail。
+   - Skill/tool 实现：输入处理错误、解析失败、依赖问题、路径问题、不支持的媒体、脆弱 fallback。
+   - 环境：权限、缺少二进制、只读目录、网络限制、临时目录归属、凭证。
+   - 输出策略：误导性总结、隐藏失败、不安全下一步、遗漏限制说明。
+4. 建立证据链。
+   - 引用或转述 trace 中的精确事实：命令、状态码、异常码、文件 URL、content type、大小、fallback 转换、缺少依赖。
+   - 如果最终错误发生在 fallback 之后，不要把最终错误过度放大成主因。
+   - 每条证据标记为`已确认`、`推断`或`待验证`。
+5. 映射可能的代码位置。
+   - 在当前仓库中搜索 trace 里的唯一字符串：skill 名、CLI 入口、错误码、fallback 命令、函数名、配置键、输出消息。
+   - 只有当前轮实际读过代码，才报告精确文件和行号。
+   - 如果 runtime 路径和本地仓库路径不同，标记为“可能源码位置”，并说明路径不一致。
+6. 给出不改文件的修复建议。
+   - 先推荐最小概念修复。
+   - 包含能防止回归的测试或 eval。
+   - 必要时补充运行 guardrail，例如不要用 `webfetch` 读取二进制 PDF，或不要在只读 skill 安装目录里运行构建。
 
 ## Required Checks
 
@@ -56,11 +58,11 @@ Use `references/output-template.md` for the final structure unless the user requ
 
 Before finalizing, verify that the answer includes:
 
-- The core root cause in one or two sentences.
-- Why later errors are symptoms or contributing factors.
-- Trace evidence in chronological order.
-- Possible file and line locations, with confidence.
-- Concrete fix suggestions and regression checks.
+- 用中文写出一到两句话的核心根因。
+- 说明为什么后续错误只是症状或放大因素。
+- 按时间顺序列出 trace 证据。
+- 给出可能的文件和行号，并标注置信度。
+- 给出具体修复建议和回归验证。
 
 ## Safety And Side Effects
 
@@ -72,7 +74,7 @@ Before finalizing, verify that the answer includes:
 
 ## Output Contract
 
-Final answers should be in Chinese by default when the user is writing Chinese.
+最终诊断回答必须使用中文，除非用户明确要求英文或其它语言。trace 原文、命令、错误码、文件路径、函数名和代码标识可以保留原文，不需要翻译。
 
 Use this order:
 
@@ -83,15 +85,15 @@ Use this order:
 5. 修复建议
 6. 建议补的回归验证
 
-Keep the answer concise, but do not omit file/line candidates when the repo is available.
+保持简洁，但仓库可用时不要省略文件/行候选。
 
 ## Definition Of Done
 
-- The primary root cause is separated from fallback symptoms.
-- The trace timeline is clear enough for another engineer to reproduce the reasoning.
-- File/line candidates are either confirmed from local code or explicitly marked as inferred.
-- Fix recommendations are specific and testable.
-- No file edits were made unless explicitly requested.
+- 主因和 fallback 症状被明确分开。
+- trace 时间线足够清楚，其他工程师能复核推理。
+- 文件/行候选要么来自当前读取的本地代码，要么明确标注为推断。
+- 修复建议具体、可测试。
+- 除非用户明确要求，否则没有修改文件。
 
 ## Evaluation
 
