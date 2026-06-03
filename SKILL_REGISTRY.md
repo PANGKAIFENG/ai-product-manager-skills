@@ -18,7 +18,7 @@
 | --- | --- | --- |
 | `categories/01-product-prd/` | 产品与 PRD | 复杂概念解构、需求结构化、PRD 起草、PRD 评审和交付准备。 |
 | `categories/02-collaboration-thinking/` | 认知与协作 | 复杂问题校准、假设挑战、方案压力测试和协作模式选择。 |
-| `categories/03-engineering-practice/` | 工程实践 | 通用编码规范、实现约束和研发质量基线。 |
+| `categories/03-engineering-practice/` | 工程实践 | 通用编码规范、问题诊断、实现约束和研发质量基线。 |
 | `categories/04-architecture-visualization/` | 架构图与可视化 | 架构图、流程图、系统关系图和可编辑图示资产。 |
 | `categories/05-project-governance/` | 项目治理 | 项目级规范、共享模板、目录治理和上游 proposal。 |
 | `categories/06-skill-governance/` | Skill 治理 | Skill 创建、审查、版本维护、触发边界和质量评估。 |
@@ -34,6 +34,7 @@
 | `ai-collaboration-calibration` | 协作校准 / 认知校准 | “先别执行，帮我看清问题”“挑战我的假设”“这个方案是不是想错了” | 复杂问题进入执行前，先校准问题定义、领域定位、隐藏假设和方案裂缝。 | 翻译、摘要、格式转换、明确的小改动。 | active |
 | `research-topic-compiler` | 专题研究编译器 / 系统学习研究助手 | “系统研究这个主题”“整理到 Obsidian”“做一个深度专题”“研究行业最佳实践” | 多渠道研究主题、动态选择渠道、生成证据矩阵、Research Project 和 `05_研究报告`。 | 创建 Skill、评审 Skill、普通即时搜索、一次性摘要。 | active |
 | `grill-me` | 方案拷问 / 压力测试 | “拷问我的方案”“压力测试这个设计”“这个方案哪里会翻车” | 已有方案但担心盲点，需要一问一答澄清依赖、分支、取舍和失败模式。 | 直接写最终方案；泛泛总结；不希望互动追问。 | active |
+| `agent-trace-diagnoser` | Agent trace 诊断器 / 日志根因定位 | “看下这个 trace”“根据日志定位根因”“只说明问题不要改文件” | 从 agent trace、日志 JSON、执行记录和工具调用序列中定位核心根因、证据链、可能文件/行和修复建议。 | 直接修复代码、普通代码解释、没有日志证据的新功能设计。 | active |
 | `coding-standards` | 编码规范 / 工程规范 | “按编码规范实现”“帮我检查代码规范”“这个实现有没有工程坏味道” | TypeScript、JavaScript、React、Node.js 的实现约束、代码评审、重构建议和质量基线。 | 深度框架专用规则或业务专属规范；这类应沉淀为项目 Skill。 | keep |
 | `generate-drawio-diagram` | Draw.io 图示生成器 / 架构图流程图 | “画一张架构图”“生成 Draw.io”“输出 .drawio 文件” | 需要可在 Draw.io、VSCode Draw.io 插件或 diagrams.net 中继续编辑的架构图/流程图。 | 只要不可编辑 PNG、纯 Mermaid 图或视觉设计稿。 | active |
 | `honeycomb-change-proposer` | Honeycomb 变更提案 / 上游 proposal | “整理成 Honeycomb 上游提案”“这个模板问题该不该回上游” | 共享模板、managed path、安装包或本地 override 出现问题，需要证据化、归因并沉淀上游建议。 | 纯项目内 PRD、纯目录整理、未经确认直接修改上游仓库。 | keep |
@@ -51,6 +52,7 @@
 - `ai-collaboration-calibration`
 - `research-topic-compiler`
 - `grill-me`
+- `agent-trace-diagnoser`
 - `generate-drawio-diagram`
 - `skill-reviewer`
 - `team-skill-creator`
