@@ -40,7 +40,11 @@ python3 <this-skill>/scripts/inspect_existing_skills.py --name "<candidate-name>
 ```
 
 3. 判断最佳实现形态。对非平凡或模糊请求，读取 `references/creation-rubric.md`。
-4. 为候选 Skill 选择分类和发布状态。优先复用 GitHub Skill 仓库 `SKILL_REGISTRY.md` 里的分类；需要新分类时，说明为什么现有分类不够，并把 `categories/README.md`、对应分类 README 和 registry 更新纳入计划。
+4. **认知类 Skill 调研门（新增）**：如果候选 Skill 的核心价值来自「封装一套认知/协作/问题解决方法论」，在写 Creation Decision 之前，先做一轮领域方法论调研。判断标准：Skill 的 workflow 主体是「AI 如何思考、如何追问、如何判断」而不是「AI 如何操作工具或执行步骤」。
+   - 调研内容：该领域有哪些被验证的框架（有实证支撑 vs 流行但缺乏证据）、常见失败模式及其防御机制、AI 协作场景下哪些方法可操作。
+   - 调研完成后，把关键方法论结论写进 Creation Decision 的 Resource Plan，并在生成 reference 文件时直接体现，而不是事后补充。
+   - 跳过条件：技术操作类 Skill（如 git workflow、代码格式化、文件操作）不需要调研，其方法论已隐含在领域规范里。
+5. 为候选 Skill 选择分类和发布状态。优先复用 GitHub Skill 仓库 `SKILL_REGISTRY.md` 里的分类；需要新分类时，说明为什么现有分类不够，并把 `categories/README.md`、对应分类 README 和 registry 更新纳入计划。
 5. 如果缺少关键上下文，最多问 5 个具体问题。不要询问可以从本地文件中发现的信息。
 6. 写文件前先输出 `Creation Decision`。包含推荐形态、是否创建或导入 Skill、触发示例、非触发示例、分类归属、发布状态、资源计划、eval 清单、风险和需要的明确确认。对导入候选，还要包含来源候选、最佳基底、合并决策、借鉴点、来源记录和安装/同步计划。
 7. 只有用户明确确认后才创建 Skill。使用：
