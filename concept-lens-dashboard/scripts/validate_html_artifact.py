@@ -13,6 +13,7 @@ REQUIRED_SNIPPETS = {
     "Alpine.js CDN": "alpinejs",
     "Alpine data binding": "x-data",
     "Concept Lens marker": "data-concept-lens",
+    "Concept lineage marker": "data-concept-lineage",
     "Stage tabs marker": "data-stage-tabs",
     "Debt detector marker": "data-debt-detector",
     "Sources marker": "data-sources",

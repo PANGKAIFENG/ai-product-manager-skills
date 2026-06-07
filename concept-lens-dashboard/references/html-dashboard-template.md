@@ -19,6 +19,10 @@ The generated file should have this shape:
     <!-- Essence statement and concept metadata -->
   </section>
 
+  <section data-concept-lineage>
+    <!-- Origin context, original use, semantic shifts, and current drift -->
+  </section>
+
   <nav data-stage-tabs>
     <!-- Timeline or tab buttons bound with Alpine -->
   </nav>
@@ -42,8 +46,15 @@ The generated file should have this shape:
 Page shell:
 
 - The first viewport should feel like a decision dashboard, not a marketing landing page.
-- Show the concept essence, confidence/source status, and stage navigation early.
+- Show the concept essence, confidence/source status, lineage signal, and stage navigation early.
 - Keep the page width constrained with a stable max-width and predictable gutters.
+
+Concept lineage:
+
+- Show origin context, original problem, original users or use case, major semantic shifts, and current usage drift.
+- Distinguish sourced history from inference or uncertain origin claims.
+- Keep lineage concise enough to orient the stage matrix; do not turn it into a full chronology article.
+- Make it visibly separate from the stage tabs so readers know it is the calibration layer behind the matrix.
 
 Stage navigation:
 

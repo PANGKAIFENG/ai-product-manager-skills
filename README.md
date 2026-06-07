@@ -30,7 +30,7 @@
 | 参考项目级 Skill 怎么写 | “给我一个项目 Skill 模板”“项目指南型 Skill 怎么组织” | [`project-guidelines-example`](project-guidelines-example/) | review |
 | 评审、优化一个 Skill | “帮我 review 这个 Skill”“检查这个 SKILL.md” | [`skill-reviewer`](skill-reviewer/) | core |
 | 创建、导入、沉淀新 Skill | “帮我创建一个 Skill”“这个能力要不要沉淀成 Skill” | [`team-skill-creator`](team-skill-creator/) | core |
-| 解构复杂概念并生成决策看板 | “帮我解构一个概念”“做行业演进看板” | [`concept-lens-dashboard`](concept-lens-dashboard/) | active |
+| 追溯概念源流并生成决策看板 | “帮我解构一个概念”“做行业演进看板” | [`concept-lens-dashboard`](concept-lens-dashboard/) | active |
 
 ## 分类导航
 

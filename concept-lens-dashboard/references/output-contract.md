@@ -17,10 +17,11 @@ Use lowercase ASCII slugs for folder names. Keep the visible concept title in Ch
 `summary.md` should include:
 
 1. Essence statement.
-2. Source-backed evolution matrix.
-3. Debt detector table.
-4. PM review scripts.
-5. Sources and assumptions.
+2. Concept lineage: origin context, original use, original contradiction, major semantic shifts, and current semantic drift.
+3. Source-backed evolution matrix.
+4. Debt detector table.
+5. PM review scripts.
+6. Sources and assumptions.
 
 The final chat response can summarize the same content briefly, but the file should contain the durable artifact.
 
@@ -32,6 +33,7 @@ The final chat response can summarize the same content briefly, but the file sho
 - Use Tailwind CSS CDN and Alpine.js CDN.
 - Store all dashboard data inline in the file.
 - Include no backend calls and no build step.
+- Include a concept lineage section covering origin, original use, semantic shifts, and current drift.
 - Include a timeline or tab navigation for stages.
 - Include copy buttons for review questions.
 - Include a debt detector section.
@@ -43,6 +45,7 @@ Required markers:
 
 ```html
 data-concept-lens
+data-concept-lineage
 data-stage-tabs
 data-debt-detector
 data-sources
@@ -57,6 +60,7 @@ Report:
 - Visual preflight result.
 - Browser verification result or limitation.
 - Source links used.
+- Key lineage findings: origin, original use, and current semantic drift.
 - Key assumptions and confidence gaps.
 
 Do not paste the full HTML into the final chat response unless the user explicitly asks.
