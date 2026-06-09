@@ -43,23 +43,23 @@ python3 <this-skill>/scripts/inspect_existing_skills.py --name "<candidate-name>
    - 调研内容：该领域有哪些被验证的框架（有实证支撑 vs 流行但缺乏证据）、常见失败模式及其防御机制、AI 协作场景下哪些方法可操作。
    - 调研完成后，把关键方法论结论写进 Creation Decision 的 Resource Plan，并在生成 reference 文件时直接体现，而不是事后补充。
    - 跳过条件：技术操作类 Skill（如 git workflow、代码格式化、文件操作）不需要调研，其方法论已隐含在领域规范里。
-5. 为候选 Skill 选择分类和发布状态。优先复用 GitHub Skill 仓库 `SKILL_REGISTRY.md` 里的分类；需要新分类时，说明为什么现有分类不够，并把 `categories/README.md`、对应分类 README 和 registry 更新纳入计划。
-5. 如果缺少关键上下文，最多问 5 个具体问题。不要询问可以从本地文件中发现的信息。
-6. 写文件前先输出 `Creation Decision`。包含推荐形态、是否创建或导入 Skill、触发示例、非触发示例、分类归属、发布状态、资源计划、eval 清单、风险和需要的明确确认。对导入候选，还要包含来源候选、最佳基底、合并决策、借鉴点、来源记录和安装/同步计划。
-7. 只有用户明确确认后才创建 Skill。使用：
+5. 为候选 Skill 选择分类和发布状态，并写出 `Catalog Update Plan`。优先复用 GitHub Skill 仓库 `SKILL_REGISTRY.md` 里的分类；需要新分类时，说明为什么现有分类不够，选择下一个两位编号，避免重排既有分类。
+6. 如果缺少关键上下文，最多问 5 个具体问题。不要询问可以从本地文件中发现的信息。
+7. 写文件前先输出 `Creation Decision`。包含推荐形态、是否创建或导入 Skill、触发示例、非触发示例、分类归属、发布状态、catalog 更新计划、资源计划、eval 清单、风险和需要的明确确认。对导入候选，还要包含来源候选、最佳基底、合并决策、借鉴点、来源记录和安装/同步计划。
+8. 只有用户明确确认后才创建 Skill。使用：
 
 ```bash
 python3 <this-skill>/scripts/create_team_skill.py --name "<skill-name>" --description "<trigger description>" --resources scripts,references --path /Users/linctex/.codex/skills
 ```
 
-8. 替换脚手架占位符，运行两类校验，并在宣布团队级或高价值 Skill ready 前用 `skill-reviewer` 做最终评审：
+9. 替换脚手架占位符，同步更新 catalog 文件，运行两类校验，并在宣布团队级或高价值 Skill ready 前用 `skill-reviewer` 做最终评审：
 
 ```bash
 python3 /Users/linctex/.codex/skills/.system/skill-creator/scripts/quick_validate.py /Users/linctex/.codex/skills/<skill-name>
 python3 -B /Users/linctex/.codex/skills/skill-reviewer/scripts/check_skill.py /Users/linctex/.codex/skills/<skill-name>
 ```
 
-9. 验证通过后默认发布到 GitHub 标准源：只暂存本次 Skill 相关文件和必要索引文件，提交到当前分支，推送到 `origin/main` 或配置的上游分支，并用远端树验证新 Skill、分类和 registry 已出现在 GitHub 默认分支。除非用户明确要求“仅本地草稿”或 push 被权限/网络/冲突阻塞，否则不要把创建任务标记为完成。
+10. 验证通过后默认发布到 GitHub 标准源：只暂存本次 Skill 相关文件和必要索引文件，提交到当前分支，推送到 `origin/main` 或配置的上游分支，并用远端树验证新 Skill、分类、routing 和 registry 已出现在 GitHub 默认分支。除非用户明确要求“仅本地草稿”或 push 被权限/网络/冲突阻塞，否则不要把创建任务标记为完成。
 
 ## Decision Gates
 
@@ -113,16 +113,32 @@ When creating, importing, or updating a Skill:
 8. Do not silently overwrite app/workspace/runtime Skills with the same name. First compare the current Multica copy, the GitHub catalog copy, and the Codex/Claude copies, then choose `new`, `merge-into-existing`, `replace-with-source`, or `do-not-import`.
 9. Use `skillshare sync` only as an optional implementation detail when the user explicitly wants to use it or when the target paths are known to be managed by Skillshare. Do not present it as the required default path.
 
+## Catalog Update Checklist
+
+When adding a new Skill to `PANGKAIFENG/skill`, update these surfaces or explicitly mark them `not applicable` in the `Creation Decision` and `Creation Result`:
+
+1. Root Skill directory: create `<skill-name>/SKILL.md` at the repository root; do not put real Skills under `categories/`.
+2. `SKILL_REGISTRY.md`: add or update the category row if needed, add the Chinese search table row, set status (`core`, `active`, `keep`, `review`, or `private-only`), and place the Skill in the recommended whitelist / keep / review section when applicable.
+3. `README.md`: add a quick-lookup row for user-facing or commonly invoked Skills, and update the category navigation row when category membership changes.
+4. `categories/README.md`: add a new numbered category row when a category is created, or update the existing category's included Skills when membership changes.
+5. `categories/<nn-category>/README.md`: add the Skill row to the chosen category; create the category README when proposing a new category.
+6. `SKILL_ROUTING.md`: update when the new Skill overlaps an adjacent trigger boundary, especially PRD, research, collaboration, engineering, Skill governance, or visualization Skills.
+7. `.skillignore`: update only if new non-Skill catalog/helper directories could be accidentally discovered by skillshare.
+8. Bundled resources: if `references/`, `scripts/`, or `assets/` exist, mention each directly from `SKILL.md` so future agents can discover them.
+9. Runtime distribution: if the user expects Codex, Claude, Multica, or another runtime to use the Skill immediately, sync or copy to the confirmed target after GitHub publication, or state the exact follow-up.
+
+Do not mark a new Skill as created if the registry/category/routing surfaces were skipped silently. If a surface is intentionally not updated, record the reason.
+
 ## GitHub Publish Gate
 
 After a confirmed Skill create, import, merge, or update passes validation, publish it by default:
 
 1. Re-check `git status --short --branch`, `git rev-list --left-right --count <upstream>...HEAD`, and the configured remote before staging.
-2. Stage only the files created or modified for this Skill plus required catalog files such as `README.md`, `SKILL_REGISTRY.md`, `categories/README.md`, and the relevant category README. Never use `git add .` in a dirty catalog checkout.
+2. Stage only the files created or modified for this Skill plus required catalog files such as `README.md`, `SKILL_REGISTRY.md`, `SKILL_ROUTING.md`, `.skillignore`, `categories/README.md`, and the relevant category README. Never use `git add .` in a dirty catalog checkout.
 3. Run deterministic checks before commit: system `quick_validate.py`, team `skill-reviewer/scripts/check_skill.py`, and `git diff --cached --check`.
 4. Commit with a concise message such as `Add <skill-name> skill`, `Update <skill-name> skill`, or `Import <skill-name> skill`.
 5. Push to `origin/main` or the configured upstream branch.
-6. Fetch and verify the remote default branch contains the Skill directory and all required catalog entries, for example with `git ls-tree -r --name-only origin/main`.
+6. Fetch and verify the remote default branch contains the Skill directory and all required catalog entries, for example with `git ls-tree -r --name-only origin/main` and targeted text checks for `SKILL_REGISTRY.md`, `README.md`, category README files, and `SKILL_ROUTING.md` when changed.
 7. If push fails because of authentication, remote rejection, network failure, protected branch policy, or conflicting local changes, stop and report the exact blocker, staged/committed state, and the command needed to finish. Do not silently downgrade to local-only completion.
 
 Only skip this gate when the user explicitly asks for a local draft, private-only experiment, or no-push mode. In that case, the final answer must say the Skill is not published to GitHub and name the exact follow-up required.
@@ -137,7 +153,7 @@ Confirm these inputs before recommending creation, or record them as assumptions
 - Tool, API, file-write, credential, network, and production side effects.
 - Minimum validation path: smoke prompts, non-trigger prompts, deterministic checks, and regression cases when needed.
 - For imports: source repo, commit/version, original path, license, exact-name overlaps, similar Skills, chosen base, borrowed strengths, and sync targets.
-- Catalog placement: GitHub remote/upstream status, update decision, category, Chinese name, status (`core`, `active`, `keep`, `review`, or `private-only`), and category README/registry updates.
+- Catalog placement: GitHub remote/upstream status, update decision, category, Chinese name, status (`core`, `active`, `keep`, `review`, or `private-only`), and exact updates for `README.md`, `SKILL_REGISTRY.md`, `categories/README.md`, the chosen category README, `SKILL_ROUTING.md`, `.skillignore`, and runtime targets.
 - App/runtime distribution targets: GitHub checkout, local `multica-skill`, Codex/Claude/other runtime paths, Multica workspace/API/UI import, and any app-local Skill root.
 
 Ask only for missing information that changes the creation decision or generated Skill structure.
@@ -164,6 +180,7 @@ For planning, use:
 - Borrowed strengths: <what will be absorbed from each source>
 - Provenance: <repo, commit/version, plugin/package, original path, license>
 - Category/status: <existing or proposed category, Chinese label, public/private status>
+- Catalog update plan: <README, SKILL_REGISTRY, categories/README, category README, SKILL_ROUTING, .skillignore, runtime sync; mark not applicable with reason>
 - GitHub source status: <remote URL, branch/upstream, ahead/behind/dirty status>
 - Install/sync plan: <GitHub checkout path, multica-skill path, Codex/Claude targets, optional skillshare command if used>
 - Trigger examples: <3-5 examples>
@@ -184,6 +201,7 @@ After creation, use:
 - Imported from: <repo, commit/version, plugin/package, original paths, license>
 - Merge decision: <new / merge-into-existing / replace-with-source / do-not-import>
 - Category/status: <category and catalog status applied>
+- Catalog files updated: <README, SKILL_REGISTRY, categories/README, category README, SKILL_ROUTING, .skillignore; include not applicable reasons>
 - Commands run: <init, validate, reviewer checks>
 - Validation result: <pass/fail with key output>
 - GitHub publish: <commit hash, push target, remote verification result, or explicit no-push reason>
@@ -197,7 +215,7 @@ A team Skill creation task is complete only when one of these is true:
 
 - The request is classified as not needing a Skill, with a concrete alternative.
 - A `Creation Decision` is delivered and awaits confirmation.
-- A confirmed Skill is created, placeholders are removed, system validation passes, team checker results are reported, relevant files are committed and pushed to the GitHub default branch, remote verification passes, and remaining review or regression work is explicit.
+- A confirmed Skill is created, placeholders are removed, required catalog surfaces are updated or explicitly marked not applicable, system validation passes, team checker results are reported, relevant files are committed and pushed to the GitHub default branch, remote verification passes, and remaining review or regression work is explicit.
 - An imported Skill is either rejected with reason, or merged/installed with required resources, provenance, category/status decision, validation results, GitHub commit/push, remote verification, and sync plan.
 - GitHub catalog, `multica-skill`, and Codex/Claude distribution work is either completed or explicitly left as a named follow-up with the exact target path/API/UI path and reason.
 
