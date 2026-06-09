@@ -3,9 +3,8 @@ name: team-skill-creator
 description: >
   团队 Skill 创建器 / 能力沉淀判断：当用户想把一个可重复能力沉淀下来，或不确定应该做成 Prompt、
   Workflow、Tool、Plugin、App 还是 Skill 时使用。可用中文唤起：“帮我创建一个 Skill”
-  “这个能力要不要沉淀成 Skill”“把这个流程固化成 Skill”“导入这个 GitHub Skill”。会先查重、
-  对齐 GitHub Skill 仓库分类和目标应用 Skill 目录，澄清关键需求、给 Creation Decision，
-  只有用户确认后才创建，并运行系统和团队校验。
+  “这个能力要不要沉淀成 Skill”“把这个流程固化成 Skill”“导入这个 GitHub Skill”。
+  不用于只评审或优化已有 Skill；那类请求优先用 skill-reviewer。
 ---
 
 # 团队 Skill 创建器（team-skill-creator）

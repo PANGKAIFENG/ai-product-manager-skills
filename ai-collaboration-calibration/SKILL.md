@@ -105,4 +105,15 @@ Done Signal（AI 主动触发三问）→ 详见 `references/brainstorm-mode.md`
 | `references/output-format.md` | 校准结果输出模板（L4-framed + L4-fuzzy 交接物） |
 | `references/standard-opening.md` | 标准开场 Prompt（完整版/精简版/挑战版/脑暴版） |
 | `references/quality-checklist.md` | AI 输出质量验收标准 |
-| `references/modes/` | 12 个追加模式的详细 Prompt 模板 |
+| `references/modes/01-challenge.md` | 挑战假设模式 |
+| `references/modes/02-domain-mapping.md` | 领域定位模式 |
+| `references/modes/03-blind-spot.md` | 盲点识别模式 |
+| `references/modes/04-best-practice.md` | 最佳实践参照模式 |
+| `references/modes/05-problem-classify.md` | 问题分类模式 |
+| `references/modes/06-failure-premortem.md` | 失败预演模式 |
+| `references/modes/07-solution-space.md` | 解法空间拓展模式 |
+| `references/modes/08-crux.md` | 关键裂缝定位模式 |
+| `references/modes/09-expert-role.md` | 专家角色定位模式 |
+| `references/modes/10-upgrade-path.md` | 演进路径模式 |
+| `references/modes/11-level-up.md` | 层级提升模式 |
+| `references/modes/12-asset-capture.md` | 资产沉淀模式 |

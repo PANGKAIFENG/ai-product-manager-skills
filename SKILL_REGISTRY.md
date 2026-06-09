@@ -22,6 +22,7 @@
 | `categories/04-architecture-visualization/` | 架构图与可视化 | 架构图、流程图、系统关系图和可编辑图示资产。 |
 | `categories/05-project-governance/` | 项目治理 | 项目级规范、共享模板、目录治理和上游 proposal。 |
 | `categories/06-skill-governance/` | Skill 治理 | Skill 创建、审查、版本维护、触发边界和质量评估。 |
+| `categories/07-technical-research/` | 技术调研 | 明确技术决策、接入可行性、方案选型和一次性决策型调研。 |
 | `categories/08-research-learning/` | 研究学习 | 专题研究、系统学习、多渠道证据、Obsidian Research Project 和研究报告。 |
 
 ## 中文检索表
@@ -33,6 +34,7 @@
 | `prd-review` | PRD 评审 / 需求评审 | “帮我审 PRD”“从研发测试视角挑问题”“这个需求文档能不能交付开发” | 已有 PRD/handoff，需要找阻断项、冲突、不可实现点、不可测试点，并给修订草案。 | 从零写 PRD；只做语言润色。 | active |
 | `ai-collaboration-calibration` | 协作校准 / 认知校准 | “先别执行，帮我看清问题”“挑战我的假设”“这个方案是不是想错了” | 复杂问题进入执行前，先校准问题定义、领域定位、隐藏假设和方案裂缝。 | 翻译、摘要、格式转换、明确的小改动。 | active |
 | `research-topic-compiler` | 专题研究编译器 / 系统学习研究助手 | “系统研究这个主题”“整理到 Obsidian”“做一个深度专题”“研究行业最佳实践” | 多渠道研究主题、动态选择渠道、生成证据矩阵、Research Project 和 `05_研究报告`。 | 创建 Skill、评审 Skill、普通即时搜索、一次性摘要。 | active |
+| `tech-research` | 技术调研 / 决策驱动调研 | “有没有现成方案”“这个怎么接”“技术上可行吗”“帮我选一个” | 问题已定义清楚，需要围绕平台接入、可行性、方案选型或技术路线做单次调研，并给出有立场推荐和排除理由。 | 问题还没定义清楚；需要长期知识沉淀；创建或评审 Skill。 | active |
 | `grill-me` | 方案拷问 / 压力测试 | “拷问我的方案”“压力测试这个设计”“这个方案哪里会翻车” | 已有方案但担心盲点，需要一问一答澄清依赖、分支、取舍和失败模式。 | 直接写最终方案；泛泛总结；不希望互动追问。 | active |
 | `agent-trace-diagnoser` | Agent trace 诊断器 / 日志根因定位 | “看下这个 trace”“根据日志定位根因”“只说明问题不要改文件” | 从 agent trace、日志 JSON、执行记录和工具调用序列中定位核心根因、证据链、可能文件/行和修复建议。 | 直接修复代码、普通代码解释、没有日志证据的新功能设计。 | active |
 | `coding-standards` | 编码规范 / 工程规范 | “按编码规范实现”“帮我检查代码规范”“这个实现有没有工程坏味道” | TypeScript、JavaScript、React、Node.js 的实现约束、代码评审、重构建议和质量基线。 | 深度框架专用规则或业务专属规范；这类应沉淀为项目 Skill。 | keep |
@@ -51,6 +53,7 @@
 - `prd-review`
 - `ai-collaboration-calibration`
 - `research-topic-compiler`
+- `tech-research`
 - `grill-me`
 - `agent-trace-diagnoser`
 - `generate-drawio-diagram`
@@ -75,3 +78,7 @@
 3. 是否有许可证限制或第三方归属要求。
 4. 触发边界是否足够清楚，避免误触发。
 5. 是否有最小验证方式，例如脚本、示例 prompt 或检查清单。
+
+## 相邻 Skill 路由
+
+当多个 Skill 都可能被中文关键词触发时，先查 [SKILL_ROUTING.md](SKILL_ROUTING.md)。默认按用户当前阶段分流：问题未定义用 `ai-collaboration-calibration`，已有方案压测用 `grill-me`，单次技术决策用 `tech-research`，长期专题沉淀用 `research-topic-compiler`，PRD 起草用 `prd-architect`，PRD 评审用 `prd-review`。

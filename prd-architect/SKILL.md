@@ -3,7 +3,6 @@ name: prd-architect
 description: >
   PRD 架构师 / 需求文档起草：当用户要把一个产品想法、需求草稿、脑暴结果或功能说明整理成 PRD 时使用。
   可用中文唤起：“帮我写 PRD”“帮我选 PRD 模板”“把这个需求整理成 PRD”“判断该用轻量 PRD 还是标准 PRD”。
-  负责选择 PRD-lite、PRD-standard、PRD-ai-native，判断草稿/讨论中/已确认阶段，并明确假设、边界和 handoff 准备度。
   不用于直接编码、单纯画 UI，或评审一份已经写好的 PRD。
 ---
 
@@ -169,6 +168,19 @@ description: >
 - `~/.honeycomb-agent/templates/examples/PRD-ai-native-example.md`
 - `资产/架构图/_模板/src/模块一体化架构总图.drawio`
 - `资产/架构图/_模板/src/模块核心流程图.drawio`
+
+## Superpowers Writing-Plans Handoff
+
+这个 Skill 与 superpowers 的关系是“产品需求输入 -> implementation plan”的上游衔接，不替代开发流。
+
+只有 PRD 满足以下条件，才建议进入 superpowers `writing-plans`：
+
+- 目标用户、问题、范围边界和非目标已经明确。
+- 主流程、关键状态、输入输出、异常或人工接管点已经写清。
+- 验收标准能被测试、人工检查或通过具体 artifact 验证。
+- 阻断性待确认项已经关闭；若仍有假设，必须明确写成 implementation plan 的前置假设。
+
+如果不满足这些条件，下一步应继续深化 PRD、补 handoff 或做 `prd-review`，不要把模糊需求交给开发计划 Skill。
 
 ## Definition of Done
 

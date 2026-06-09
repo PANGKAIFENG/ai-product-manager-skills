@@ -3,7 +3,7 @@ name: prd-review
 description: >
   PRD 评审 / 需求评审：当用户已有 PRD 初稿、handoff、需求文档或产品方案，需要从 PM、研发、测试视角找缺口、
   冲突、不可实现点和不可测试点时使用。可用中文唤起：“帮我审 PRD”“从研发和测试视角挑问题”
-  “这个需求文档能不能交付开发”“帮我给 PRD 出修改草案”。不用于凭空生成 PRD 初稿；从零起草优先用 prd-architect。
+  “这个需求文档能不能交付开发”“帮我给 PRD 出修改草案”。不用于凭空生成 PRD 初稿或直接写代码。
 ---
 
 # PRD 评审（prd-review）
@@ -202,6 +202,7 @@ description: >
 ### 2. Executive Summary
 
 - 当前 PRD 能否进入下一轮评审
+- 当前 PRD 是否满足进入 superpowers `writing-plans` 的条件
 - 主要阻断项有多少
 - 最值得优先修的 3 个问题
 
@@ -233,6 +234,23 @@ description: >
 ### 6. Open Questions
 
 列出必须回到业务 / 产品确认的问题。
+
+### 7. Implementation-Plan Readiness
+
+必须明确给出下面三种之一：
+
+- `Ready for writing-plans`：可以进入 superpowers `writing-plans`。
+- `Ready with assumptions`：可以进入开发计划，但这些假设必须写进 plan 前置条件。
+- `Not ready`：仍有阻断性需求缺口，不能进入开发计划。
+
+判断条件：
+
+- 目标用户、问题、范围边界和非目标是否明确。
+- 主流程、关键状态、输入输出、异常或人工接管点是否清楚。
+- 验收标准是否可测试、可人工检查或可通过具体 artifact 验证。
+- 阻断性待确认项是否已关闭，或是否已经显式转成 implementation plan 的前置假设。
+
+这个段落只判断产品需求是否可交给开发计划，不负责拆文件、测试步骤、提交节奏或实现方案；这些由 superpowers `writing-plans` 承接。
 
 ## Writing Rules
 
@@ -290,6 +308,11 @@ PRD Review Report: <文件名>
 ## Open Questions
 1. ...
 2. ...
+
+## Implementation-Plan Readiness
+- Verdict: Ready for writing-plans / Ready with assumptions / Not ready
+- Reason: ...
+- Required assumptions before planning: ...
 ```
 
 ## Related References
@@ -301,6 +324,7 @@ PRD Review Report: <文件名>
 - `~/.honeycomb-agent/templates/PRD-lite.md`
 - `~/.honeycomb-agent/templates/examples/PRD-ai-native-example.md`
 - `honeycomb diagram-guard <path>` 或 `.claude/hooks/diagram-guard.sh`
+- `references/implementation-plan-readiness.md`
 
 ## Success Standard
 
@@ -310,6 +334,7 @@ PRD Review Report: <文件名>
 2. 产品能直接把修订草案回填到 PRD
 3. 研发能据此指出实现缺口，而不是继续帮忙翻译 PRD
 4. 测试能开始提炼可验证场景，而不是只能说“先看看开发怎么做”
+5. 能明确判断是否可以交给 superpowers `writing-plans`
 
 ## Definition of Done
 
@@ -319,6 +344,7 @@ PRD Review Report: <文件名>
 - findings 有严重程度排序
 - 修订草案可直接回填
 - 推断和事实没有混写
+- 已明确 `Implementation-Plan Readiness`
 
 ## Evaluation
 

@@ -1,6 +1,6 @@
 ---
 name: agent-trace-diagnoser
-description: "Agent trace 诊断器：当用户提供 trace、日志 JSON、agent 执行记录或说“看下这个日志/trace，定位根因”时使用；必须用中文输出核心根因、trace 证据链、可能对应的文件/行和修复建议，默认只读分析，不修改文件。"
+description: "Agent trace 诊断器：当用户提供 trace、日志 JSON、agent 执行记录、工具调用序列，或说“看下这个日志/trace，定位根因”“只说明问题不要改文件”时使用。不用于没有日志证据的新功能设计、普通代码解释或直接修复代码。"
 ---
 
 # Agent Trace Diagnoser
