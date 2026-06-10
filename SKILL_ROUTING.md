@@ -15,7 +15,7 @@
 
 ## PRD 到开发计划的衔接
 
-`prd-architect` 和 `prd-review` 的边界止于产品需求交付准备度。只有当 PRD 已经满足以下条件，才适合进入 superpowers `writing-plans`：
+`prd-architect` 和 `prd-review` 的边界止于产品需求交付准备度。只有当 PRD 已经满足以下条件，才适合进入 Superpowers `writing-plans`：
 
 - 目标用户、问题、范围边界和非目标已明确。
 - 主流程、关键状态、输入输出、异常或人工接管点已写清。

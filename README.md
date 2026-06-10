@@ -43,7 +43,7 @@ If you are searching for `AI product manager skills`, `Codex skills`, `Claude sk
 
 ## 产品需求工作流
 
-这组 Skill 用来把模糊想法逐步推进到可交付研发的需求输入。它和 superpowers 的开发流互补：这里负责产品需求成熟度，superpowers `writing-plans` 负责后续实现计划。
+这组 Skill 用来把模糊想法逐步推进到可交付研发的需求输入。它和 Superpowers 的开发流互补：这里负责产品需求成熟度，Superpowers `writing-plans` 负责后续实现计划。
 
 | 阶段 | 你现在的状态 | 可以这样说 | 对应 Skill | 下一步 |
 | --- | --- | --- | --- | --- |
@@ -53,9 +53,9 @@ If you are searching for `AI product manager skills`, `Codex skills`, `Claude sk
 | 4. PRD 起草 | 要把想法、脑暴或草稿整理成需求文档 | “帮我写 PRD”“帮我选 PRD 模板” | [`prd-architect`](prd-architect/) | 形成 PRD-lite、PRD-standard 或 PRD-ai-native |
 | 5. PRD 评审 | 已有 PRD，需要找缺口、冲突和不可测试点 | “帮我审 PRD”“从研发测试视角挑问题” | [`prd-review`](prd-review/) | 修订 PRD，关闭阻断项 |
 | 6. 方案压测 | 已有方案，但担心盲点和失败模式 | “拷问我的方案”“这个方案哪里会翻车” | [`grill-me`](grill-me/) | 明确取舍、风险和前置条件 |
-| 7. 开发计划 | PRD 已可交付，需要拆实现步骤 | “基于这个 PRD 写开发计划” | superpowers `writing-plans` | 进入实现计划、测试策略和提交节奏 |
+| 7. 开发计划 | PRD 已可交付，需要拆实现步骤 | “基于这个 PRD 写开发计划” | Superpowers `writing-plans` | 进入实现计划、测试策略和提交节奏 |
 
-PRD 进入 superpowers `writing-plans` 前，至少应满足：
+PRD 进入 Superpowers `writing-plans` 前，至少应满足：
 
 - 目标用户、问题、范围边界和非目标已明确。
 - 主流程、关键状态、输入输出、异常或人工接管点已写清。
