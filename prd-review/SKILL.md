@@ -3,7 +3,8 @@ name: prd-review
 description: >
   PRD 评审 / 需求评审：当用户已有 PRD 初稿、handoff、需求文档或产品方案，需要从 PM、研发、测试视角找缺口、
   冲突、不可实现点和不可测试点时使用。可用中文唤起：“帮我审 PRD”“从研发和测试视角挑问题”
-  “这个需求文档能不能交付开发”“帮我给 PRD 出修改草案”。不用于凭空生成 PRD 初稿或直接写代码。
+  “这个需求文档能不能交付开发”“帮我给 PRD 出修改草案”“检查 PRD 图示是否缺失或不可编辑”。
+  不用于凭空生成 PRD 初稿或直接写代码。
 ---
 
 # PRD 评审（prd-review）
@@ -12,7 +13,7 @@ description: >
 
 - 中文名：PRD 评审 / 需求评审
 - 英文稳定名：`prd-review`
-- 你可以这样叫我：`帮我审 PRD`、`从研发测试视角挑问题`、`这个需求文档能不能交付开发`、`帮我补一版修订草案`
+- 你可以这样叫我：`帮我审 PRD`、`从研发测试视角挑问题`、`这个需求文档能不能交付开发`、`帮我补一版修订草案`、`检查 PRD 图示是否可编辑`
 - 适合：已经有 PRD/handoff，需要发现阻断项、重要缺口、验收不可测、工程无法落地的地方
 - 不适合：从零写 PRD，改用 `prd-architect`；只做语言润色时不需要触发
 
@@ -36,6 +37,7 @@ description: >
 4. 把重复问题合并，输出按严重程度排序的修改建议
 5. 给出“怎么改”而不是只说“哪里有问题”
 6. 在必要时补出可直接替换或新增到 PRD 的修订草案
+7. 检查 PRD 图示是否缺失、不可编辑、引用错误或不足以支撑研发评审
 
 它不负责：
 
@@ -178,6 +180,8 @@ description: >
    - Markdown 正式引用是否指向根目录 `*.drawio.svg`
    - 是否误引用 `src/*.drawio` 或同名普通 `.svg`
    - `*.drawio.svg` 是否声明为文件本体内嵌 Draw.io 可编辑数据
+   - 如果 PRD 只提供不可编辑 PNG、普通 SVG、截图或 Mermaid，是否会阻碍研发继续编辑和评审
+   - 如果本地有 `.drawio` 源文件，应运行 `python3 scripts/validate_drawio.py <path>` 并把结果写入 review
    - 如果本地可运行 `honeycomb diagram-guard <path>`，应运行并把结果写入 review；如果不可运行，必须标记“图示可编辑性未验证”
 8. 如果涉及 AI 协作，是否写清楚：
    - 澄清
@@ -185,6 +189,33 @@ description: >
    - 人工确认
    - 记忆写入
    - 失败回退
+
+## PRD Diagram Review Mode
+
+当 PRD 包含或应当包含流程图、架构图、系统关系图、AI 协作链路图时，把图示作为研发评审的一等对象，而不是只检查文字。
+
+检查顺序：
+
+1. 判断图示是否必要：
+   - `PRD-lite`：只有 3-5 步主链路、单点 UI 或简单规则时，可以用文字、表格、Mermaid 草稿或截图。
+   - `PRD-standard`：多阶段链路、上下游依赖、对象流转、状态切换时，应有核心流程图或结构图。
+   - `PRD-ai-native`：人工动作、AI 动作、状态反馈、记忆写入、失败回退形成闭环时，应有一体化总图或核心流程图。
+2. 检查引用是否正确：
+   - 正式 Markdown 引用应指向根目录 `*.drawio.svg` 或明确的可编辑 Draw.io 产物。
+   - `src/*.drawio` 可以作为源文件，但不应成为 PRD 阅读主引用。
+   - 不要把普通 `.svg`、截图或 PNG 当作可编辑 Draw.io 图示。
+3. 检查图示是否支撑评审：
+   - 图要回答“系统是什么”或“链路怎么跑”，不能只是装饰性大图。
+   - 节点、边、输入输出、关键分支和异常回退必须能对应 PRD 正文。
+   - 如果图和正文冲突，按阻断或重要问题处理，并指出冲突章节。
+4. 检查可编辑性和结构质量：
+   - 有 `.drawio` 源文件时运行 `python3 scripts/validate_drawio.py <path>`。
+   - 需要判断布局、节点数、颜色或 XML 模板时读取 `references/drawio-templates.md`。
+   - 有 `*.drawio.svg` 但无法验证内嵌数据时，标记“图示可编辑性未验证”，不要默认通过。
+5. 输出修订草案：
+   - 如果缺图，给出应补图类型、图要覆盖的核心节点和建议文件名。
+   - 如果图不可编辑，给出迁移到 `.drawio` / `*.drawio.svg` 的替换建议。
+   - 如果图过重或过散，建议拆成一体化总图、核心流程图或子流程图。
 
 ## Output Requirements
 
@@ -263,7 +294,7 @@ description: >
    - PRD 当前写法
    - review 推断
 6. 如果问题来自共享模板缺陷，而不是当前文档写法，应明确标记“疑似共享层问题”，必要时建议运行 `/propose-honeycomb-change`
-7. 对图示相关结论必须区分“文本要求缺失”和“文件实际校验失败”；没有运行 `diagram-guard` 时不要声称图文件已合格
+7. 对图示相关结论必须区分“文本要求缺失”“文件实际校验失败”和“未能验证”；没有运行 `validate_drawio.py` 或 `diagram-guard` 时不要声称图文件已合格
 
 ## Suggested Output Skeleton
 
@@ -323,6 +354,8 @@ PRD Review Report: <文件名>
 - `~/.honeycomb-agent/templates/PRD-standard.md`
 - `~/.honeycomb-agent/templates/PRD-lite.md`
 - `~/.honeycomb-agent/templates/examples/PRD-ai-native-example.md`
+- `references/drawio-templates.md`
+- `scripts/validate_drawio.py`
 - `honeycomb diagram-guard <path>` 或 `.claude/hooks/diagram-guard.sh`
 - `references/implementation-plan-readiness.md`
 
@@ -354,6 +387,7 @@ Smoke prompts:
 - handoff 不足时，能否明确哪些结论只是推断
 - AI-native PRD 时，能否检查协作闭环与回退
 - PRD 引用了图示时，能否区分 `*.drawio.svg` 正式图、`src/*.drawio` 备份源和普通 `.svg`
+- PRD 缺少必要流程图或只给不可编辑截图时，能否作为阻断/重要问题指出并给补图草案
 
 Non-trigger prompts:
 
@@ -367,3 +401,5 @@ Resources:
 - `PRD` 初稿
 - `docs/templates-local/` 同名 override（如存在）
 - `*.drawio.svg` 图示文件和对应 `src/*.drawio`（如存在）
+- `references/drawio-templates.md`
+- `scripts/validate_drawio.py`

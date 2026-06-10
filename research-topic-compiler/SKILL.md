@@ -2,22 +2,22 @@
 name: research-topic-compiler
 description: >
   专题研究编译器 / Persona-Adaptive Research-to-Learning Compiler：当用户要围绕一个主题做系统学习、
-  专题研究、行业调研、最佳实践提炼，或希望根据自己的角色、业务场景和决策目标把研究转成可学习、可判断、
-  可落地的 Research Project、学习报告、证据矩阵、模板或实践任务时使用。适合“系统研究一个主题”
-  “整理到 Obsidian”“做深度专题”“研究行业最佳实践”“把资料编译成研究报告”“我对这个领域陌生”
-  “这个主题对我的业务有什么用”。不适合创建 Skill、评审 SKILL.md、普通即时搜索或一次性摘要。
+  专题研究、行业调研、最佳实践提炼、轻量概念解读、概念源流、语义演化、PM 技术评审提问脚本或行业演进看板时使用。
+  适合把研究转成 Research Project、学习报告、证据矩阵、PM 决策看板、模板或实践任务。适合“系统研究一个主题”
+  “整理到 Obsidian”“做深度专题”“研究行业最佳实践”“概念解读”“概念源流”“PM 技术评审提问脚本”
+  “行业演进看板”“这个主题对我的业务有什么用”。不适合创建 Skill、评审 SKILL.md、普通即时搜索或一次性摘要。
 ---
 
 # 专题研究编译器（research-topic-compiler）
 
 ## 中文速查
 
-- 中文名：专题研究编译器 / 系统学习研究助手
+- 中文名：专题研究编译器 / 系统学习与概念源流研究助手
 - 英文稳定名：`research-topic-compiler`
 - 分类：研究学习 / Obsidian 知识编译
-- 你可以这样叫我：`系统研究这个主题`、`帮我整理到 Obsidian`、`做一个深度专题`、`研究行业最佳实践`、`把这些资料编译成研究报告`、`我对这个领域陌生`、`这个主题对我的业务有什么用`
-- 适合：围绕研究主题做多渠道证据收集、筛选、证据矩阵、阶段结论、用户画像自适应学习报告和应用转化
-- 不适合：创建新 Skill，改用 `team-skill-creator`；评审 Skill，改用 `skill-reviewer`；普通新闻搜索或一次性摘要
+- 你可以这样叫我：`系统研究这个主题`、`帮我整理到 Obsidian`、`做一个深度专题`、`研究行业最佳实践`、`概念解读`、`概念源流`、`PM 技术评审提问脚本`、`行业演进看板`
+- 适合：围绕研究主题做多渠道证据收集、筛选、证据矩阵、阶段结论、概念源流、轻量 PM 决策看板、用户画像自适应学习报告和应用转化
+- 不适合：创建或评审 Skill；普通新闻搜索或一次性摘要
 
 ## Overview
 
@@ -32,6 +32,7 @@ description: >
 - 研究前可以先做 `Pre-Research Source Expansion`：用公开搜索、垂直 API、RSS、产品/市场目录等渠道扩充候选来源，再筛选进入正式证据矩阵。
 - 结论必须能回到证据矩阵；`05_研究报告` 是第一阅读入口，`02_证据与卡片` 是按需深挖层。
 - 系统学习不是重型课程仓库；默认保持轻量，只有触发条件满足时才建议独立学习包文件。
+- 轻量概念解构属于本 Skill 的研究模式，不再单独使用独立概念看板 Skill；它适合快速建立概念源流、语义漂移、范式阶段和 PM 决策问题。
 - 用户画像只影响解释深度、案例选择、输出结构和实践任务，不覆盖用户当前明确要求。
 - 研究必须能转成行动：判断、方案、模板、任务、PRD、Workflow、Eval、Checklist、SOP、路线图或实践练习。
 - 用户补充的新渠道可以进入渠道库，但要先判断适用主题、访问条件、证据强度和风险。
@@ -78,9 +79,27 @@ description: >
 按用户目标选择一种主模式，也可以组合使用：
 
 - `Normal Research`：资料整理、证据矩阵、阶段结论、研究报告，适合普通专题研究。
+- `Lightweight Concept Lens Mode`：轻量概念解读、概念源流、语义演化、行业演进、PM 技术评审提问脚本或 HTML 决策看板。
 - `Learning Pack Mode`：用户对陌生领域要建立学习框架时启用；详细标准见 `references/learning-pack-standards.md`。
 - `Application Mode`：用户问“对我/我们的业务有什么用”“怎么落地”“怎么做成方案/PRD/Workflow/Skill/Eval”时启用。
 - `Radar Mode`：长期变化主题启用 `L5`，只形成 watchlist、更新日志和复盘建议；不默认创建 automation。
+
+Lightweight Concept Lens Mode 触发信号：
+
+- 用户说“概念解读”“概念源流”“概念透镜”“语义演化”“行业演进看板”。
+- 用户要 PM 技术评审提问脚本、反模式诊断、概念债务识别或供应商/方案评估问题。
+- 用户不需要完整 Obsidian Research Project，但需要带来源的结构化理解和可操作判断。
+- 用户要求生成本地 HTML 决策看板、Tailwind + Alpine.js 看板或可验证的概念演进 dashboard。
+
+Lightweight Concept Lens Mode 工作规则：
+
+- 先追溯概念源流：提出背景、原始问题、原始用户、原始用途、主要语义漂移和当前误用。
+- 再归纳范式阶段：从证据中推导 3-6 个阶段，不强套固定四阶段，也不把简单时间线当结构。
+- 每个阶段必须写清用户需求、底层矛盾、成熟解法、PM 视角操作逻辑、证据依据和 1-2 个评审问题。
+- 输出默认是聊天内 PM 决策看板；只有用户明确要文件或 HTML dashboard 时才生成本地 `dashboard.html`。
+- 生成 HTML dashboard 前读取 `references/concept-lens-output-contract.md`、`references/concept-lens-html-dashboard-template.md` 和 `references/concept-lens-design-quality.md`。
+- 冷启动或事实敏感主题先读取 `references/concept-lens-source-and-factuality.md` 并浏览验证；用到历史来源时区分证据和模型推断。
+- 生成 HTML 后运行 `python3 scripts/validate_html_artifact.py <path-to-dashboard.html>`，并在可用时做浏览器视觉检查。
 
 Learning Pack Mode 触发信号：
 
@@ -143,9 +162,9 @@ Application Mode 必须把核心结论转成用户当前工作中的至少一种
 
 ## Catalog / Distribution Notes
 
-- Catalog source：GitHub Skill 仓库 `git@github.com:PANGKAIFENG/skill.git` 的默认分支是标准源；本地 checkout 路径通常是 `/Users/linctex/.config/skillshare/skills`。
-- Category/status：`categories/08-research-learning/`，中文分类“研究学习”，状态 `active`。
-- Public/private decision：当前版本包含本机 Obsidian 路径和个人知识库约定，适合本地/团队 catalog；若要公开发布到 ClawHub 或其他市场，先参数化 Vault 路径并移除个人化约定。
+- Catalog source：GitHub Skill 仓库 `git@github.com:PANGKAIFENG/ai-product-manager-skills.git` 的默认分支是标准源。
+- Category/status：中文分类“研究学习 / 产品研究”，状态 `active`。
+- Public/private decision：这是公开 AI PM Skill；涉及个人 Obsidian 路径、私密资料、登录渠道或客户资料时必须在具体 run 中显式授权并标注边界。
 - Distribution targets：保持 GitHub checkout、Multica 确认的 `multica-skill` 目录、`/Users/linctex/.codex/skills` 和 `/Users/linctex/.claude/skills` 一致；当前 Codex/Claude 可通过 Skillshare 管理的 symlink 使用。
 - Sync rule：`skillshare sync` 是可选分发方式，不是本 Skill 的事实来源；使用前先确认目标路径确实由 Skillshare 管理。
 
@@ -153,14 +172,14 @@ Application Mode 必须把核心结论转成用户当前工作中的至少一种
 
 1. 捕获主题和目标，用一句话复述研究对象、用户要解决的问题和预期产物。
 2. 解析用户画像。按 `User Context Resolution` 选择通用解释或 persona-adaptive 输出。
-3. 判断研究模式和深度。非平凡主题先读 `references/research-depth-rubric.md`，推荐 `L1-L5`，并说明是否启用 Learning Pack 或 Application Mode。
+3. 判断研究模式和深度。非平凡主题先读 `references/research-depth-rubric.md`，推荐 `L1-L5`，并说明是否启用 Lightweight Concept Lens、Learning Pack 或 Application Mode。
 4. 选择渠道。读取 `references/channel-selection-rubric.md` 和 `references/channel-registry.md`，根据主题动态选择 Obsidian 之外的渠道。
 5. 判断是否启用 `Pre-Research Source Expansion`。当内部输入不足、主题依赖外部生态或用户要求扩源时，先生成候选来源表和筛选建议。
 6. 先输出 `Research Run Plan`。包含推荐深度、研究模式、用户画像摘要、主题类型、核心问题、渠道选择、前置扩源渠道、每个渠道启用或不启用的理由、样本量、写入位置、凭据或访问限制。
 7. 做 Obsidian 内部基线扫描。查 `笔记同步助手`、`03_Resources`、已有 Research Project、主题卡片、规则和模板，确认已有沉淀、证据缺口和重复研究风险。
 8. 做外部发现与筛选。只读取公开或用户授权内容；GitHub 仅读文档、源码、配置、issues 和 discussions，默认不执行第三方代码。
 9. 建立证据矩阵。按“研究问题 × 来源 × 结论 × 证据强度 × 对当前用户的启发 × 扩展阅读”组织。
-10. 写入或更新 Obsidian Research Project。默认输出 `00_研究定义` 到 `05_研究报告`；深度专题可增加 `06_外部渠道研究`、`07_行业案例对照`、`08_最佳实践与应用模板`、`09_更新日志`；只在触发条件满足时建议 `10-12` 学习包文件。
+10. 写入或更新 Obsidian Research Project。默认输出 `00_研究定义` 到 `05_研究报告`；深度专题可增加 `06_外部渠道研究`、`07_行业案例对照`、`08_最佳实践与应用模板`、`09_更新日志`；只在触发条件满足时建议 `10-12` 学习包文件。Lightweight Concept Lens 默认不写入 Obsidian，除非用户要求沉淀。
 11. 输出最终摘要。给出研究报告入口、用户画像适配方式、核心结论、关键证据、应用转化、仍需验证、下一步建议和新增渠道候选。
 
 ## L5 Automation Handling
@@ -190,7 +209,7 @@ L5 automation 的默认安全边界：
 **Research Run Plan**
 - Topic: <研究主题>
 - User goal: <用户要学会、判断或沉淀什么>
-- Research mode: <Normal Research / Learning Pack / Application / Radar>
+- Research mode: <Normal Research / Lightweight Concept Lens / Learning Pack / Application / Radar>
 - User context: <role, domain, technical_depth, goal_type, output_preference, application_context, decision_need>
 - Recommended depth: <L1 / L2 / L3 / L4 / L5, with reason>
 - Topic type: <平台能力 / 开源工程 / 产品竞品 / 学术方法 / 政策合规 / 市场趋势 / 其他>
@@ -272,7 +291,7 @@ L5 automation 的默认安全边界：
 **Research Result**
 - Project/report: <Obsidian path or chat-only>
 - Depth used: <L1-L5>
-- Research mode: <Normal / Learning Pack / Application / Radar>
+- Research mode: <Normal / Lightweight Concept Lens / Learning Pack / Application / Radar>
 - Persona adaptation: <role/domain/depth/goal used, or generic>
 - Channels used: <channels and sample counts>
 - Core conclusions: <3-7 bullets>
@@ -289,6 +308,7 @@ L5 automation 的默认安全边界：
 任务完成必须满足至少一种情况：
 
 - `L1` 快查：给出直接答案、来源和证据局限。
+- `Lightweight Concept Lens`：给出概念源流、语义演化、范式阶段、PM 决策问题、反模式或概念债务判断；如果生成 HTML，静态验证已通过或明确说明限制。
 - `L2`：给出主题地图、核心概念、基础案例、来源和下一步阅读。
 - `L3`：Research Project 或聊天报告已覆盖问题清单、证据矩阵、阶段结论和第一阅读入口式 `05_研究报告`，能帮助陌生领域入门。
 - `L4`：额外形成外部渠道研究、行业案例对照、最佳实践或应用模板，能指导方案设计、选型或 PRD 输入。
@@ -309,12 +329,20 @@ L5 automation 的默认安全边界：
 - `references/source-quality-rules.md`：证据强度、来源筛选、引用和封闭渠道处理规则。
 - `references/obsidian-output-contract.md`：Obsidian 写回结构和 Vault 规范。
 - `references/report-writing-standards.md`：`05_研究报告` 写作标准。
+- `references/concept-lens-source-and-factuality.md`：概念源流、历史来源、引用和不确定性处理。
+- `references/concept-lens-paradigm-framework.md`：范式阶段归纳、PM 矩阵维度和反模板规则。
+- `references/concept-lens-output-contract.md`：轻量概念解构的 Markdown 与文件产物结构。
+- `references/concept-lens-html-dashboard-template.md`：Tailwind + Alpine.js HTML 决策看板要求和验证标记。
+- `references/concept-lens-design-quality.md`：HTML dashboard 的视觉质量与移动端检查。
+- `scripts/validate_html_artifact.py`：HTML dashboard 的确定性结构校验脚本。
 
 ## Evaluation Checklist
 
 - Smoke：`帮我系统研究一下 AI Agent Memory，并整理到 Obsidian。`
 - Smoke：`研究一下 MCP 安全最佳实践，需要看官方文档、GitHub 和行业案例。`
 - Smoke：`快速了解 Claude Skills 的设计机制，不需要写入 Vault。`
+- Smoke：`帮我轻量解构一下 MCP 的概念源流，输出 PM 决策看板。`
+- Smoke：`分析向量数据库的概念源流、行业演进和 PM 技术评审提问脚本。`
 - Smoke：`我对 Agent Harness 完全陌生，帮我系统学习并整理到 Obsidian。`
 - Smoke：`研究 Harness 对我们推款智能体有什么用。`
 - Smoke：`我是后端工程师，研究 Agent Harness 的权限和 Trace 机制。`
@@ -325,6 +353,6 @@ L5 automation 的默认安全边界：
 - Persona：产品经理、工程师、设计师、运营、管理者/创始人应看到不同解释重点和实践任务。
 - Learning pack：只有明确学习包需求或复杂度触发时才建议 `10-12`。
 - Application：研究结论必须能转成判断、方案、模板、任务或实践。
-- Non-trigger：`帮我创建一个 Skill。` 应交给 `team-skill-creator`。
-- Non-trigger：`帮我 review 这个 SKILL.md。` 应交给 `skill-reviewer`。
+- Non-trigger：`帮我创建一个 Skill。` 不属于公开 AI PM 研究工作流。
+- Non-trigger：`帮我 review 这个 SKILL.md。` 不属于公开 AI PM 研究工作流。
 - Non-trigger：`搜一下今天某条新闻。` 不应触发本 Skill，除非用户要求沉淀成专题研究。

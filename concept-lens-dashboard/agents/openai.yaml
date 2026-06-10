@@ -1,4 +1,0 @@
-interface:
-  display_name: "概念解构看板"
-  short_description: "为 PM 拆解复杂概念的范式演进、错配诊断和高质量 HTML 决策看板"
-  default_prompt: "Use $concept-lens-dashboard to handle this request."

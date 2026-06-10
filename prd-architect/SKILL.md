@@ -2,7 +2,8 @@
 name: prd-architect
 description: >
   PRD 架构师 / 需求文档起草：当用户要把一个产品想法、需求草稿、脑暴结果或功能说明整理成 PRD 时使用。
-  可用中文唤起：“帮我写 PRD”“帮我选 PRD 模板”“把这个需求整理成 PRD”“判断该用轻量 PRD 还是标准 PRD”。
+  可用中文唤起：“帮我写 PRD”“帮我选 PRD 模板”“把这个需求整理成 PRD”“判断该用轻量 PRD 还是标准 PRD”
+  “补一张可编辑 Draw.io 核心流程图”“PRD 里加架构图”。
   会根据 PRD-lite、PRD-standard、PRD-ai-native 选择不同模板骨架，并在涉及既有产品界面时要求基于真实项目页面补截图/HTML mockup。
   不用于直接编码、单纯画 UI，或评审一份已经写好的 PRD。
 ---
@@ -13,7 +14,7 @@ description: >
 
 - 中文名：PRD 架构师 / 需求文档起草
 - 英文稳定名：`prd-architect`
-- 你可以这样叫我：`帮我写 PRD`、`帮我选 PRD 模板`、`把这个需求整理成 PRD`、`这个需求该用哪种 PRD`
+- 你可以这样叫我：`帮我写 PRD`、`帮我选 PRD 模板`、`把这个需求整理成 PRD`、`这个需求该用哪种 PRD`、`PRD 里补 Draw.io 流程图`
 - 适合：需求还在成型，需要先判断文档深度、PRD 类型、当前成熟度和后续 handoff 接口
 - 不适合：已经有完整 PRD 要评审，改用 `prd-review`；只要 UI 线框或直接编码也不应触发
 
@@ -35,6 +36,7 @@ description: >
 6. 保留必要的待确认假设
 7. 决定下一步是继续深化 PRD，还是可以进入 UI / handoff
 8. 让 PRD 内部直接包含后续可执行的图示 / UI 承接接口
+9. 在 PRD 起草阶段生成可编辑 Draw.io 核心流程图或架构图，并把引用方式写进 PRD
 
 它不负责：
 
@@ -42,6 +44,27 @@ description: >
 - 直接开始编码
 - 用重型模板压扁所有需求
 - 把核心规则外包给单独 guide 再让用户自己跳转理解
+
+## PRD Diagram Mode
+
+当用户要求“写 PRD，并补流程图 / 架构图 / Draw.io 图示”时，不再调用独立图示 Skill；本 Skill 直接负责 PRD 内正式图示能力。
+
+触发信号：
+
+- “帮我写一个 PRD，并补一张可编辑 Draw.io 核心流程图。”
+- “这个 PRD 需要一张架构图 / 一体化总图 / 流程图。”
+- “把主链路画进 PRD，后续研发评审要能编辑。”
+- `PRD-standard` 或 `PRD-ai-native` 涉及多阶段链路、模块依赖、上下游输入输出、AI 协作闭环或状态流转。
+
+执行规则：
+
+1. 先判断 PRD 类型和成熟度，再决定图示是否必要；简单 `PRD-lite` 不强制正式 Draw.io。
+2. 需要正式图示时，先从 PRD 抽出“图要回答的问题”：系统是什么、链路怎么跑、还是人工/AI 如何协作。
+3. 读取 `references/drawio-templates.md`，选择 `architecture` 或 `flow` 布局，控制节点数量和横向结构。
+4. 生成可编辑 `.drawio` 源文件；如果 PRD 需要 Markdown 可预览，优先生成或要求导出包含图数据的 `*.drawio.svg`。
+5. 在 PRD 正文中引用正式图示路径，并说明它支撑哪个章节的研发评审。
+6. 对 `.drawio` 源文件运行 `python3 scripts/validate_drawio.py <path>`；如果交付 `*.drawio.svg`，还要尽量运行项目已有 `honeycomb diagram-guard <path>` 或人工检查内嵌 Draw.io 数据。
+7. 如果验证工具不可用，必须在 PRD 的关联产物或最终说明里标记“图示可编辑性未验证”，不要声称已通过。
 
 ## Decision Rules
 
@@ -297,7 +320,7 @@ AI-Native 输出压缩规则：
 - 正式图示必须是文件本体内嵌 Draw.io 数据、可直接打开编辑的 `*.drawio.svg`
 - Markdown 正式引用只指向根目录 `*.drawio.svg`，不要回退去引用同名普通 `*.svg`
 - 同目录 `src/*.drawio` 只作为可选备份或迁移图源
-- 默认优先从 `资产/架构图/_模板/src/` 复制骨架，不从空白画布起手
+- 默认优先读取 `references/drawio-templates.md` 或项目本地 `资产/架构图/_模板/src/` 骨架，不从空白画布起手
 - 系统级 PRD 优先一张一体化架构总图 + 一张核心流程图
 - 架构总图默认使用横向分层 / 泳道式 board，禁止脑图、放射状、树状发散布局
 - 核心流程图默认横向主线，只保留主步骤和关键分支
@@ -312,7 +335,7 @@ AI-Native 输出压缩规则：
 - 正式图示必须是文件本体内嵌 Draw.io 数据、可直接打开编辑的 `*.drawio.svg`
 - Markdown 正式引用只指向根目录 `*.drawio.svg`，不要回退去引用同名普通 `*.svg`
 - 同目录 `src/*.drawio` 只作为可选备份或迁移图源
-- 默认优先从 `资产/架构图/_模板/src/` 复制骨架，不从空白画布起手
+- 默认优先读取 `references/drawio-templates.md` 或项目本地 `资产/架构图/_模板/src/` 骨架，不从空白画布起手
 - 默认要求模块拆解与输入输出
 - 默认要求人工动作 / AI 动作 / 状态反馈 / 闭环一起成套表达
 - 架构总图默认使用横向分层 / 泳道式 board，禁止脑图、放射状、树状发散布局
@@ -327,6 +350,8 @@ AI-Native 输出压缩规则：
 
 优先参考：
 
+- `references/drawio-templates.md`
+- `scripts/validate_drawio.py`
 - `~/.honeycomb-agent/templates/PRD-lite.md`
 - `~/.honeycomb-agent/templates/PRD-standard.md`
 - `~/.honeycomb-agent/templates/PRD-ai-native.md`
@@ -355,6 +380,7 @@ AI-Native 输出压缩规则：
 - 当前状态明确
 - 待确认项和假设没有混在一起
 - 图示与 UI 承接规则已写进正文
+- 如果本轮生成 Draw.io 图示，`.drawio` 已通过 `scripts/validate_drawio.py`，或 `*.drawio.svg` 的可编辑性验证限制已明确说明
 - 下一步建议不会把草稿误推成定稿
 
 ## Evaluation
@@ -364,6 +390,7 @@ Smoke prompts:
 - 单点改动，是否会选 `PRD-lite`
 - AI 协作需求，是否会选 `PRD-ai-native`
 - 复杂流程需求，是否会保留 `当前状态` 和待确认项
+- `帮我写一个 PRD，并补一张可编辑 Draw.io 核心流程图。`
 
 Non-trigger prompts:
 
@@ -377,3 +404,5 @@ Resources:
 - `~/.honeycomb-agent/templates/PRD-standard.md`
 - `~/.honeycomb-agent/templates/PRD-ai-native.md`
 - `~/.honeycomb-agent/diagram-templates/`
+- `references/drawio-templates.md`
+- `scripts/validate_drawio.py`

@@ -1,4 +1,0 @@
-interface:
-  display_name: "Agent Trace Diagnoser"
-  short_description: "从 agent trace 或日志定位核心根因、证据链、可能文件/行和修复建议，诊断结论用中文输出。"
-  default_prompt: "Use $agent-trace-diagnoser to diagnose this trace without editing files."
