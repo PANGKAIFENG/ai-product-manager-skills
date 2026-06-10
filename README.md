@@ -1,8 +1,27 @@
-# PANGKAIFENG Skill Library
+# AI Product Manager Skills Library
 
-这是我用于统一管理个人常用 Agent Skills 的仓库。目标不是收集越多越好，而是让常用 Skill 能被中文自然唤起、能看懂用途、能版本化维护。
+面向 AI 产品经理的中文优先 Agent Skill 仓库，用来沉淀可复用的 Codex Skills、Claude Skills 和 AI product management workflows。它重点覆盖需求创建、PRD 起草与评审、需求复盘、AI 协作脑暴、产品/技术主题研究、Agent trace 诊断和 Skill 治理。
+
+这个仓库和 Superpowers 互补：Superpowers 更偏研发实现、测试驱动、计划执行和代码交付；本仓库更偏产品经理在进入研发交付前后的工作，包括把模糊想法变成可讨论需求、把主题研究转成产品判断、把 PRD 交付前的缺口暴露出来，以及把高频 AI 协作流程沉淀成可复用 Skill。
+
+If you are searching for `AI product manager skills`, `Codex skills`, `Claude skills`, `PRD workflow`, `product research agent`, `AI collaboration brainstorming`, `requirements engineering`, or `Chinese AI workflow skills`, this repository is a curated Skill library for that use case.
 
 当前仓库是 GitHub 管理的 Skill catalog，同时保持 `skillshare` 兼容结构：每个真实 Skill 都放在仓库根目录下的独立文件夹里。README 只提供“按工作流找能力”的导航，不作为运行时加载入口。
+
+## 适合谁
+
+- AI 产品经理：需要把想法、调研、方案和 PRD 推进到可交付状态。
+- 使用 Codex、Claude 或其他 Agent 工具的产品/业务负责人：希望用自然语言稳定唤起一组可复用工作流。
+- 正在搭建团队 Skill 资产的人：需要参考如何组织 `SKILL.md`、中文触发语、路由边界和 catalog。
+- 研发协作者：需要理解产品侧 Skill 如何与 Superpowers 的开发计划、TDD、执行和验证流程衔接。
+
+## 能解决什么
+
+- 需求创建：从模糊想法、脑暴材料或功能说明进入 PRD 起草。
+- 需求复盘：从 PM、研发、测试视角评审 PRD，找缺口、冲突和不可测试点。
+- AI 协作脑暴：在执行前校准问题定义、挑战假设、压测方案。
+- 主题研究：围绕产品、技术、行业或概念做结构化研究，并转成决策输入。
+- 工程协作：诊断 agent trace、生成架构图、沉淀团队 Skill 和项目指南。
 
 ## 组织原则
 
@@ -59,7 +78,7 @@ PRD 进入 superpowers `writing-plans` 前，至少应满足：
 - 更新 [`SKILL_REGISTRY.md`](SKILL_REGISTRY.md)。
 - 如果会和相邻 Skill 抢触发，更新 [`SKILL_ROUTING.md`](SKILL_ROUTING.md)。
 - 如果它属于某条核心工作流，更新本 README。
-- 如仍保留 `categories/` 作为 GitHub 浏览索引，再同步对应分类 README。
+- 如额外维护 GitHub 浏览索引目录或专题 README，再同步对应索引。
 - 如果要立即在 Codex、Claude 或其他目标工具里使用，再执行对应的 skillshare 同步或白名单更新。
 
 ## 工程交付辅助

@@ -2,7 +2,7 @@
 
 这个文件用于解释每个已纳入 GitHub 管理的 Skill 是什么、中文怎么叫、什么时候用、什么时候不用、当前维护状态和公开风险。
 
-真实 Skill 目录保持在仓库根目录，确保 GitHub 历史、运行时分发和 Skill 触发名称稳定。`categories/` 只提供 GitHub 阅读时的分类入口，并通过 `.skillignore` 从 skillshare 发现结果中排除。
+真实 Skill 目录保持在仓库根目录，确保 GitHub 历史、运行时分发和 Skill 触发名称稳定。分类信息是 catalog metadata，不代表真实运行时目录；任何额外浏览索引都只是阅读辅助，不作为 skillshare 或 Agent runtime 的加载入口。
 
 ## 状态含义
 
@@ -14,16 +14,16 @@
 
 ## 分类体系
 
-| 分类目录 | 中文分类 | 适用边界 |
+| 分类标签 | 中文分类 | 适用边界 |
 | --- | --- | --- |
-| `categories/01-product-prd/` | 产品与 PRD | 复杂概念解构、需求结构化、PRD 起草、PRD 评审和交付准备。 |
-| `categories/02-collaboration-thinking/` | 认知与协作 | 复杂问题校准、假设挑战、方案压力测试和协作模式选择。 |
-| `categories/03-engineering-practice/` | 工程实践 | 通用编码规范、问题诊断、实现约束和研发质量基线。 |
-| `categories/04-architecture-visualization/` | 架构图与可视化 | 架构图、流程图、系统关系图和可编辑图示资产。 |
-| `categories/05-project-governance/` | 项目治理 | 项目级规范、共享模板、目录治理和上游 proposal。 |
-| `categories/06-skill-governance/` | Skill 治理 | Skill 创建、审查、版本维护、触发边界和质量评估。 |
-| `categories/07-technical-research/` | 技术调研 | 明确技术决策、接入可行性、方案选型和一次性决策型调研。 |
-| `categories/08-research-learning/` | 研究学习 | 专题研究、系统学习、多渠道证据、Obsidian Research Project 和研究报告。 |
+| `product-prd` | 产品与 PRD | 复杂概念解构、需求结构化、PRD 起草、PRD 评审和交付准备。 |
+| `collaboration-thinking` | 认知与协作 | 复杂问题校准、假设挑战、方案压力测试和协作模式选择。 |
+| `engineering-practice` | 工程实践 | 通用编码规范、问题诊断、实现约束和研发质量基线。 |
+| `architecture-visualization` | 架构图与可视化 | 架构图、流程图、系统关系图和可编辑图示资产。 |
+| `project-governance` | 项目治理 | 项目级规范、共享模板、目录治理和上游 proposal。 |
+| `skill-governance` | Skill 治理 | Skill 创建、审查、版本维护、触发边界和质量评估。 |
+| `technical-research` | 技术调研 | 明确技术决策、接入可行性、方案选型和一次性决策型调研。 |
+| `research-learning` | 研究学习 | 专题研究、系统学习、多渠道证据、Obsidian Research Project 和研究报告。 |
 
 ## 中文检索表
 
