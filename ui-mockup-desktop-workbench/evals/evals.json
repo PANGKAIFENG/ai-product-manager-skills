@@ -1,0 +1,93 @@
+{
+  "skill_name": "ui-mockup-desktop-workbench",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "基于 /path/to/desktop-agent-prd.md、/path/to/ui-spec.md 和 /path/to/frontend-app 输出桌面端 Agent 工作台高保真 preview。这个 UI 后续要让前端完全按真实项目组件实现。",
+      "expected_output": "Chooses project-native-preview, performs design discovery, creates or proposes an isolated preview route/component, and includes screen-contract.md, component-map.md, implementation-notes.md, screenshots or verification notes, and migration boundary.",
+      "files": [],
+      "assertions": [
+        {
+          "text": "Selects project-native-preview instead of standalone HTML when a frontend project path and implementation intent are provided."
+        },
+        {
+          "text": "Documents discovered UI constraints from the real project before visual implementation."
+        },
+        {
+          "text": "Includes screen contract, component map, and implementation notes."
+        },
+        {
+          "text": "Explains preview isolation and preview-to-production conversion."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "把这个桌面工作台 PRD 做成视觉 handoff，暂时不要改真实项目，但开发要能知道每个区域复用什么组件。需要一个可打开的 HTML 辅助确认。",
+      "expected_output": "Chooses visual-handoff, creates high-fidelity visual reference plus mandatory component map and implementation notes, and clearly labels standalone HTML as visual reference rather than production code.",
+      "files": [],
+      "assertions": [
+        {
+          "text": "Selects visual-handoff mode."
+        },
+        {
+          "text": "Provides a component map that references production components/styles or marks new components needed."
+        },
+        {
+          "text": "Labels HTML as visual reference and states migration limitations."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "我还在早期讨论，只想快速看下桌面端布局是否合理。请用一个 standalone HTML 做概念稿，不需要开发直接复用。",
+      "expected_output": "Chooses concept-html, keeps output lightweight, includes screen contract and assumptions, and does not overstate implementation reusability.",
+      "files": [],
+      "assertions": [
+        {
+          "text": "Selects concept-html mode."
+        },
+        {
+          "text": "Does not require component map or implementation notes as mandatory outputs for this early concept-only run."
+        },
+        {
+          "text": "States that the HTML is concept-only and not a production implementation."
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "这里有 PRD、线上截图和前端项目路径，但项目本地启动失败了。请继续给高保真 UI handoff，要求说明哪些是静态推断。",
+      "expected_output": "Attempts or records project inspection, marks unavailable runtime evidence, uses static inference cautiously, and avoids claiming production match without evidence.",
+      "files": [],
+      "assertions": [
+        {
+          "text": "Records that the project could not be fully run or inspected."
+        },
+        {
+          "text": "Marks static-inference assumptions and confidence limits."
+        },
+        {
+          "text": "Still includes screen contract, component map, and implementation notes for handoff."
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "PRD 已经确认了，现在要让前端完全复刻这个 UI。你需要输出能指导开发的内容，不要只给一个 HTML。",
+      "expected_output": "Treats the task as implementation-oriented, refuses to use standalone HTML as the sole deliverable, and outputs the full implementation handoff contract.",
+      "files": [],
+      "assertions": [
+        {
+          "text": "Does not deliver HTML as the only artifact."
+        },
+        {
+          "text": "Includes component mapping, state coverage, implementation notes, and verification requirements."
+        },
+        {
+          "text": "Explains which parts are reusable and which are visual-only."
+        }
+      ]
+    }
+  ]
+}

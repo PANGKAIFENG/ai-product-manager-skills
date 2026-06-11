@@ -2,6 +2,20 @@
 
 Use this reference when producing realistic desktop Agent workbench mockups.
 
+## Fidelity Model
+
+High fidelity means the implementation target is clear. It does not mean spending the most effort on standalone CSS.
+
+Prioritize fidelity in this order:
+
+1. Real product information architecture and states.
+2. Real component and token usage.
+3. Real layout density, spacing, icons, and interaction patterns.
+4. Screenshot-verifiable visual polish.
+5. Disposable standalone HTML/CSS details.
+
+When a real frontend project is provided, use project-native components and preview states whenever possible. If a standalone HTML is created, treat it as a visual reference and pair it with a component map.
+
 ## Product Shape
 
 A desktop workbench is an operational surface. It should help users repeatedly inspect, decide, execute, recover, and export. It is not a landing page, a campaign page, or a decorative dashboard.
@@ -75,6 +89,14 @@ Use the UI spec as the visual source of truth. If no spec exists:
 - Avoid fake glassmorphism, oversized glowing gradients, and marketing-style hero blocks.
 
 For product-facing desktop tools, "polished" usually means precise alignment, readable state hierarchy, clear affordances, and realistic data.
+
+For implementation-oriented handoff:
+
+- Reuse local design tokens for colors, spacing, typography, radius, shadows, and status states.
+- Reuse icon libraries and existing SVG conventions rather than drawing unrelated icons.
+- Mirror existing modal, popover, menu, sidebar, composer, avatar, and artifact panel patterns.
+- Write down where the design intentionally diverges from the current product.
+- Do not ask developers to copy CSS from a standalone mockup when a production component already exists.
 
 ## Screen Types
 
