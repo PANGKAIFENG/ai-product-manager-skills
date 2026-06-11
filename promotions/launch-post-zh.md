@@ -26,20 +26,21 @@ https://github.com/PANGKAIFENG/ai-product-manager-skills
 
 - `ai-collaboration-calibration`：问题还没想清楚时，先挑战假设和目标。
 - `research-topic-compiler`：系统研究主题、概念源流和行业演进，转成 PM 决策输入。
-- `tech-research`：围绕技术接入、方案选型和可行性给出推荐。
+- `decision-research`：围绕具体决策、方案选型和可行性给出有立场推荐。
 - `prd-architect`：把想法、脑暴或草稿整理成 PRD。
 - `prd-review`：从 PM、研发、测试视角审 PRD。
 - `grill-me`：对已有方案做压力测试和失败模式追问。
 
 这个项目不是替代 Superpowers，而是补它前面的产品侧工作流：
 
-产品问题校准 -> 主题/技术研究 -> PRD 起草 -> PRD 评审 -> 方案压测 -> 交给 Superpowers 做开发计划。
+产品问题校准 -> 主题研究 -> 决策调研 -> PRD 起草 -> PRD 评审 -> 方案压测 -> 交给 Superpowers 做开发计划。
 
 如果你是产品经理、产品负责人，或者正在用 Codex / Claude Code 做 AI 协作，可以先试这几个 prompt：
 
 ```text
 $ai-collaboration-calibration 先别执行，帮我看清这个产品问题
 $research-topic-compiler 系统研究这个主题，并转成 PM 决策输入
+$decision-research 帮我比较这几个方案，给一个有立场推荐
 $prd-architect 把这个想法整理成 PRD-lite
 $prd-review 从研发和测试视角审一下这个 PRD
 $grill-me 拷问我的方案，找失败模式

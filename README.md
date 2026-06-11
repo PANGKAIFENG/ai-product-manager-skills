@@ -8,7 +8,7 @@
 
 中文优先的 AI 产品经理 Agent Skill 库，用来把高频 PM 工作流沉淀成可复用的 Codex Skills、Claude Code Skills 和 Agent Skills。
 
-它重点覆盖：AI 协作脑暴、主题研究、技术调研、PRD 起草、PRD 评审、方案压测，以及把需求交给 Superpowers 开发计划前的交付准备。
+它重点覆盖：AI 协作脑暴、主题研究、决策调研、PRD 起草、PRD 评审、方案压测，以及把需求交给 Superpowers 开发计划前的交付准备。
 
 ## Why This Exists
 
@@ -34,6 +34,7 @@ Recommended first prompts:
 ```text
 $ai-collaboration-calibration 先别执行，帮我看清这个产品问题
 $research-topic-compiler 系统研究这个主题，并转成 PM 决策输入
+$decision-research 帮我比较这几个方案，给一个有立场推荐
 $prd-architect 把这个想法整理成 PRD-lite
 $prd-review 从研发和测试视角审一下这个 PRD
 $grill-me 拷问我的方案，找失败模式
@@ -60,7 +61,7 @@ Install paths:
 | --- | --- | --- | --- |
 | [`ai-collaboration-calibration`](ai-collaboration-calibration/) | 协作校准 / 认知校准 | 问题还没定义清楚时，先挑战假设、澄清目标和判断标准。 | [example](examples/ai-collaboration-calibration.md) |
 | [`research-topic-compiler`](research-topic-compiler/) | 专题研究编译器 / 概念源流研究助手 | 系统研究、主题学习、概念源流、行业演进和 PM 决策看板。 | [example](examples/research-topic-compiler.md) |
-| [`tech-research`](tech-research/) | 技术调研 / 决策驱动调研 | 明确技术决策、接入可行性、方案选型和一次性调研。 | [example](examples/tech-research.md) |
+| [`decision-research`](decision-research/) | 决策调研 / 决策驱动调研 | 明确具体决策、接入可行性、方案选型和一次性决策调研。 | [example](examples/decision-research.md) |
 | [`prd-architect`](prd-architect/) | PRD 架构师 / 需求文档起草 | 从想法或草稿起草 PRD，并在需要时补可编辑 Draw.io 图。 | [example](examples/prd-architect.md) |
 | [`prd-review`](prd-review/) | PRD 评审 / 需求评审 | 评审已有 PRD/handoff，检查文字、流程、验收和图示是否能支撑交付。 | [example](examples/prd-review.md) |
 | [`grill-me`](grill-me/) | 方案拷问 / 压力测试 | 对已有方案连续追问，暴露盲点、失败模式和前置条件。 | [example](examples/grill-me.md) |
@@ -70,7 +71,7 @@ Install paths:
 | Stage | Current state | Say this | Skill | Next step |
 | --- | --- | --- | --- | --- |
 | 1. 脑暴校准 | 还没想清楚真正问题，担心方向错 | “先别执行，帮我看清问题”“挑战我的假设” | [`ai-collaboration-calibration`](ai-collaboration-calibration/) | 明确问题、约束和判断标准 |
-| 2. 主题/技术研究 | 需要理解领域、概念、行业演进或技术路线 | “系统研究这个主题”“概念源流”“技术上可行吗” | [`research-topic-compiler`](research-topic-compiler/) / [`tech-research`](tech-research/) | 得到证据、判断、推荐方案或 PM 决策看板 |
+| 2. 主题/决策研究 | 需要理解领域、概念、行业演进，或要在多个方案间做选择 | “系统研究这个主题”“概念源流”“帮我选一个” | [`research-topic-compiler`](research-topic-compiler/) / [`decision-research`](decision-research/) | 得到证据、判断、推荐方案或 PM 决策看板 |
 | 3. PRD 起草 | 要把想法、脑暴或草稿整理成需求文档 | “帮我写 PRD”“帮我选 PRD 模板”“PRD 里补 Draw.io 图” | [`prd-architect`](prd-architect/) | 形成 PRD-lite、PRD-standard 或 PRD-ai-native |
 | 4. PRD 评审 | 已有 PRD，需要找缺口、冲突和不可测试点 | “帮我审 PRD”“从研发测试视角挑问题” | [`prd-review`](prd-review/) | 修订 PRD，关闭阻断项 |
 | 5. 方案压测 | 已有方案，但担心盲点和失败模式 | “拷问我的方案”“这个方案哪里会翻车” | [`grill-me`](grill-me/) | 明确取舍、风险和前置条件 |
@@ -91,7 +92,7 @@ See [docs/superpowers-comparison.md](docs/superpowers-comparison.md) for the pro
 
 - 问题还没定义清楚：用 `ai-collaboration-calibration`。
 - 需要系统理解主题、概念源流、行业演进或 PM 决策看板：用 `research-topic-compiler`。
-- 明确技术决策、接入方式或方案选型：用 `tech-research`。
+- 明确具体决策、接入方式或方案选型：用 `decision-research`。
 - 要从想法或草稿写 PRD：用 `prd-architect`。
 - 已有 PRD 要找缺口、检查图示或判断能否交付：用 `prd-review`。
 - 已有方案要被追问和压测：用 `grill-me`。

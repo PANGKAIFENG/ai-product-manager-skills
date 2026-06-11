@@ -5,7 +5,7 @@ AI Product Manager Skills Library is a Chinese-first Agent Skills repository for
 It complements Superpowers by covering the product-side workflow before engineering execution:
 
 - product problem calibration
-- product and technical research
+- product research and decision-driven research
 - PRD drafting
 - PRD review
 - plan pressure testing
@@ -15,7 +15,7 @@ The first public release includes six Skills:
 
 - `ai-collaboration-calibration`
 - `research-topic-compiler`
-- `tech-research`
+- `decision-research`
 - `prd-architect`
 - `prd-review`
 - `grill-me`

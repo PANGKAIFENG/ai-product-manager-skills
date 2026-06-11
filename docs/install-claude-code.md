@@ -11,7 +11,7 @@ Copy or symlink these folders:
 ```text
 ai-collaboration-calibration/
 research-topic-compiler/
-tech-research/
+decision-research/
 prd-architect/
 prd-review/
 grill-me/

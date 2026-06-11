@@ -31,7 +31,7 @@ Before handing work to Superpowers `writing-plans`, the PRD should make these cl
 If these are missing, use:
 
 - `ai-collaboration-calibration` to clarify the problem.
-- `research-topic-compiler` or `tech-research` to gather decision evidence.
+- `research-topic-compiler` to build topic understanding, or `decision-research` to choose between concrete options.
 - `prd-architect` to draft the PRD.
 - `prd-review` to find blockers.
 - `grill-me` to pressure-test the plan.
@@ -41,10 +41,11 @@ If these are missing, use:
 ```text
 1. $ai-collaboration-calibration 先别写 PRD，帮我看清这个产品问题
 2. $research-topic-compiler 系统研究这个主题，输出 PM 决策输入
-3. $prd-architect 基于上面结论写 PRD-standard
-4. $prd-review 从研发和测试视角审这个 PRD
-5. $grill-me 拷问最终方案
-6. Superpowers $writing-plans 基于修订后的 PRD 写实现计划
+3. $decision-research 比较候选方案，给一个有立场推荐
+4. $prd-architect 基于上面结论写 PRD-standard
+5. $prd-review 从研发和测试视角审这个 PRD
+6. $grill-me 拷问最终方案
+7. Superpowers $writing-plans 基于修订后的 PRD 写实现计划
 ```
 
 The key rule: product readiness here, implementation readiness there.

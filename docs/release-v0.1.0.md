@@ -6,7 +6,7 @@ Initial public release of AI Product Manager Skills Library.
 
 - `ai-collaboration-calibration`
 - `research-topic-compiler`
-- `tech-research`
+- `decision-research`
 - `prd-architect`
 - `prd-review`
 - `grill-me`
@@ -41,6 +41,7 @@ skillshare sync
 $prd-architect 把这个想法整理成 PRD-lite
 $prd-review 从研发和测试视角审一下这个 PRD
 $research-topic-compiler 系统研究这个主题，并转成 PM 决策输入
+$decision-research 帮我比较这几个方案，给一个有立场推荐
 ```
 
 ## Known Limitations

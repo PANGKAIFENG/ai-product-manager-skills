@@ -1,13 +1,13 @@
-# Example: tech-research
+# Example: decision-research
 
 ## Use When
 
-You already know the decision question and need a grounded technical recommendation.
+You already know the decision question and need a grounded recommendation.
 
 ## Prompt
 
 ```text
-$tech-research
+$decision-research
 
 我们要给 PM 团队分发一组 Agent Skills。
 请调研应该用普通 Git 仓库 + 手动安装、skillshare 同步，还是做成 Codex/Claude 插件。

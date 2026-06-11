@@ -7,28 +7,28 @@
 | 用户当前状态 | 优先 Skill | 触发信号 | 不要用它做什么 |
 | --- | --- | --- | --- |
 | 问题还没定义清楚，需要先看清真正问题 | `ai-collaboration-calibration` | “先聊一下”“帮我想想”“挑战我的假设”“方向是不是错了” | 不直接产出最终 PRD、方案或调研结论 |
-| 要围绕主题做系统学习、专题研究、概念源流或 PM 决策看板 | `research-topic-compiler` | “系统研究”“做深度专题”“整理到 Obsidian”“概念解读”“概念源流”“行业演进看板” | 不替代单次技术选型，不创建或评审 Skill |
-| 有明确技术决策，需要单次调研和推荐 | `tech-research` | “有没有现成方案”“怎么接入”“技术上可行吗”“选 A 还是 B” | 不做长期知识库沉淀，不替代问题脑暴 |
+| 要围绕主题做系统学习、专题研究、概念源流或 PM 决策看板 | `research-topic-compiler` | “系统研究”“做深度专题”“整理到 Obsidian”“概念解读”“概念源流”“行业演进看板” | 不替代单次方案选型，不创建或评审 Skill |
+| 有明确具体决策，需要单次调研和推荐 | `decision-research` | “有没有现成方案”“怎么接入”“这个选择可行吗”“选 A 还是 B” | 不做长期知识库沉淀，不替代问题脑暴 |
 | 要把想法、脑暴或需求草稿整理成 PRD | `prd-architect` | “帮我写 PRD”“选 PRD 模板”“把需求整理成 PRD”“PRD 里补 Draw.io 图” | 不评审已经成稿的 PRD，不直接写代码 |
 | 已有 PRD/handoff，需要找缺口并修订 | `prd-review` | “帮我审 PRD”“从研发测试视角挑问题”“能不能交付开发”“检查图示是否可编辑” | 不从零生成 PRD，不做纯语言润色 |
 | 已有方案，需要压力测试和追问 | `grill-me` | “拷问我的方案”“压力测试”“问 hard questions”“哪里会翻车” | 不从零写方案，不替代 PRD 评审 |
 
 ## 研究类分流规则
 
-`research-topic-compiler` 和 `tech-research` 的边界取决于用户要的是“学习/理解/沉淀”还是“选择/接入/决策”。
+`research-topic-compiler` 和 `decision-research` 的边界取决于用户要的是“学习/理解/沉淀”还是“选择/接入/决策”。
 
 | 用户目标 | 优先 Skill | 说明 |
 | --- | --- | --- |
 | 轻量概念解读、概念源流、语义演化、范式阶段、PM 技术评审提问脚本 | `research-topic-compiler` 的 `Lightweight Concept Lens Mode` | 输出 PM 决策看板、概念源流、阶段矩阵、反模式和评审问题；默认不写入 Obsidian。 |
 | 系统学习、深度专题、长期沉淀、Obsidian Research Project | `research-topic-compiler` 的深度研究模式 | 输出研究计划、证据矩阵、研究报告、学习包或长期雷达。 |
-| 明确技术路线、平台接入、工具选型、可行性判断 | `tech-research` | 输出有立场推荐、排除理由、接入风险、验证路径和下一步决策。 |
+| 明确决策路线、平台接入、工具选型、可行性判断 | `decision-research` | 输出有立场推荐、排除理由、接入风险、验证路径和下一步决策。 |
 | 用户还没定义清楚为什么研究这个主题 | `ai-collaboration-calibration` | 先校准问题、决策目标和约束，再进入研究。 |
 
 典型分流：
 
 - “帮我轻量解构一下 MCP 的概念源流，输出 PM 决策看板。” -> `research-topic-compiler` Lightweight Concept Lens Mode。
 - “系统研究 MCP 安全最佳实践，整理到 Obsidian。” -> `research-topic-compiler` 深度研究模式。
-- “我们应该选 MCP 还是自研工具协议？” -> `tech-research`。
+- “我们应该选 MCP 还是自研工具协议？” -> `decision-research`。
 
 ## PRD 图示分流规则
 

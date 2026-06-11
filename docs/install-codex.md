@@ -13,7 +13,7 @@ mkdir -p "$HOME/.agents/skills"
 for skill in \
   ai-collaboration-calibration \
   research-topic-compiler \
-  tech-research \
+  decision-research \
   prd-architect \
   prd-review \
   grill-me
@@ -34,7 +34,7 @@ mkdir -p /path/to/your-project/.agents/skills
 for skill in \
   ai-collaboration-calibration \
   research-topic-compiler \
-  tech-research \
+  decision-research \
   prd-architect \
   prd-review \
   grill-me
