@@ -1,0 +1,4 @@
+interface:
+  display_name: "设计脑暴"
+  short_description: "在 PRD、mockup 或开发计划前，比较设计方案并收敛成 spec"
+  default_prompt: "Use $brainstorming to compare design options and produce a confirmed design spec before PRD, mockup, issues, or implementation planning."

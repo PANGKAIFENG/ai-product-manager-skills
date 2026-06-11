@@ -14,6 +14,7 @@ for skill in \
   ai-collaboration-calibration \
   research-topic-compiler \
   decision-research \
+  brainstorming \
   prd-architect \
   prd-review \
   prd-to-issues \
@@ -38,6 +39,7 @@ for skill in \
   ai-collaboration-calibration \
   research-topic-compiler \
   decision-research \
+  brainstorming \
   prd-architect \
   prd-review \
   prd-to-issues \
@@ -79,6 +81,12 @@ or:
 
 ```text
 $prd-to-issues 把这个 PRD 拆成 GitHub issues，先不要发布
+```
+
+or:
+
+```text
+$brainstorming 先不要写 PRD，帮我脑暴 2-3 个设计方案
 ```
 
 or:

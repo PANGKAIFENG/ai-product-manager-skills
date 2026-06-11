@@ -15,6 +15,7 @@ This is a thin index for agents working in this repository. It does not replace 
 | --- | --- |
 | Framer | `ai-collaboration-calibration` |
 | Researcher | `research-topic-compiler` / `decision-research` |
+| Designer | `brainstorming` |
 | Maker | `prd-architect` |
 | Critic | `grill-me` |
 | Reviewer | `prd-review` |

@@ -6,6 +6,7 @@ It complements Superpowers by covering the product-side workflow before engineer
 
 - product problem calibration
 - product research and decision-driven research
+- design brainstorming before PRD or implementation planning
 - PRD drafting
 - PRD review
 - PRD-to-issue backlog handoff
@@ -14,11 +15,12 @@ It complements Superpowers by covering the product-side workflow before engineer
 - AI work assetization diagnosis
 - requirements handoff
 
-The public library currently includes nine Skills:
+The public library currently includes ten Skills:
 
 - `ai-collaboration-calibration`
 - `research-topic-compiler`
 - `decision-research`
+- `brainstorming`
 - `prd-architect`
 - `prd-review`
 - `prd-to-issues`

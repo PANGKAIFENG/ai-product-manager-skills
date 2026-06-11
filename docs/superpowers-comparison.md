@@ -10,6 +10,7 @@ Superpowers is strongest once the problem is clear enough to plan, test, impleme
 | --- | --- | --- |
 | Fuzzy problem | Clarify assumptions, goals, constraints, and decision criteria. | Usually too early. |
 | Topic research | Build PM decision input, evidence, concept lineage, and option framing. | Usually not the main job. |
+| Design brainstorming | Compare 2-3 product/design paths, recommend one, and produce a design spec before PRD or implementation planning. | Has a native `brainstorming` Skill for implementation design; this repo adapts that pattern for PM handoff. |
 | PRD drafting | Create PRD-lite, PRD-standard, or PRD-ai-native. | Consumes the PRD later. |
 | PRD review | Find gaps, contradictions, untestable requirements, and handoff blockers. | May use the corrected PRD for implementation planning. |
 | Implementation issue backlog | `prd-to-issues` breaks a ready PRD into GitHub implementation issue drafts with coverage and AFK / HITL labels. | May consume the issue backlog as planning input, but does not own GitHub issue publishing. |
@@ -33,6 +34,7 @@ If these are missing, use:
 
 - `ai-collaboration-calibration` to clarify the problem.
 - `research-topic-compiler` to build topic understanding, or `decision-research` to choose between concrete options.
+- `brainstorming` to compare design paths and confirm the design before writing PRD or implementation plan.
 - `prd-architect` to draft the PRD.
 - `prd-review` to find blockers.
 - `prd-to-issues` to create a GitHub issue backlog after the PRD is ready.
@@ -44,11 +46,12 @@ If these are missing, use:
 1. $ai-collaboration-calibration 先别写 PRD，帮我看清这个产品问题
 2. $research-topic-compiler 系统研究这个主题，输出 PM 决策输入
 3. $decision-research 比较候选方案，给一个有立场推荐
-4. $prd-architect 基于上面结论写 PRD-standard
-5. $prd-review 从研发和测试视角审这个 PRD
-6. $prd-to-issues 把 ready PRD 拆成 GitHub implementation issues，先给 draft
-7. $grill-me 拷问最终方案
-8. Superpowers $writing-plans 基于修订后的 PRD 或 issue backlog 写实现计划
+4. $brainstorming 先比较 2-3 个设计路径，确认推荐方案
+5. $prd-architect 基于上面结论写 PRD-standard
+6. $prd-review 从研发和测试视角审这个 PRD
+7. $prd-to-issues 把 ready PRD 拆成 GitHub implementation issues，先给 draft
+8. $grill-me 拷问最终方案
+9. Superpowers $writing-plans 基于修订后的 PRD 或 issue backlog 写实现计划
 ```
 
 The key rule: product readiness here, implementation readiness there.
