@@ -90,11 +90,11 @@ Install paths:
 
 Loop Extension 不新增 Skill，也不改变根目录结构。它是在部分高价值 Skill 内增加的状态化工作合约，只有当用户明确需要多轮、可恢复、持续更新或交付准备度收敛时才启用。
 
-| Loop Extension | Parent Skill | Use when | Contract |
-| --- | --- | --- | --- |
-| Decision Research Loop | [`decision-research`](decision-research/) | 围绕同一个决策多轮收敛，跟踪假设、证据、反证、范围漂移和结论版本。 | [`decision-loop-contract.md`](decision-research/references/decision-loop-contract.md) |
-| Research Radar Loop | [`research-topic-compiler`](research-topic-compiler/) | 围绕持续变化主题维护 watchlist、证据更新、阶段结论 Diff 和更新日志。 | [`research-radar-loop-contract.md`](research-topic-compiler/references/research-radar-loop-contract.md) |
-| PRD Readiness Loop | [`prd-review`](prd-review/) | 围绕同一份 PRD 多轮 review、修订、关闭阻断项，并判断能否进入 `writing-plans`。 | [`prd-readiness-loop-contract.md`](prd-review/references/prd-readiness-loop-contract.md) |
+| Loop Extension | Parent Skill | Use when | Contract | Pattern |
+| --- | --- | --- | --- | --- |
+| Decision Research Loop | [`decision-research`](decision-research/) | 围绕同一个决策多轮收敛，跟踪假设、证据、反证、范围漂移和结论版本。 | [`decision-loop-contract.md`](decision-research/references/decision-loop-contract.md) | [`decision-research-loop.md`](loop-patterns/decision-research-loop.md) |
+| Research Radar Loop | [`research-topic-compiler`](research-topic-compiler/) | 围绕持续变化主题维护 watchlist、证据更新、阶段结论 Diff 和更新日志。 | [`research-radar-loop-contract.md`](research-topic-compiler/references/research-radar-loop-contract.md) | [`research-radar-loop.md`](loop-patterns/research-radar-loop.md) |
+| PRD Readiness Loop | [`prd-review`](prd-review/) | 围绕同一份 PRD 多轮 review、修订、关闭阻断项，并判断能否进入 `writing-plans`。 | [`prd-readiness-loop-contract.md`](prd-review/references/prd-readiness-loop-contract.md) | [`prd-readiness-loop.md`](loop-patterns/prd-readiness-loop.md) |
 
 PRD 进入 Superpowers `writing-plans` 前，至少应满足：
 

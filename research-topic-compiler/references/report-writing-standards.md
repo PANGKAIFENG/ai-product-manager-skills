@@ -150,7 +150,7 @@ Every major conclusion should state its implication for the resolved user contex
 Use compact evidence notes:
 
 ```markdown
-- [Source title](path-or-url) - Evidence A/B/C; supports <claim>.
+- Source title (`path-or-url`) - Evidence A/B/C; supports <claim>.
 ```
 
 Use `02_证据与卡片.md` for detailed source-by-source notes.

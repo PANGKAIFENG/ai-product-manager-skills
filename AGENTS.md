@@ -28,7 +28,7 @@ Loop patterns are orchestration docs, not new Skills:
 
 - `loop-patterns/prd-readiness-loop.md`
 - `loop-patterns/decision-research-loop.md`
-- Research Radar state remains under `research-topic-compiler/references/research-radar-loop-contract.md` until a repo-level pattern is needed.
+- `loop-patterns/research-radar-loop.md`
 
 Use loop patterns only when the user needs multi-round state, resumability, readiness convergence, or a repeated handoff between Skills.
 

@@ -83,7 +83,7 @@ Use short citations inside `05_研究报告`:
 ```markdown
 ### 关键依据
 
-- [Source title](path-or-url) - Evidence A/B/C; supports <claim>.
+- Source title (`path-or-url`) - Evidence A/B/C; supports <claim>.
 ```
 
 Use `02_证据与卡片` for fuller notes, source comparison, and source-by-source detail.
