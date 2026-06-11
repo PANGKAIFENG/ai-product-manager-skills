@@ -4,7 +4,7 @@ description: >
   PRD 评审 / 需求评审：当用户已有 PRD 初稿、handoff、需求文档或产品方案，需要从 PM、研发、测试视角找缺口、
   冲突、不可实现点和不可测试点时使用。可用中文唤起：“帮我审 PRD”“从研发和测试视角挑问题”
   “这个需求文档能不能交付开发”“帮我给 PRD 出修改草案”“检查 PRD 图示是否缺失或不可编辑”。
-  不用于凭空生成 PRD 初稿或直接写代码。
+  不用于凭空生成 PRD 初稿、直接写代码，或对 PRD 背后的成熟方案做一问一答压力测试；方案压测用 grill-me。
 ---
 
 # PRD 评审（prd-review）
@@ -15,7 +15,7 @@ description: >
 - 英文稳定名：`prd-review`
 - 你可以这样叫我：`帮我审 PRD`、`从研发测试视角挑问题`、`这个需求文档能不能交付开发`、`帮我补一版修订草案`、`检查 PRD 图示是否可编辑`
 - 适合：已经有 PRD/handoff，需要发现阻断项、重要缺口、验收不可测、工程无法落地的地方
-- 不适合：从零写 PRD，改用 `prd-architect`；只做语言润色时不需要触发
+- 不适合：从零写 PRD，改用 `prd-architect`；PRD 背后的方案可行性压测改用 `grill-me`；只做语言润色时不需要触发
 
 ## Overview
 
@@ -26,6 +26,16 @@ description: >
 3. 可直接回填到 PRD 的修订草案
 
 这个 skill 默认服务于“AI 先出第一版 PRD，人再做多轮 review 修正”的场景。
+
+## Boundary With `grill-me`
+
+`prd-review` 评审的是 PRD / handoff artifact 是否能支撑交付：
+
+- 是否写清目标用户、问题、范围、流程、状态、输入输出、异常和验收。
+- 是否存在研发无法拆解、测试无法验证或图示不可编辑的问题。
+- 是否可以给出 `Implementation-Plan Readiness` verdict。
+
+如果用户关心的是“这个方案本身会不会失败”“这个产品方向的核心取舍是否站得住”“请连续问 hard questions”，转交 `grill-me`。可以把本 Skill 发现的方案级疑虑作为 `grill-me` 的输入，但不要在标准 PRD review 中替代交互式压力测试。
 
 ## Loop Extension：PRD Readiness Loop
 
@@ -59,6 +69,7 @@ PRD Readiness Loop 是本 Skill 的状态化扩展：
 2. 把未确认业务事实伪装成已确认结论
 3. 未经要求直接重写整份 PRD 成终稿
 4. 为了显得完整而强行添加与当前阶段无关的大段章节
+5. 交互式拷问 PRD 背后的成熟方案；这类压力测试应转交 `grill-me`
 
 ## Default Inputs
 
@@ -302,7 +313,7 @@ PRD Readiness Loop 是本 Skill 的状态化扩展：
 1. findings 必须先于总结
 2. 不要按角色分三份几乎重复的报告
 3. 同一个问题优先合并成一条，再标注受影响视角
-4. 修订草案优先“最小可替换块”，不要默认重写整篇
+4. 修订草案优先“最小可替换块”，不要默认重写整篇；只有用户明确要求才给完整重写稿
 5. 结论要明确指出来自：
    - handoff 已确认事实
    - PRD 当前写法
@@ -409,6 +420,7 @@ Non-trigger prompts:
 - 仅凭一句话生成完整 PRD
 - 只做目录治理
 - 只写 proposal，不评审 PRD
+- 连续拷问 PRD 背后的方案是否会失败
 
 Resources:
 

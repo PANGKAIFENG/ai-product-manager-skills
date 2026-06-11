@@ -3,9 +3,10 @@ name: research-topic-compiler
 description: >
   专题研究编译器 / Persona-Adaptive Research-to-Learning Compiler：当用户要围绕一个主题做系统学习、
   专题研究、行业调研、最佳实践提炼、轻量概念解读、概念源流、语义演化、PM 技术评审提问脚本或行业演进看板时使用。
-  适合把研究转成 Research Project、学习报告、证据矩阵、PM 决策看板、模板或实践任务。适合“系统研究一个主题”
+  适合把研究转成 Research Project、学习报告、证据矩阵、PM 决策看板、候选池、模板或实践任务。适合“系统研究一个主题”
   “整理到 Obsidian”“做深度专题”“研究行业最佳实践”“概念解读”“概念源流”“PM 技术评审提问脚本”
   “行业演进看板”“这个主题对我的业务有什么用”。不适合创建 Skill、评审 SKILL.md、普通即时搜索或一次性摘要。
+  当用户已经要在明确候选项中选一个、需要最终推荐和排除理由时，应使用 decision-research。
 ---
 
 # 专题研究编译器（research-topic-compiler）
@@ -16,8 +17,8 @@ description: >
 - 英文稳定名：`research-topic-compiler`
 - 分类：研究学习 / Obsidian 知识编译
 - 你可以这样叫我：`系统研究这个主题`、`帮我整理到 Obsidian`、`做一个深度专题`、`研究行业最佳实践`、`概念解读`、`概念源流`、`PM 技术评审提问脚本`、`行业演进看板`
-- 适合：围绕研究主题做多渠道证据收集、筛选、证据矩阵、阶段结论、概念源流、轻量 PM 决策看板、用户画像自适应学习报告和应用转化
-- 不适合：创建或评审 Skill；普通新闻搜索或一次性摘要
+- 适合：围绕研究主题做多渠道证据收集、筛选、证据矩阵、阶段结论、概念源流、轻量 PM 决策看板、候选池、用户画像自适应学习报告和应用转化
+- 不适合：创建或评审 Skill；普通新闻搜索或一次性摘要；明确要“选一个 / 给最终推荐 / 排除其他方案”时改用 `decision-research`
 
 ## Overview
 
@@ -79,11 +80,11 @@ description: >
 按用户目标选择一种主模式，也可以组合使用：
 
 - `Normal Research`：资料整理、证据矩阵、阶段结论、研究报告，适合普通专题研究。
-- `Lightweight Concept Lens Mode`：轻量概念解读、概念源流、语义演化、行业演进、PM 技术评审提问脚本或 HTML 决策看板。
+- `Lightweight Concept Lens Mode`：轻量概念解读、概念源流、语义演化、行业演进、PM 技术评审提问脚本或 HTML 决策看板；详细规则见 `references/mode-routing-guide.md`。
 - `Learning Pack Mode`：用户对陌生领域要建立学习框架时启用；详细标准见 `references/learning-pack-standards.md`。
-- `Application Mode`：用户问”对我/我们的业务有什么用””怎么落地””怎么做成方案/PRD/Workflow/Skill/Eval”时启用。
+- `Application Mode`：用户问”对我/我们的业务有什么用””怎么落地””怎么做成方案/PRD/Workflow/Skill/Eval”时启用；详细规则见 `references/mode-routing-guide.md`。
 - `Radar Mode`：长期变化主题启用 `L5`，只形成 watchlist、更新日志和复盘建议；不默认创建 automation。
-- `Product Decision Research`：用户需要做产品决策（选型、竞品分析、技术方案对比、市场策略验证）时启用。详细规则见 `references/product-decision-mode.md`。
+- `Product Candidate Research`：用户需要围绕产品决策先发现候选、建立候选池、做长期候选追踪或跨会话 handoff 时启用。详细规则见 `references/mode-routing-guide.md` 和 `references/product-decision-mode.md`；最终单次推荐归 `decision-research`。
 
 ### Radar Loop Extension
 
@@ -99,48 +100,11 @@ Research Radar Loop 是 `Radar Mode` 的状态化合约：
 
 不要因为用户只是要一次性概念解释、单篇文章总结或固定知识学习就进入 Radar Loop。
 
-Product Decision Research 触发信号：
+Product Candidate Research 与 Application Mode 的区别：Application Mode 是”研究完如何落地”，Product Candidate Research 是”研究本身先服务于候选发现、候选池和跨会话决策输入”。两者可以组合：先用 Product Candidate Research 形成候选池和评分，再转 `decision-research` 给最终推荐，最后用 Application Mode 将已确认选择转化为落地方案。
 
-- 用户说”这几个方案怎么选””帮我做竞品分析””对比一下 A 和 B””选型”。
-- 用户说”这个方向值不值得做””市场上有没有类似的””我该怎么定位”。
-- 用户描述的是一个需要在多个候选项之间做决定的场景。
-- 用户目标是形成 PRD 输入、技术选型报告、Go/No-Go 决策或产品路线图。
-- 调研后的预期产物是候选池（Candidate Backlog）而非单一结论。
+如果用户说“选一个”“给我最终推荐”“为什么排除其他方案”“基于这个 Candidate Backlog 下结论”，转交 `decision-research`。本 Skill 可以给 Top candidates 或排序表，但它们是决策输入，不是最终决策 authority。
 
-Product Decision Research 与 Application Mode 的区别：Application Mode 是”研究完如何落地”，Product Decision Research 是”研究本身就是为了在多个选项间做决策”。两者可以组合：先用 Product Decision Research 形成候选池和评分，再用 Application Mode 将最终选择转化为落地方案。
-
-Lightweight Concept Lens Mode 触发信号：
-
-- 用户说“概念解读”“概念源流”“概念透镜”“语义演化”“行业演进看板”。
-- 用户要 PM 技术评审提问脚本、反模式诊断、概念债务识别或供应商/方案评估问题。
-- 用户不需要完整 Obsidian Research Project，但需要带来源的结构化理解和可操作判断。
-- 用户要求生成本地 HTML 决策看板、Tailwind + Alpine.js 看板或可验证的概念演进 dashboard。
-
-Lightweight Concept Lens Mode 工作规则：
-
-- 先追溯概念源流：提出背景、原始问题、原始用户、原始用途、主要语义漂移和当前误用。
-- 再归纳范式阶段：从证据中推导 3-6 个阶段，不强套固定四阶段，也不把简单时间线当结构。
-- 每个阶段必须写清用户需求、底层矛盾、成熟解法、PM 视角操作逻辑、证据依据和 1-2 个评审问题。
-- 输出默认是聊天内 PM 决策看板；只有用户明确要文件或 HTML dashboard 时才生成本地 `dashboard.html`。
-- 生成 HTML dashboard 前读取 `references/concept-lens-output-contract.md`、`references/concept-lens-html-dashboard-template.md` 和 `references/concept-lens-design-quality.md`。
-- 冷启动或事实敏感主题先读取 `references/concept-lens-source-and-factuality.md` 并浏览验证；用到历史来源时区分证据和模型推断。
-- 生成 HTML 后运行 `python3 scripts/validate_html_artifact.py <path-to-dashboard.html>`，并在可用时做浏览器视觉检查。
-
-Learning Pack Mode 触发信号：
-
-- 用户说“陌生领域”“系统学习”“学习路线”“教程式理解”。
-- 用户说“不要只给证据卡片”“不要太表面”。
-- 用户说“像 Agent-Learning-Hub，但轻一点”。
-- 用户希望建立一个主题的长期认知框架。
-
-Learning Pack 默认写进 `05_研究报告`、`03_阶段结论`、`07_行业案例对照` 和 `08_最佳实践与应用模板`。不要默认新增 `10-12` 文件；只有用户明确要求独立学习包、主题复杂度达到 `L4/L5` 且内容过长、研究项目要复用给他人学习，或 `05_研究报告` 过长影响阅读时，才建议新增 `10_学习路线.md`、`11_概念地图.md`、`12_实践任务.md`。
-
-Application Mode 必须把核心结论转成用户当前工作中的至少一种产物：
-
-- 判断：是否值得做、边界在哪里、风险是什么、何时不适合。
-- 方案：模块拆解、路线图、资源投入、关键取舍。
-- 模板：PRD 片段、Workflow 表、Eval 指标、接口草案、SOP、风险矩阵。
-- 任务：最小实践、验证动作、下一步调研、团队分工。
+需要模式触发细则、Concept Lens 工作规则、Learning Pack 文件新增条件或 Application Mode 输出要求时，读取 `references/mode-routing-guide.md`。
 
 ## Pre-Research Source Expansion
 
@@ -197,7 +161,7 @@ Application Mode 必须把核心结论转成用户当前工作中的至少一种
 
 1. 捕获主题和目标，用一句话复述研究对象、用户要解决的问题和预期产物。
 2. 解析用户画像。按 `User Context Resolution` 选择通用解释或 persona-adaptive 输出。
-3. 判断研究模式和深度。非平凡主题先读 `references/research-depth-rubric.md`，推荐 `L1-L5`，并说明是否启用 Lightweight Concept Lens、Learning Pack、Application Mode 或 Product Decision Research。
+3. 判断研究模式和深度。非平凡主题先读 `references/research-depth-rubric.md`，推荐 `L1-L5`，并说明是否启用 Lightweight Concept Lens、Learning Pack、Application Mode 或 Product Candidate Research。
 4. 选择渠道。读取 `references/channel-selection-rubric.md` 和 `references/channel-registry.md`，根据主题动态选择 Obsidian 之外的渠道。
 5. 判断是否启用 `Pre-Research Source Expansion`。当内部输入不足、主题依赖外部生态或用户要求扩源时，先生成候选来源表和筛选建议。
 6. 先输出 `Research Run Plan`。包含推荐深度、研究模式、用户画像摘要、主题类型、核心问题、渠道选择、前置扩源渠道、每个渠道启用或不启用的理由、样本量、写入位置、凭据或访问限制。
@@ -207,9 +171,9 @@ Application Mode 必须把核心结论转成用户当前工作中的至少一种
 10. 写入或更新 Obsidian Research Project。默认输出 `00_研究定义` 到 `05_研究报告`；深度专题可增加 `06_外部渠道研究`、`07_行业案例对照`、`08_最佳实践与应用模板`、`09_更新日志`；只在触发条件满足时建议 `10-12` 学习包文件。Lightweight Concept Lens 默认不写入 Obsidian，除非用户要求沉淀。
 11. 输出最终摘要。给出研究报告入口、用户画像适配方式、核心结论、关键证据、应用转化、仍需验证、下一步建议和新增渠道候选。
 
-### Product Decision Research 分支步骤
+### Product Candidate Research 分支步骤
 
-当步骤 3 判定为 Product Decision Research 模式时，步骤 6-11 替换为以下流程：
+当步骤 3 判定为 Product Candidate Research 模式时，步骤 6-11 替换为以下流程：
 
 6. 输出 `Research Run Plan`（同上），额外包含：决策维度（见 `references/product-decision-mode.md`）、候选池初始边界、评分权重草案。
 7. 读取项目上下文。按 `references/project-context-intake.md` 获取项目阶段、约束、已有决策和用户优先级。
@@ -219,8 +183,8 @@ Application Mode 必须把核心结论转成用户当前工作中的至少一种
 11. Taxonomy 转译（可选）。若候选项来自外部体系，按 `references/taxonomy-translation.md` 转译为项目内部分类。
 12. 输出阶段产物：
     - Candidate Backlog（完整表格）
-    - Decision Summary（Top 3 推荐 + 理由 + 风险）
-    - Cross-Session Handoff（按 `references/cross-session-handoff.md` 格式，供后续会话继续）
+    - Candidate Summary（Top candidates + 理由 + 风险，标注为决策输入）
+    - Cross-Session Handoff（按 `references/cross-session-handoff.md` 格式，供后续会话或 `decision-research` 继续）
 13. 判断 Post-Research Exit。按 `references/post-research-exits.md` 推荐下一步出口（PRD Input / Starter Scenes / Demo Beachhead / Eval 等），不强制执行。
 
 ## L5 Automation Handling
@@ -250,7 +214,7 @@ L5 automation 的默认安全边界：
 **Research Run Plan**
 - Topic: <研究主题>
 - User goal: <用户要学会、判断或沉淀什么>
-- Research mode: <Normal Research / Lightweight Concept Lens / Learning Pack / Application / Radar>
+- Research mode: <Normal Research / Lightweight Concept Lens / Learning Pack / Application / Radar / Product Candidate>
 - User context: <role, domain, technical_depth, goal_type, output_preference, application_context, decision_need>
 - Recommended depth: <L1 / L2 / L3 / L4 / L5, with reason>
 - Topic type: <平台能力 / 开源工程 / 产品竞品 / 学术方法 / 政策合规 / 市场趋势 / 其他>
@@ -332,7 +296,7 @@ L5 automation 的默认安全边界：
 **Research Result**
 - Project/report: <Obsidian path or chat-only>
 - Depth used: <L1-L5>
-- Research mode: <Normal / Lightweight Concept Lens / Learning Pack / Application / Radar / Product Decision>
+- Research mode: <Normal / Lightweight Concept Lens / Learning Pack / Application / Radar / Product Candidate>
 - Persona adaptation: <role/domain/depth/goal used, or generic>
 - Channels used: <channels and sample counts>
 - Core conclusions: <3-7 bullets>
@@ -344,20 +308,20 @@ L5 automation 的默认安全边界：
 - Next actions: <what to read or do next>
 ```
 
-### Product Decision Research 输出格式
+### Product Candidate Research 输出格式
 
-当使用 Product Decision Research 模式时，额外输出：
+当使用 Product Candidate Research 模式时，额外输出：
 
 ```markdown
-**Product Decision Result**
+**Product Candidate Result**
 - Decision question: <用户要做什么决策>
 - Candidate count: <候选池总数 / 通过 Quality Gate 数>
-- Top recommendations: <Top 3 候选 + 一句话理由>
+- Top candidates: <Top 3 候选 + 一句话理由，作为决策输入而非最终推荐>
 - Key differentiators: <候选间核心差异点>
 - Scoring dimensions: <使用的评分维度和权重>
 - Confidence level: <High / Medium / Low + 原因>
 - Handoff file: <跨会话 handoff 文件路径，或 chat-only>
-- Recommended exit: <PRD Input / Starter Scenes / Demo Beachhead / Eval / Registry / Review / Roadmap / none>
+- Recommended exit: <decision-research / PRD Input / Starter Scenes / Demo Beachhead / Eval / Registry / Review / Roadmap / none>
 - Open questions for next session: <仍需下一轮研究验证的问题>
 ```
 
@@ -371,7 +335,7 @@ L5 automation 的默认安全边界：
 - `L3`：Research Project 或聊天报告已覆盖问题清单、证据矩阵、阶段结论和第一阅读入口式 `05_研究报告`，能帮助陌生领域入门。
 - `L4`：额外形成外部渠道研究、行业案例对照、最佳实践或应用模板，能指导方案设计、选型或 PRD 输入。
 - `L5`：形成 watchlist、更新日志、稳定/候选/待验证/废弃结论分层和后续自动化建议；若用户明确确认创建 automation，则调用 Codex `cron` automation，并保留低风险写入边界与人工确认点。
-- Product Decision Research：候选池通过 Quality Gate（至少 3 个候选项有完整 schema 填充）、评分表输出、Decision Summary 包含 Top 推荐和风险、Cross-Session Handoff 文件可被后续会话直接消费。
+- Product Candidate Research：候选池通过 Quality Gate（至少 3 个候选项有完整 schema 填充）、评分表输出、Candidate Summary 包含 Top candidates 和风险、Cross-Session Handoff 文件可被后续会话或 `decision-research` 直接消费。
 - Persona-adaptive 输出：关键结论已说明对当前用户画像、业务目标或应用场景的影响。
 - Application 输出：至少给出一个可执行动作、模板、实践任务或判断框架，除非用户只要求快查。
 - 如果渠道受限，必须说明未使用的渠道、限制原因和对结论可信度的影响。
@@ -380,6 +344,7 @@ L5 automation 的默认安全边界：
 
 - `references/research-depth-rubric.md`：判断 `L1-L5` 深度、样本量和确认门禁。
 - `references/research-radar-loop-contract.md`：Research Radar Loop 的状态文件、信号分类、更新规则、暂停条件和升级规则。
+- `references/mode-routing-guide.md`：Research Modes 的触发细则、Concept Lens、Learning Pack、Application 和 Product Candidate 规则。
 - `references/user-context-standards.md`：解析用户画像和 persona-adaptive 输出边界。
 - `references/default-user-profile.md`：本地默认用户画像；仅作为默认配置，不写死主逻辑。
 - `references/learning-pack-standards.md`：轻量系统学习包标准。
@@ -395,7 +360,7 @@ L5 automation 的默认安全边界：
 - `references/concept-lens-html-dashboard-template.md`：Tailwind + Alpine.js HTML 决策看板要求和验证标记。
 - `references/concept-lens-design-quality.md`：HTML dashboard 的视觉质量与移动端检查。
 - `scripts/validate_html_artifact.py`：HTML dashboard 的确定性结构校验脚本。
-- `references/product-decision-mode.md`：产品决策型研究模式、评分维度、候选池默认输出。
+- `references/product-decision-mode.md`：产品候选研究模式、评分维度、候选池默认输出；最终推荐转 `decision-research`。
 - `references/project-context-intake.md`：项目上下文读取规范、必填字段和输出分层。
 - `references/taxonomy-translation.md`：外部模式→内部分类转译规则和市场分类模板。
 - `references/candidate-backlog-schema.md`：候选池 17 字段 schema、Quality Gate 5 项检查和评分规则。
@@ -412,10 +377,10 @@ L5 automation 的默认安全边界：
 - Smoke：`我对 Agent Harness 完全陌生，帮我系统学习并整理到 Obsidian。`
 - Smoke：`研究 Harness 对我们推款智能体有什么用。`
 - Smoke：`我是后端工程师，研究 Agent Harness 的权限和 Trace 机制。`
-- Product Decision：`帮我对比 Electron vs Tauri vs Flutter Desktop，选一个做桌面端。` → 应触发 Product Decision Research 模式，输出候选池和评分表。
-- Product Decision：`研究一下市面上的 AI 视频生成方案，我需要选一个集成到产品里。` → 应形成 Candidate Backlog，通过 Quality Gate。
-- Product Decision：`这个方向值不值得做？市场上有没有类似的？` → 应输出竞品候选池 + Go/No-Go 判断框架。
-- Product Decision Handoff：研究跨多个会话时，后续会话应能从 handoff 文件继续，不重复已有候选。
+- Product Candidate：`研究一下市面上的 AI 视频生成方案，先沉淀候选池。` → 应形成 Candidate Backlog，通过 Quality Gate，并建议后续用 `decision-research` 下最终结论。
+- Product Candidate：`这个方向值不值得做？市场上有没有类似的？` → 应输出竞品候选池 + Go/No-Go 判断框架输入，不把弱证据包装成最终决策。
+- Product Candidate Handoff：研究跨多个会话时，后续会话或 `decision-research` 应能从 handoff 文件继续，不重复已有候选。
+- Non-trigger：`帮我对比 Electron vs Tauri vs Flutter Desktop，选一个做桌面端。` 应使用 `decision-research`。
 - Channel selection：学术型主题应启用论文/技术报告。
 - Channel selection：开源工具型主题应启用 GitHub。
 - Channel selection：产品竞品型主题应考虑 Product Hunt、G2、marketplace、定价页、changelog 和用户评论。

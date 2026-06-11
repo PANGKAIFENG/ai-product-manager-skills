@@ -4,6 +4,8 @@ description: >
   方案拷问 / 压力测试：当用户有一个产品方案、架构设计、计划或决策，想被连续追问、反方挑战、
   压测取舍和失败模式时使用。可用中文唤起：“拷问我的方案”“压力测试这个设计”“帮我问 hard questions”
   “这个方案哪里会翻车”“grill me”。目标是一问一答把决策树走清楚，不是直接替用户写最终方案。
+  如果用户还不知道真正问题是什么，先用 ai-collaboration-calibration；如果用户要标准 PRD 交付准备度评审，
+  用 prd-review。
 ---
 
 # 方案拷问（grill-me）
@@ -13,12 +15,23 @@ description: >
 - 中文名：方案拷问 / 压力测试
 - 英文稳定名：`grill-me`
 - 你可以这样叫我：`拷问我的方案`、`压力测试这个设计`、`帮我问 hard questions`、`这个方案哪里会翻车`、`grill me`
-- 适合：已有方案但担心盲点，需要按依赖、假设、分支和失败模式逐个追问
-- 不适合：直接写最终方案、泛泛总结文档、没有互动空间的一次性输出
+- 适合：已有方案、架构、计划或决策，且问题目标基本确认，需要按依赖、假设、分支和失败模式逐个追问
+- 不适合：直接写最终方案、泛泛总结文档、没有互动空间的一次性输出；问题还没定义清楚时改用 `ai-collaboration-calibration`；标准 PRD readiness 评审改用 `prd-review`
 
 ## Overview
 
 使用这个 Skill 对方案或设计做聚焦访谈式压力测试。目标是达成共同理解，而不是抛出一长串互不相干的问题。
+
+## Boundary
+
+先判断被拷问对象是否已经成形：
+
+- 问题、目标或成功标准还不清楚：转交 `ai-collaboration-calibration`，先校准问题定义。
+- 已有具体方案、架构、计划、产品决策或 PRD 背后的解法：留在 `grill-me` 做压力测试。
+- 用户要判断“这份 PRD 是否可开发、可测试、可交付”：转交 `prd-review`。
+- 用户要判断“这份 PRD 背后的方案是否会失败”：留在 `grill-me`。
+
+`grill-me` 不输出 `Implementation-Plan Readiness` 结论；这个 readiness verdict 由 `prd-review` 负责。
 
 ## Workflow
 
@@ -33,6 +46,14 @@ description: >
 ## Context Intake
 
 优先使用已有材料：PRD、issue、代码、文档、ADR、图、日志和之前的对话。只问那些会改变真实决策的缺失信息。
+
+开始前先确认或推断三件事：
+
+1. 被压测的方案是什么。
+2. 这个方案针对的问题是否已经被确认。
+3. 用户想压测的是方案可行性、取舍、失败模式，还是 PRD artifact 质量。
+
+如果第 2 点为“否 / 不清楚”，先建议进入 `ai-collaboration-calibration`。如果第 3 点是 PRD artifact 质量，转 `prd-review`。
 
 ## Output
 
@@ -62,6 +83,8 @@ Non-trigger prompts:
 
 - `直接帮我写最终方案。`
 - `不要追问，只总结这个 PRD。`
+- `帮我审 PRD，看能不能交付开发。`
+- `我还不知道真正问题是什么，先帮我想想。`
 
 ## Resources
 

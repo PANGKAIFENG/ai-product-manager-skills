@@ -28,10 +28,12 @@ Which existing Skills might overlap?
 
 - `ai-collaboration-calibration`
 - `research-topic-compiler`
-- `tech-research`
+- `decision-research`
 - `prd-architect`
 - `prd-review`
+- `ui-mockup-desktop-workbench`
 - `grill-me`
+- `ai-work-assetization-diagnoser`
 
 ## Example prompt
 

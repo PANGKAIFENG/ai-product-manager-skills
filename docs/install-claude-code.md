@@ -2,7 +2,7 @@
 
 This repository uses the common Agent Skill shape: each Skill is a directory with a `SKILL.md` file containing frontmatter, a trigger description, and workflow instructions.
 
-Claude Code setups can vary by version and organization policy. Use this guide as a conservative installation pattern: put the six Skill directories in the location your Claude Code environment scans for Skills, then verify by explicit invocation.
+Claude Code setups can vary by version and organization policy. Use this guide as a conservative installation pattern: put the eight Skill directories in the location your Claude Code environment scans for Skills, then verify by explicit invocation.
 
 ## Recommended Copy List
 
@@ -14,7 +14,9 @@ research-topic-compiler/
 decision-research/
 prd-architect/
 prd-review/
+ui-mockup-desktop-workbench/
 grill-me/
+ai-work-assetization-diagnoser/
 ```
 
 Each folder must include its `SKILL.md` file.
@@ -41,7 +43,7 @@ If you manage Claude Code Skills manually:
 
 1. Clone this repository.
 2. Locate your Claude Code Skills directory.
-3. Copy or symlink the six public Skill folders into that directory.
+3. Copy or symlink the eight public Skill folders into that directory.
 4. Restart Claude Code if new Skills are not detected.
 5. Test explicit invocation by Skill name.
 

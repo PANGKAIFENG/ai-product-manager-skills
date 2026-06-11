@@ -2,13 +2,13 @@
 
 [![Release](https://img.shields.io/github/v/release/PANGKAIFENG/ai-product-manager-skills?display_name=tag)](https://github.com/PANGKAIFENG/ai-product-manager-skills/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-6-2563eb.svg)](SKILL_REGISTRY.md)
+[![Skills](https://img.shields.io/badge/skills-8-2563eb.svg)](SKILL_REGISTRY.md)
 [![Codex](https://img.shields.io/badge/Codex-skills-111827.svg)](docs/install-codex.md)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-skills-111827.svg)](docs/install-claude-code.md)
 
 中文优先的 AI 产品经理 Agent Skill 库，用来把高频 PM 工作流沉淀成可复用的 Codex Skills、Claude Code Skills 和 Agent Skills。
 
-它重点覆盖：AI 协作脑暴、主题研究、决策调研、PRD 起草、PRD 评审、方案压测，以及把需求交给 Superpowers 开发计划前的交付准备。
+它重点覆盖：AI 协作脑暴、主题研究、决策调研、PRD 起草、PRD 评审、UI mockup、方案压测、AI 工作资产化诊断，以及把需求交给 Superpowers 开发计划前的交付准备。
 
 ## Why This Exists
 
@@ -37,7 +37,9 @@ $research-topic-compiler 系统研究这个主题，并转成 PM 决策输入
 $decision-research 帮我比较这几个方案，给一个有立场推荐
 $prd-architect 把这个想法整理成 PRD-lite
 $prd-review 从研发和测试视角审一下这个 PRD
+$ui-mockup-desktop-workbench 基于 PRD 和 UI 规范生成桌面端真实页面 mockup
 $grill-me 拷问我的方案，找失败模式
+$ai-work-assetization-diagnoser 判断这段 AI 工作该沉淀成 Prompt、Workflow、Skill 还是 Loop
 ```
 
 Install paths:
@@ -64,7 +66,9 @@ Install paths:
 | [`decision-research`](decision-research/) | 决策调研 / 决策驱动调研 | 明确具体决策、接入可行性、方案选型和一次性决策调研；需要多轮收敛时可进入 Decision Research Loop。 | [example](examples/decision-research.md) |
 | [`prd-architect`](prd-architect/) | PRD 架构师 / 需求文档起草 | 从想法或草稿起草 PRD，并在需要时补可编辑 Draw.io 图。 | [example](examples/prd-architect.md) |
 | [`prd-review`](prd-review/) | PRD 评审 / 需求评审 | 评审已有 PRD/handoff，检查文字、流程、验收和图示是否能支撑交付；需要关闭阻断项时可进入 PRD Readiness Loop。 | [example](examples/prd-review.md) |
+| [`ui-mockup-desktop-workbench`](ui-mockup-desktop-workbench/) | 桌面工作台 UI Mockup 生成器 | 基于 PRD、UI 规范和桌面 Agent 工作台模式，生成可打开、可截图、可交付讨论的真实页面 mockup。 | - |
 | [`grill-me`](grill-me/) | 方案拷问 / 压力测试 | 对已有方案连续追问，暴露盲点、失败模式和前置条件。 | [example](examples/grill-me.md) |
+| [`ai-work-assetization-diagnoser`](ai-work-assetization-diagnoser/) | AI 工作资产化诊断器 / 资产化路由器 | 判断重复 AI 工作应沉淀为 Prompt、Context Pack、Workflow、Skill、Loop、System，或不值得沉淀。 | - |
 
 ## AI PM Workflow
 
@@ -74,8 +78,10 @@ Install paths:
 | 2. 主题/决策研究 | 需要理解领域、概念、行业演进，或要在多个方案间做选择 | “系统研究这个主题”“概念源流”“帮我选一个” | [`research-topic-compiler`](research-topic-compiler/) / [`decision-research`](decision-research/) | 得到证据、判断、推荐方案或 PM 决策看板 |
 | 3. PRD 起草 | 要把想法、脑暴或草稿整理成需求文档 | “帮我写 PRD”“帮我选 PRD 模板”“PRD 里补 Draw.io 图” | [`prd-architect`](prd-architect/) | 形成 PRD-lite、PRD-standard 或 PRD-ai-native |
 | 4. PRD 评审 | 已有 PRD，需要找缺口、冲突和不可测试点 | “帮我审 PRD”“从研发测试视角挑问题” | [`prd-review`](prd-review/) | 修订 PRD，关闭阻断项 |
-| 5. 方案压测 | 已有方案，但担心盲点和失败模式 | “拷问我的方案”“这个方案哪里会翻车” | [`grill-me`](grill-me/) | 明确取舍、风险和前置条件 |
-| 6. 开发计划 | PRD 已可交付，需要拆实现步骤 | “基于这个 PRD 写开发计划” | Superpowers `writing-plans` | 进入实现计划、测试策略和提交节奏 |
+| 5. UI Mockup | PRD 和 UI 规范已可用，需要桌面端真实页面 | “基于 PRD 和 UI 规范出桌面端 mockup” | [`ui-mockup-desktop-workbench`](ui-mockup-desktop-workbench/) | 得到可打开、可截图、可讨论的页面 mockup |
+| 6. 方案压测 | 已有方案，但担心盲点和失败模式 | “拷问我的方案”“这个方案哪里会翻车” | [`grill-me`](grill-me/) | 明确取舍、风险和前置条件 |
+| 7. 资产化诊断 | 一段 AI 工作重复出现，不确定该沉淀到哪层 | “这个 prompt 应该做成 workflow 还是 Skill” | [`ai-work-assetization-diagnoser`](ai-work-assetization-diagnoser/) | 得到最小资产建议和复用验证信号 |
+| 8. 开发计划 | PRD 已可交付，需要拆实现步骤 | “基于这个 PRD 写开发计划” | Superpowers `writing-plans` | 进入实现计划、测试策略和提交节奏 |
 
 ## Loop Extensions
 
@@ -105,7 +111,9 @@ See [docs/superpowers-comparison.md](docs/superpowers-comparison.md) for the pro
 - 明确具体决策、接入方式或方案选型：用 `decision-research`。
 - 要从想法或草稿写 PRD：用 `prd-architect`。
 - 已有 PRD 要找缺口、检查图示或判断能否交付：用 `prd-review`。
+- PRD 与 UI 规范已明确，要出桌面工作台真实页面 mockup：用 `ui-mockup-desktop-workbench`。
 - 已有方案要被追问和压测：用 `grill-me`。
+- 重复 AI 工作要判断资产化层级：用 `ai-work-assetization-diagnoser`。
 
 More details: [SKILL_ROUTING.md](SKILL_ROUTING.md)
 

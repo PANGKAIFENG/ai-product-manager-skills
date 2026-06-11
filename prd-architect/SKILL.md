@@ -24,6 +24,18 @@ description: >
 
 这个 skill 的职责是先定模板和阶段，再组织 PRD 的结构与承接关系。
 
+## Upstream Boundaries
+
+不要把所有输入都直接写成 PRD。先判断上游是否已经成熟：
+
+- 问题、用户、目标或判断标准还不清楚：先转 `ai-collaboration-calibration` 做问题校准。
+- 问题已确认，但具体方案、架构、计划或产品决策需要压力测试：先转 `grill-me`。
+- PRD 中存在重大产品、技术、商业或平台选择，且缺少证据：先转 `decision-research`。
+- 已有 PRD/handoff 只是要判断能否交付开发：转 `prd-review`，由它给 readiness verdict。
+- PRD 和 UI 规范都已确认，用户要正式桌面端页面 mockup：转 `ui-mockup-desktop-workbench`。
+
+`prd-architect` 可以根据上游输出起草或修订 PRD，但不自我批准 `Ready for writing-plans`。
+
 ## Responsibilities
 
 这个 skill 负责：
@@ -41,9 +53,31 @@ description: >
 它不负责：
 
 - 直接决定 UI 细节
+- 生成正式桌面端多状态页面 mockup；这由 `ui-mockup-desktop-workbench` 负责
 - 直接开始编码
 - 用重型模板压扁所有需求
 - 把核心规则外包给单独 guide 再让用户自己跳转理解
+
+### UI Mockup Handoff
+
+`prd-architect` 只负责把 PRD 中的 UI 承接接口写清楚，例如页面范围、关键状态、交互入口、验收口径、截图或轻量 mockup notes。
+
+当 PRD 已经具备目标用户、页面范围、核心流程、关键状态、异常和验收标准，并且用户要正式桌面端真实页面 mockup 时，转交 `ui-mockup-desktop-workbench`。
+
+如果 mockup 过程中暴露 PRD 缺口：
+
+- 文档结构或章节缺失：回到 `prd-architect` 补 PRD。
+- 冲突、不可测试、验收缺失或 readiness 疑问：回到 `prd-review`。
+
+## Revision Input Contract
+
+当用户提供 `prd-review` findings、revision draft、open blockers 或 readiness status 时，可以进入修订模式：
+
+1. 先识别本轮 patch scope：只修 blocker、补验收、补异常、补图示，还是重组章节。
+2. 把 review finding 分成事实缺口、表达缺口、验收缺口、图示缺口和待确认决策。
+3. 只改能从输入中支撑的内容；缺失业务判断写成待确认项，不伪装成已确认需求。
+4. 输出最小可替换章节或段落，不默认重写整份 PRD。
+5. 修订后建议回到 `prd-review` 做 readiness re-check；readiness verdict 不由本 Skill 给出。
 
 ## PRD Diagram Mode
 

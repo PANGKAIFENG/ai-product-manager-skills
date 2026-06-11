@@ -6,29 +6,57 @@
 
 | 用户当前状态 | 优先 Skill | 触发信号 | 不要用它做什么 |
 | --- | --- | --- | --- |
-| 问题还没定义清楚，需要先看清真正问题 | `ai-collaboration-calibration` | “先聊一下”“帮我想想”“挑战我的假设”“方向是不是错了” | 不直接产出最终 PRD、方案或调研结论 |
-| 要围绕主题做系统学习、专题研究、概念源流或 PM 决策看板 | `research-topic-compiler` | “系统研究”“做深度专题”“整理到 Obsidian”“概念解读”“概念源流”“行业演进看板” | 不替代单次方案选型，不创建或评审 Skill |
-| 有明确具体决策，需要单次调研和推荐 | `decision-research` | “有没有现成方案”“怎么接入”“这个选择可行吗”“选 A 还是 B” | 不做长期知识库沉淀，不替代问题脑暴 |
+| 问题还没定义清楚，需要先看清真正问题 | `ai-collaboration-calibration` | “先聊一下”“帮我想想”“挑战我的假设”“方向是不是错了” | 不直接产出最终 PRD、方案或调研结论；成熟方案压力测试转 `grill-me` |
+| 要围绕主题做系统学习、专题研究、概念源流、候选池或 PM 决策看板 | `research-topic-compiler` | “系统研究”“做深度专题”“整理到 Obsidian”“概念解读”“概念源流”“行业演进看板”“先沉淀候选池” | 不替代单次最终方案选型，不创建或评审 Skill |
+| 有明确具体决策，需要单次调研和推荐 | `decision-research` | “有没有现成方案”“怎么接入”“这个选择可行吗”“选 A 还是 B”“基于候选池给最终推荐” | 不做长期知识库沉淀，不替代问题脑暴 |
 | 要把想法、脑暴或需求草稿整理成 PRD | `prd-architect` | “帮我写 PRD”“选 PRD 模板”“把需求整理成 PRD”“PRD 里补 Draw.io 图” | 不评审已经成稿的 PRD，不直接写代码 |
 | 已有 PRD/handoff，需要找缺口并修订 | `prd-review` | “帮我审 PRD”“从研发测试视角挑问题”“能不能交付开发”“检查图示是否可编辑” | 不从零生成 PRD，不做纯语言润色 |
-| 已有方案，需要压力测试和追问 | `grill-me` | “拷问我的方案”“压力测试”“问 hard questions”“哪里会翻车” | 不从零写方案，不替代 PRD 评审 |
+| PRD 和 UI 规范已明确，需要桌面端真实页面 mockup | `ui-mockup-desktop-workbench` | “基于 PRD 和 UI 规范出桌面端 mockup”“生成桌面工作台真实页面”“把 Agent Client PRD 做成 HTML mockup” | 不重新定义产品方向，不替代 PRD 评审，不直接实现生产代码 |
+| 已有方案，需要压力测试和追问 | `grill-me` | “拷问我的方案”“压力测试”“问 hard questions”“哪里会翻车” | 不从零写方案，不替代 PRD artifact/readiness 评审 |
+| 重复 AI 工作需要判断资产化层级 | `ai-work-assetization-diagnoser` | “值得做成 Skill 吗”“workflow 还是 Skill”“该沉淀成 Prompt / Context / Loop 吗” | 不直接创建 Skill，不替代具体执行 Skill |
+
+## 快速判别问题
+
+遇到相邻触发词时，先问或推断下面几个问题：
+
+| 判别问题 | 如果是 | 如果否 / 不清楚 |
+| --- | --- | --- |
+| 这个方案针对的问题是否已被确认？ | 已有具体方案、架构、计划或决策时用 `grill-me` 压测。 | 用 `ai-collaboration-calibration` 先校准问题定义。 |
+| 用户是在问“这份 PRD 是否可开发、可测试、可交付”吗？ | 用 `prd-review`，并输出 readiness verdict。 | 如果问的是“PRD 背后的方案是否会失败”，用 `grill-me`。 |
+| 用户要的是候选池还是最终选择？ | 候选池、长期追踪、Research Project 用 `research-topic-compiler`。 | 最终推荐、排除理由、颠覆条件用 `decision-research`。 |
+
+## Cross-Skill Comparison
+
+| Skill | 前提 | 主要输出 | 终止条件 |
+| --- | --- | --- | --- |
+| `ai-collaboration-calibration` | 问题、目标或约束还不稳定 | 真实问题陈述、关键假设、判断标准 | Done Signal 三问或用户确认进入执行 |
+| `research-topic-compiler` | 需要理解主题、沉淀知识、扩展候选池或长期雷达 | Research Project、证据矩阵、PM 决策看板、Candidate Backlog | 信息饱和、用户确认或转交决策 |
+| `decision-research` | 决策问题已定义或可快速框定 | 最终推荐、排除理由、置信度、颠覆条件 | 三角收敛、信息饱和、PoC 更便宜或用户决策 |
+| `prd-architect` | 要把想法、草稿或 review feedback 整理成 PRD | PRD-lite / standard / ai-native、图示或 UI 承接接口 | PRD 草稿达到当前阶段目标 |
+| `prd-review` | 已有 PRD/handoff artifact | Findings、Revision Draft、Implementation-Plan Readiness | Ready / Ready with assumptions / Not ready |
+| `ui-mockup-desktop-workbench` | PRD 和 UI 规范足够明确 | 可打开的桌面端 mockup、状态说明、截图/验证备注 | mockup 可运行、状态覆盖并完成视觉检查 |
+| `grill-me` | 方案、架构、计划或决策已成形 | 决策记录、被否选项、未解问题、推荐下一步 | 关键分支已探索或需要用户决策 |
+| `ai-work-assetization-diagnoser` | 重复 AI 工作、prompt、流程或团队场景需要沉淀判断 | 推荐资产层、相邻层排除理由、最小下一步 artifact、复用信号 | 得到明确资产化建议或不沉淀结论 |
 
 ## 研究类分流规则
 
-`research-topic-compiler` 和 `decision-research` 的边界取决于用户要的是“学习/理解/沉淀”还是“选择/接入/决策”。
+`research-topic-compiler` 和 `decision-research` 的边界取决于用户要的是“学习/理解/沉淀/候选池”还是“选择/接入/最终决策”。
 
 | 用户目标 | 优先 Skill | 说明 |
 | --- | --- | --- |
 | 轻量概念解读、概念源流、语义演化、范式阶段、PM 技术评审提问脚本 | `research-topic-compiler` 的 `Lightweight Concept Lens Mode` | 输出 PM 决策看板、概念源流、阶段矩阵、反模式和评审问题；默认不写入 Obsidian。 |
 | 系统学习、深度专题、长期沉淀、Obsidian Research Project | `research-topic-compiler` 的深度研究模式 | 输出研究计划、证据矩阵、研究报告、学习包或长期雷达。 |
-| 明确决策路线、平台接入、工具选型、可行性判断 | `decision-research` | 输出有立场推荐、排除理由、接入风险、验证路径和下一步决策。 |
+| 候选发现、候选池、竞品池、跨会话 handoff | `research-topic-compiler` 的 Product Candidate Research | 输出 Candidate Backlog、Candidate Summary、评分输入和 handoff；这些是最终决策输入。 |
+| 明确决策路线、平台接入、工具选型、可行性判断、最终推荐 | `decision-research` | 输出有立场推荐、排除理由、接入风险、验证路径、置信度和颠覆条件。 |
 | 用户还没定义清楚为什么研究这个主题 | `ai-collaboration-calibration` | 先校准问题、决策目标和约束，再进入研究。 |
 
 典型分流：
 
 - “帮我轻量解构一下 MCP 的概念源流，输出 PM 决策看板。” -> `research-topic-compiler` Lightweight Concept Lens Mode。
 - “系统研究 MCP 安全最佳实践，整理到 Obsidian。” -> `research-topic-compiler` 深度研究模式。
+- “研究市面上的 AI 视频生成方案，先沉淀候选池，后续继续补。” -> `research-topic-compiler` Product Candidate Research。
 - “我们应该选 MCP 还是自研工具协议？” -> `decision-research`。
+- “基于这个 Candidate Backlog 给我一个最终推荐。” -> `decision-research`。
 
 ## Loop Extension 分流规则
 
@@ -58,6 +86,19 @@ PRD 图示判断：
 - `PRD-lite`：简单局部改动不强制 Draw.io，优先文字步骤、表格、Mermaid 草稿、真实页面截图或 HTML mockup。
 - `PRD-standard`：多阶段链路、模块依赖、上下游输入输出时，应考虑核心流程图或结构图。
 - `PRD-ai-native`：人工动作、AI 动作、状态反馈、记忆写入、失败回退形成闭环时，应考虑一体化总图或核心流程图。
+
+## UI Mockup 分流规则
+
+`ui-mockup-desktop-workbench` 只在 PRD 或页面需求已经足够明确，并且用户要的是可打开、可截图、可交付讨论的桌面端真实页面时使用。
+
+| 用户目标 | 优先 Skill | 说明 |
+| --- | --- | --- |
+| 从 PRD 和 UI 规范生成桌面工作台 HTML mockup | `ui-mockup-desktop-workbench` | 读取 PRD 与 UI 规范，先抽屏幕/状态契约，再实现桌面页面 mockup。 |
+| PRD 还没成型，需要先补目标、流程、验收 | `prd-architect` | 先把需求写清楚，不直接画页面。 |
+| 已有 PRD，但担心缺口、冲突、不可测试 | `prd-review` | 先 review 并关闭阻断项，再生成 mockup。 |
+| mockup 过程中发现 PRD 缺状态、验收或流程冲突 | `prd-review` / `prd-architect` | 冲突和 readiness 问题走 `prd-review`；缺章节或缺描述走 `prd-architect`。 |
+| 只需要低保真结构、ASCII 布局或线框 | `ui-wireframe-to-html` 或 `prd-architect` 内的 UI 结构步骤 | 不强求视觉 polish。 |
+| 要生产级前端实现、接入真实路由和测试 | Superpowers `writing-plans` 后进入实现 | mockup 不是生产代码。 |
 
 ## PRD 到开发计划的衔接
 

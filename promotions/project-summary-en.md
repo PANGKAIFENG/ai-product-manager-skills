@@ -8,17 +8,21 @@ It complements Superpowers by covering the product-side workflow before engineer
 - product research and decision-driven research
 - PRD drafting
 - PRD review
+- desktop UI mockup generation
 - plan pressure testing
+- AI work assetization diagnosis
 - requirements handoff
 
-The first public release includes six Skills:
+The first public release includes eight Skills:
 
 - `ai-collaboration-calibration`
 - `research-topic-compiler`
 - `decision-research`
 - `prd-architect`
 - `prd-review`
+- `ui-mockup-desktop-workbench`
 - `grill-me`
+- `ai-work-assetization-diagnoser`
 
 Repository:
 
