@@ -13,7 +13,8 @@
 | 要把想法、脑暴或需求草稿整理成 PRD | `prd-architect` | “帮我写 PRD”“选 PRD 模板”“把需求整理成 PRD”“PRD 里补 Draw.io 图” | 不评审已经成稿的 PRD，不直接写代码 |
 | 已有 PRD/handoff，需要找缺口并修订 | `prd-review` | “帮我审 PRD”“从研发测试视角挑问题”“能不能交付开发”“检查图示是否可编辑” | 不从零生成 PRD，不做纯语言润色 |
 | PRD 已 ready，需要拆成研发可领取的 GitHub issue backlog | `prd-to-issues` | “把 PRD 拆成 issue”“需求文档拆任务”“生成 GitHub issues”“按 vertical slice 拆开发票” | 不从零写 PRD，不评审 PRD 缺口，不替代 Superpowers `writing-plans` |
-| PRD/UI 方向已确认，需要高保真 UI handoff 或项目原生 preview | `ui-mockup-desktop-workbench` | “基于 PRD 出高保真 mockup”“开发要复刻这个 UI”“做真实项目 preview”“输出 component map” | 不替代 PRD 起草/评审；不把 standalone HTML 当生产实现 |
+| PRD 已可用，但只想先确认 UI 结构、状态模型、ASCII 布局或低保真 HTML | `ui-wireframe-to-html` | “先出 UI 结构”“先做 ASCII 布局”“不要高保真”“只确认布局和状态” | 不做高保真视觉；不做真实项目 preview；不输出 component map / implementation notes |
+| PRD/UI 方向已确认，需要从结构进入高保真 UI handoff 或项目原生 preview | `ui-mockup-desktop-workbench` | “基于 PRD 出高保真 mockup”“先结构再高保真”“开发要复刻这个 UI”“做真实项目 preview”“输出 component map” | 不替代 PRD 起草/评审；不把 standalone HTML 当生产实现 |
 | 已有方案，需要压力测试和追问 | `grill-me` | “拷问我的方案”“压力测试”“问 hard questions”“哪里会翻车” | 不从零写方案，不替代 PRD artifact/readiness 评审 |
 | 重复 AI 工作需要判断资产化层级 | `ai-work-assetization-diagnoser` | “值得做成 Skill 吗”“workflow 还是 Skill”“该沉淀成 Prompt / Context / Loop 吗” | 不直接创建 Skill，不替代具体执行 Skill |
 
@@ -27,6 +28,7 @@
 | 用户是在问“先比较几个设计方案，再决定怎么写 PRD、mockup 或怎么实现”吗？ | 用 `brainstorming`，输出方案比较、推荐路径和设计 spec；涉及 UI 时先补项目视觉规范发现摘要。 | 如果已经要正式 PRD，转 `prd-architect`；如果方案已定要找漏洞，转 `grill-me`。 |
 | 用户是在问“这份 PRD 是否可开发、可测试、可交付”吗？ | 用 `prd-review`，并输出 readiness verdict。 | 如果问的是“PRD 背后的方案是否会失败”，用 `grill-me`。 |
 | 用户是在问“把 ready PRD 拆成 GitHub issues 或开发工单”吗？ | 用 `prd-to-issues`，默认先 draft-only，输出 coverage matrix 和 AFK / HITL 标注。 | 如果要的是文件级实现计划、测试策略和提交顺序，转 Superpowers `writing-plans`。 |
+| 用户是在问“先只确认 UI 结构和状态，不要视觉 polish”吗？ | 用 `ui-wireframe-to-html`，输出 screen inventory、state model、ASCII layout 和可选低保真 HTML。 | 如果最终要高保真、组件映射或开发复刻，转 `ui-mockup-desktop-workbench`。 |
 | 用户要的是候选池还是最终选择？ | 候选池、长期追踪、Research Project 用 `research-topic-compiler`。 | 最终推荐、排除理由、颠覆条件用 `decision-research`。 |
 
 ## Cross-Skill Comparison
@@ -40,7 +42,8 @@
 | `prd-architect` | 要把想法、草稿或 review feedback 整理成 PRD | PRD-lite / standard / ai-native、图示或 UI 承接接口 | PRD 草稿达到当前阶段目标 |
 | `prd-review` | 已有 PRD/handoff artifact | Findings、Revision Draft、Implementation-Plan Readiness | Ready / Ready with assumptions / Not ready |
 | `prd-to-issues` | PRD 已可交付，且用户要 issue backlog 或 GitHub issues | Issue Breakdown Draft、AFK / HITL 标注、Coverage Matrix、可选发布结果 | 用户确认粒度、依赖、标签和是否发布 |
-| `ui-mockup-desktop-workbench` | PRD 和 UI 规范足够明确，且需要 UI 可确认、可验收、可交给前端实现 | `project-native-preview`、`visual-handoff` 或 `concept-html`，包含状态说明、组件映射、实现说明和截图/验证备注 | UI contract 可验收，迁移边界明确 |
+| `ui-wireframe-to-html` | PRD 已可用，但只需要结构/状态/线框 | Screen inventory、state model、ASCII layout、可选低保真 HTML、结构确认问题 | 结构已确认，或转入 `ui-mockup-desktop-workbench` |
+| `ui-mockup-desktop-workbench` | PRD 和 UI 规范足够明确，且需要 UI 可确认、可验收、可交给前端实现 | 结构阶段产物、`project-native-preview`、`visual-handoff` 或 `concept-html`，包含状态说明、组件映射、实现说明和截图/验证备注 | UI contract 可验收，迁移边界明确 |
 | `grill-me` | 方案、架构、计划或决策已成形 | 决策记录、被否选项、未解问题、推荐下一步 | 关键分支已探索或需要用户决策 |
 | `ai-work-assetization-diagnoser` | 重复 AI 工作、prompt、流程或团队场景需要沉淀判断 | 推荐资产层、相邻层排除理由、最小下一步 artifact、复用信号 | 得到明确资产化建议或不沉淀结论 |
 
@@ -95,22 +98,28 @@ PRD 图示判断：
 - `PRD-standard`：多阶段链路、模块依赖、上下游输入输出时，应考虑核心流程图或结构图。
 - `PRD-ai-native`：人工动作、AI 动作、状态反馈、记忆写入、失败回退形成闭环时，应考虑一体化总图或核心流程图。
 
-## UI Mockup / 高保真 UI 交付分流规则
+## UI Wireframe / Mockup / 高保真 UI 交付分流规则
 
-`ui-mockup-desktop-workbench` 只在 PRD 或页面需求已经足够明确，并且用户要的是可确认、可截图、可交付前端实现的桌面端真实页面时使用。
+先判断用户要停在哪一层：
+
+- 只要结构、状态、ASCII 布局、低保真 HTML：用 `ui-wireframe-to-html`。
+- 要高保真、截图确认、真实项目前端对齐、组件映射、开发复刻：用 `ui-mockup-desktop-workbench`。
+
+`ui-mockup-desktop-workbench` 内部也必须先跑结构阶段；这不是跳过 `ui-wireframe-to-html`，而是把它的结构纪律吸收为完整交付流程的一部分。
 
 | 用户目标 | 优先 Skill | 说明 |
 | --- | --- | --- |
+| 只想从 PRD 先确认页面结构、状态模型和 ASCII 布局 | `ui-wireframe-to-html` | 输出 screen inventory、state model、`ascii-layout.md` 和结构确认问题；可选低保真 HTML。 |
+| 低保真 HTML 只是为了讨论布局，不需要开发复刻 | `ui-wireframe-to-html` | HTML 是结构参考，不是生产代码，也不要求 component map。 |
 | 从 PRD、UI 规范和真实前端项目生成可开发复刻的桌面工作台 UI | `ui-mockup-desktop-workbench` 的 `project-native-preview` | 先做 Design Discovery Gate，读取真实路由、组件、token、图标和样式，再输出 preview route/component、screen contract、component map 和 implementation notes。 |
 | 不改真实项目，但需要开发能准确还原 UI | `ui-mockup-desktop-workbench` 的 `visual-handoff` | 输出高保真 HTML/React 视觉参考、截图、组件映射、状态清单、实现说明和迁移边界。 |
-| 早期只想快速讨论布局或信息架构 | `ui-mockup-desktop-workbench` 的 `concept-html` 或 `ui-wireframe-to-html` | concept HTML 只作为视觉讨论稿；低保真结构优先用 `ui-wireframe-to-html`。 |
+| 早期想讨论布局，但后续会继续进入高保真 | `ui-mockup-desktop-workbench` 的 `concept-html` | 先输出结构阶段产物，再给 concept HTML；后续可升级 visual handoff。 |
 | PRD 还没成型，需要先补目标、流程、验收 | `prd-architect` | 先把需求写清楚，不直接画页面。 |
 | 已有 PRD，但担心缺口、冲突、不可测试 | `prd-review` | 先 review 并关闭阻断项，再生成 mockup。 |
 | mockup 过程中发现 PRD 缺状态、验收或流程冲突 | `prd-review` / `prd-architect` | 冲突和 readiness 问题走 `prd-review`；缺章节或缺描述走 `prd-architect`。 |
-| 只需要低保真结构、ASCII 布局或线框 | `ui-wireframe-to-html` 或 `prd-architect` 内的 UI 结构步骤 | 不强求视觉 polish。 |
 | 要生产级前端实现、接入真实路由和测试 | Superpowers `writing-plans` 后进入实现 | mockup 不是生产代码。 |
 
-不要把 standalone HTML 当生产实现。如果用户要求“开发复刻”，必须同时产出 `screen-contract.md`、`component-map.md`、`implementation-notes.md`、截图/验证结果和迁移边界。
+不要把 standalone HTML 当生产实现。如果用户要求“开发复刻”，必须使用 `ui-mockup-desktop-workbench`，并同时产出结构阶段产物、`screen-contract.md`、`component-map.md`、`implementation-notes.md`、截图/验证结果和迁移边界。
 
 ## PRD 到 Issue / 开发计划的衔接
 

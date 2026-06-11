@@ -88,6 +88,91 @@
           "text": "Explains which parts are reusable and which are visual-only."
         }
       ]
+    },
+    {
+      "id": 6,
+      "prompt": "从这份桌面端 Agent PRD 开始，先输出 UI 结构、状态模型和 ASCII 布局，确认结构后再继续做高保真 visual handoff。",
+      "expected_output": "Treats wireframe as the first stage of the ui-mockup workflow, produces structure-stage deliverables before visual handoff, includes a structure review gate, then continues or pauses based on confirmation needs.",
+      "files": [],
+      "assertions": [
+        {
+          "text": "Produces or requires screen inventory, state model, and ASCII layout before high-fidelity visuals."
+        },
+        {
+          "text": "Includes a structure review gate or clearly states why it continues without waiting."
+        },
+        {
+          "text": "Keeps ui-wireframe-to-html as a structure-stage discipline rather than a competing high-fidelity skill."
+        },
+        {
+          "text": "Still includes screen contract, component map, and implementation notes when moving into visual handoff."
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "帮我写一份桌面端 Agent 工作台 PRD，先不要做 UI mockup。",
+      "expected_output": "Routes to prd-architect or states that PRD drafting should happen before ui-mockup-desktop-workbench. Does not produce visual mockup deliverables.",
+      "files": [],
+      "assertions": [
+        {
+          "text": "Does not treat PRD drafting as a ui-mockup-desktop-workbench task."
+        },
+        {
+          "text": "Routes or recommends prd-architect for PRD creation."
+        },
+        {
+          "text": "Does not output component map, HTML mockup, or project-native preview."
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "只审一下这个 PRD 有没有问题，从研发和测试视角挑缺口。",
+      "expected_output": "Routes to prd-review or states that PRD review should happen before formal mockup. Does not generate UI artifacts.",
+      "files": [],
+      "assertions": [
+        {
+          "text": "Does not treat PRD review as a ui-mockup-desktop-workbench task."
+        },
+        {
+          "text": "Routes or recommends prd-review."
+        },
+        {
+          "text": "Does not generate high-fidelity UI artifacts."
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "做一个手机端营销 landing page，视觉要漂亮一点。",
+      "expected_output": "Does not use ui-mockup-desktop-workbench because the task is mobile/marketing rather than desktop workbench handoff. Routes to a frontend/design flow if needed.",
+      "files": [],
+      "assertions": [
+        {
+          "text": "Rejects or avoids ui-mockup-desktop-workbench routing for mobile landing page work."
+        },
+        {
+          "text": "Explains that this Skill is for desktop workbench UI handoff, not marketing pages."
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "直接实现这个生产功能并补测试，不需要视觉确认。",
+      "expected_output": "Does not use ui-mockup-desktop-workbench as an implementation workflow. Routes to engineering planning or implementation flow.",
+      "files": [],
+      "assertions": [
+        {
+          "text": "Does not treat production implementation and tests as a mockup task."
+        },
+        {
+          "text": "Routes to implementation planning or engineering execution rather than visual handoff."
+        },
+        {
+          "text": "Does not claim mockup artifacts are production code."
+        }
+      ]
     }
   ]
 }

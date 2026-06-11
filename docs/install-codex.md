@@ -18,6 +18,7 @@ for skill in \
   prd-architect \
   prd-review \
   prd-to-issues \
+  ui-wireframe-to-html \
   ui-mockup-desktop-workbench \
   grill-me \
   ai-work-assetization-diagnoser
@@ -43,6 +44,7 @@ for skill in \
   prd-architect \
   prd-review \
   prd-to-issues \
+  ui-wireframe-to-html \
   ui-mockup-desktop-workbench \
   grill-me \
   ai-work-assetization-diagnoser
@@ -87,6 +89,12 @@ or:
 
 ```text
 $brainstorming 先不要写 PRD，帮我脑暴 2-3 个设计方案
+```
+
+or:
+
+```text
+$ui-wireframe-to-html 基于这份 PRD 先出 UI 结构、状态模型和 ASCII 布局
 ```
 
 or:

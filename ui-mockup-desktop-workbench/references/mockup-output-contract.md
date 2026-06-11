@@ -4,6 +4,8 @@ Use this contract when packaging a desktop workbench UI mockup, high-fidelity vi
 
 The durable deliverable is the UI implementation contract. HTML is one possible visual carrier, not the source of truth for frontend implementation.
 
+The contract starts with structure. Every run should produce or include wireframe-stage evidence before visual output: screen inventory, state model, ASCII layout, and the structure assumptions that were confirmed or carried forward.
+
 ## Mode-Specific Artifact Sets
 
 ### `project-native-preview`
@@ -13,6 +15,7 @@ Use when a real frontend project path is available and the user wants developmen
 Create or update:
 
 - `README.md` or handoff note: purpose, source inputs, preview route, assumptions, open/run instructions, and verification notes.
+- `ascii-layout.md`: screen inventory, state model, desktop zone layout, scroll containers, and structure review notes.
 - `screen-contract.md`: screens, states, PRD traceability, UI spec traceability, and open questions.
 - `component-map.md`: production component/style/token mapping for each key UI element.
 - `implementation-notes.md`: files to modify, data/state sources, events, migration notes, and preview-to-production plan.
@@ -26,6 +29,7 @@ Use when the PRD is stable and frontend needs high-fidelity guidance, but direct
 Create:
 
 - `README.md` or handoff note.
+- `ascii-layout.md`.
 - `screen-contract.md`.
 - `component-map.md`.
 - `implementation-notes.md`.
@@ -41,6 +45,7 @@ Use only for early layout or product discussion.
 Create:
 
 - `README.md`.
+- `ascii-layout.md`.
 - `screen-contract.md`.
 - `mockup.html`.
 - Optional screenshots.
@@ -52,6 +57,7 @@ Component mapping and implementation notes are optional only when the user expli
 When the user does not specify a project-native destination, create a small artifact folder with:
 
 - `README.md`: purpose, source inputs, assumptions, open/run instructions, and verification notes.
+- `ascii-layout.md`: required for all staged UI mockup runs.
 - `screen-contract.md`: screens, states, PRD traceability, UI spec traceability, and open questions.
 - `component-map.md`: required for implementation-oriented runs; optional only for early concept runs.
 - `implementation-notes.md`: required for implementation-oriented runs; optional only for early concept runs.
@@ -68,6 +74,7 @@ Include:
 - Source UI spec path or "not provided".
 - Target viewport and format.
 - Output mode: `project-native-preview`, `visual-handoff`, or `concept-html`.
+- Structure status: `structure-confirmed`, `structure-assumed`, or `structure-needs-review`.
 - Real frontend project path or "not provided".
 - Discovered UI constraints summary, including component library, token/style source, icon source, and route/shell evidence.
 - How to open or run.
@@ -75,6 +82,25 @@ Include:
 - Verification performed.
 - Known assumptions and unresolved conflicts.
 - Migration boundary: what is production-aligned and what is visual-only.
+
+## ASCII Layout Requirements
+
+Create `ascii-layout.md` or an equivalent section before high-fidelity visuals.
+
+Include:
+
+- Source PRD sections and UI goals used for structure.
+- Screen inventory: pages, modals, popovers, panels, and persistent shell regions.
+- State model: state name, trigger, visible regions, primary actions, next/recovery state, and PRD trace.
+- ASCII layout for the primary desktop view, plus variants when a modal, panel, artifact preview, or error state changes the layout.
+- Region ownership: which area owns navigation, task/session selection, execution, artifacts, settings, and global actions.
+- Scroll behavior and fixed/flexible dimensions.
+- Structure review result:
+  - `confirmed`: user or PRD clearly supports the structure.
+  - `assumed`: acceptable to continue, but assumptions must be listed.
+  - `blocked`: stop and route to PRD review or PRD architecture.
+
+Do not use visual styling to compensate for missing structure. If the layout cannot explain where a state, artifact, or action lives, record that as a PRD or IA gap.
 
 ## Screen Contract Requirements
 
@@ -172,6 +198,7 @@ A project-native preview should:
 Minimum verification:
 
 - Confirm expected deliverables exist and are non-empty.
+- Confirm `ascii-layout.md` or equivalent structure-stage output exists and references states before visual artifacts.
 - Open or render it if browser tooling is available.
 - Check desktop viewport layout around 1440x900.
 - Check narrower desktop viewport around 1280x800.
@@ -199,6 +226,7 @@ Return:
 Before declaring done, check:
 
 - Did the UI spec override generic visual instincts?
+- Did the run model structure and states before visual polish?
 - Did project-local design discovery happen before visual implementation when a project path was available?
 - Was the chosen output mode correct for the user's intent?
 - Did the mockup include the desktop workbench shell where appropriate?

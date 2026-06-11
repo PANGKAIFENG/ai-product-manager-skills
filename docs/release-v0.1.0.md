@@ -2,6 +2,8 @@
 
 Initial public release of AI Product Manager Skills Library.
 
+This is a historical release note for the v0.1.0 snapshot. For the current Skill catalog, use `README.md` and `SKILL_REGISTRY.md`.
+
 ## Included Skills
 
 - `ai-collaboration-calibration`

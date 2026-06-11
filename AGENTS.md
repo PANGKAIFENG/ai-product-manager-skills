@@ -20,7 +20,8 @@ This is a thin index for agents working in this repository. It does not replace 
 | Critic | `grill-me` |
 | Reviewer | `prd-review` |
 | Backlog Splitter | `prd-to-issues` |
-| UI Mockup Maker | `ui-mockup-desktop-workbench` |
+| UI Structure Maker | `ui-wireframe-to-html` |
+| UI Handoff Maker | `ui-mockup-desktop-workbench` |
 | Router / Gate | `ai-work-assetization-diagnoser` |
 
 ## Loop Pattern Index

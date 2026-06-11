@@ -1,0 +1,81 @@
+{
+  "skill_name": "ui-wireframe-to-html",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "基于这份桌面端工作台 PRD，先输出 UI 结构、状态模型和 ASCII 布局，不要做高保真。",
+      "expected_output": "Produces structure-stage deliverables only: screen inventory, state model, ASCII layout, assumptions, and review questions. Does not jump into visual polish.",
+      "files": [],
+      "assertions": [
+        {
+          "text": "Includes screen inventory, state model, and ASCII layout."
+        },
+        {
+          "text": "Avoids high-fidelity visual styling."
+        },
+        {
+          "text": "Lists structure assumptions or review questions before high fidelity."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "把这个页面需求转成一个可打开的低保真 HTML wireframe，重点确认布局和状态，不需要开发复刻。",
+      "expected_output": "Creates or describes a low-fidelity HTML wireframe as a structure reference, with state coverage and clear non-production boundary.",
+      "files": [],
+      "assertions": [
+        {
+          "text": "Labels HTML as a low-fidelity structure reference rather than production code."
+        },
+        {
+          "text": "Prioritizes layout and state coverage over visual polish."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "PRD 已确认，现在要输出高保真 UI，让前端完全复刻，并且要 component map 和 implementation notes。",
+      "expected_output": "Routes to ui-mockup-desktop-workbench instead of trying to complete high-fidelity implementation handoff inside ui-wireframe-to-html.",
+      "files": [],
+      "assertions": [
+        {
+          "text": "Does not claim ui-wireframe-to-html is the right skill for high-fidelity frontend replication."
+        },
+        {
+          "text": "Explicitly routes the task to ui-mockup-desktop-workbench."
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "帮我写一份桌面端 Agent 工作台 PRD，先不要画页面。",
+      "expected_output": "Routes to prd-architect or states that PRD drafting precedes ui-wireframe-to-html. Does not output screen inventory or ASCII layout as the primary response.",
+      "files": [],
+      "assertions": [
+        {
+          "text": "Does not treat PRD drafting as a ui-wireframe-to-html task."
+        },
+        {
+          "text": "Routes or recommends prd-architect."
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "只审一下这个 PRD 有没有问题，不要做 UI 结构。",
+      "expected_output": "Routes to prd-review or states that PRD review is outside ui-wireframe-to-html. Does not produce wireframe deliverables.",
+      "files": [],
+      "assertions": [
+        {
+          "text": "Does not treat PRD review as a ui-wireframe-to-html task."
+        },
+        {
+          "text": "Routes or recommends prd-review."
+        },
+        {
+          "text": "Does not output ASCII layout or low-fidelity HTML."
+        }
+      ]
+    }
+  ]
+}

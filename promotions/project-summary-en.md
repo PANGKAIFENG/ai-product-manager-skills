@@ -10,12 +10,12 @@ It complements Superpowers by covering the product-side workflow before engineer
 - PRD drafting
 - PRD review
 - PRD-to-issue backlog handoff
-- desktop UI mockup generation
+- UI wireframe and high-fidelity desktop UI handoff
 - plan pressure testing
 - AI work assetization diagnosis
 - requirements handoff
 
-The public library currently includes ten Skills:
+The public library currently includes eleven Skills:
 
 - `ai-collaboration-calibration`
 - `research-topic-compiler`
@@ -24,6 +24,7 @@ The public library currently includes ten Skills:
 - `prd-architect`
 - `prd-review`
 - `prd-to-issues`
+- `ui-wireframe-to-html`
 - `ui-mockup-desktop-workbench`
 - `grill-me`
 - `ai-work-assetization-diagnoser`
