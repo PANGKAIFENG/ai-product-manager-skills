@@ -18,7 +18,7 @@ Start with one workflow:
 | Goal | Skill | Prompt |
 | --- | --- | --- |
 | Clarify a fuzzy product problem | `ai-collaboration-calibration` | `$ai-collaboration-calibration 先别执行，帮我看清这个问题` |
-| Research a topic for PM decisions | `research-topic-compiler` | `$research-topic-compiler 系统研究这个主题，并转成 PM 决策输入` |
+| Frame or research a topic for PM decisions | `research-topic-compiler` | `$research-topic-compiler 把这个大白话拆成研究目标和输出要求，再做研究计划` |
 | Choose between options | `decision-research` | `$decision-research 帮我比较这几个方案，给一个有立场推荐` |
 | Draft a PRD | `prd-architect` | `$prd-architect 把这个想法整理成 PRD-lite` |
 | Review a PRD | `prd-review` | `$prd-review 从研发和测试视角审一下这个 PRD` |
@@ -58,7 +58,7 @@ A common AI PM path:
 
 ```text
 $ai-collaboration-calibration 先帮我校准这个需求是不是值得做
-$research-topic-compiler 系统研究这个领域，输出 PM 决策输入
+$research-topic-compiler 把这个模糊方向拆成研究目标、研究问题和输出要求，再输出 PM 决策输入
 $decision-research 帮我比较候选方案，给一个有立场推荐
 $prd-architect 基于上面的结论写 PRD-standard
 $prd-review 从研发和测试视角审这个 PRD

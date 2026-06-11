@@ -7,7 +7,7 @@
 | 用户当前状态 | 优先 Skill | 触发信号 | 不要用它做什么 |
 | --- | --- | --- | --- |
 | 问题还没定义清楚，需要先看清真正问题 | `ai-collaboration-calibration` | “先聊一下”“帮我想想”“挑战我的假设”“方向是不是错了” | 不直接产出最终 PRD、方案或调研结论；成熟方案压力测试转 `grill-me` |
-| 要围绕主题做系统学习、专题研究、概念源流、候选池或 PM 决策看板 | `research-topic-compiler` | “系统研究”“做深度专题”“整理到 Obsidian”“概念解读”“概念源流”“行业演进看板”“先沉淀候选池” | 不替代单次最终方案选型，不创建或评审 Skill |
+| 要围绕主题做系统学习、专题研究、概念源流、候选池或 PM 决策看板 | `research-topic-compiler` | “系统研究”“做深度专题”“整理到 Obsidian”“概念解读”“概念源流”“行业演进看板”“先沉淀候选池”“把大白话拆成研究目标” | 不替代单次最终方案选型，不创建或评审 Skill |
 | 有明确具体决策，需要单次调研和推荐 | `decision-research` | “有没有现成方案”“怎么接入”“这个选择可行吗”“选 A 还是 B”“基于候选池给最终推荐” | 不做长期知识库沉淀，不替代问题脑暴 |
 | 要把想法、脑暴或需求草稿整理成 PRD | `prd-architect` | “帮我写 PRD”“选 PRD 模板”“把需求整理成 PRD”“PRD 里补 Draw.io 图” | 不评审已经成稿的 PRD，不直接写代码 |
 | 已有 PRD/handoff，需要找缺口并修订 | `prd-review` | “帮我审 PRD”“从研发测试视角挑问题”“能不能交付开发”“检查图示是否可编辑” | 不从零生成 PRD，不做纯语言润色 |
@@ -47,6 +47,7 @@
 
 | 用户目标 | 优先 Skill | 说明 |
 | --- | --- | --- |
+| 用户只有大白话、模糊方向、业务愿望或 Roadmap/PRD 前置材料想法，需要先拆研究目标 | `research-topic-compiler` 的 `Research Goal Framing Gate` | 先输出 Research Goal Framing：原始意图、研究目标、主问题、子问题、输出要求、out-of-scope 和推荐模式；不要直接搜索。 |
 | 轻量概念解读、概念源流、语义演化、范式阶段、PM 技术评审提问脚本 | `research-topic-compiler` 的 `Lightweight Concept Lens Mode` | 输出 PM 决策看板、概念源流、阶段矩阵、反模式和评审问题；默认不写入 Obsidian。 |
 | 系统学习、深度专题、长期沉淀、Obsidian Research Project | `research-topic-compiler` 的深度研究模式 | 输出研究计划、证据矩阵、研究报告、学习包或长期雷达。 |
 | 候选发现、候选池、竞品池、跨会话 handoff | `research-topic-compiler` 的 Product Candidate Research | 输出 Candidate Backlog、Candidate Summary、评分输入和 handoff；这些是最终决策输入。 |
@@ -56,6 +57,7 @@
 典型分流：
 
 - “帮我轻量解构一下 MCP 的概念源流，输出 PM 决策看板。” -> `research-topic-compiler` Lightweight Concept Lens Mode。
+- “我想研究 Agent 从聊天到做事，后面要做 Roadmap，先帮我把研究目标拆清楚。” -> `research-topic-compiler` Research Goal Framing Gate。
 - “系统研究 MCP 安全最佳实践，整理到 Obsidian。” -> `research-topic-compiler` 深度研究模式。
 - “研究市面上的 AI 视频生成方案，先沉淀候选池，后续继续补。” -> `research-topic-compiler` Product Candidate Research。
 - “我们应该选 MCP 还是自研工具协议？” -> `decision-research`。

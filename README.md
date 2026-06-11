@@ -63,7 +63,7 @@ Install paths:
 | Skill | 中文名 | 主要用途 | Example |
 | --- | --- | --- | --- |
 | [`ai-collaboration-calibration`](ai-collaboration-calibration/) | 协作校准 / 认知校准 | 问题还没定义清楚时，先挑战假设、澄清目标和判断标准。 | [example](examples/ai-collaboration-calibration.md) |
-| [`research-topic-compiler`](research-topic-compiler/) | 专题研究编译器 / 概念源流研究助手 | 系统研究、主题学习、概念源流、行业演进和 PM 决策看板；需要持续更新时可进入 Research Radar Loop。 | [example](examples/research-topic-compiler.md) |
+| [`research-topic-compiler`](research-topic-compiler/) | 专题研究编译器 / 概念源流研究助手 | 把大白话或模糊方向转成研究目标、研究问题和输出要求，再做系统研究、概念源流、行业演进和 PM 决策看板；需要持续更新时可进入 Research Radar Loop。 | [example](examples/research-topic-compiler.md) |
 | [`decision-research`](decision-research/) | 决策调研 / 决策驱动调研 | 明确具体决策、接入可行性、方案选型和一次性决策调研；需要多轮收敛时可进入 Decision Research Loop。 | [example](examples/decision-research.md) |
 | [`prd-architect`](prd-architect/) | PRD 架构师 / 需求文档起草 | 从想法或草稿起草 PRD，并在需要时补可编辑 Draw.io 图。 | [example](examples/prd-architect.md) |
 | [`prd-review`](prd-review/) | PRD 评审 / 需求评审 | 评审已有 PRD/handoff，检查文字、流程、验收和图示是否能支撑交付；需要关闭阻断项时可进入 PRD Readiness Loop。 | [example](examples/prd-review.md) |
@@ -110,7 +110,7 @@ See [docs/superpowers-comparison.md](docs/superpowers-comparison.md) for the pro
 当多个 Skill 都可能被触发时，优先按用户当前阶段分流，而不是按关键词叠加：
 
 - 问题还没定义清楚：用 `ai-collaboration-calibration`。
-- 需要系统理解主题、概念源流、行业演进或 PM 决策看板：用 `research-topic-compiler`。
+- 需要把模糊研究想法拆成研究目标，或系统理解主题、概念源流、行业演进、PM 决策看板：用 `research-topic-compiler`。
 - 明确具体决策、接入方式或方案选型：用 `decision-research`。
 - 要从想法或草稿写 PRD：用 `prd-architect`。
 - 已有 PRD 要找缺口、检查图示或判断能否交付：用 `prd-review`。

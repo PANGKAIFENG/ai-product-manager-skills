@@ -3,6 +3,7 @@ name: research-topic-compiler
 description: >
   专题研究编译器 / Persona-Adaptive Research-to-Learning Compiler：当用户要围绕一个主题做系统学习、
   专题研究、行业调研、最佳实践提炼、轻量概念解读、概念源流、语义演化、PM 技术评审提问脚本或行业演进看板时使用。
+  当用户只有大白话、模糊方向、业务愿望或 Roadmap/PRD 前置材料想法，需要先转成清晰研究目标、研究问题和输出要求时也使用。
   适合把研究转成 Research Project、学习报告、证据矩阵、PM 决策看板、候选池、模板或实践任务。适合“系统研究一个主题”
   “整理到 Obsidian”“做深度专题”“研究行业最佳实践”“概念解读”“概念源流”“PM 技术评审提问脚本”
   “行业演进看板”“这个主题对我的业务有什么用”。不适合创建 Skill、评审 SKILL.md、普通即时搜索或一次性摘要。
@@ -16,8 +17,8 @@ description: >
 - 中文名：专题研究编译器 / 系统学习与概念源流研究助手
 - 英文稳定名：`research-topic-compiler`
 - 分类：研究学习 / Obsidian 知识编译
-- 你可以这样叫我：`系统研究这个主题`、`帮我整理到 Obsidian`、`做一个深度专题`、`研究行业最佳实践`、`概念解读`、`概念源流`、`PM 技术评审提问脚本`、`行业演进看板`
-- 适合：围绕研究主题做多渠道证据收集、筛选、证据矩阵、阶段结论、概念源流、轻量 PM 决策看板、候选池、用户画像自适应学习报告和应用转化
+- 你可以这样叫我：`系统研究这个主题`、`帮我整理到 Obsidian`、`做一个深度专题`、`研究行业最佳实践`、`概念解读`、`概念源流`、`PM 技术评审提问脚本`、`行业演进看板`、`把这个大白话拆成研究目标`
+- 适合：围绕研究主题做多渠道证据收集、筛选、证据矩阵、阶段结论、概念源流、轻量 PM 决策看板、候选池、用户画像自适应学习报告和应用转化；也适合把用户的大白话、模糊主题或 Roadmap 前置想法转成研究目标、研究问题和输出要求
 - 不适合：创建或评审 Skill；普通新闻搜索或一次性摘要；明确要“选一个 / 给最终推荐 / 排除其他方案”时改用 `decision-research`
 
 ## Overview
@@ -26,7 +27,7 @@ description: >
 
 核心原则：
 
-- 先判断研究深度，再决定渠道和样本量。
+- 先把用户原话转成明确研究目标、研究问题和输出要求，再判断研究深度、渠道和样本量。
 - 先解析用户画像，再决定解释方式、案例选择、实践任务和应用转化。
 - Obsidian 是内部基线和默认沉淀位置，不是唯一研究渠道。
 - 外部渠道动态选择，不默认全开；根据主题类型、证据缺口、时效性和可信度要求启用。
@@ -43,6 +44,7 @@ description: >
 
 启动研究前先收集或推断这些上下文；不要问本地文件能发现的信息，只在答案会改变研究范围、访问权限或写回位置时追问：
 
+- 原始意图：用户原话、业务愿望、想产出的材料、隐含的后续动作。
 - 研究主题：主题名称、用户要解决的决策或学习目标、是否已有种子资料。
 - 预期产物：聊天内报告、Obsidian Research Project、更新已有专题、还是长期雷达。
 - 深度约束：用户期望的速度、深度、样本量、是否需要 `L4/L5` 级外部扩展。
@@ -53,6 +55,21 @@ description: >
 - 用户画像：角色、领域、技术深度、目标类型、输出偏好、应用场景和最终决策需求；先按 `User Context Resolution` 解析，不要默认每次追问。
 
 默认假设：Obsidian 是内部基线，公开外部渠道可用于补证；封闭、付费、登录或私密渠道必须先取得用户授权。用户补充渠道时，先判断是本次临时使用还是值得进入渠道库；只有用户明确希望复用时才写入 `references/channel-registry.md`。
+
+## Research Goal Framing Gate
+
+当用户输入是大白话、宽泛方向、业务愿望、解法名称、Roadmap/PRD 前置材料想法，或没有明确研究问题与输出要求时，先读 `references/research-goal-framing-gate.md`。
+
+这个 Gate 的职责是把用户原话转成可执行研究 brief：
+
+- 保留用户原始意图。
+- 推断真正研究目标。
+- 判断目标类型：Concept Lens、Industry Evolution、Application Translation、Product Candidate、Roadmap Input、Learning Pack 或 Research Radar。
+- 拆出主研究问题、子问题、out of scope 和证据标准。
+- 明确读者、产物形态和研究结果要支持的下一步动作。
+- 决定是否需要用户确认；能合理推断时带假设继续。
+
+不要从用户第一句里的名词直接开始搜索。先确认这次研究是为了理解、判断、转译、候选发现、路线图输入、学习沉淀还是持续雷达。
 
 ## User Context Resolution
 
@@ -159,7 +176,7 @@ Product Candidate Research 与 Application Mode 的区别：Application Mode 是
 
 ## Workflow
 
-1. 捕获主题和目标，用一句话复述研究对象、用户要解决的问题和预期产物。
+1. 捕获用户原话、主题和目标。若输入不够明确，先执行 `Research Goal Framing Gate`，输出 `Research Goal Framing`，把大白话转成研究目标、研究问题、输出要求和 out-of-scope。若用户只要求整理研究 brief、先不要搜资料或先不要开始研究，停在 framing 产物，不继续生成 `Research Run Plan`。
 2. 解析用户画像。按 `User Context Resolution` 选择通用解释或 persona-adaptive 输出。
 3. 判断研究模式和深度。非平凡主题先读 `references/research-depth-rubric.md`，推荐 `L1-L5`，并说明是否启用 Lightweight Concept Lens、Learning Pack、Application Mode 或 Product Candidate Research。
 4. 选择渠道。读取 `references/channel-selection-rubric.md` 和 `references/channel-registry.md`，根据主题动态选择 Obsidian 之外的渠道。
@@ -214,11 +231,13 @@ L5 automation 的默认安全边界：
 **Research Run Plan**
 - Topic: <研究主题>
 - User goal: <用户要学会、判断或沉淀什么>
+- Framed from raw intent: <yes/no; if yes, summarize interpreted research goal>
 - Research mode: <Normal Research / Lightweight Concept Lens / Learning Pack / Application / Radar / Product Candidate>
 - User context: <role, domain, technical_depth, goal_type, output_preference, application_context, decision_need>
 - Recommended depth: <L1 / L2 / L3 / L4 / L5, with reason>
 - Topic type: <平台能力 / 开源工程 / 产品竞品 / 学术方法 / 政策合规 / 市场趋势 / 其他>
 - Core questions: <按理解型 / 判断型 / 设计型 / 实践型 / 复盘型组织>
+- Output requirements: <读者 / 产物 / 必须支持的下一步 / 不做什么>
 - Pre-research expansion: <是否启用 + 候选渠道 + 预期候选数 + 是否需要授权同步>
 - Channels selected: <渠道 + 启用理由 + 样本量>
 - Channels skipped: <未启用渠道 + 原因>
@@ -343,6 +362,7 @@ L5 automation 的默认安全边界：
 ## Resource Guide
 
 - `references/research-depth-rubric.md`：判断 `L1-L5` 深度、样本量和确认门禁。
+- `references/research-goal-framing-gate.md`：把用户大白话、模糊方向或 Roadmap 前置想法转成研究目标、研究问题、输出要求和 out-of-scope。
 - `references/research-radar-loop-contract.md`：Research Radar Loop 的状态文件、信号分类、更新规则、暂停条件和升级规则。
 - `references/mode-routing-guide.md`：Research Modes 的触发细则、Concept Lens、Learning Pack、Application 和 Product Candidate 规则。
 - `references/user-context-standards.md`：解析用户画像和 persona-adaptive 输出边界。
@@ -370,6 +390,7 @@ L5 automation 的默认安全边界：
 ## Evaluation Checklist
 
 - Smoke：`帮我系统研究一下 AI Agent Memory，并整理到 Obsidian。`
+- Smoke：`我想先研究 Agent 从聊天到做事这个方向，后面要给 StyleClaw 做 Roadmap。先别直接写 Roadmap，帮我把研究目标和输出要求拆清楚。`
 - Smoke：`研究一下 MCP 安全最佳实践，需要看官方文档、GitHub 和行业案例。`
 - Smoke：`快速了解 Claude Skills 的设计机制，不需要写入 Vault。`
 - Smoke：`帮我轻量解构一下 MCP 的概念源流，输出 PM 决策看板。`
