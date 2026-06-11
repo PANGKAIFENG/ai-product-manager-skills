@@ -1,0 +1,36 @@
+# Example: ui-mockup-desktop-workbench
+
+## Use When
+
+You have a mature PRD, UI rules, or screen requirements and need a realistic desktop workbench mockup.
+
+## Prompt
+
+```text
+$ui-mockup-desktop-workbench
+
+基于下面这份 PRD 和 UI 规范，生成一个桌面端 Agent 工作台 HTML mockup。
+页面需要包含左侧导航、任务列表、中间执行区、右侧产物面板，
+并覆盖空状态、运行中、完成和错误重试状态。
+
+PRD:
+[paste PRD or path here]
+
+UI 规范:
+[paste UI spec or path here]
+```
+
+## Expected Output Shape
+
+- Reads the PRD and UI specification before designing.
+- Extracts a screen contract with screens, states, and traceability.
+- Creates a runnable or openable desktop mockup artifact.
+- Uses realistic operational data instead of decorative filler.
+- Checks desktop layout at common workbench viewports.
+- Calls out PRD gaps instead of silently inventing requirements.
+
+## Good Follow-Up
+
+```text
+把 mockup 暴露出来的 PRD 缺口整理成一份给 prd-review 的修订清单。
+```

@@ -9,7 +9,9 @@ Initial public release of AI Product Manager Skills Library.
 - `decision-research`
 - `prd-architect`
 - `prd-review`
+- `ui-mockup-desktop-workbench`
 - `grill-me`
+- `ai-work-assetization-diagnoser`
 
 ## Who This Is For
 
@@ -40,8 +42,10 @@ skillshare sync
 ```text
 $prd-architect 把这个想法整理成 PRD-lite
 $prd-review 从研发和测试视角审一下这个 PRD
+$ui-mockup-desktop-workbench 基于 PRD 和 UI 规范生成桌面端 mockup
 $research-topic-compiler 系统研究这个主题，并转成 PM 决策输入
 $decision-research 帮我比较这几个方案，给一个有立场推荐
+$ai-work-assetization-diagnoser 判断这套重复 AI 工作要不要沉淀成 Skill 或 Loop
 ```
 
 ## Known Limitations

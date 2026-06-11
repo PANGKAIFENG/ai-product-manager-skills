@@ -66,9 +66,9 @@ Install paths:
 | [`decision-research`](decision-research/) | 决策调研 / 决策驱动调研 | 明确具体决策、接入可行性、方案选型和一次性决策调研；需要多轮收敛时可进入 Decision Research Loop。 | [example](examples/decision-research.md) |
 | [`prd-architect`](prd-architect/) | PRD 架构师 / 需求文档起草 | 从想法或草稿起草 PRD，并在需要时补可编辑 Draw.io 图。 | [example](examples/prd-architect.md) |
 | [`prd-review`](prd-review/) | PRD 评审 / 需求评审 | 评审已有 PRD/handoff，检查文字、流程、验收和图示是否能支撑交付；需要关闭阻断项时可进入 PRD Readiness Loop。 | [example](examples/prd-review.md) |
-| [`ui-mockup-desktop-workbench`](ui-mockup-desktop-workbench/) | 桌面工作台 UI Mockup 生成器 | 基于 PRD、UI 规范和桌面 Agent 工作台模式，生成可打开、可截图、可交付讨论的真实页面 mockup。 | - |
+| [`ui-mockup-desktop-workbench`](ui-mockup-desktop-workbench/) | 桌面工作台 UI Mockup 生成器 | 基于 PRD、UI 规范和桌面 Agent 工作台模式，生成可打开、可截图、可交付讨论的真实页面 mockup。 | [example](examples/ui-mockup-desktop-workbench.md) |
 | [`grill-me`](grill-me/) | 方案拷问 / 压力测试 | 对已有方案连续追问，暴露盲点、失败模式和前置条件。 | [example](examples/grill-me.md) |
-| [`ai-work-assetization-diagnoser`](ai-work-assetization-diagnoser/) | AI 工作资产化诊断器 / 资产化路由器 | 判断重复 AI 工作应沉淀为 Prompt、Context Pack、Workflow、Skill、Loop、System，或不值得沉淀。 | - |
+| [`ai-work-assetization-diagnoser`](ai-work-assetization-diagnoser/) | AI 工作资产化诊断器 / 资产化路由器 | 判断重复 AI 工作应沉淀为 Prompt、Context Pack、Workflow、Skill、Loop、System，或不值得沉淀。 | [example](examples/ai-work-assetization-diagnoser.md) |
 
 ## AI PM Workflow
 
@@ -121,7 +121,7 @@ More details: [SKILL_ROUTING.md](SKILL_ROUTING.md)
 
 - [SKILL_REGISTRY.md](SKILL_REGISTRY.md): canonical catalog, Chinese names, status, and public boundaries.
 - [SKILL_ROUTING.md](SKILL_ROUTING.md): adjacent-skill routing and handoff rules.
-- [docs/](docs/): install guides, quickstart, Superpowers comparison, release notes, and project site content.
+- [docs/](docs/): install guides, quickstart, Superpowers comparison, and release notes.
 - [examples/](examples/): copyable prompts and expected output shapes.
 - [promotions/](promotions/): launch copy for Chinese and English channels.
 - [assets/social-preview.svg](assets/social-preview.svg): source artwork for GitHub social preview.
