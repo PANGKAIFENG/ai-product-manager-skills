@@ -21,6 +21,7 @@ $brainstorming
 - Asks at most one important clarifying question at a time.
 - Presents 2-3 real options with trade-offs.
 - Recommends one option and explains what it gives up.
+- If the next step is UI/mockup, summarizes project-local visual constraints before proposing visuals.
 - Gets user confirmation before moving to PRD, mockup, issues, or implementation planning.
 
 ## Good Follow-Up

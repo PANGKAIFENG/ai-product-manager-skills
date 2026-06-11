@@ -2,7 +2,7 @@
 name: brainstorming
 description: >
   设计脑暴 / 实现前方案校准：当用户想把已基本成立的想法、功能方向或产品问题，在写 PRD、画 mockup
-  或进入开发计划前，先通过一问一答、2-3 个方案、取舍比较和设计确认收敛成可执行设计 spec 时使用。
+  或进入开发计划前，先比较方案、确认取舍、对齐 UI/视觉约束，并收敛成可执行设计 spec 时使用。
   可用中文唤起：“先脑暴一下方案”“先不要写 PRD，帮我设计几种路径”“参考 brainstorming 把这个需求变成设计 spec”
   “实现前先讨论设计”。问题还没定义清楚时先用 ai-collaboration-calibration；已有方案要压力测试时用 grill-me；
   直接写 PRD 时用 prd-architect。
@@ -24,7 +24,7 @@ description: >
 
 使用这个 Skill 把“可讨论的想法”推进成“可交付给 PRD、mockup 或开发计划的设计 spec”。它强调先理解上下文、逐步澄清、提出多个方案、确认设计，再进入下游 artifact。
 
-这个 Skill 借鉴 Superpowers `brainstorming` 的实现前设计门禁，但适配 AI PM 工作流：它不要求每次都提交代码仓库里的 spec，也不强制进入 `writing-plans`；它的默认下游可以是 `prd-architect`、`ui-mockup-desktop-workbench`、`prd-to-issues` 或 Superpowers `writing-plans`。
+它的默认下游可以是 `prd-architect`、`ui-mockup-desktop-workbench`、`prd-to-issues` 或实现计划；如果方案涉及 UI/mockup/HTML 可视化，必须先对齐项目已有视觉语言，避免生成与真实产品割裂的通用页面。
 
 ## Boundary
 
@@ -52,13 +52,13 @@ description: >
 ## Workflow
 
 1. **复述目标和阶段**：用一句话说明用户想解决的问题，以及当前是“方案脑暴”而不是执行。
-2. **读取可发现上下文**：如果有 PRD、调研文档、代码、截图、UI 规范或历史讨论，先读；不要把可查信息问给用户。
+2. **读取可发现上下文**：如果有 PRD、调研文档、代码、截图、UI 规范或历史讨论，先读；不要把可查信息问给用户。UI/mockup 相关任务还要读取 `references/visual-design-standards.md`。
 3. **判断是否需要转路由**：按 `Boundary` 决定是否继续本 Skill。
 4. **澄清关键缺口**：一次只问一个会改变方案的问题。优先问目标用户、成功标准、边界、约束、已有资产和不可接受方案。
 5. **提出 2-3 个方案**：每个方案必须包含适用前提、优点、代价、失败风险和不选理由。
 6. **给出推荐方案**：明确推荐哪一个，或者推荐组合方案，并说明理由。
 7. **分段确认设计**：按“范围 / 核心流程 / 信息结构或系统结构 / 异常与人工介入 / 验收口径”拆开确认。复杂设计可以逐段问用户是否认可。
-8. **输出设计 spec**：根据任务复杂度输出轻量或标准 spec。需要写文件时，先确认保存位置；默认不强制创建 `docs/superpowers/specs/`。
+8. **输出设计 spec**：根据任务复杂度输出轻量或标准 spec。需要写文件时，先确认保存位置；默认不强制创建特定目录。UI/mockup 相关 spec 必须包含项目视觉规范发现摘要，或说明启用的默认视觉标准。
 9. **自检 spec**：检查 TBD、矛盾、范围漂移、双关要求、缺少验收标准和未关闭待确认项。
 10. **交接下游**：按用户目标建议下一步：写 PRD、做 mockup、压测方案、拆 issues 或进入实现计划。
 
@@ -122,18 +122,30 @@ description: >
 
 ## Visual Companion
 
-如果接下来讨论的是 UI、信息架构、流程图、布局或视觉状态，先征得用户同意再打开浏览器或生成可视化稿。不要把“视觉 companion”当成默认模式；概念、取舍、范围和问题定义仍然用文字更高效。
+如果接下来讨论的是 UI、信息架构、流程图、布局、页面状态或 HTML mockup，先判断可视化是否真的能帮助决策。不要把“视觉 companion”当成默认模式；概念、取舍、范围和问题定义仍然用文字更高效。
 
 适合可视化的情况：
 
 - 页面布局、导航结构、表单状态、工作台布局。
 - 多方案 UI 对比。
 - 流程图、状态机、系统边界图。
+- 已经要把设计 spec 交给 `ui-mockup-desktop-workbench` 或原型实现。
 
 不适合可视化的情况：
 
 - 目标用户、成功标准、范围边界、商业取舍。
 - 单纯列需求、写 PRD、审 PRD。
+
+进入 UI/mockup/HTML 可视化前，必须执行 Design Discovery Gate：
+
+1. 先查项目内已有视觉语言：框架配置、全局样式、设计 token、主题文件、组件库、图标系统、目标 route/page shell、相邻页面状态、已有截图或 mockup。
+2. 在生成视觉稿前，用 5-8 条 bullet 摘要已经发现的约束，例如色彩、字体、间距、圆角、导航结构、组件库、深浅色策略和状态样式。
+3. 优先复用项目本地 token、组件、布局比例、图标风格和状态模式；不要从空白通用模板重新发明一套视觉语言。
+4. 如果找不到项目本地规范，选择一个默认标准：`SaaS/Admin Workbench`、`Desktop Agent Workbench`、`Research Dashboard` 或 `Marketing/Consumer`，并说明为什么选它。
+5. 生成 mockup 时必须覆盖真实状态：empty、loading/busy、streaming/progress、success/result、error/retry、disabled/permission 中与场景相关的状态。
+6. 不生成泛 AI 风格的装饰性页面：避免无业务含义的大渐变、装饰 blob、过度 hero、巨型嵌套卡片和只为好看而存在的元素。
+
+需要可视化落地时，读取 `references/visual-design-standards.md`，并把其中的质量门禁作为完成前自检。
 
 ## Handoff
 
@@ -182,4 +194,4 @@ Regression checks:
 ## Resources
 
 - `references/design-spec-contract.md`：正式设计 spec 的结构、轻重选择和自检清单。
-- `references/provenance.md`：上游来源、许可证、借鉴点和本地合并说明。
+- `references/visual-design-standards.md`：UI/mockup/HTML 可视化前的项目规范发现、默认视觉标准和质量门禁。

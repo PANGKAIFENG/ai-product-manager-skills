@@ -10,7 +10,7 @@ Superpowers is strongest once the problem is clear enough to plan, test, impleme
 | --- | --- | --- |
 | Fuzzy problem | Clarify assumptions, goals, constraints, and decision criteria. | Usually too early. |
 | Topic research | Build PM decision input, evidence, concept lineage, and option framing. | Usually not the main job. |
-| Design brainstorming | Compare 2-3 product/design paths, recommend one, and produce a design spec before PRD or implementation planning. | Has a native `brainstorming` Skill for implementation design; this repo adapts that pattern for PM handoff. |
+| Design brainstorming | Compare 2-3 product/design paths, recommend one, align UI/mockup work with local visual standards, and produce a design spec before PRD or implementation planning. | Use implementation brainstorming after the product/design direction is confirmed and ready for file-level planning. |
 | PRD drafting | Create PRD-lite, PRD-standard, or PRD-ai-native. | Consumes the PRD later. |
 | PRD review | Find gaps, contradictions, untestable requirements, and handoff blockers. | May use the corrected PRD for implementation planning. |
 | Implementation issue backlog | `prd-to-issues` breaks a ready PRD into GitHub implementation issue drafts with coverage and AFK / HITL labels. | May consume the issue backlog as planning input, but does not own GitHub issue publishing. |
