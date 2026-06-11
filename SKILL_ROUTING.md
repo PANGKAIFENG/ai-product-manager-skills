@@ -11,6 +11,7 @@
 | 有明确具体决策，需要单次调研和推荐 | `decision-research` | “有没有现成方案”“怎么接入”“这个选择可行吗”“选 A 还是 B”“基于候选池给最终推荐” | 不做长期知识库沉淀，不替代问题脑暴 |
 | 要把想法、脑暴或需求草稿整理成 PRD | `prd-architect` | “帮我写 PRD”“选 PRD 模板”“把需求整理成 PRD”“PRD 里补 Draw.io 图” | 不评审已经成稿的 PRD，不直接写代码 |
 | 已有 PRD/handoff，需要找缺口并修订 | `prd-review` | “帮我审 PRD”“从研发测试视角挑问题”“能不能交付开发”“检查图示是否可编辑” | 不从零生成 PRD，不做纯语言润色 |
+| PRD 已 ready，需要拆成研发可领取的 GitHub issue backlog | `prd-to-issues` | “把 PRD 拆成 issue”“需求文档拆任务”“生成 GitHub issues”“按 vertical slice 拆开发票” | 不从零写 PRD，不评审 PRD 缺口，不替代 Superpowers `writing-plans` |
 | PRD 和 UI 规范已明确，需要桌面端真实页面 mockup | `ui-mockup-desktop-workbench` | “基于 PRD 和 UI 规范出桌面端 mockup”“生成桌面工作台真实页面”“把 Agent Client PRD 做成 HTML mockup” | 不重新定义产品方向，不替代 PRD 评审，不直接实现生产代码 |
 | 已有方案，需要压力测试和追问 | `grill-me` | “拷问我的方案”“压力测试”“问 hard questions”“哪里会翻车” | 不从零写方案，不替代 PRD artifact/readiness 评审 |
 | 重复 AI 工作需要判断资产化层级 | `ai-work-assetization-diagnoser` | “值得做成 Skill 吗”“workflow 还是 Skill”“该沉淀成 Prompt / Context / Loop 吗” | 不直接创建 Skill，不替代具体执行 Skill |
@@ -23,6 +24,7 @@
 | --- | --- | --- |
 | 这个方案针对的问题是否已被确认？ | 已有具体方案、架构、计划或决策时用 `grill-me` 压测。 | 用 `ai-collaboration-calibration` 先校准问题定义。 |
 | 用户是在问“这份 PRD 是否可开发、可测试、可交付”吗？ | 用 `prd-review`，并输出 readiness verdict。 | 如果问的是“PRD 背后的方案是否会失败”，用 `grill-me`。 |
+| 用户是在问“把 ready PRD 拆成 GitHub issues 或开发工单”吗？ | 用 `prd-to-issues`，默认先 draft-only，输出 coverage matrix 和 AFK / HITL 标注。 | 如果要的是文件级实现计划、测试策略和提交顺序，转 Superpowers `writing-plans`。 |
 | 用户要的是候选池还是最终选择？ | 候选池、长期追踪、Research Project 用 `research-topic-compiler`。 | 最终推荐、排除理由、颠覆条件用 `decision-research`。 |
 
 ## Cross-Skill Comparison
@@ -34,6 +36,7 @@
 | `decision-research` | 决策问题已定义或可快速框定 | 最终推荐、排除理由、置信度、颠覆条件 | 三角收敛、信息饱和、PoC 更便宜或用户决策 |
 | `prd-architect` | 要把想法、草稿或 review feedback 整理成 PRD | PRD-lite / standard / ai-native、图示或 UI 承接接口 | PRD 草稿达到当前阶段目标 |
 | `prd-review` | 已有 PRD/handoff artifact | Findings、Revision Draft、Implementation-Plan Readiness | Ready / Ready with assumptions / Not ready |
+| `prd-to-issues` | PRD 已可交付，且用户要 issue backlog 或 GitHub issues | Issue Breakdown Draft、AFK / HITL 标注、Coverage Matrix、可选发布结果 | 用户确认粒度、依赖、标签和是否发布 |
 | `ui-mockup-desktop-workbench` | PRD 和 UI 规范足够明确 | 可打开的桌面端 mockup、状态说明、截图/验证备注 | mockup 可运行、状态覆盖并完成视觉检查 |
 | `grill-me` | 方案、架构、计划或决策已成形 | 决策记录、被否选项、未解问题、推荐下一步 | 关键分支已探索或需要用户决策 |
 | `ai-work-assetization-diagnoser` | 重复 AI 工作、prompt、流程或团队场景需要沉淀判断 | 推荐资产层、相邻层排除理由、最小下一步 artifact、复用信号 | 得到明确资产化建议或不沉淀结论 |
@@ -100,13 +103,17 @@ PRD 图示判断：
 | 只需要低保真结构、ASCII 布局或线框 | `ui-wireframe-to-html` 或 `prd-architect` 内的 UI 结构步骤 | 不强求视觉 polish。 |
 | 要生产级前端实现、接入真实路由和测试 | Superpowers `writing-plans` 后进入实现 | mockup 不是生产代码。 |
 
-## PRD 到开发计划的衔接
+## PRD 到 Issue / 开发计划的衔接
 
-`prd-architect` 和 `prd-review` 的边界止于产品需求交付准备度。只有当 PRD 已经满足以下条件，才适合进入 Superpowers `writing-plans`：
+`prd-architect` 和 `prd-review` 的边界止于产品需求交付准备度。只有当 PRD 已经满足以下条件，才适合进入 `prd-to-issues` 或 Superpowers `writing-plans`：
 
 - 目标用户、问题、范围边界和非目标已明确。
 - 主流程、关键状态、输入输出、异常或人工接管点已写清。
 - 验收标准能被测试或人工检查。
-- 阻断性待确认项已经关闭，或被显式列为 implementation plan 的前置假设。
+- 阻断性待确认项已经关闭，或被显式列为 issue / implementation plan 的前置假设。
 
-进入 `writing-plans` 后，开发计划应负责文件边界、测试、实现步骤和提交节奏；PRD Skill 不替代开发计划 Skill。
+分流规则：
+
+- 用户要 GitHub issues、开发工单、implementation tickets、可领取 backlog、AFK / HITL 标注或 coverage matrix：用 `prd-to-issues`。
+- 用户要文件边界、测试策略、实现步骤、提交节奏或本地开发计划：用 Superpowers `writing-plans`。
+- `prd-to-issues` 可以作为 `writing-plans` 的输入，但不替代实现计划；`writing-plans` 可以消费 PRD 或 issue backlog，但不负责 PRD readiness review。

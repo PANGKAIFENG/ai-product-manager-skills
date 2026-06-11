@@ -16,6 +16,7 @@ for skill in \
   decision-research \
   prd-architect \
   prd-review \
+  prd-to-issues \
   ui-mockup-desktop-workbench \
   grill-me \
   ai-work-assetization-diagnoser
@@ -39,6 +40,7 @@ for skill in \
   decision-research \
   prd-architect \
   prd-review \
+  prd-to-issues \
   ui-mockup-desktop-workbench \
   grill-me \
   ai-work-assetization-diagnoser
@@ -71,6 +73,12 @@ In Codex, try:
 
 ```text
 $prd-architect 把这个想法整理成 PRD-lite
+```
+
+or:
+
+```text
+$prd-to-issues 把这个 PRD 拆成 GitHub issues，先不要发布
 ```
 
 or:

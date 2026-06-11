@@ -1,0 +1,4 @@
+interface:
+  display_name: "PRD 到研发 Issue 拆解"
+  short_description: "把已成型 PRD 拆成可验收、可独立领取的 GitHub implementation issues"
+  default_prompt: "Use $prd-to-issues to turn this PRD into vertical-slice implementation issue drafts. Start in draft-only mode unless I explicitly approve publishing."

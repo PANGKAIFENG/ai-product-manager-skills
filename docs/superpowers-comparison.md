@@ -12,6 +12,7 @@ Superpowers is strongest once the problem is clear enough to plan, test, impleme
 | Topic research | Build PM decision input, evidence, concept lineage, and option framing. | Usually not the main job. |
 | PRD drafting | Create PRD-lite, PRD-standard, or PRD-ai-native. | Consumes the PRD later. |
 | PRD review | Find gaps, contradictions, untestable requirements, and handoff blockers. | May use the corrected PRD for implementation planning. |
+| Implementation issue backlog | `prd-to-issues` breaks a ready PRD into GitHub implementation issue drafts with coverage and AFK / HITL labels. | May consume the issue backlog as planning input, but does not own GitHub issue publishing. |
 | Plan pressure test | Challenge tradeoffs, dependencies, and failure modes. | Can then write or execute a plan. |
 | Implementation plan | Provides readiness criteria and product context. | `writing-plans` owns file-level plan, tests, and commits. |
 | Development execution | Out of scope. | TDD, debugging, executing plans, verification, and finishing branches. |
@@ -34,6 +35,7 @@ If these are missing, use:
 - `research-topic-compiler` to build topic understanding, or `decision-research` to choose between concrete options.
 - `prd-architect` to draft the PRD.
 - `prd-review` to find blockers.
+- `prd-to-issues` to create a GitHub issue backlog after the PRD is ready.
 - `grill-me` to pressure-test the plan.
 
 ## Example Flow
@@ -44,8 +46,9 @@ If these are missing, use:
 3. $decision-research 比较候选方案，给一个有立场推荐
 4. $prd-architect 基于上面结论写 PRD-standard
 5. $prd-review 从研发和测试视角审这个 PRD
-6. $grill-me 拷问最终方案
-7. Superpowers $writing-plans 基于修订后的 PRD 写实现计划
+6. $prd-to-issues 把 ready PRD 拆成 GitHub implementation issues，先给 draft
+7. $grill-me 拷问最终方案
+8. Superpowers $writing-plans 基于修订后的 PRD 或 issue backlog 写实现计划
 ```
 
 The key rule: product readiness here, implementation readiness there.

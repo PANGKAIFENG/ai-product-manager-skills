@@ -22,6 +22,7 @@ Start with one workflow:
 | Choose between options | `decision-research` | `$decision-research 帮我比较这几个方案，给一个有立场推荐` |
 | Draft a PRD | `prd-architect` | `$prd-architect 把这个想法整理成 PRD-lite` |
 | Review a PRD | `prd-review` | `$prd-review 从研发和测试视角审一下这个 PRD` |
+| Break a ready PRD into GitHub issues | `prd-to-issues` | `$prd-to-issues 把这个 PRD 拆成 GitHub implementation issues，先给我 draft` |
 | Create a desktop UI mockup | `ui-mockup-desktop-workbench` | `$ui-mockup-desktop-workbench 基于 PRD 和 UI 规范生成桌面端真实页面 mockup` |
 | Pressure-test a plan | `grill-me` | `$grill-me 拷问我的方案，找失败模式` |
 | Diagnose assetization level | `ai-work-assetization-diagnoser` | `$ai-work-assetization-diagnoser 这个 prompt 应该沉淀成 workflow 还是 Skill？` |
@@ -34,7 +35,7 @@ Recommended paths:
 - Claude Code users: [install-claude-code.md](install-claude-code.md)
 - skillshare users: use `skillshare install` and `skillshare sync`
 
-If your tool supports manually loaded Agent Skills, copy or symlink the eight root-level Skill directories into the tool's Skills directory.
+If your tool supports manually loaded Agent Skills, copy or symlink the nine root-level Skill directories into the tool's Skills directory.
 
 ## 4. Verify Skill Discovery
 
@@ -61,12 +62,13 @@ $research-topic-compiler 系统研究这个领域，输出 PM 决策输入
 $decision-research 帮我比较候选方案，给一个有立场推荐
 $prd-architect 基于上面的结论写 PRD-standard
 $prd-review 从研发和测试视角审这个 PRD
+$prd-to-issues 把 ready PRD 拆成 vertical-slice GitHub issues，先 draft-only
 $ui-mockup-desktop-workbench 基于 PRD 和 UI 规范生成桌面端 mockup
 $grill-me 拷问最终方案，找失败模式
 $ai-work-assetization-diagnoser 判断这套重复 AI 工作要不要沉淀成 Skill 或 Loop
 ```
 
-When the PRD is clear enough, hand it to Superpowers `writing-plans` for implementation planning.
+When the PRD is clear enough, use `prd-to-issues` for GitHub issue backlog or hand it to Superpowers `writing-plans` for file-level implementation planning.
 
 ## Troubleshooting
 

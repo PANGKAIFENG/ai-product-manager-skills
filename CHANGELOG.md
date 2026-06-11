@@ -4,6 +4,16 @@ All notable changes to this project are documented here.
 
 This project uses semantic-ish release tags for public snapshots. The current focus is usability and public discoverability rather than API stability.
 
+## Unreleased
+
+### Added
+
+- `prd-to-issues` Skill for turning ready PRDs into draft GitHub implementation issue backlogs with vertical slices, AFK / HITL labels, and coverage matrix.
+
+### Changed
+
+- Updated catalog, routing, install docs, and Superpowers handoff docs for the PRD-to-issue workflow.
+
 ## [0.1.0] - 2026-06-11
 
 ### Added
