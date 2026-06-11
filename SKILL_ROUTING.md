@@ -30,6 +30,19 @@
 - “系统研究 MCP 安全最佳实践，整理到 Obsidian。” -> `research-topic-compiler` 深度研究模式。
 - “我们应该选 MCP 还是自研工具协议？” -> `decision-research`。
 
+## Loop Extension 分流规则
+
+Loop Extension 不是新的 Skill 入口，而是现有 Skill 的状态化运行模式。只有用户明确需要多轮、可恢复、持续更新或准备度收敛时才启用；普通一次性任务仍按核心路由表处理。
+
+| 用户目标 | 优先 Skill / Mode | 说明 |
+| --- | --- | --- |
+| 围绕同一个决策持续收敛，下一轮继续更新证据和结论 | `decision-research` 的 Decision Research Loop | 读取 `references/decision-loop-contract.md`，维护 Research Map、假设矩阵、证据表、Assumption Ledger、Scope Drift 和结论版本。 |
+| 围绕长期变化主题维护认知雷达 | `research-topic-compiler` 的 Research Radar Loop | 读取 `references/research-radar-loop-contract.md`，维护 watchlist、证据变化、阶段结论 Diff 和 `09_更新日志.md`；不默认创建 automation。 |
+| 围绕同一份 PRD 多轮关闭阻断项并判断能否进入开发计划 | `prd-review` 的 PRD Readiness Loop | 读取 `references/prd-readiness-loop-contract.md`，维护 open blockers、revision draft、readiness status 和 handoff decision。 |
+| 只是一次性调研、一次性研究报告或一次 PRD review | 原 Skill 普通模式 | 不启用 Loop contract，不创建状态文件。 |
+
+如果任务仍然模糊、没有稳定目标、没有状态、没有验证口径或没有停止条件，先回到 `ai-collaboration-calibration`，不要强行 Loop 化。
+
 ## PRD 图示分流规则
 
 Draw.io 图示不再作为独立公开 Skill；它是 PRD 起草和 PRD 评审的一部分。

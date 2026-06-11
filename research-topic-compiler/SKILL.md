@@ -85,6 +85,20 @@ description: >
 - `Radar Mode`：长期变化主题启用 `L5`，只形成 watchlist、更新日志和复盘建议；不默认创建 automation。
 - `Product Decision Research`：用户需要做产品决策（选型、竞品分析、技术方案对比、市场策略验证）时启用。详细规则见 `references/product-decision-mode.md`。
 
+### Radar Loop Extension
+
+当用户明确要“长期雷达”“持续更新”“定期复盘”“更新已有研究项目”“维护活的知识库”或“下一轮继续扫描同一主题”时，读取 `references/research-radar-loop-contract.md`。
+
+Research Radar Loop 是 `Radar Mode` 的状态化合约：
+
+- 它维护演进主题的 watchlist、证据变化、阶段结论 Diff、更新日志和下一步。
+- 它不等于普通新闻监控；每次扫描都要说明对用户当前学习、产品判断或决策有什么影响。
+- 它不自动创建 Codex automation；只有用户明确要求创建、开启、设置或定期运行时，才进入 automation 流程。
+- 弱信号只能进入更新日志或待复盘区，不能直接改写稳定阶段结论。
+- 如果研究信号变成具体产品、技术、商业或战略选择，建议升级到 `decision-research`。
+
+不要因为用户只是要一次性概念解释、单篇文章总结或固定知识学习就进入 Radar Loop。
+
 Product Decision Research 触发信号：
 
 - 用户说”这几个方案怎么选””帮我做竞品分析””对比一下 A 和 B””选型”。
@@ -365,6 +379,7 @@ L5 automation 的默认安全边界：
 ## Resource Guide
 
 - `references/research-depth-rubric.md`：判断 `L1-L5` 深度、样本量和确认门禁。
+- `references/research-radar-loop-contract.md`：Research Radar Loop 的状态文件、信号分类、更新规则、暂停条件和升级规则。
 - `references/user-context-standards.md`：解析用户画像和 persona-adaptive 输出边界。
 - `references/default-user-profile.md`：本地默认用户画像；仅作为默认配置，不写死主逻辑。
 - `references/learning-pack-standards.md`：轻量系统学习包标准。

@@ -60,10 +60,10 @@ Install paths:
 | Skill | 中文名 | 主要用途 | Example |
 | --- | --- | --- | --- |
 | [`ai-collaboration-calibration`](ai-collaboration-calibration/) | 协作校准 / 认知校准 | 问题还没定义清楚时，先挑战假设、澄清目标和判断标准。 | [example](examples/ai-collaboration-calibration.md) |
-| [`research-topic-compiler`](research-topic-compiler/) | 专题研究编译器 / 概念源流研究助手 | 系统研究、主题学习、概念源流、行业演进和 PM 决策看板。 | [example](examples/research-topic-compiler.md) |
-| [`decision-research`](decision-research/) | 决策调研 / 决策驱动调研 | 明确具体决策、接入可行性、方案选型和一次性决策调研。 | [example](examples/decision-research.md) |
+| [`research-topic-compiler`](research-topic-compiler/) | 专题研究编译器 / 概念源流研究助手 | 系统研究、主题学习、概念源流、行业演进和 PM 决策看板；需要持续更新时可进入 Research Radar Loop。 | [example](examples/research-topic-compiler.md) |
+| [`decision-research`](decision-research/) | 决策调研 / 决策驱动调研 | 明确具体决策、接入可行性、方案选型和一次性决策调研；需要多轮收敛时可进入 Decision Research Loop。 | [example](examples/decision-research.md) |
 | [`prd-architect`](prd-architect/) | PRD 架构师 / 需求文档起草 | 从想法或草稿起草 PRD，并在需要时补可编辑 Draw.io 图。 | [example](examples/prd-architect.md) |
-| [`prd-review`](prd-review/) | PRD 评审 / 需求评审 | 评审已有 PRD/handoff，检查文字、流程、验收和图示是否能支撑交付。 | [example](examples/prd-review.md) |
+| [`prd-review`](prd-review/) | PRD 评审 / 需求评审 | 评审已有 PRD/handoff，检查文字、流程、验收和图示是否能支撑交付；需要关闭阻断项时可进入 PRD Readiness Loop。 | [example](examples/prd-review.md) |
 | [`grill-me`](grill-me/) | 方案拷问 / 压力测试 | 对已有方案连续追问，暴露盲点、失败模式和前置条件。 | [example](examples/grill-me.md) |
 
 ## AI PM Workflow
@@ -76,6 +76,16 @@ Install paths:
 | 4. PRD 评审 | 已有 PRD，需要找缺口、冲突和不可测试点 | “帮我审 PRD”“从研发测试视角挑问题” | [`prd-review`](prd-review/) | 修订 PRD，关闭阻断项 |
 | 5. 方案压测 | 已有方案，但担心盲点和失败模式 | “拷问我的方案”“这个方案哪里会翻车” | [`grill-me`](grill-me/) | 明确取舍、风险和前置条件 |
 | 6. 开发计划 | PRD 已可交付，需要拆实现步骤 | “基于这个 PRD 写开发计划” | Superpowers `writing-plans` | 进入实现计划、测试策略和提交节奏 |
+
+## Loop Extensions
+
+Loop Extension 不新增 Skill，也不改变根目录结构。它是在部分高价值 Skill 内增加的状态化工作合约，只有当用户明确需要多轮、可恢复、持续更新或交付准备度收敛时才启用。
+
+| Loop Extension | Parent Skill | Use when | Contract |
+| --- | --- | --- | --- |
+| Decision Research Loop | [`decision-research`](decision-research/) | 围绕同一个决策多轮收敛，跟踪假设、证据、反证、范围漂移和结论版本。 | [`decision-loop-contract.md`](decision-research/references/decision-loop-contract.md) |
+| Research Radar Loop | [`research-topic-compiler`](research-topic-compiler/) | 围绕持续变化主题维护 watchlist、证据更新、阶段结论 Diff 和更新日志。 | [`research-radar-loop-contract.md`](research-topic-compiler/references/research-radar-loop-contract.md) |
+| PRD Readiness Loop | [`prd-review`](prd-review/) | 围绕同一份 PRD 多轮 review、修订、关闭阻断项，并判断能否进入 `writing-plans`。 | [`prd-readiness-loop-contract.md`](prd-review/references/prd-readiness-loop-contract.md) |
 
 PRD 进入 Superpowers `writing-plans` 前，至少应满足：
 

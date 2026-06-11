@@ -27,6 +27,20 @@ description: >
 
 这个 skill 默认服务于“AI 先出第一版 PRD，人再做多轮 review 修正”的场景。
 
+## Loop Extension：PRD Readiness Loop
+
+当用户明确需要“多轮评审”“关闭阻断项”“继续上一轮 review”“判断是否能进 writing-plans”“跟踪修订状态”或“把 PRD 收敛到可交付开发计划”时，读取 `references/prd-readiness-loop-contract.md`。
+
+PRD Readiness Loop 是本 Skill 的状态化扩展：
+
+- 它围绕同一份 PRD 的 review、revision、re-review 和 readiness check 迭代。
+- 它必须区分 open blockers、resolved blockers、revision draft、readiness status、open questions、diagram status 和 handoff decision。
+- 它不能把缺失业务判断伪装成已确认需求；关键取舍缺失时要暂停并问用户。
+- 它的出口是 `Ready for writing-plans`、`Ready with assumptions` 或 `Not ready`，不替代 Superpowers `writing-plans`。
+- 如果输入还只是模糊想法或没有 PRD，应转交 `prd-architect` 或 `ai-collaboration-calibration`。
+
+不要因为用户只是要求一次普通 PRD review 就强制创建状态文件；只有需要多轮收敛、可恢复状态或 readiness tracking 时才启用 Loop contract。
+
 ## Responsibilities
 
 这个 skill 负责：
@@ -358,6 +372,7 @@ PRD Review Report: <文件名>
 - `scripts/validate_drawio.py`
 - `honeycomb diagram-guard <path>` 或 `.claude/hooks/diagram-guard.sh`
 - `references/implementation-plan-readiness.md`
+- `references/prd-readiness-loop-contract.md`
 
 ## Success Standard
 
