@@ -2,7 +2,7 @@
 
 This repository uses the common Agent Skill shape: each Skill is a directory with a `SKILL.md` file containing frontmatter, a trigger description, and workflow instructions.
 
-Claude Code setups can vary by version and organization policy. Use this guide as a conservative installation pattern: put the eleven Skill directories in the location your Claude Code environment scans for Skills, then verify by explicit invocation.
+Claude Code setups can vary by version and organization policy. Use this guide as a conservative installation pattern: put the twelve Skill directories in the location your Claude Code environment scans for Skills, then verify by explicit invocation.
 
 ## Recommended Copy List
 
@@ -11,6 +11,7 @@ Copy or symlink these folders:
 ```text
 ai-collaboration-calibration/
 research-topic-compiler/
+competitive-analysis/
 decision-research/
 brainstorming/
 prd-architect/
@@ -46,7 +47,7 @@ If you manage Claude Code Skills manually:
 
 1. Clone this repository.
 2. Locate your Claude Code Skills directory.
-3. Copy or symlink the eleven public Skill folders into that directory.
+3. Copy or symlink the twelve public Skill folders into that directory.
 4. Restart Claude Code if new Skills are not detected.
 5. Test explicit invocation by Skill name.
 
@@ -77,6 +78,18 @@ Expected behavior:
 - The agent uses `ui-wireframe-to-html`.
 - It produces screen inventory, state model, and ASCII layout.
 - It does not jump into high-fidelity visual polish.
+
+Competitive analysis:
+
+```text
+$competitive-analysis 研究这个竞品对我们的产品决策有什么启发，重点看定位、onboarding 和定价
+```
+
+Expected behavior:
+
+- The agent uses `competitive-analysis`.
+- It anchors the product decision before collecting evidence.
+- It outputs a Product Decision Brief rather than a generic feature list.
 
 ## Compatibility Notes
 

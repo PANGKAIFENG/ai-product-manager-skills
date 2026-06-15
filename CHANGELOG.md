@@ -10,10 +10,12 @@ This project uses semantic-ish release tags for public snapshots. The current fo
 
 - `prd-to-issues` Skill for turning ready PRDs into draft GitHub implementation issue backlogs with vertical slices, AFK / HITL labels, and coverage matrix.
 - `ui-wireframe-to-html` Skill for turning PRDs into UI structure, state models, ASCII layouts, and optional low-fidelity HTML wireframes.
+- `competitive-analysis` Skill for turning competitor, alternative-product, pricing, onboarding, review, and optional walkthrough evidence into Product Decision Briefs.
 
 ### Changed
 
 - Updated catalog, routing, install docs, and Superpowers handoff docs for the PRD-to-issue workflow.
+- Updated catalog, routing, install docs, quickstart, and examples for the competitive-analysis workflow.
 - Updated `ui-mockup-desktop-workbench` so high-fidelity handoff starts with a wireframe-stage review gate before visual output.
 - Updated UI mockup catalog, routing, examples, install docs, and promotion copy to distinguish low-fidelity structure from high-fidelity implementation handoff.
 

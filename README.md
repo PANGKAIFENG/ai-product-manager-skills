@@ -2,13 +2,13 @@
 
 [![Release](https://img.shields.io/github/v/release/PANGKAIFENG/ai-product-manager-skills?display_name=tag)](https://github.com/PANGKAIFENG/ai-product-manager-skills/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-11-2563eb.svg)](SKILL_REGISTRY.md)
+[![Skills](https://img.shields.io/badge/skills-12-2563eb.svg)](SKILL_REGISTRY.md)
 [![Codex](https://img.shields.io/badge/Codex-skills-111827.svg)](docs/install-codex.md)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-skills-111827.svg)](docs/install-claude-code.md)
 
 中文优先的 AI 产品经理 Agent Skill 库，用来把高频 PM 工作流沉淀成可复用的 Codex Skills、Claude Code Skills 和 Agent Skills。
 
-它重点覆盖：AI 协作脑暴、主题研究、决策调研、方案脑暴、PRD 起草、PRD 评审、PRD 到 GitHub issue 拆解、UI 线框/高保真 mockup、方案压测、AI 工作资产化诊断，以及把需求交给 Superpowers 开发计划前的交付准备。
+它重点覆盖：AI 协作脑暴、主题研究、竞品决策分析、决策调研、方案脑暴、PRD 起草、PRD 评审、PRD 到 GitHub issue 拆解、UI 线框/高保真 mockup、方案压测、AI 工作资产化诊断，以及把需求交给 Superpowers 开发计划前的交付准备。
 
 ## Why This Exists
 
@@ -34,6 +34,7 @@ Recommended first prompts:
 ```text
 $ai-collaboration-calibration 先别执行，帮我看清这个产品问题
 $research-topic-compiler 系统研究这个主题，并转成 PM 决策输入
+$competitive-analysis 研究这个竞品对我们的产品决策有什么启发
 $decision-research 帮我比较这几个方案，给一个有立场推荐
 $brainstorming 先不要写 PRD，帮我脑暴 2-3 个设计方案
 $prd-architect 把这个想法整理成 PRD-lite
@@ -66,6 +67,7 @@ Install paths:
 | --- | --- | --- | --- |
 | [`ai-collaboration-calibration`](ai-collaboration-calibration/) | 协作校准 / 认知校准 | 问题还没定义清楚时，先挑战假设、澄清目标和判断标准。 | [example](examples/ai-collaboration-calibration.md) |
 | [`research-topic-compiler`](research-topic-compiler/) | 专题研究编译器 / 概念源流研究助手 | 把大白话或模糊方向转成研究目标、研究问题和输出要求，再做系统研究、概念源流、行业演进和 PM 决策看板；需要持续更新时可进入 Research Radar Loop。 | [example](examples/research-topic-compiler.md) |
+| [`competitive-analysis`](competitive-analysis/) | 竞品决策分析 / 竞品决策简报 | 围绕一个产品决策，把竞品、替代方案、市场信号和可选产品走查转成定位、路线图、定价、功能优先级、差异化或 Go/No-Go 输入。 | [example](examples/competitive-analysis.md) |
 | [`decision-research`](decision-research/) | 决策调研 / 决策驱动调研 | 明确具体决策、接入可行性、方案选型和一次性决策调研；需要多轮收敛时可进入 Decision Research Loop。 | [example](examples/decision-research.md) |
 | [`brainstorming`](brainstorming/) | 设计脑暴 / 实现前方案校准 | 在 PRD、mockup 或开发计划前，把已基本成立的想法收敛成 2-3 个可比较方案；涉及 UI 时先对齐项目视觉规范，再形成设计 spec。 | [example](examples/brainstorming.md) |
 | [`prd-architect`](prd-architect/) | PRD 架构师 / 需求文档起草 | 从想法或草稿起草 PRD，并在需要时补可编辑 Draw.io 图。 | [example](examples/prd-architect.md) |
@@ -81,7 +83,7 @@ Install paths:
 | Stage | Current state | Say this | Skill | Next step |
 | --- | --- | --- | --- | --- |
 | 1. 脑暴校准 | 还没想清楚真正问题，担心方向错 | “先别执行，帮我看清问题”“挑战我的假设” | [`ai-collaboration-calibration`](ai-collaboration-calibration/) | 明确问题、约束和判断标准 |
-| 2. 主题/决策研究 | 需要理解领域、概念、行业演进，或要在多个方案间做选择 | “系统研究这个主题”“概念源流”“帮我选一个” | [`research-topic-compiler`](research-topic-compiler/) / [`decision-research`](decision-research/) | 得到证据、判断、推荐方案或 PM 决策看板 |
+| 2. 主题/竞品/决策研究 | 需要理解领域、概念、行业演进、竞品启发，或要在多个方案间做选择 | “系统研究这个主题”“概念源流”“做竞品决策分析”“帮我选一个” | [`research-topic-compiler`](research-topic-compiler/) / [`competitive-analysis`](competitive-analysis/) / [`decision-research`](decision-research/) | 得到证据、竞品决策简报、判断、推荐方案或 PM 决策看板 |
 | 3. 方案脑暴 | 问题基本成立，但还没确定方案、范围、交互、视觉约束或技术切分 | “先脑暴几个方案”“先不要写 PRD，帮我设计几种路径” | [`brainstorming`](brainstorming/) | 得到推荐方案、取舍、视觉约束摘要和设计 spec |
 | 4. PRD 起草 | 要把想法、脑暴或草稿整理成需求文档 | “帮我写 PRD”“帮我选 PRD 模板”“PRD 里补 Draw.io 图” | [`prd-architect`](prd-architect/) | 形成 PRD-lite、PRD-standard 或 PRD-ai-native |
 | 5. PRD 评审 | 已有 PRD，需要找缺口、冲突和不可测试点 | “帮我审 PRD”“从研发测试视角挑问题” | [`prd-review`](prd-review/) | 修订 PRD，关闭阻断项 |
@@ -117,6 +119,7 @@ See [docs/superpowers-comparison.md](docs/superpowers-comparison.md) for the pro
 
 - 问题还没定义清楚：用 `ai-collaboration-calibration`。
 - 需要把模糊研究想法拆成研究目标，或系统理解主题、概念源流、行业演进、PM 决策看板：用 `research-topic-compiler`。
+- 需要把竞品、替代方案、定价、onboarding、公开评价或登录态走查转成产品决策简报：用 `competitive-analysis`。
 - 明确具体决策、接入方式或方案选型：用 `decision-research`。
 - 问题基本成立，但进入 PRD、mockup 或开发计划前还需要比较多个设计路径：用 `brainstorming`。
 - 要从想法或草稿写 PRD：用 `prd-architect`。

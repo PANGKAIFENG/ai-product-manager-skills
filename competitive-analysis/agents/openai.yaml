@@ -1,0 +1,4 @@
+interface:
+  display_name: "Competitive Analysis / 竞品决策分析"
+  short_description: "把竞品、替代方案、定价、onboarding、评论和可选走查证据转成 Product Decision Brief。"
+  default_prompt: "Use $competitive-analysis to turn competitor evidence into a product decision brief."
