@@ -4,7 +4,7 @@ description: >
   专题研究编译器 / Persona-Adaptive Research-to-Learning Compiler：当用户要围绕一个主题做系统学习、
   专题研究、行业调研、最佳实践提炼、轻量概念解读、概念源流、语义演化、PM 技术评审提问脚本或行业演进看板时使用。
   当用户只有大白话、模糊方向、业务愿望或 Roadmap/PRD 前置材料想法，需要先转成清晰研究目标、研究问题和输出要求时也使用。
-  适合把研究转成 Research Project、学习报告、证据矩阵、PM 决策看板、候选池、模板或实践任务。适合“系统研究一个主题”
+  适合把研究转成 Research Project、学习报告、证据矩阵、PM 决策看板、候选池、模板、实践任务、业务判断、商业化输入或高门槛应用研究前置。适合“系统研究一个主题”
   “整理到 Obsidian”“做深度专题”“研究行业最佳实践”“概念解读”“概念源流”“PM 技术评审提问脚本”
   “行业演进看板”“这个主题对我的业务有什么用”。不适合创建 Skill、评审 SKILL.md、普通即时搜索或一次性摘要。
   当用户已经要在明确候选项中选一个、需要最终推荐和排除理由时，应使用 decision-research。
@@ -34,6 +34,7 @@ description: >
 - 研究前可以先做 `Pre-Research Source Expansion`：用公开搜索、垂直 API、RSS、产品/市场目录等渠道扩充候选来源，再筛选进入正式证据矩阵。
 - 结论必须能回到证据矩阵；`05_研究报告` 是第一阅读入口，`02_证据与卡片` 是按需深挖层。
 - 系统学习不是重型课程仓库；默认保持轻量，只有触发条件满足时才建议独立学习包文件。
+- 当研究会影响产品策略、商业化、工作台/连接器设计、企业 adoption 或其他高成本决策时，默认按高门槛应用研究处理，读取 `references/applied-business-research-contract.md`。
 - 轻量概念解构属于本 Skill 的研究模式，不再单独使用独立概念看板 Skill；它适合快速建立概念源流、语义漂移、范式阶段和 PM 决策问题。
 - 用户画像只影响解释深度、案例选择、输出结构和实践任务，不覆盖用户当前明确要求。
 - 研究必须能转成行动：判断、方案、模板、任务、PRD、Workflow、Eval、Checklist、SOP、路线图或实践练习。
@@ -99,7 +100,7 @@ description: >
 - `Normal Research`：资料整理、证据矩阵、阶段结论、研究报告，适合普通专题研究。
 - `Lightweight Concept Lens Mode`：轻量概念解读、概念源流、语义演化、行业演进、PM 技术评审提问脚本或 HTML 决策看板；详细规则见 `references/mode-routing-guide.md`。
 - `Learning Pack Mode`：用户对陌生领域要建立学习框架时启用；详细标准见 `references/learning-pack-standards.md`。
-- `Application Mode`：用户问”对我/我们的业务有什么用””怎么落地””怎么做成方案/PRD/Workflow/Skill/Eval”时启用；详细规则见 `references/mode-routing-guide.md`。
+- `Application Mode`：用户问”对我/我们的业务有什么用””怎么落地””怎么做成方案/PRD/Workflow/Skill/Eval”时启用；当研究会影响产品策略、商业化、enterprise adoption、workflow/platform packaging 或其他高成本决策时，按 `references/applied-business-research-contract.md` 处理；详细规则见 `references/mode-routing-guide.md`。
 - `Radar Mode`：长期变化主题启用 `L5`，只形成 watchlist、更新日志和复盘建议；不默认创建 automation。
 - `Product Candidate Research`：用户需要围绕产品决策先发现候选、建立候选池、做长期候选追踪或跨会话 handoff 时启用。详细规则见 `references/mode-routing-guide.md` 和 `references/product-decision-mode.md`；最终单次推荐归 `decision-research`。
 
@@ -178,7 +179,7 @@ Product Candidate Research 与 Application Mode 的区别：Application Mode 是
 
 1. 捕获用户原话、主题和目标。若输入不够明确，先执行 `Research Goal Framing Gate`，输出 `Research Goal Framing`，把大白话转成研究目标、研究问题、输出要求和 out-of-scope。若用户只要求整理研究 brief、先不要搜资料或先不要开始研究，停在 framing 产物，不继续生成 `Research Run Plan`。
 2. 解析用户画像。按 `User Context Resolution` 选择通用解释或 persona-adaptive 输出。
-3. 判断研究模式和深度。非平凡主题先读 `references/research-depth-rubric.md`，推荐 `L1-L5`，并说明是否启用 Lightweight Concept Lens、Learning Pack、Application Mode 或 Product Candidate Research。
+3. 判断研究模式和深度。非平凡主题先读 `references/research-depth-rubric.md`，推荐 `L1-L5`，并说明是否启用 Lightweight Concept Lens、Learning Pack、Application Mode、Applied Business Research 或 Product Candidate Research。
 4. 选择渠道。读取 `references/channel-selection-rubric.md` 和 `references/channel-registry.md`，根据主题动态选择 Obsidian 之外的渠道。
 5. 判断是否启用 `Pre-Research Source Expansion`。当内部输入不足、主题依赖外部生态或用户要求扩源时，先生成候选来源表和筛选建议。
 6. 先输出 `Research Run Plan`。包含推荐深度、研究模式、用户画像摘要、主题类型、核心问题、渠道选择、前置扩源渠道、每个渠道启用或不启用的理由、样本量、写入位置、凭据或访问限制。
@@ -352,17 +353,18 @@ L5 automation 的默认安全边界：
 - `Lightweight Concept Lens`：给出概念源流、语义演化、范式阶段、PM 决策问题、反模式或概念债务判断；如果生成 HTML，静态验证已通过或明确说明限制。
 - `L2`：给出主题地图、核心概念、基础案例、来源和下一步阅读。
 - `L3`：Research Project 或聊天报告已覆盖问题清单、证据矩阵、阶段结论和第一阅读入口式 `05_研究报告`，能帮助陌生领域入门。
-- `L4`：额外形成外部渠道研究、行业案例对照、最佳实践或应用模板，能指导方案设计、选型或 PRD 输入。
+- `L4`：额外形成外部渠道研究、行业案例对照、最佳实践或应用模板，能指导方案设计、选型、商业化、企业 adoption、workflow 设计或 PRD 输入；若是高门槛应用研究，还应给出迁移判断、矩阵、风险和分阶段路径。
 - `L5`：形成 watchlist、更新日志、稳定/候选/待验证/废弃结论分层和后续自动化建议；若用户明确确认创建 automation，则调用 Codex `cron` automation，并保留低风险写入边界与人工确认点。
 - Product Candidate Research：候选池通过 Quality Gate（至少 3 个候选项有完整 schema 填充）、评分表输出、Candidate Summary 包含 Top candidates 和风险、Cross-Session Handoff 文件可被后续会话或 `decision-research` 直接消费。
 - Persona-adaptive 输出：关键结论已说明对当前用户画像、业务目标或应用场景的影响。
-- Application 输出：至少给出一个可执行动作、模板、实践任务或判断框架，除非用户只要求快查。
+- Application 输出：至少给出一个可执行动作、模板、实践任务或判断框架，除非用户只要求快查；当研究是高门槛应用研究时，还要包含决策上下文、证据覆盖、迁移判断、判断矩阵、分阶段建议、风险与待验证假设。
 - 如果渠道受限，必须说明未使用的渠道、限制原因和对结论可信度的影响。
 
 ## Resource Guide
 
 - `references/research-depth-rubric.md`：判断 `L1-L5` 深度、样本量和确认门禁。
 - `references/research-goal-framing-gate.md`：把用户大白话、模糊方向或 Roadmap 前置想法转成研究目标、研究问题、输出要求和 out-of-scope。
+- `references/applied-business-research-contract.md`：高门槛应用研究、商业化/企业 adoption/workflow 决策的证据覆盖、迁移判断和决策产物要求。
 - `references/research-radar-loop-contract.md`：Research Radar Loop 的状态文件、信号分类、更新规则、暂停条件和升级规则。
 - `references/mode-routing-guide.md`：Research Modes 的触发细则、Concept Lens、Learning Pack、Application 和 Product Candidate 规则。
 - `references/user-context-standards.md`：解析用户画像和 persona-adaptive 输出边界。
@@ -398,6 +400,7 @@ L5 automation 的默认安全边界：
 - Smoke：`我对 Agent Harness 完全陌生，帮我系统学习并整理到 Obsidian。`
 - Smoke：`研究 Harness 对我们推款智能体有什么用。`
 - Smoke：`我是后端工程师，研究 Agent Harness 的权限和 Trace 机制。`
+- Smoke：`研究一个通用能力如何从工具升级成业务工作台，并给出判断矩阵。`
 - Product Candidate：`研究一下市面上的 AI 视频生成方案，先沉淀候选池。` → 应形成 Candidate Backlog，通过 Quality Gate，并建议后续用 `decision-research` 下最终结论。
 - Product Candidate：`这个方向值不值得做？市场上有没有类似的？` → 应输出竞品候选池 + Go/No-Go 判断框架输入，不把弱证据包装成最终决策。
 - Product Candidate Handoff：研究跨多个会话时，后续会话或 `decision-research` 应能从 handoff 文件继续，不重复已有候选。

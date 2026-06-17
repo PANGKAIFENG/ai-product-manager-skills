@@ -60,6 +60,14 @@ Learning Pack 默认写进 `05_研究报告`、`03_阶段结论`、`07_行业案
 - 用户问“怎么落地”“怎么做成方案 / PRD / Workflow / Skill / Eval”。
 - 用户需要把研究结论变成具体工作产物。
 
+### High-Stakes Applied Business Research
+
+When the research will inform product strategy, commercialization, packaging, go-to-market, workflow/platform design, enterprise adoption, implementation, or other high-cost decisions, treat Application Mode as a decision-support run rather than a generic summary.
+
+- Read `applied-business-research-contract.md`.
+- Default to `L4`.
+- Required outputs: decision context, evidence coverage, transfer reasoning, judgment matrix, staged recommendation, risks, and open validations.
+
 ### Required Outputs
 
 至少转成一种：

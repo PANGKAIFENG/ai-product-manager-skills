@@ -40,6 +40,7 @@ Skip this gate only when the user already provides a clear topic, key questions,
    - `Concept Lens`: concept lineage, semantic drift, paradigm stages, hype vs substance.
    - `Industry Evolution`: market narrative, product direction, mature vs emerging patterns.
    - `Application Translation`: mapping a general trend into the user's domain, users, tasks, artifacts, and capability barriers.
+   - `Applied Business Research`: product strategy, commercialization, packaging, go-to-market, enterprise adoption, implementation, or workflow decisions that need a reusable judgment framework.
    - `Product Candidate`: candidate discovery, candidate backlog, comparison dimensions.
    - `Roadmap Input`: research material that informs roadmap choices but does not yet decide the roadmap.
    - `Learning Pack`: structured learning for an unfamiliar domain.
@@ -55,7 +56,7 @@ Skip this gate only when the user already provides a clear topic, key questions,
    - Output artifact type.
    - What the output must enable next.
    - Required sections or tables.
-   - Evidence standard and uncertainty labeling.
+   - Evidence standard and uncertainty labeling. If goal type is `Applied Business Research`, include decision context, transfer reasoning, judgment matrix, staged recommendation, and validation gaps.
    - What is explicitly out of scope.
 
 7. **Set mode and depth**
@@ -75,7 +76,7 @@ Use this compact section before `Research Run Plan`:
 **Research Goal Framing**
 - User raw intent: <preserve the user's words in short form>
 - Interpreted research goal: <one operational goal>
-- Goal type: <Concept Lens / Industry Evolution / Application Translation / Product Candidate / Roadmap Input / Learning Pack / Research Radar>
+- Goal type: <Concept Lens / Industry Evolution / Application Translation / Applied Business Research / Product Candidate / Roadmap Input / Learning Pack / Research Radar>
 - Primary research question: <one question>
 - Sub-questions:
   - [understanding] ...

@@ -19,6 +19,8 @@ Choose the report shape based on the research mode:
 
 Modes can be combined, but avoid producing a bloated course-like report.
 
+When Application Mode is high-stakes, such as product strategy, commercialization, packaging, enterprise adoption, implementation, or workflow design, use `applied-business-research-contract.md` and the Applied Decision Structure below.
+
 ## Learning-Oriented Structure
 
 Use this structure for Learning Pack Mode or when the user is entering an unfamiliar domain:
@@ -80,6 +82,49 @@ Use this structure for Learning Pack Mode or when the user is entering an unfami
 - 哪些还只是候选判断？
 - 哪些证据不足？
 - 下一步应该做什么？
+```
+
+## Applied Decision Structure
+
+Use this structure when the research must support product strategy, commercialization, packaging, enterprise adoption, implementation, or workflow decisions.
+
+```markdown
+# 研究报告
+
+## 0. 一句话结论
+
+## 1. 决策上下文
+
+- Who decides?
+- What decision is this supporting?
+- Why now?
+- What is explicitly out of scope?
+
+## 2. 证据覆盖
+
+- Primary facts
+- Case patterns
+- Frameworks / methods
+- Counterexamples / failure modes
+- Context mapping
+
+## 3. 迁移判断表
+
+| 来源 / 案例 | 原始问题 | 可迁移模式 | 不可迁移边界 | 对当前用户的启发 |
+| --- | --- | --- | --- | --- |
+
+## 4. 判断矩阵
+
+| 维度 | 观察到什么 | 为什么重要 | 对当前判断的含义 |
+| --- | --- | --- | --- |
+
+## 5. 分层建议
+
+## 6. 风险与反例
+
+## 7. 分阶段路径
+
+## 8. 待验证假设
 ```
 
 ## Normal Research Structure
