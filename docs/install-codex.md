@@ -13,6 +13,7 @@ mkdir -p "$HOME/.agents/skills"
 for skill in \
   ai-collaboration-calibration \
   research-topic-compiler \
+  x-public-signal-research \
   competitive-analysis \
   decision-research \
   brainstorming \
@@ -40,6 +41,7 @@ mkdir -p /path/to/your-project/.agents/skills
 for skill in \
   ai-collaboration-calibration \
   research-topic-compiler \
+  x-public-signal-research \
   competitive-analysis \
   decision-research \
   brainstorming \
@@ -103,6 +105,12 @@ or:
 
 ```text
 $research-topic-compiler 系统研究“AI 产品经理工作流”，输出 PM 决策输入
+```
+
+or:
+
+```text
+$x-public-signal-research 用 X 公开内容验证这个用户痛点
 ```
 
 or:

@@ -33,7 +33,7 @@ Before handing work to Superpowers `writing-plans`, the PRD should make these cl
 If these are missing, use:
 
 - `ai-collaboration-calibration` to clarify the problem.
-- `research-topic-compiler` to build topic understanding, or `decision-research` to choose between concrete options.
+- `research-topic-compiler` to build topic understanding, `x-public-signal-research` to turn X public conversation into PM evidence, or `decision-research` to choose between concrete options.
 - `brainstorming` to compare design paths and confirm the design before writing PRD or implementation plan.
 - `prd-architect` to draft the PRD.
 - `prd-review` to find blockers.
@@ -45,13 +45,14 @@ If these are missing, use:
 ```text
 1. $ai-collaboration-calibration 先别写 PRD，帮我看清这个产品问题
 2. $research-topic-compiler 系统研究这个主题，输出 PM 决策输入
-3. $decision-research 比较候选方案，给一个有立场推荐
-4. $brainstorming 先比较 2-3 个设计路径，确认推荐方案
-5. $prd-architect 基于上面结论写 PRD-standard
-6. $prd-review 从研发和测试视角审这个 PRD
-7. $prd-to-issues 把 ready PRD 拆成 GitHub implementation issues，先给 draft
-8. $grill-me 拷问最终方案
-9. Superpowers $writing-plans 基于修订后的 PRD 或 issue backlog 写实现计划
+3. $x-public-signal-research 用 X 公开内容补证用户痛点和反证
+4. $decision-research 比较候选方案，给一个有立场推荐
+5. $brainstorming 先比较 2-3 个设计路径，确认推荐方案
+6. $prd-architect 基于上面结论写 PRD-standard
+7. $prd-review 从研发和测试视角审这个 PRD
+8. $prd-to-issues 把 ready PRD 拆成 GitHub implementation issues，先给 draft
+9. $grill-me 拷问最终方案
+10. Superpowers $writing-plans 基于修订后的 PRD 或 issue backlog 写实现计划
 ```
 
 The key rule: product readiness here, implementation readiness there.
