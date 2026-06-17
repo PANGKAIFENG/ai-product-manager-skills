@@ -8,6 +8,7 @@ This project uses semantic-ish release tags for public snapshots. The current fo
 
 ### Added
 
+- `x-public-signal-research` Skill for turning X/Twitter public conversation evidence into PM decision inputs through Xquik, with explicit approval gates for private reads, writes, monitors, webhooks, and bulk work.
 - `prd-to-issues` Skill for turning ready PRDs into draft GitHub implementation issue backlogs with vertical slices, AFK / HITL labels, and coverage matrix.
 - `ui-wireframe-to-html` Skill for turning PRDs into UI structure, state models, ASCII layouts, and optional low-fidelity HTML wireframes.
 - `competitive-analysis` Skill for turning competitor, alternative-product, pricing, onboarding, review, and optional walkthrough evidence into Product Decision Briefs.

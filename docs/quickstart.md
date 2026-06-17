@@ -19,6 +19,7 @@ Start with one workflow:
 | --- | --- | --- |
 | Clarify a fuzzy product problem | `ai-collaboration-calibration` | `$ai-collaboration-calibration 先别执行，帮我看清这个问题` |
 | Frame or research a topic for PM decisions | `research-topic-compiler` | `$research-topic-compiler 把这个大白话拆成研究目标和输出要求，再做研究计划` |
+| Turn X public conversation into product evidence | `x-public-signal-research` | `$x-public-signal-research 用 X 公开内容验证这个用户痛点` |
 | Turn competitor evidence into a product decision brief | `competitive-analysis` | `$competitive-analysis 研究这个竞品对我们的产品决策有什么启发` |
 | Choose between options | `decision-research` | `$decision-research 帮我比较这几个方案，给一个有立场推荐` |
 | Brainstorm a design before PRD or implementation | `brainstorming` | `$brainstorming 先不要写 PRD，帮我脑暴 2-3 个设计方案` |
@@ -38,7 +39,7 @@ Recommended paths:
 - Claude Code users: [install-claude-code.md](install-claude-code.md)
 - skillshare users: use `skillshare install` and `skillshare sync`
 
-If your tool supports manually loaded Agent Skills, copy or symlink the twelve root-level Skill directories into the tool's Skills directory.
+If your tool supports manually loaded Agent Skills, copy or symlink the thirteen root-level Skill directories into the tool's Skills directory.
 
 ## 4. Verify Skill Discovery
 
@@ -62,6 +63,7 @@ A common AI PM path:
 ```text
 $ai-collaboration-calibration 先帮我校准这个需求是不是值得做
 $research-topic-compiler 把这个模糊方向拆成研究目标、研究问题和输出要求，再输出 PM 决策输入
+$x-public-signal-research 用 X 公开内容验证这个用户痛点
 $competitive-analysis 研究这个竞品对我们的产品决策有什么启发
 $decision-research 帮我比较候选方案，给一个有立场推荐
 $brainstorming 先不要写 PRD，帮我脑暴 2-3 个设计方案并推荐一个

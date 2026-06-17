@@ -2,7 +2,7 @@
 
 This repository uses the common Agent Skill shape: each Skill is a directory with a `SKILL.md` file containing frontmatter, a trigger description, and workflow instructions.
 
-Claude Code setups can vary by version and organization policy. Use this guide as a conservative installation pattern: put the twelve Skill directories in the location your Claude Code environment scans for Skills, then verify by explicit invocation.
+Claude Code setups can vary by version and organization policy. Use this guide as a conservative installation pattern: put the thirteen Skill directories in the location your Claude Code environment scans for Skills, then verify by explicit invocation.
 
 ## Recommended Copy List
 
@@ -11,6 +11,7 @@ Copy or symlink these folders:
 ```text
 ai-collaboration-calibration/
 research-topic-compiler/
+x-public-signal-research/
 competitive-analysis/
 decision-research/
 brainstorming/
@@ -47,7 +48,7 @@ If you manage Claude Code Skills manually:
 
 1. Clone this repository.
 2. Locate your Claude Code Skills directory.
-3. Copy or symlink the twelve public Skill folders into that directory.
+3. Copy or symlink the thirteen public Skill folders into that directory.
 4. Restart Claude Code if new Skills are not detected.
 5. Test explicit invocation by Skill name.
 
@@ -90,6 +91,18 @@ Expected behavior:
 - The agent uses `competitive-analysis`.
 - It anchors the product decision before collecting evidence.
 - It outputs a Product Decision Brief rather than a generic feature list.
+
+X public signal research:
+
+```text
+$x-public-signal-research 用 X 公开内容验证这个用户痛点，先不要创建 monitor 或批量导出
+```
+
+Expected behavior:
+
+- The agent uses `x-public-signal-research`.
+- It keeps the work public, read-only, and bounded unless explicitly approved.
+- It turns signals into PM evidence instead of a generic social summary.
 
 ## Compatibility Notes
 

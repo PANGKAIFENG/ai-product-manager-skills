@@ -8,6 +8,7 @@
 | --- | --- | --- | --- |
 | 问题还没定义清楚，需要先看清真正问题 | `ai-collaboration-calibration` | “先聊一下”“帮我想想”“挑战我的假设”“方向是不是错了” | 不直接产出最终 PRD、方案或调研结论；成熟方案压力测试转 `grill-me` |
 | 要围绕主题做系统学习、专题研究、概念源流、候选池或 PM 决策看板 | `research-topic-compiler` | “系统研究”“做深度专题”“整理到 Obsidian”“概念解读”“概念源流”“行业演进看板”“先沉淀候选池”“把大白话拆成研究目标” | 不替代单次最终方案选型，不创建或评审 Skill |
+| 要用 X/Twitter 公开内容补证用户痛点、竞品声量、launch 反馈或 PRD 输入 | `x-public-signal-research` | “用 X 看看用户怎么说”“查一下 Twitter 上的反馈”“分析 launch 后的 X 讨论”“把这些 tweets 转成 PRD 输入” | 不替代泛泛全网研究，不替代完整竞品决策简报，不执行写入、私密读取、monitor、webhook 或 bulk work，除非用户明确批准 |
 | 要围绕一个产品决策研究竞品、替代方案、定价、onboarding、评论或产品走查 | `competitive-analysis` | “帮我做竞品分析”“打开这个产品看看对我们有什么启发”“把竞品信息转成 PRD 输入”“分析这个竞品的定价和 onboarding” | 不做泛泛功能清单，不替代长期候选池，不把登录态走查当成目标 |
 | 有明确具体决策，需要单次调研和推荐 | `decision-research` | “有没有现成方案”“怎么接入”“这个选择可行吗”“选 A 还是 B”“基于候选池给最终推荐” | 不做长期知识库沉淀，不替代问题脑暴 |
 | 问题基本成立，但进入 PRD、mockup 或开发计划前需要比较设计路径 | `brainstorming` | “先脑暴几个方案”“先不要写 PRD，帮我设计几种路径”“把这个需求变成 design spec”“实现前先讨论设计” | 不替代问题定义校准，不直接写 PRD，不直接实现；涉及 UI/mockup 时必须先发现项目视觉规范，不直接套通用页面 |
@@ -39,6 +40,7 @@
 | --- | --- | --- | --- |
 | `ai-collaboration-calibration` | 问题、目标或约束还不稳定 | 真实问题陈述、关键假设、判断标准 | Done Signal 三问或用户确认进入执行 |
 | `research-topic-compiler` | 需要理解主题、沉淀知识、扩展候选池或长期雷达 | Research Project、证据矩阵、PM 决策看板、Candidate Backlog | 信息饱和、用户确认或转交决策 |
+| `x-public-signal-research` | 需要 X/Twitter 公开内容作为产品证据 | X Public Signal Brief、PRD Inputs、monitor proposal | 公开信号已转译成产品动作、反证和样本限制，或转交竞品/决策/PRD Skill |
 | `competitive-analysis` | 产品决策已基本存在，需要竞品/替代方案/市场信号作为决策输入 | Product Decision Brief、证据等级、Copy/Adapt/Avoid、下一步验证 | 决策影响清楚，或发现需要转 `decision-research` / PRD / mockup |
 | `decision-research` | 决策问题已定义或可快速框定 | 最终推荐、排除理由、置信度、颠覆条件 | 三角收敛、信息饱和、PoC 更便宜或用户决策 |
 | `brainstorming` | 问题基本成立，但方案、范围、交互、视觉约束或技术切分未定 | 2-3 个方案、推荐路径、视觉约束摘要、设计 spec、下游 handoff | 用户确认设计或明确待确认项 |
@@ -60,6 +62,7 @@
 | 轻量概念解读、概念源流、语义演化、范式阶段、PM 技术评审提问脚本 | `research-topic-compiler` 的 `Lightweight Concept Lens Mode` | 输出 PM 决策看板、概念源流、阶段矩阵、反模式和评审问题；默认不写入 Obsidian。 |
 | 系统学习、深度专题、长期沉淀、Obsidian Research Project | `research-topic-compiler` 的深度研究模式 | 输出研究计划、证据矩阵、研究报告、学习包或长期雷达。 |
 | 候选发现、候选池、竞品池、跨会话 handoff | `research-topic-compiler` 的 Product Candidate Research | 输出 Candidate Backlog、Candidate Summary、评分输入和 handoff；这些是最终决策输入。 |
+| X/Twitter 公开内容补证用户痛点、竞品声量、launch 反馈、KOL 观点或 PRD 输入 | `x-public-signal-research` | 使用 Xquik 只读公开数据形成 X Public Signal Brief；任何私密读取、写入、monitor、webhook 或 bulk work 都需要批准。 |
 | 围绕一个产品决策，把一个或少数竞品/替代方案转成路线图、定位、定价、onboarding 或 PRD 输入 | `competitive-analysis` | 输出 Product Decision Brief；产品走查只是证据渠道，不以“点完所有功能”为完成标准。 |
 | 明确决策路线、平台接入、工具选型、可行性判断、最终推荐 | `decision-research` | 输出有立场推荐、排除理由、接入风险、验证路径、置信度和颠覆条件。 |
 | 用户还没定义清楚为什么研究这个主题 | `ai-collaboration-calibration` | 先校准问题、决策目标和约束，再进入研究。 |
@@ -70,6 +73,7 @@
 - “我想研究 Agent 从聊天到做事，后面要做 Roadmap，先帮我把研究目标拆清楚。” -> `research-topic-compiler` Research Goal Framing Gate。
 - “系统研究 MCP 安全最佳实践，整理到 Obsidian。” -> `research-topic-compiler` 深度研究模式。
 - “研究市面上的 AI 视频生成方案，先沉淀候选池，后续继续补。” -> `research-topic-compiler` Product Candidate Research。
+- “用 Xquik 看看这个竞品发布后用户在 X 上主要吐槽什么。” -> `x-public-signal-research`。
 - “打开 Krowork 看看对我们的 AI PM 工作台定位和 onboarding 有什么启发。” -> `competitive-analysis`。
 - “我们应该选 MCP 还是自研工具协议？” -> `decision-research`。
 - “基于这个 Candidate Backlog 给我一个最终推荐。” -> `decision-research`。
