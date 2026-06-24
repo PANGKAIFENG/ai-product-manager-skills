@@ -12,6 +12,7 @@ mkdir -p "$HOME/.agents/skills"
 
 for skill in \
   ai-collaboration-calibration \
+  complex-exploration \
   research-topic-compiler \
   competitive-analysis \
   decision-research \
@@ -39,6 +40,7 @@ mkdir -p /path/to/your-project/.agents/skills
 
 for skill in \
   ai-collaboration-calibration \
+  complex-exploration \
   research-topic-compiler \
   competitive-analysis \
   decision-research \
@@ -79,6 +81,12 @@ In Codex, try:
 
 ```text
 $prd-architect 把这个想法整理成 PRD-lite
+```
+
+or:
+
+```text
+$complex-exploration 先不要直接写 Roadmap，帮我判断这个复杂任务怎么探索
 ```
 
 or:

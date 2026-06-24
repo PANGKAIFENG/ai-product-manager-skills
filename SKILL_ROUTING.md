@@ -7,6 +7,7 @@
 | 用户当前状态 | 优先 Skill | 触发信号 | 不要用它做什么 |
 | --- | --- | --- | --- |
 | 问题还没定义清楚，需要先看清真正问题 | `ai-collaboration-calibration` | “先聊一下”“帮我想想”“挑战我的假设”“方向是不是错了” | 不直接产出最终 PRD、方案或调研结论；成熟方案压力测试转 `grill-me` |
+| 复杂、不确定、多轮迭代任务，需要先定题、规划探索和沉淀资产 | `complex-exploration` | “先不要直接写方案”“这个问题是不是问窄了”“这次探索反复很多”“把这次探索沉淀成方法论” | 不替代简单认知校准，不直接做系统研究，不直接写完整 Roadmap / PRD / 价格表 |
 | 要围绕主题做系统学习、专题研究、概念源流、候选池或 PM 决策看板 | `research-topic-compiler` | “系统研究”“做深度专题”“整理到 Obsidian”“概念解读”“概念源流”“行业演进看板”“先沉淀候选池”“把大白话拆成研究目标” | 不替代单次最终方案选型，不创建或评审 Skill |
 | 要围绕一个产品决策研究竞品、替代方案、定价、onboarding、评论或产品走查 | `competitive-analysis` | “帮我做竞品分析”“打开这个产品看看对我们有什么启发”“把竞品信息转成 PRD 输入”“分析这个竞品的定价和 onboarding” | 不做泛泛功能清单，不替代长期候选池，不把登录态走查当成目标 |
 | 有明确具体决策，需要单次调研和推荐 | `decision-research` | “有没有现成方案”“怎么接入”“这个选择可行吗”“选 A 还是 B”“基于候选池给最终推荐” | 不做长期知识库沉淀，不替代问题脑暴 |
@@ -26,6 +27,7 @@
 | 判别问题 | 如果是 | 如果否 / 不清楚 |
 | --- | --- | --- |
 | 这个方案针对的问题是否已被确认？ | 已有具体方案、架构、计划或决策时用 `grill-me` 压测。 | 用 `ai-collaboration-calibration` 先校准问题定义。 |
+| 用户是在处理一个复杂任务，而不是单点问题校准吗？ | 如果需要任务类型判断、隐含假设、真正问题、探索路径、中间产物和资产沉淀，用 `complex-exploration`。 | 如果只是“方向是不是错了”，先用 `ai-collaboration-calibration`；如果只是比较落地方案，用 `brainstorming`。 |
 | 用户是在问“先比较几个设计方案，再决定怎么写 PRD、mockup 或怎么实现”吗？ | 用 `brainstorming`，输出方案比较、推荐路径和设计 spec；涉及 UI 时先补项目视觉规范发现摘要。 | 如果已经要正式 PRD，转 `prd-architect`；如果方案已定要找漏洞，转 `grill-me`。 |
 | 用户是在问“这份 PRD 是否可开发、可测试、可交付”吗？ | 用 `prd-review`，并输出 readiness verdict。 | 如果问的是“PRD 背后的方案是否会失败”，用 `grill-me`。 |
 | 用户是在问“把 ready PRD 拆成 GitHub issues 或开发工单”吗？ | 用 `prd-to-issues`，默认先 draft-only，输出 coverage matrix 和 AFK / HITL 标注。 | 如果要的是文件级实现计划、测试策略和提交顺序，转 Superpowers `writing-plans`。 |
@@ -38,6 +40,7 @@
 | Skill | 前提 | 主要输出 | 终止条件 |
 | --- | --- | --- | --- |
 | `ai-collaboration-calibration` | 问题、目标或约束还不稳定 | 真实问题陈述、关键假设、判断标准 | Done Signal 三问或用户确认进入执行 |
+| `complex-exploration` | 已经是复杂任务，不能一次答完，需要定题、探索、收敛和资产化 | 任务类型、隐含假设、真正问题、分析框架、调研规划、中间产物、反复判断、五类资产 | 探索路径清楚，或转交研究、方案、PRD、压测、资产化诊断 |
 | `research-topic-compiler` | 需要理解主题、沉淀知识、扩展候选池或长期雷达 | Research Project、证据矩阵、PM 决策看板、Candidate Backlog | 信息饱和、用户确认或转交决策 |
 | `competitive-analysis` | 产品决策已基本存在，需要竞品/替代方案/市场信号作为决策输入 | Product Decision Brief、证据等级、Copy/Adapt/Avoid、下一步验证 | 决策影响清楚，或发现需要转 `decision-research` / PRD / mockup |
 | `decision-research` | 决策问题已定义或可快速框定 | 最终推荐、排除理由、置信度、颠覆条件 | 三角收敛、信息饱和、PoC 更便宜或用户决策 |
@@ -67,6 +70,7 @@
 典型分流：
 
 - “帮我轻量解构一下 MCP 的概念源流，输出 PM 决策看板。” -> `research-topic-compiler` Lightweight Concept Lens Mode。
+- “先不要直接写 Roadmap，帮我判断这个复杂问题该怎么探索并沉淀方法论。” -> `complex-exploration`。
 - “我想研究 Agent 从聊天到做事，后面要做 Roadmap，先帮我把研究目标拆清楚。” -> `research-topic-compiler` Research Goal Framing Gate。
 - “系统研究 MCP 安全最佳实践，整理到 Obsidian。” -> `research-topic-compiler` 深度研究模式。
 - “研究市面上的 AI 视频生成方案，先沉淀候选池，后续继续补。” -> `research-topic-compiler` Product Candidate Research。

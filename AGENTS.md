@@ -14,6 +14,7 @@ This is a thin index for agents working in this repository. It does not replace 
 | Role | Primary Skill |
 | --- | --- |
 | Framer | `ai-collaboration-calibration` |
+| Explorer | `complex-exploration` |
 | Researcher | `research-topic-compiler` / `decision-research` |
 | Designer | `brainstorming` |
 | Maker | `prd-architect` |

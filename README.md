@@ -2,13 +2,13 @@
 
 [![Release](https://img.shields.io/github/v/release/PANGKAIFENG/ai-product-manager-skills?display_name=tag)](https://github.com/PANGKAIFENG/ai-product-manager-skills/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-12-2563eb.svg)](SKILL_REGISTRY.md)
+[![Skills](https://img.shields.io/badge/skills-13-2563eb.svg)](SKILL_REGISTRY.md)
 [![Codex](https://img.shields.io/badge/Codex-skills-111827.svg)](docs/install-codex.md)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-skills-111827.svg)](docs/install-claude-code.md)
 
 中文优先的 AI 产品经理 Agent Skill 库，用来把高频 PM 工作流沉淀成可复用的 Codex Skills、Claude Code Skills 和 Agent Skills。
 
-它重点覆盖：AI 协作脑暴、主题研究、竞品决策分析、决策调研、方案脑暴、PRD 起草、PRD 评审、PRD 到 GitHub issue 拆解、UI 线框/高保真 mockup、方案压测、AI 工作资产化诊断，以及把需求交给 Superpowers 开发计划前的交付准备。
+它重点覆盖：AI 协作脑暴、复杂探索资产化、主题研究、竞品决策分析、决策调研、方案脑暴、PRD 起草、PRD 评审、PRD 到 GitHub issue 拆解、UI 线框/高保真 mockup、方案压测、AI 工作资产化诊断，以及把需求交给 Superpowers 开发计划前的交付准备。
 
 ## Why This Exists
 
@@ -33,6 +33,7 @@ Recommended first prompts:
 
 ```text
 $ai-collaboration-calibration 先别执行，帮我看清这个产品问题
+$complex-exploration 先不要直接写方案，帮我判断这个复杂任务怎么探索并沉淀资产
 $research-topic-compiler 系统研究这个主题，并转成 PM 决策输入
 $competitive-analysis 研究这个竞品对我们的产品决策有什么启发
 $decision-research 帮我比较这几个方案，给一个有立场推荐
@@ -66,6 +67,7 @@ Install paths:
 | Skill | 中文名 | 主要用途 | Example |
 | --- | --- | --- | --- |
 | [`ai-collaboration-calibration`](ai-collaboration-calibration/) | 协作校准 / 认知校准 | 问题还没定义清楚时，先挑战假设、澄清目标和判断标准。 | [example](examples/ai-collaboration-calibration.md) |
+| [`complex-exploration`](complex-exploration/) | 复杂探索资产化 / 复杂探索协作 | 面对复杂、不确定、多轮迭代的 Roadmap、定价、定位、复盘或方法论任务时，先定题、探索、收敛，再沉淀五类可复用资产。 | [example](examples/complex-exploration.md) |
 | [`research-topic-compiler`](research-topic-compiler/) | 专题研究编译器 / 概念源流研究助手 | 把大白话或模糊方向转成研究目标、研究问题和输出要求，再做系统研究、概念源流、行业演进和 PM 决策看板；需要持续更新时可进入 Research Radar Loop。 | [example](examples/research-topic-compiler.md) |
 | [`competitive-analysis`](competitive-analysis/) | 竞品决策分析 / 竞品决策简报 | 围绕一个产品决策，把竞品、替代方案、市场信号和可选产品走查转成定位、路线图、定价、功能优先级、差异化或 Go/No-Go 输入。 | [example](examples/competitive-analysis.md) |
 | [`decision-research`](decision-research/) | 决策调研 / 决策驱动调研 | 明确具体决策、接入可行性、方案选型和一次性决策调研；需要多轮收敛时可进入 Decision Research Loop。 | [example](examples/decision-research.md) |
@@ -83,16 +85,17 @@ Install paths:
 | Stage | Current state | Say this | Skill | Next step |
 | --- | --- | --- | --- | --- |
 | 1. 脑暴校准 | 还没想清楚真正问题，担心方向错 | “先别执行，帮我看清问题”“挑战我的假设” | [`ai-collaboration-calibration`](ai-collaboration-calibration/) | 明确问题、约束和判断标准 |
-| 2. 主题/竞品/决策研究 | 需要理解领域、概念、行业演进、竞品启发，或要在多个方案间做选择 | “系统研究这个主题”“概念源流”“做竞品决策分析”“帮我选一个” | [`research-topic-compiler`](research-topic-compiler/) / [`competitive-analysis`](competitive-analysis/) / [`decision-research`](decision-research/) | 得到证据、竞品决策简报、判断、推荐方案或 PM 决策看板 |
-| 3. 方案脑暴 | 问题基本成立，但还没确定方案、范围、交互、视觉约束或技术切分 | “先脑暴几个方案”“先不要写 PRD，帮我设计几种路径” | [`brainstorming`](brainstorming/) | 得到推荐方案、取舍、视觉约束摘要和设计 spec |
-| 4. PRD 起草 | 要把想法、脑暴或草稿整理成需求文档 | “帮我写 PRD”“帮我选 PRD 模板”“PRD 里补 Draw.io 图” | [`prd-architect`](prd-architect/) | 形成 PRD-lite、PRD-standard 或 PRD-ai-native |
-| 5. PRD 评审 | 已有 PRD，需要找缺口、冲突和不可测试点 | “帮我审 PRD”“从研发测试视角挑问题” | [`prd-review`](prd-review/) | 修订 PRD，关闭阻断项 |
-| 6. PRD 拆 issue | PRD 已可交付，需要形成研发可领取 backlog | “把 PRD 拆成 issue”“生成 GitHub issues”“按 vertical slice 拆开发票” | [`prd-to-issues`](prd-to-issues/) | 得到 draft issue plan、coverage matrix，确认后可发布到 GitHub |
-| 7. UI 结构线框 | PRD 已可用，但还需要先确认页面结构、状态模型和布局骨架 | “先出 UI 结构”“先做 ASCII 布局”“不要高保真” | [`ui-wireframe-to-html`](ui-wireframe-to-html/) | 得到 screen inventory、state model、ASCII layout 和结构确认问题 |
-| 8. 高保真 UI 对齐 | PRD、UI 结构和 UI 规范已可用，需要确认桌面端真实页面并交给前端实现 | “基于 PRD 出高保真 mockup”“开发要复刻这个 UI” | [`ui-mockup-desktop-workbench`](ui-mockup-desktop-workbench/) | 得到结构阶段产物、screen contract、component map、implementation notes 和 preview/handoff |
-| 9. 方案压测 | 已有方案，但担心盲点和失败模式 | “拷问我的方案”“这个方案哪里会翻车” | [`grill-me`](grill-me/) | 明确取舍、风险和前置条件 |
-| 10. 资产化诊断 | 一段 AI 工作重复出现，不确定该沉淀到哪层 | “这个 prompt 应该做成 workflow 还是 Skill” | [`ai-work-assetization-diagnoser`](ai-work-assetization-diagnoser/) | 得到最小资产建议和复用验证信号 |
-| 11. 开发计划 | PRD 或 issue backlog 已可交付，需要拆实现步骤 | “基于这个 PRD 写开发计划”“基于这些 issues 写实现计划” | Superpowers `writing-plans` | 进入实现计划、测试策略和提交节奏 |
+| 2. 复杂探索 | 任务复杂、不确定、多轮迭代，不能直接写最终方案 | “先不要直接写方案”“这个问题是不是问窄了”“这次探索要沉淀什么” | [`complex-exploration`](complex-exploration/) | 得到任务类型、真正问题、探索路径、中间产物和五类资产 |
+| 3. 主题/竞品/决策研究 | 需要理解领域、概念、行业演进、竞品启发，或要在多个方案间做选择 | “系统研究这个主题”“概念源流”“做竞品决策分析”“帮我选一个” | [`research-topic-compiler`](research-topic-compiler/) / [`competitive-analysis`](competitive-analysis/) / [`decision-research`](decision-research/) | 得到证据、竞品决策简报、判断、推荐方案或 PM 决策看板 |
+| 4. 方案脑暴 | 问题基本成立，但还没确定方案、范围、交互、视觉约束或技术切分 | “先脑暴几个方案”“先不要写 PRD，帮我设计几种路径” | [`brainstorming`](brainstorming/) | 得到推荐方案、取舍、视觉约束摘要和设计 spec |
+| 5. PRD 起草 | 要把想法、脑暴或草稿整理成需求文档 | “帮我写 PRD”“帮我选 PRD 模板”“PRD 里补 Draw.io 图” | [`prd-architect`](prd-architect/) | 形成 PRD-lite、PRD-standard 或 PRD-ai-native |
+| 6. PRD 评审 | 已有 PRD，需要找缺口、冲突和不可测试点 | “帮我审 PRD”“从研发测试视角挑问题” | [`prd-review`](prd-review/) | 修订 PRD，关闭阻断项 |
+| 7. PRD 拆 issue | PRD 已可交付，需要形成研发可领取 backlog | “把 PRD 拆成 issue”“生成 GitHub issues”“按 vertical slice 拆开发票” | [`prd-to-issues`](prd-to-issues/) | 得到 draft issue plan、coverage matrix，确认后可发布到 GitHub |
+| 8. UI 结构线框 | PRD 已可用，但还需要先确认页面结构、状态模型和布局骨架 | “先出 UI 结构”“先做 ASCII 布局”“不要高保真” | [`ui-wireframe-to-html`](ui-wireframe-to-html/) | 得到 screen inventory、state model、ASCII layout 和结构确认问题 |
+| 9. 高保真 UI 对齐 | PRD、UI 结构和 UI 规范已可用，需要确认桌面端真实页面并交给前端实现 | “基于 PRD 出高保真 mockup”“开发要复刻这个 UI” | [`ui-mockup-desktop-workbench`](ui-mockup-desktop-workbench/) | 得到结构阶段产物、screen contract、component map、implementation notes 和 preview/handoff |
+| 10. 方案压测 | 已有方案，但担心盲点和失败模式 | “拷问我的方案”“这个方案哪里会翻车” | [`grill-me`](grill-me/) | 明确取舍、风险和前置条件 |
+| 11. 资产化诊断 | 一段 AI 工作重复出现，不确定该沉淀到哪层 | “这个 prompt 应该做成 workflow 还是 Skill” | [`ai-work-assetization-diagnoser`](ai-work-assetization-diagnoser/) | 得到最小资产建议和复用验证信号 |
+| 12. 开发计划 | PRD 或 issue backlog 已可交付，需要拆实现步骤 | “基于这个 PRD 写开发计划”“基于这些 issues 写实现计划” | Superpowers `writing-plans` | 进入实现计划、测试策略和提交节奏 |
 
 ## Loop Extensions
 
@@ -118,6 +121,7 @@ See [docs/superpowers-comparison.md](docs/superpowers-comparison.md) for the pro
 当多个 Skill 都可能被触发时，优先按用户当前阶段分流，而不是按关键词叠加：
 
 - 问题还没定义清楚：用 `ai-collaboration-calibration`。
+- 任务复杂、不确定、多轮迭代，需要先定题、探索路径、复盘并沉淀资产：用 `complex-exploration`。
 - 需要把模糊研究想法拆成研究目标，或系统理解主题、概念源流、行业演进、PM 决策看板：用 `research-topic-compiler`。
 - 需要把竞品、替代方案、定价、onboarding、公开评价或登录态走查转成产品决策简报：用 `competitive-analysis`。
 - 明确具体决策、接入方式或方案选型：用 `decision-research`。

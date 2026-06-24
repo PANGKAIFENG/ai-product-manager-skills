@@ -1,0 +1,4 @@
+interface:
+  display_name: "复杂探索资产化"
+  short_description: "复杂问题先定题、探索、收敛，再沉淀五类可复用资产"
+  default_prompt: "Use $complex-exploration to reframe this complex exploration before producing the final artifact."

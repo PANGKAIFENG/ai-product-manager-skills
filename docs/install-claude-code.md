@@ -2,7 +2,7 @@
 
 This repository uses the common Agent Skill shape: each Skill is a directory with a `SKILL.md` file containing frontmatter, a trigger description, and workflow instructions.
 
-Claude Code setups can vary by version and organization policy. Use this guide as a conservative installation pattern: put the twelve Skill directories in the location your Claude Code environment scans for Skills, then verify by explicit invocation.
+Claude Code setups can vary by version and organization policy. Use this guide as a conservative installation pattern: put the thirteen Skill directories in the location your Claude Code environment scans for Skills, then verify by explicit invocation.
 
 ## Recommended Copy List
 
@@ -10,6 +10,7 @@ Copy or symlink these folders:
 
 ```text
 ai-collaboration-calibration/
+complex-exploration/
 research-topic-compiler/
 competitive-analysis/
 decision-research/
@@ -47,7 +48,7 @@ If you manage Claude Code Skills manually:
 
 1. Clone this repository.
 2. Locate your Claude Code Skills directory.
-3. Copy or symlink the twelve public Skill folders into that directory.
+3. Copy or symlink the thirteen public Skill folders into that directory.
 4. Restart Claude Code if new Skills are not detected.
 5. Test explicit invocation by Skill name.
 
@@ -78,6 +79,18 @@ Expected behavior:
 - The agent uses `ui-wireframe-to-html`.
 - It produces screen inventory, state model, and ASCII layout.
 - It does not jump into high-fidelity visual polish.
+
+Complex exploration:
+
+```text
+$complex-exploration 先不要直接写定价方案，帮我判断这个问题是不是问窄了，并规划探索路径
+```
+
+Expected behavior:
+
+- The agent uses `complex-exploration`.
+- It classifies the task type before writing a plan.
+- It surfaces hidden assumptions and reframes the real problem.
 
 Competitive analysis:
 
