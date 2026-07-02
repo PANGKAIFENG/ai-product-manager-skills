@@ -48,6 +48,8 @@ If the user explicitly wants only low-fidelity structure and does not need visua
 
 Choose one mode before implementing visuals. State the chosen mode and why.
 
+For detailed selection rules, read `references/output-mode-selection.md`.
+
 | Mode | Use When | Primary Outputs | Do Not Use When |
 | --- | --- | --- | --- |
 | `project-native-preview` | The user provides a real frontend project path or asks development to "replicate" the UI. | `ascii-layout.md`, preview route/component in the project, `screen-contract.md`, `component-map.md`, `implementation-notes.md`, screenshots. | The user only wants early concept exploration or forbids repo edits. |
@@ -243,6 +245,14 @@ Default deliverables:
 - `implementation-notes.md` when a frontend team will build or convert the UI.
 - `mockup.html`, high-fidelity React artifact, or project-native page/component depending on the chosen mode.
 - Screenshot or browser verification notes when feasible.
+
+## Resource Guide
+
+- `references/output-mode-selection.md`：选择 `project-native-preview`、`visual-handoff` 或 `concept-html`。
+- `references/verification-checklist.md`：最终视觉和交付包验证清单。
+- `references/desktop-workbench-ui-principles.md`：桌面 Agent 工作台布局和状态规则。
+- `references/mockup-output-contract.md`：交付物结构、迁移边界和 implementation handoff。
+- `scripts/check_mockup_package.py`：检查 mockup package 的最小文件结构。
 
 ## Side Effects And Safety
 

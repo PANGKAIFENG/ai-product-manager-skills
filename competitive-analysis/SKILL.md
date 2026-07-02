@@ -123,6 +123,7 @@ description: >
 - `references/decision-brief-template.md`：当要输出完整竞品决策简报、证据表和行动清单时读取。
 - `references/evidence-channel-guide.md`：当需要选择官网、评论、定价、文档、changelog、招聘、浏览器走查等证据渠道时读取。
 - `references/browser-walkthrough-boundaries.md`：当用户要求打开网站、登录、点功能、截图、录屏、使用 Google/OAuth 或 Computer Use 时必须读取。
+- `scripts/check_decision_brief.py`：检查 Product Decision Brief 是否包含决策问题、建议、置信度、证据、借鉴 / 避免和下一步验证。
 
 ## Definition of Done
 

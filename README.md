@@ -53,6 +53,12 @@ Install paths:
 - Claude Code: see [docs/install-claude-code.md](docs/install-claude-code.md)
 - General walkthrough: see [docs/quickstart.md](docs/quickstart.md)
 
+Quality gates:
+
+- Repo audit: `python3 scripts/audit_skills.py .`
+- Eval schema: [docs/eval-schema.md](docs/eval-schema.md)
+- Optimization backlog: [docs/skill-optimization-plan-2026-07-02.md](docs/skill-optimization-plan-2026-07-02.md)
+
 ## Who Should Use This
 
 - AI 产品经理：需要把想法、调研、方案和 PRD 推进到可交付状态。
@@ -141,6 +147,9 @@ More details: [SKILL_ROUTING.md](SKILL_ROUTING.md)
 - [SKILL_REGISTRY.md](SKILL_REGISTRY.md): canonical catalog, Chinese names, status, and public boundaries.
 - [SKILL_ROUTING.md](SKILL_ROUTING.md): adjacent-skill routing and handoff rules.
 - [docs/](docs/): install guides, quickstart, Superpowers comparison, and release notes.
+- [docs/issues/](docs/issues/): local Markdown issue backlog for Skill optimization work.
+- [docs/eval-schema.md](docs/eval-schema.md): shared eval file schema for routing and regression cases.
+- [scripts/audit_skills.py](scripts/audit_skills.py): repository-level Skill quality gate.
 - [examples/](examples/): copyable prompts and expected output shapes.
 - [promotions/](promotions/): launch copy for Chinese and English channels.
 - [assets/social-preview.svg](assets/social-preview.svg): source artwork for GitHub social preview.

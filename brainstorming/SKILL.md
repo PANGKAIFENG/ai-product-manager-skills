@@ -195,3 +195,4 @@ Regression checks:
 
 - `references/design-spec-contract.md`：正式设计 spec 的结构、轻重选择和自检清单。
 - `references/visual-design-standards.md`：UI/mockup/HTML 可视化前的项目规范发现、默认视觉标准和质量门禁。
+- `scripts/check_design_spec.py`：检查设计 spec 是否包含当前问题、推荐方案、不做范围、风险和待确认项。

@@ -19,422 +19,132 @@ description: >
 
 ## Overview
 
-站在不同角色视角审视已产出的第一版 PRD，输出：
+这个 Skill 评审的是 PRD / handoff artifact 是否能支撑交付。默认输出结构化 review report、按严重程度排序的 findings、可回填的 revision draft，以及 `Implementation-Plan Readiness` verdict。
 
-1. 结构化评审报告
-2. 可执行的修订建议
-3. 可直接回填到 PRD 的修订草案
+它不是 PRD 生成器，也不是一问一答方案压力测试器：
 
-这个 skill 默认服务于“AI 先出第一版 PRD，人再做多轮 review 修正”的场景。
+- 没有 PRD 或只有模糊想法：转 `prd-architect` 或 `ai-collaboration-calibration`。
+- 关心“这个方案本身会不会失败”：转 `grill-me`。
+- 要把 ready PRD 拆 GitHub issues：转 `prd-to-issues`。
+- 要文件级开发计划：转 Superpowers `writing-plans`。
 
-## Boundary With `grill-me`
-
-`prd-review` 评审的是 PRD / handoff artifact 是否能支撑交付：
-
-- 是否写清目标用户、问题、范围、流程、状态、输入输出、异常和验收。
-- 是否存在研发无法拆解、测试无法验证或图示不可编辑的问题。
-- 是否可以给出 `Implementation-Plan Readiness` verdict。
-
-如果用户关心的是“这个方案本身会不会失败”“这个产品方向的核心取舍是否站得住”“请连续问 hard questions”，转交 `grill-me`。可以把本 Skill 发现的方案级疑虑作为 `grill-me` 的输入，但不要在标准 PRD review 中替代交互式压力测试。
-
-## Loop Extension：PRD Readiness Loop
+## Loop Extension
 
 当用户明确需要“多轮评审”“关闭阻断项”“继续上一轮 review”“判断是否能进 writing-plans”“跟踪修订状态”或“把 PRD 收敛到可交付开发计划”时，读取 `references/prd-readiness-loop-contract.md`。
 
-PRD Readiness Loop 是本 Skill 的状态化扩展：
+不要因为用户只是要求一次普通 PRD review 就创建状态文件；只有需要多轮收敛、可恢复状态或 readiness tracking 时才启用 Loop contract。
 
-- 它围绕同一份 PRD 的 review、revision、re-review 和 readiness check 迭代。
-- 它必须区分 open blockers、resolved blockers、revision draft、readiness status、open questions、diagram status 和 handoff decision。
-- 它不能把缺失业务判断伪装成已确认需求；关键取舍缺失时要暂停并问用户。
-- 它的出口是 `Ready for writing-plans`、`Ready with assumptions` 或 `Not ready`，不替代 Superpowers `writing-plans`。
-- 如果输入还只是模糊想法或没有 PRD，应转交 `prd-architect` 或 `ai-collaboration-calibration`。
+## Inputs
 
-不要因为用户只是要求一次普通 PRD review 就强制创建状态文件；只有需要多轮收敛、可恢复状态或 readiness tracking 时才启用 Loop contract。
+优先读取：
 
-## Responsibilities
+- `handoff` 文档：功能背景、目标用户、范围、风险与已确认事实。
+- `PRD` 初稿：当前结构、已写事实、隐含假设、缺口和冲突。
 
-这个 skill 负责：
+可选补充：
 
-1. 先读取 handoff，建立功能背景、上下文、目标用户、约束和已确认事实
-2. 再读取待评审的 PRD 初稿，识别事实、假设、缺口和冲突
-3. 至少从 `产品经理`、`研发`、`测试` 三个视角做 review
-4. 把重复问题合并，输出按严重程度排序的修改建议
-5. 给出“怎么改”而不是只说“哪里有问题”
-6. 在必要时补出可直接替换或新增到 PRD 的修订草案
-7. 检查 PRD 图示是否缺失、不可编辑、引用错误或不足以支撑研发评审
-8. 检查 PRD 是否把产品初版、设计对齐和开发 handoff 混在一起
-
-它不负责：
-
-1. 在没有 handoff / PRD 的情况下凭空生成完整方案
-2. 把未确认业务事实伪装成已确认结论
-3. 未经要求直接重写整份 PRD 成终稿
-4. 为了显得完整而强行添加与当前阶段无关的大段章节
-5. 交互式拷问 PRD 背后的成熟方案；这类压力测试应转交 `grill-me`
-
-## Default Inputs
-
-最好同时具备：
-
-- `handoff` 文档
-- 第一版 `PRD` 文档
-
-可选补充输入：
-
-- 本轮评审更关注的角色或维度
-- 当前用户已经明确担心的问题
-- 相关 UI / 架构图 / 历史评审意见
+- 本轮关注视角或维度。
+- 用户明确担心的问题。
+- 相关 UI、架构图、历史评审意见。
+- `docs/templates-local/` override；如存在，应按 local override 理解正文结构。
 
 如果输入不完整：
 
-1. 优先读取 handoff
-2. 明确哪些结论来自 handoff，哪些只是 PRD 自己的写法
-3. 对无法下结论的地方，输出“待确认问题”，不要强行补脑
-4. 如果项目存在 `docs/templates-local/` 同名 override，应优先按 local override 的边界理解正文结构
+1. 明确哪些结论来自 handoff，哪些来自 PRD 当前写法，哪些是 review 推断。
+2. 无法下结论的地方输出待确认问题，不强行补脑。
+3. 输入还不足以 review 时，建议先回到 `prd-architect`。
 
-## Review Order
+## Workflow
 
-默认按下面顺序工作：
+1. **Establish scope**
+   - 记录 PRD / handoff 来源、本轮 review 目标、事实与假设边界。
+   - 判断是否应转 `prd-architect`、`grill-me`、`prd-to-issues` 或 `writing-plans`。
 
-1. 先读 handoff，提炼：
-   - 功能背景
-   - 当前用户与场景
-   - 已确认目标
-   - 范围边界
-   - 风险与禁区
-2. 再读 PRD，建立：
-   - 当前结构
-   - 已写明事实
-   - 隐含假设
-   - 明显缺口
-3. 再按角色视角 review：
-   - PM 视角
-   - 研发视角
-   - 测试视角
-4. 合并重复问题，避免同一个问题在多个视角下重复堆砌
-5. 输出“问题 + 影响 + 建议改法 + 修订草案”
+2. **Load review assets**
+   - 默认读取 `references/review-lenses.md` 和 `references/severity-rules.md`。
+   - 当需要输出完整 report 或 revision draft 时读取 `references/output-contract.md`。
+   - 当用户问“能不能交付开发 / 能不能进 writing-plans”时读取 `references/implementation-plan-readiness.md`。
+   - 当 PRD 包含或应包含流程图、架构图、系统关系图、AI 协作链路图时读取 `references/diagram-review.md`。
+   - 当 PRD 看起来过重、过技术化或模板章节误激活时读取 `references/prd-shape-gates.md`。
 
-## Review Lenses
+3. **Review the PRD**
+   - 至少从 PM、研发、测试三个视角 review。
+   - 合并重复问题，不要按角色输出三份重复报告。
+   - findings 必须包含：严重程度、视角、位置、问题、影响、建议改法。
+   - 图示相关结论必须区分：文本要求缺失、文件实际校验失败、未能验证。
 
-### PM 视角
+4. **Run deterministic checks when possible**
+   - 有本地 PRD 文件且疑似过技术化时运行：
 
-重点看：
+```bash
+python3 scripts/check_prd_shape.py <prd.md> --type <lite|standard|ai-native>
+```
 
-1. 背景是否说清楚，为什么现在要做
-2. 用户是谁，场景是什么，触发条件是什么
-3. 要解决的问题是否清楚，不是泛泛而谈
-4. 成功标准是否可判断，而不是口号
-5. 范围边界、非目标、不做什么是否明确
-6. 关键流程是否闭环
-7. 是否存在“写了很多 HOW，但 WHY 仍不清楚”的问题
-8. 是否把不同层次内容混在一起，导致后续评审难收敛
+   - PRD 明确是开发 handoff 时加 `--allow-handoff`。
+   - 有 `.drawio` 源文件时运行：
 
-### 研发视角
+```bash
+python3 scripts/validate_drawio.py <path>
+```
 
-重点看：
+   - 脚本 warning 是 review 证据，不自动等同于阻断；结合 PRD 阶段和用户目标判断。
 
-1. 模块边界和职责是否清楚
-2. 输入、输出、状态、对象定义是否足够明确
-3. 人工动作、AI 动作、系统动作是否分得开
-4. 上下游依赖是否清楚
-5. 失败、降级、人工接管、回退是否说明
-6. 关键名词、字段、对象是否一致
-7. 是否存在“开发无法落实现实决策”的模糊表述
-8. 是否缺少必要的异常、权限、数据来源、确认点
-
-### 测试视角
-
-重点看：
-
-1. 验收标准是否可测试
-2. 正常流、异常流、边界条件是否覆盖
-3. 失败回退、降级、人工确认点是否可验证
-4. 输出结果是否有可检查的标准
-5. 多模块衔接处是否有可观测状态
-6. 是否写明哪些输入非法、哪些结果算失败
-7. 是否存在“只能主观判断通过”的描述
-
-### 可选补充视角
-
-如果 handoff 明显提到以下角色，再补充：
-
-- 业务 / 销售视角
-- 设计 / 商品企划视角
-- 运营 / 交付视角
-
-但默认不为了凑数硬补视角。
-
-## Severity Rules
-
-### `❌ 阻断`
-
-满足任一条件优先判定为阻断：
-
-1. 开发无法开始拆解
-2. 测试无法定义通过 / 失败
-3. 关键目标、范围、输入输出严重缺失
-4. handoff 与 PRD 关键事实冲突
-5. AI-native 链路缺少人工确认、降级或失败回退等核心闭环
-
-### `⚠️ 重要`
-
-适用于：
-
-1. 不会完全阻断，但会导致多轮返工
-2. 多角色理解容易跑偏
-3. 当前写法明显不利于研发 / 测试评审
-
-### `💡 优化`
-
-适用于：
-
-1. 不改也能推进，但表达不够稳
-2. 结构或语言还可以进一步压缩和收束
-3. 存在重复、冗余或阅读路径不顺
-
-## PRD-Specific Checks
-
-除了角色视角，默认还检查这些通用项：
-
-1. 是否有一句话定位
-2. 是否先讲 WHY，再讲 HOW
-3. 是否存在章节重叠
-4. 是否明确输出对象
-5. 是否明确非目标
-6. 是否给出验收口径
-7. 如果是 `PRD-standard / PRD-ai-native`，是否具备正式图示要求
-   - Markdown 正式引用是否指向根目录 `*.drawio.svg`
-   - 是否误引用 `src/*.drawio` 或同名普通 `.svg`
-   - `*.drawio.svg` 是否声明为文件本体内嵌 Draw.io 可编辑数据
-   - 如果 PRD 只提供不可编辑 PNG、普通 SVG、截图或 Mermaid，是否会阻碍研发继续编辑和评审
-   - 如果本地有 `.drawio` 源文件，应运行 `python3 scripts/validate_drawio.py <path>` 并把结果写入 review
-   - 如果本地可运行 `honeycomb diagram-guard <path>`，应运行并把结果写入 review；如果不可运行，必须标记“图示可编辑性未验证”
-8. 如果涉及 AI 协作，是否写清楚：
-   - 澄清
-   - 推理 / 生成
-   - 人工确认
-   - 记忆写入
-   - 失败回退
-9. 如果 PRD 看起来过重或过技术化，读取 `references/prd-shape-gates.md`，必要时运行 `python3 scripts/check_prd_shape.py <prd.md> --type <lite|standard|ai-native>`
-   - 产品初版正文是否出现 TypeScript / JSON schema / metadata / adapter / endpoint。
-   - 是否应把技术字段移动到开发 handoff 附录。
-   - 是否因为模板章节误激活而掩盖了用户场景、触发、边界和验收。
-
-## PRD Diagram Review Mode
-
-当 PRD 包含或应当包含流程图、架构图、系统关系图、AI 协作链路图时，把图示作为研发评审的一等对象，而不是只检查文字。
-
-检查顺序：
-
-1. 判断图示是否必要：
-   - `PRD-lite`：只有 3-5 步主链路、单点 UI 或简单规则时，可以用文字、表格、Mermaid 草稿或截图。
-   - `PRD-standard`：多阶段链路、上下游依赖、对象流转、状态切换时，应有核心流程图或结构图。
-   - `PRD-ai-native`：人工动作、AI 动作、状态反馈、记忆写入、失败回退形成闭环时，应有一体化总图或核心流程图。
-2. 检查引用是否正确：
-   - 正式 Markdown 引用应指向根目录 `*.drawio.svg` 或明确的可编辑 Draw.io 产物。
-   - `src/*.drawio` 可以作为源文件，但不应成为 PRD 阅读主引用。
-   - 不要把普通 `.svg`、截图或 PNG 当作可编辑 Draw.io 图示。
-3. 检查图示是否支撑评审：
-   - 图要回答“系统是什么”或“链路怎么跑”，不能只是装饰性大图。
-   - 节点、边、输入输出、关键分支和异常回退必须能对应 PRD 正文。
-   - 如果图和正文冲突，按阻断或重要问题处理，并指出冲突章节。
-4. 检查可编辑性和结构质量：
-   - 有 `.drawio` 源文件时运行 `python3 scripts/validate_drawio.py <path>`。
-   - 需要判断布局、节点数、颜色或 XML 模板时读取 `references/drawio-templates.md`。
-   - 有 `*.drawio.svg` 但无法验证内嵌数据时，标记“图示可编辑性未验证”，不要默认通过。
-5. 输出修订草案：
-   - 如果缺图，给出应补图类型、图要覆盖的核心节点和建议文件名。
-   - 如果图不可编辑，给出迁移到 `.drawio` / `*.drawio.svg` 的替换建议。
-   - 如果图过重或过散，建议拆成一体化总图、核心流程图或子流程图。
-
-## Output Requirements
-
-输出必须是“发现问题 + 给出改法”的形式，而不是只有抽象评论。
-
-默认输出结构：
-
-### 1. Review Scope
-
-- 评审对象
-- handoff 来源
-- 本轮重点视角
-- 事实与假设边界
-
-### 2. Executive Summary
-
-- 当前 PRD 能否进入下一轮评审
-- 当前 PRD 是否满足进入 superpowers `writing-plans` 的条件
-- 主要阻断项有多少
-- 最值得优先修的 3 个问题
-
-### 3. Findings
-
-按严重程度排序，逐条输出：
-
-- `严重程度`
-- `视角`
-- `问题`
-- `为什么是问题`
-- `建议怎么改`
-- `对应 PRD 位置`
-
-### 4. Lens Summary
-
-按 `PM / 研发 / 测试` 汇总各自最核心的问题，避免 reviewer 需要重新读长文。
-
-### 5. Revision Draft
-
-这是本 skill 的默认必选输出，不省略。
-
-至少给出其中一种：
-
-1. 建议新增 / 重写的章节结构
-2. 建议替换的段落草案
-3. 建议补充的验收 / 边界 / 异常列表
-
-### 6. Open Questions
-
-列出必须回到业务 / 产品确认的问题。
-
-### 7. Implementation-Plan Readiness
-
-必须明确给出下面三种之一：
-
-- `Ready for writing-plans`：可以进入 superpowers `writing-plans`。
-- `Ready with assumptions`：可以进入开发计划，但这些假设必须写进 plan 前置条件。
-- `Not ready`：仍有阻断性需求缺口，不能进入开发计划。
-
-判断条件：
-
-- 目标用户、问题、范围边界和非目标是否明确。
-- 主流程、关键状态、输入输出、异常或人工接管点是否清楚。
-- 验收标准是否可测试、可人工检查或可通过具体 artifact 验证。
-- 阻断性待确认项是否已关闭，或是否已经显式转成 implementation plan 的前置假设。
-
-这个段落只判断产品需求是否可交给开发计划，不负责拆文件、测试步骤、提交节奏或实现方案；这些由 superpowers `writing-plans` 承接。
+5. **Produce repair-ready output**
+   - Findings 按严重程度排序。
+   - 必须给 revision draft：最小可替换章节、段落、验收/边界/异常清单三者至少一种。
+   - 必须列 open questions。
+   - 必须给 `Implementation-Plan Readiness` verdict：`Ready for writing-plans`、`Ready with assumptions` 或 `Not ready`。
 
 ## Writing Rules
 
-1. findings 必须先于总结
-2. 不要按角色分三份几乎重复的报告
-3. 同一个问题优先合并成一条，再标注受影响视角
-4. 修订草案优先“最小可替换块”，不要默认重写整篇；只有用户明确要求才给完整重写稿
-5. 结论要明确指出来自：
-   - handoff 已确认事实
-   - PRD 当前写法
-   - review 推断
-6. 如果问题来自共享模板缺陷，而不是当前文档写法，应明确标记“疑似共享层问题”，必要时建议运行 `/propose-honeycomb-change`
-7. 对图示相关结论必须区分“文本要求缺失”“文件实际校验失败”和“未能验证”；没有运行 `validate_drawio.py` 或 `diagram-guard` 时不要声称图文件已合格
+- Findings 先于 summary。
+- 同一个问题合并成一条，再标注受影响视角。
+- 修订草案优先最小可替换块，不默认重写整篇。
+- 不把缺失业务判断伪装成已确认需求。
+- 不为了显得完整而强行添加与当前阶段无关的大段章节。
+- 不声称图文件合格，除非已经运行相应验证或明确说明验证限制。
 
-## Suggested Output Skeleton
+## Resource Guide
 
-可参考下面的输出骨架：
-
-```md
-PRD Review Report: <文件名>
-
-## Review Scope
-- Handoff: ...
-- PRD: ...
-- Required lenses: PM / 研发 / 测试
-- Facts vs assumptions: ...
-
-## Findings
-### ❌ 1. <问题标题>
-- 视角：PM / 研发
-- 位置：第 X 章
-- 问题：...
-- 影响：...
-- 建议：...
-
-### ⚠️ 2. <问题标题>
-- 视角：测试
-- 位置：第 X 章
-- 问题：...
-- 影响：...
-- 建议：...
-
-## Lens Summary
-- PM：...
-- 研发：...
-- 测试：...
-
-## Revision Draft
-### 建议重写章节结构
-...
-
-### 建议替换段落
-...
-
-## Open Questions
-1. ...
-2. ...
-
-## Implementation-Plan Readiness
-- Verdict: Ready for writing-plans / Ready with assumptions / Not ready
-- Reason: ...
-- Required assumptions before planning: ...
-```
-
-## Related References
-
-优先参考：
-
-- `~/.honeycomb-agent/templates/PRD-ai-native.md`
-- `~/.honeycomb-agent/templates/PRD-standard.md`
-- `~/.honeycomb-agent/templates/PRD-lite.md`
-- `~/.honeycomb-agent/templates/examples/PRD-ai-native-example.md`
-- `references/drawio-templates.md`
-- `scripts/validate_drawio.py`
-- `references/prd-shape-gates.md`
-- `scripts/check_prd_shape.py`
-- `honeycomb diagram-guard <path>` 或 `.claude/hooks/diagram-guard.sh`
-- `references/implementation-plan-readiness.md`
-- `references/prd-readiness-loop-contract.md`
-
-## Success Standard
-
-一份合格的 `prd-review` 输出，应该满足：
-
-1. reviewer 看完知道“最该先改哪几处”
-2. 产品能直接把修订草案回填到 PRD
-3. 研发能据此指出实现缺口，而不是继续帮忙翻译 PRD
-4. 测试能开始提炼可验证场景，而不是只能说“先看看开发怎么做”
-5. 能明确判断是否可以交给 superpowers `writing-plans`
+- `references/review-lenses.md`：PM / 研发 / 测试 / 可选角色视角。
+- `references/severity-rules.md`：阻断、重要、优化的判定规则。
+- `references/output-contract.md`：默认 review report 结构、revision draft 和 writing rules。
+- `references/implementation-plan-readiness.md`：进入 `writing-plans` 前的 readiness verdict。
+- `references/diagram-review.md`：Draw.io / SVG / PNG / Mermaid 图示评审。
+- `references/drawio-templates.md`：需要判断图示布局、节点数、颜色或 XML 模板时读取。
+- `references/prd-shape-gates.md`：阶段混淆、过早技术化、模板章节误激活。
+- `references/prd-readiness-loop-contract.md`：多轮 review / revision / re-review 状态化合约。
+- `scripts/check_prd_shape.py`：PRD 形状和过技术化 warning。
+- `scripts/validate_drawio.py`：Draw.io XML 基础结构验证。
 
 ## Definition of Done
 
-完成标准是：
-
-- handoff 和 PRD 的边界已经分开
-- findings 有严重程度排序
-- 修订草案可直接回填
-- 推断和事实没有混写
-- 已明确 `Implementation-Plan Readiness`
+- handoff 和 PRD 的边界已经分开。
+- findings 有严重程度排序，且证据来源清楚。
+- 修订草案可直接回填。
+- 推断和事实没有混写。
+- 图示和 PRD shape 的验证状态已说明。
+- 已明确 `Implementation-Plan Readiness`。
 
 ## Evaluation
 
 Smoke prompts:
 
-- handoff 充足时，能否指出 PRD 的主要缺口
-- handoff 不足时，能否明确哪些结论只是推断
-- AI-native PRD 时，能否检查协作闭环与回退
-- PRD 引用了图示时，能否区分 `*.drawio.svg` 正式图、`src/*.drawio` 备份源和普通 `.svg`
-- PRD 缺少必要流程图或只给不可编辑截图时，能否作为阻断/重要问题指出并给补图草案
-- PRD 初版包含 TypeScript / JSON schema / metadata 时，能否判断为阶段混淆并建议移到开发 handoff 附录
+- `帮我审这份 PRD，从 PM、研发、测试视角找阻断项。`
+- `这个需求文档能不能交付开发？给我 readiness verdict。`
+- `帮我 review 这份 AI-native PRD，重点看人工确认和失败回退。`
+- `检查这份 PRD 图示是否缺失或不可编辑。`
 
 Non-trigger prompts:
 
-- 仅凭一句话生成完整 PRD
-- 只做目录治理
-- 只写 proposal，不评审 PRD
-- 连续拷问 PRD 背后的方案是否会失败
+- `帮我写一个 PRD。`
+- `拷问这个方案会不会失败。`
+- `把这个 ready PRD 拆成 GitHub issues。`
+- `只润色这段 PRD 文案。`
 
-Resources:
+Capability checks:
 
-- `handoff` 文档
-- `PRD` 初稿
-- `docs/templates-local/` 同名 override（如存在）
-- `*.drawio.svg` 图示文件和对应 `src/*.drawio`（如存在）
-- `references/drawio-templates.md`
-- `scripts/validate_drawio.py`
+- 输出 findings、revision draft、open questions 和 readiness verdict。
+- 结论区分 handoff facts、PRD text 和 reviewer inference。
+- 图示检查区分正式 `*.drawio.svg`、`src/*.drawio`、普通 `.svg`、PNG 和 Mermaid。
+- 过技术化产品稿会建议把 schema / metadata / adapter 移到开发 handoff 附录。

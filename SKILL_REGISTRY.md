@@ -73,7 +73,9 @@ Loop Extension 是现有 Skill 内的状态化合约，不是新增公开 Skill�
 2. 是否包含公司、客户、个人或内部系统敏感信息。
 3. 是否有许可证限制或第三方归属要求。
 4. 触发边界是否足够清楚，避免误触发。
-5. 是否有最小验证方式，例如脚本、示例 prompt 或检查清单。
+5. 是否有 `evals/evals.json`，覆盖 trigger、non-trigger 和已知风险样例。
+6. 高风险输出型 Skill 是否有 `scripts/` checker 或确定性验证脚本。
+7. 仓库级审计是否通过：`python3 scripts/audit_skills.py .`。
 
 ## 相邻 Skill 路由
 

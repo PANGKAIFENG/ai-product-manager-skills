@@ -1,0 +1,44 @@
+{
+  "skill_name": "grill-me",
+  "evals": [
+    {
+      "id": "pressure-test-design",
+      "type": "trigger",
+      "prompt": "拷问一下这个架构方案，问我 hard questions。",
+      "should_trigger": true,
+      "expected_route": "grill-me",
+      "expected_output": "Restates the solution, identifies assumptions and failure modes, then asks one focused question with a recommended answer.",
+      "assertions": [
+        {
+          "text": "Asks one question at a time."
+        }
+      ]
+    },
+    {
+      "id": "prd-solution-pressure",
+      "type": "trigger",
+      "prompt": "这份 PRD 背后的方案会不会失败？连续追问我。",
+      "should_trigger": true,
+      "expected_route": "grill-me",
+      "expected_output": "Pressure-tests the solution behind the PRD, not the PRD artifact readiness.",
+      "assertions": [
+        {
+          "text": "Does not output Implementation-Plan Readiness."
+        }
+      ]
+    },
+    {
+      "id": "non-trigger-prd-readiness",
+      "type": "non-trigger",
+      "prompt": "帮我审 PRD，看能不能交付开发。",
+      "should_trigger": false,
+      "expected_route": "prd-review",
+      "expected_output": "Routes PRD readiness review to prd-review.",
+      "assertions": [
+        {
+          "text": "Does not replace artifact review with interactive grilling."
+        }
+      ]
+    }
+  ]
+}

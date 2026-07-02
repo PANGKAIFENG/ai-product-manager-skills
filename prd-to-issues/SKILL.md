@@ -106,6 +106,7 @@ description: >
 - `references/issue-body-template.md`：默认 issue body 模板和输出字段。
 - `references/github-publish.md`：GitHub 发布、查重、模板发现和 `gh` 命令边界。
 - `references/provenance.md`：来源、借鉴点、许可证和公开适配说明。
+- `scripts/check_issue_plan.py`：检查 issue breakdown draft 是否包含 issue plan、AFK/HITL、验收、验证和 coverage matrix。
 
 ## Output Format
 

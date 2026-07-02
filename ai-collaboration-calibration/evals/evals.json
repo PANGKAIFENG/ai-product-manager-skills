@@ -1,0 +1,44 @@
+{
+  "skill_name": "ai-collaboration-calibration",
+  "evals": [
+    {
+      "id": "fuzzy-feeling",
+      "type": "trigger",
+      "prompt": "我感觉这个方案不太对，但说不清楚是什么，先别执行，帮我看清问题。",
+      "should_trigger": true,
+      "expected_route": "ai-collaboration-calibration",
+      "expected_output": "Enters fuzzy calibration, surfaces assumptions, asks JTBD-style questions, and avoids premature solution output.",
+      "assertions": [
+        {
+          "text": "Does not jump directly to implementation or PRD."
+        }
+      ]
+    },
+    {
+      "id": "challenge-assumptions",
+      "type": "trigger",
+      "prompt": "挑战我的假设：我们是不是把这个问题想错了？",
+      "should_trigger": true,
+      "expected_route": "ai-collaboration-calibration",
+      "expected_output": "Classifies the problem level, challenges problem-definition assumptions, and suggests verification signals.",
+      "assertions": [
+        {
+          "text": "Challenges problem definition rather than solution details only."
+        }
+      ]
+    },
+    {
+      "id": "non-trigger-established-plan",
+      "type": "non-trigger",
+      "prompt": "我已有一个架构方案，帮我问 hard questions。",
+      "should_trigger": false,
+      "expected_route": "grill-me",
+      "expected_output": "Routes established solution pressure testing to grill-me.",
+      "assertions": [
+        {
+          "text": "Does not stay in calibration when the plan is already concrete."
+        }
+      ]
+    }
+  ]
+}

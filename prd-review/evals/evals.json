@@ -3,15 +3,94 @@
   "evals": [
     {
       "id": "detect-overtechnical-product-draft",
+      "type": "trigger",
       "prompt": "帮我 review 这份 Agent 下一步行动建议 PRD。它是初版产品讨论稿，但正文里有 TypeScript interface、JSON 示例、metadata 和 adapter 章节。",
+      "should_trigger": true,
+      "expected_route": "prd-review",
       "expected_output": "指出阶段混淆和过早技术化，建议把 schema/metadata/adapter 移到开发 handoff 附录，并把主文档改回用户场景、触发、不展示条件、交互、异常和验收。",
-      "files": []
+      "assertions": [
+        {
+          "text": "Flags over-technical content as a PRD shape issue."
+        },
+        {
+          "text": "Recommends moving implementation details to a handoff appendix."
+        }
+      ],
+      "known_regression": "Initial PRD drafts can become developer handoffs too early."
     },
     {
       "id": "diagram-editability-review",
+      "type": "trigger",
       "prompt": "帮我审一个 PRD：它说有可编辑流程图，但 Markdown 引用的是普通 png 截图，没有 drawio 源文件。",
+      "should_trigger": true,
+      "expected_route": "prd-review",
       "expected_output": "区分图示文本要求缺失、文件实际不可验证和可编辑性未验证，建议补 .drawio 或 .drawio.svg 并运行 validate_drawio.py。",
-      "files": []
+      "assertions": [
+        {
+          "text": "Does not treat PNG screenshots as editable Draw.io diagrams."
+        },
+        {
+          "text": "Recommends validate_drawio.py when a .drawio source exists."
+        }
+      ]
+    },
+    {
+      "id": "readiness-verdict",
+      "type": "trigger",
+      "prompt": "这个 PRD 能不能交给开发写 implementation plan？请从 PM、研发、测试视角挑阻断项。",
+      "should_trigger": true,
+      "expected_route": "prd-review",
+      "expected_output": "Outputs findings, revision draft, open questions, and one readiness verdict: Ready for writing-plans, Ready with assumptions, or Not ready.",
+      "assertions": [
+        {
+          "text": "Includes Implementation-Plan Readiness."
+        },
+        {
+          "text": "Distinguishes blockers from important improvements."
+        }
+      ]
+    },
+    {
+      "id": "handoff-prd-conflict",
+      "type": "trigger",
+      "prompt": "这里有 handoff 和 PRD，handoff 说只做图片生成后的下一步行动，PRD 却把 PPT 下载按钮也算 Agent 下一步。帮我审一下。",
+      "should_trigger": true,
+      "expected_route": "prd-review",
+      "expected_output": "Identifies the handoff/PRD conflict, marks the source of truth, and proposes a minimal revision that separates function-level buttons from agent-conversational next actions.",
+      "assertions": [
+        {
+          "text": "Separates handoff facts from PRD text."
+        },
+        {
+          "text": "Provides a concrete revision draft."
+        }
+      ]
+    },
+    {
+      "id": "no-prd-route-to-architect",
+      "type": "non-trigger",
+      "prompt": "我只有一个想法：回答后展示下一步行动。帮我写一份 PRD。",
+      "should_trigger": false,
+      "expected_route": "prd-architect",
+      "expected_output": "Routes to PRD drafting rather than reviewing a non-existent PRD.",
+      "assertions": [
+        {
+          "text": "Does not produce a PRD review report without a PRD artifact."
+        }
+      ]
+    },
+    {
+      "id": "solution-grill-not-prd-review",
+      "type": "non-trigger",
+      "prompt": "我已经有这个产品方案了，你连续拷问我它哪里会失败。",
+      "should_trigger": false,
+      "expected_route": "grill-me",
+      "expected_output": "Routes to grill-me because the user wants interactive solution pressure testing rather than artifact readiness review.",
+      "assertions": [
+        {
+          "text": "Does not replace interactive pressure testing with PRD artifact review."
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,57 @@
+{
+  "skill_name": "prd-to-issues",
+  "evals": [
+    {
+      "id": "vertical-slice-draft",
+      "type": "trigger",
+      "prompt": "把这个 PRD 按 vertical slice 拆成 GitHub issues，先给 draft，不要创建远端 issue。",
+      "should_trigger": true,
+      "expected_route": "prd-to-issues",
+      "expected_output": "Produces draft issue plan with AFK/HITL marking, acceptance criteria, verification, dependencies, and coverage matrix.",
+      "assertions": [
+        {
+          "text": "Does not create remote GitHub issues without confirmation."
+        }
+      ]
+    },
+    {
+      "id": "needs-readiness-gate",
+      "type": "trigger",
+      "prompt": "这份 PRD 好像还有待确认项，但帮我拆成研发可以领取的 issues。",
+      "should_trigger": true,
+      "expected_route": "prd-to-issues",
+      "expected_output": "Runs PRD readiness gate and marks blockers or HITL clarification instead of pretending all issues are AFK.",
+      "assertions": [
+        {
+          "text": "Does not hide unresolved product questions inside AFK tickets."
+        }
+      ]
+    },
+    {
+      "id": "non-trigger-write-prd",
+      "type": "non-trigger",
+      "prompt": "帮我写一个 PRD。",
+      "should_trigger": false,
+      "expected_route": "prd-architect",
+      "expected_output": "Routes PRD creation to prd-architect.",
+      "assertions": [
+        {
+          "text": "Does not invent issue backlog from a vague idea."
+        }
+      ]
+    },
+    {
+      "id": "non-trigger-prd-review",
+      "type": "non-trigger",
+      "prompt": "帮我审一下这份 PRD 有没有缺口。",
+      "should_trigger": false,
+      "expected_route": "prd-review",
+      "expected_output": "Routes artifact review to prd-review before issue splitting.",
+      "assertions": [
+        {
+          "text": "Does not skip readiness review when the user asks for review."
+        }
+      ]
+    }
+  ]
+}

@@ -8,6 +8,10 @@ This project uses semantic-ish release tags for public snapshots. The current fo
 
 ### Added
 
+- Repository-level Skill audit gate: `scripts/audit_skills.py`.
+- Shared eval schema in `docs/eval-schema.md` and local optimization issue backlog under `docs/issues/`.
+- `evals/evals.json` coverage for all 13 public Skills.
+- Lightweight checker scripts for high-risk output Skills, including decision reports, issue plans, UI wireframe/mockup packages, design specs, competitive briefs, and assetization reports.
 - `complex-exploration` Skill for complex, multi-round product strategy, Roadmap, pricing, positioning, review, and methodology tasks that need task typing, problem reframing, exploration planning, and reusable asset extraction.
 - `prd-to-issues` Skill for turning ready PRDs into draft GitHub implementation issue backlogs with vertical slices, AFK / HITL labels, and coverage matrix.
 - `ui-wireframe-to-html` Skill for turning PRDs into UI structure, state models, ASCII layouts, and optional low-fidelity HTML wireframes.
@@ -15,6 +19,9 @@ This project uses semantic-ish release tags for public snapshots. The current fo
 
 ### Changed
 
+- Refactored `prd-review`, `decision-research`, and `research-topic-compiler` toward router-plus-assets structure with detailed rules in `references/`.
+- Replaced public UI wireframe references to local templates with bundled `references/templates/`.
+- Documented maintainer-only runtime sync guidance in `docs/local-distribution.md` instead of public Skill bodies.
 - Updated catalog, routing, install docs, quickstart, examples, and promotion copy for the complex-exploration workflow.
 - Updated catalog, routing, install docs, and Superpowers handoff docs for the PRD-to-issue workflow.
 - Updated catalog, routing, install docs, quickstart, and examples for the competitive-analysis workflow.

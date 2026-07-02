@@ -140,10 +140,13 @@ If the user asks for a single response instead of files, include the same sectio
 
 ## Template References
 
-优先参考：
+优先使用项目内 `docs/templates-local/` override；没有本地 override 时读取本 Skill 的模板：
 
-- `~/.honeycomb-agent/templates/UI-spec-template.md`
-- `~/.honeycomb-agent/templates/examples/PRD-ai-native-example.md`
+- `references/templates/screen-inventory.md`
+- `references/templates/state-model.md`
+- `references/templates/ascii-layout.md`
+- `references/templates/wireframe-handoff.md`
+- `scripts/check_wireframe_package.py`
 
 ## Definition Of Done
 

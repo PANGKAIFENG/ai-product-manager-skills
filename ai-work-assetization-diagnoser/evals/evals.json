@@ -1,0 +1,44 @@
+{
+  "skill_name": "ai-work-assetization-diagnoser",
+  "evals": [
+    {
+      "id": "prompt-vs-skill",
+      "type": "trigger",
+      "prompt": "这个 prompt 应该沉淀成 workflow 还是 Skill？",
+      "should_trigger": true,
+      "expected_route": "ai-work-assetization-diagnoser",
+      "expected_output": "Recommends one asset layer, explains adjacent layers, and names the smallest next artifact.",
+      "assertions": [
+        {
+          "text": "Does not create the Skill directly."
+        }
+      ]
+    },
+    {
+      "id": "loop-candidate",
+      "type": "trigger",
+      "prompt": "我们连续三次做了类似 AI 协作，每次都要保存状态和下轮继续，帮我判断该资产化到哪层。",
+      "should_trigger": true,
+      "expected_route": "ai-work-assetization-diagnoser",
+      "expected_output": "Considers Loop when state, resumption, and stop conditions are central.",
+      "assertions": [
+        {
+          "text": "Explains why a simple prompt or Skill is insufficient if state is required."
+        }
+      ]
+    },
+    {
+      "id": "non-trigger-create-skill",
+      "type": "non-trigger",
+      "prompt": "直接帮我创建一个 Skill。",
+      "should_trigger": false,
+      "expected_route": "skill-creator",
+      "expected_output": "Routes creation to skill-creator after diagnosis is no longer needed.",
+      "assertions": [
+        {
+          "text": "Does not stay in diagnosis mode for direct creation."
+        }
+      ]
+    }
+  ]
+}

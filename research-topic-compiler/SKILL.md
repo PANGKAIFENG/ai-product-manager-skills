@@ -95,85 +95,26 @@ description: >
 
 ## Research Modes
 
-按用户目标选择一种主模式，也可以组合使用：
+按用户目标选择一种主模式，也可以组合使用。先读取 `references/mode-selection.md`；需要细则再读 `references/mode-routing-guide.md`。
 
-- `Normal Research`：资料整理、证据矩阵、阶段结论、研究报告，适合普通专题研究。
-- `Lightweight Concept Lens Mode`：轻量概念解读、概念源流、语义演化、行业演进、PM 技术评审提问脚本或 HTML 决策看板；详细规则见 `references/mode-routing-guide.md`。
-- `Learning Pack Mode`：用户对陌生领域要建立学习框架时启用；详细标准见 `references/learning-pack-standards.md`。
-- `Application Mode`：用户问”对我/我们的业务有什么用””怎么落地””怎么做成方案/PRD/Workflow/Skill/Eval”时启用；当研究会影响产品策略、商业化、enterprise adoption、workflow/platform packaging 或其他高成本决策时，按 `references/applied-business-research-contract.md` 处理；详细规则见 `references/mode-routing-guide.md`。
-- `Radar Mode`：长期变化主题启用 `L5`，只形成 watchlist、更新日志和复盘建议；不默认创建 automation。
-- `Product Candidate Research`：用户需要围绕产品决策先发现候选、建立候选池、做长期候选追踪或跨会话 handoff 时启用。详细规则见 `references/mode-routing-guide.md` 和 `references/product-decision-mode.md`；最终单次推荐归 `decision-research`。
+| Mode | Use When | Primary Assets |
+| --- | --- | --- |
+| `Normal Research` | 普通专题研究、证据矩阵、阶段结论 | `research-depth-rubric.md`, `report-writing-standards.md` |
+| `Lightweight Concept Lens` | 概念源流、语义演化、PM 技术评审提问脚本、HTML 决策看板 | `concept-lens-*` references |
+| `Learning Pack` | 用户对陌生领域建立学习框架 | `learning-pack-standards.md` |
+| `Application` | 研究要转成方案、PRD、Workflow、Eval、SOP 或路线图输入 | `applied-business-research-contract.md` |
+| `Radar` | 长期变化主题、watchlist、更新日志 | `research-radar-loop-contract.md` |
+| `Product Candidate` | 先发现候选、建候选池、为后续决策提供输入 | `product-decision-mode.md`, `candidate-backlog-schema.md` |
 
-### Radar Loop Extension
-
-当用户明确要“长期雷达”“持续更新”“定期复盘”“更新已有研究项目”“维护活的知识库”或“下一轮继续扫描同一主题”时，读取 `references/research-radar-loop-contract.md`。
-
-Research Radar Loop 是 `Radar Mode` 的状态化合约：
-
-- 它维护演进主题的 watchlist、证据变化、阶段结论 Diff、更新日志和下一步。
-- 它不等于普通新闻监控；每次扫描都要说明对用户当前学习、产品判断或决策有什么影响。
-- 它不自动创建 Codex automation；只有用户明确要求创建、开启、设置或定期运行时，才进入 automation 流程。
-- 弱信号只能进入更新日志或待复盘区，不能直接改写稳定阶段结论。
-- 如果研究信号变成具体产品、技术、商业或战略选择，建议升级到 `decision-research`。
-
-不要因为用户只是要一次性概念解释、单篇文章总结或固定知识学习就进入 Radar Loop。
-
-Product Candidate Research 与 Application Mode 的区别：Application Mode 是”研究完如何落地”，Product Candidate Research 是”研究本身先服务于候选发现、候选池和跨会话决策输入”。两者可以组合：先用 Product Candidate Research 形成候选池和评分，再转 `decision-research` 给最终推荐，最后用 Application Mode 将已确认选择转化为落地方案。
-
-如果用户说“选一个”“给我最终推荐”“为什么排除其他方案”“基于这个 Candidate Backlog 下结论”，转交 `decision-research`。本 Skill 可以给 Top candidates 或排序表，但它们是决策输入，不是最终决策 authority。
-
-需要模式触发细则、Concept Lens 工作规则、Learning Pack 文件新增条件或 Application Mode 输出要求时，读取 `references/mode-routing-guide.md`。
+用户说“选一个”“给最终推荐”“为什么排除其他方案”“基于 Candidate Backlog 下结论”时，转交 `decision-research`。本 Skill 可以给 Top candidates 或排序表，但它们是决策输入，不是最终决策 authority。
 
 ## Pre-Research Source Expansion
 
-在 Obsidian 内部基线扫描之前，先判断是否需要扩充前置来源。详细规则见 `references/pre-research-source-expansion.md`。
-
-启用信号：
-
-- 用户资料不足、`笔记同步助手` 中没有足够种子文章，或用户明确希望“不要依赖我提前收集输入”。
-- 主题高度依赖中文实践文章、产品案例、市场反馈、近期趋势或封闭平台内容。
-- 研究目标是系统学习、产品判断、竞品/行业调研或应用转化，需要先扩大候选面再筛选。
-
-默认产物是 `Candidate Source Table`，不要直接把搜索结果当结论：
-
-```markdown
-| Title | Channel | Author/account | Date | URL/access | Snippet | Relevance | Quality | Recommended action |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-```
-
-推荐动作只能是：
-
-- `read now`：公开可读、质量足够，进入证据卡片。
-- `sync to Obsidian`：适合进入 `笔记同步助手` 或 Research Project，但需要授权的同步动作。
-- `verify later`：有价值但受登录、API、反爬、付费或来源不明限制。
-- `skip`：重复、低质、SEO、疑似转载或与研究问题弱相关。
-
-微信公众号处理边界：
-
-- 可默认尝试公开候选发现，例如搜狗微信、Web 搜索、OpenCLI Weixin adapter 或已授权的第三方 API。
-- 搜狗微信适合发现候选标题、摘要、时间和跳转线索；它可能触发反爬，不能假设可稳定抓全文。
-- 第三方公众号 API 只在用户提供 token 或明确允许使用时启用；标注服务商、访问时间、字段范围和可靠性限制。
-- WeWe RSS/RSSHub 类工具适合已知公众号的持续订阅，不适合无边界全网搜索。
-- 打开微信客户端、搜索公众号文章、转发给 `Obsidian @笔记同步科技` 或其他同步号属于有副作用的发送/同步动作；即使用户偏好自动化，也要在当前 run 明确授权，且默认在发送前停下确认。不要静默发送。
+当内部输入不足、主题依赖外部生态或用户要求扩源时，读取 `references/pre-research-source-expansion.md`。默认产物是 Candidate Source Table，不把搜索结果直接当结论。登录、付费、私密社区、客户端发送或同步动作都需要当前 run 的明确授权。
 
 ## Persona-Adaptive Output
 
-按解析出的 `role` 调整输出重点。角色未知时先用通用解释，不要假设用户是工程师或产品经理。
-
-- 产品经理：强调产品判断、业务映射、能力边界、PRD 输入、Workflow 设计、Eval 标准和落地路径；技术解释要转译成产品语言；每个关键结论说明“对产品设计有什么影响”。
-- 工程师：强调架构、接口、数据结构、状态管理、权限、安全、测试、可观测性和实现风险；每个关键结论说明“实现上需要注意什么”。
-- 设计师：强调用户场景、交互流程、信息架构、认知负担、视觉表达和用户决策路径；每个关键结论说明“界面和体验上怎么体现”。
-- 运营：强调 SOP、执行流程、内容生产、增长指标、转化效率和复盘机制；每个关键结论说明“怎么变成可执行动作”。
-- 管理者/创始人：强调战略价值、成本、风险、组织分工、ROI、路线图和资源投入；每个关键结论说明“是否值得投、怎么分阶段投”。
-- 研究员/分析师：强调概念边界、方法论、证据强度、反例、研究缺口和可复现性；每个关键结论说明“还需要怎样验证”。
-
-## Catalog / Distribution Notes
-
-- Catalog source：GitHub Skill 仓库 `git@github.com:PANGKAIFENG/ai-product-manager-skills.git` 的默认分支是标准源。
-- Category/status：中文分类“研究学习 / 产品研究”，状态 `active`。
-- Public/private decision：这是公开 AI PM Skill；涉及个人 Obsidian 路径、私密资料、登录渠道或客户资料时必须在具体 run 中显式授权并标注边界。
-- Distribution targets：保持 GitHub checkout、Multica 确认的 `multica-skill` 目录、`/Users/linctex/.codex/skills` 和 `/Users/linctex/.claude/skills` 一致；当前 Codex/Claude 可通过 Skillshare 管理的 symlink 使用。
-- Sync rule：`skillshare sync` 是可选分发方式，不是本 Skill 的事实来源；使用前先确认目标路径确实由 Skillshare 管理。
+按解析出的 `role` 调整输出重点。角色未知时先用通用解释，不要假设用户是工程师或产品经理；具体字段和追问规则见 `references/user-context-standards.md`。
 
 ## Workflow
 
@@ -207,22 +148,7 @@ Product Candidate Research 与 Application Mode 的区别：Application Mode 是
 
 ## L5 Automation Handling
 
-`L5` 表示长期雷达，不等于默认创建自动化。默认行为是先形成 watchlist、更新日志格式、复盘节奏和 automation proposal。
-
-只有当用户在当前任务中明确要求创建、开启、设置、定期运行、持续自动更新或调用 Codex automation 时，才调用 Codex 的 automation 能力创建 `cron` automation。不要把“L5”“长期雷达”“持续研究”单独解释为创建授权。
-
-创建自动化前先检查是否已有同主题 automation，优先更新已有任务，避免重复。自动化任务应使用 `cron`，不使用 thread heartbeat；L5 研究雷达是独立周期任务，不是当前对话稍后继续。
-
-L5 automation 的默认安全边界：
-
-- 只读取公开来源、用户授权来源、当前 Research Project、对应 Context Pack 和允许读取的 Obsidian 目录。
-- 只追加或更新 Research Project 内的雷达型内容，例如 `09_更新日志.md` 的候选信号、待复盘更新、来源状态和下一步。
-- 不自动修改 `03_阶段结论.md`、Theme、Area、长期规则、权限策略、Skill 或项目级 instructions，除非用户在该次 automation run 后再次确认。
-- 不移动、删除、覆盖 `笔记同步助手` 或其他来源层原文。
-- 不绕过登录、付费墙、私密社区或访问限制；需要凭据时把它记录为 blocked/needs authorization。
-- 弱信号只能进入待复盘区，不能直接升级为稳定结论。
-
-如果用户确认创建 automation，最终摘要要说明 automation 名称、频率、写入范围、禁止动作和后续人工确认点。
+`L5` 表示长期雷达，不等于默认创建自动化。只有用户明确要求创建、开启、设置、定期运行或持续自动更新时，才进入 automation 流程。创建前读取 `references/research-radar-loop-contract.md`，并说明频率、写入范围、禁止动作和人工确认点。
 
 ## Research Run Plan
 
@@ -252,15 +178,7 @@ L5 automation 的默认安全边界：
 
 ## Channel Selection Rules
 
-默认不是“所有渠道全开”，而是先判断主题，再选择渠道。
-
-- 平台能力、API、机制、最佳实践：优先官方文档、公司工程博客、release notes、cookbook、SDK 示例。
-- 开源实现、工程模式、工具链：启用 GitHub、包管理器、issues、discussions、示例项目。
-- 产品研究、竞品、市场反馈：启用 Product Hunt、G2、Capterra、AlternativeTo、App Store、Chrome Web Store、VS Code Marketplace、定价页、changelog、用户评论。
-- 学术方法、算法、评测、benchmark：启用论文、技术报告、Papers with Code、OpenReview、arXiv、Semantic Scholar。
-- 趋势、近期发布、作者观点：启用 X、社区讨论、HN、Reddit、新闻稿和 newsletter；这些默认标为弱证据，除非能被官方或实现证据交叉验证。
-- 政策、合规、安全：启用官方监管文件、标准组织、CVE/NVD、vendor advisories、security docs。
-- 封闭或半封闭渠道：只在用户授权、提供访问方式且研究目标需要时使用；不要绕过登录、付费墙或访问限制。
+默认不是“所有渠道全开”，而是按主题选择渠道。读取 `references/channel-selection-rubric.md` 和 `references/channel-registry.md`；封闭、付费、登录或私密渠道只在用户授权并说明引用限制后使用。
 
 ## Obsidian Output Contract
 
@@ -362,6 +280,7 @@ L5 automation 的默认安全边界：
 
 ## Resource Guide
 
+- `references/mode-selection.md`：主模式选择、相邻 Skill 边界和最小加载规则。
 - `references/research-depth-rubric.md`：判断 `L1-L5` 深度、样本量和确认门禁。
 - `references/research-goal-framing-gate.md`：把用户大白话、模糊方向或 Roadmap 前置想法转成研究目标、研究问题、输出要求和 out-of-scope。
 - `references/applied-business-research-contract.md`：高门槛应用研究、商业化/企业 adoption/workflow 决策的证据覆盖、迁移判断和决策产物要求。
@@ -369,6 +288,7 @@ L5 automation 的默认安全边界：
 - `references/mode-routing-guide.md`：Research Modes 的触发细则、Concept Lens、Learning Pack、Application 和 Product Candidate 规则。
 - `references/user-context-standards.md`：解析用户画像和 persona-adaptive 输出边界。
 - `references/default-user-profile.md`：本地默认用户画像；仅作为默认配置，不写死主逻辑。
+- `evals/evals.json`：结构化 trigger / non-trigger / routing 回归样例。
 - `references/learning-pack-standards.md`：轻量系统学习包标准。
 - `references/pre-research-source-expansion.md`：研究前扩源、候选来源筛选和微信公众号/同步渠道边界。
 - `references/channel-selection-rubric.md`：按主题选择渠道。
@@ -388,30 +308,3 @@ L5 automation 的默认安全边界：
 - `references/candidate-backlog-schema.md`：候选池 17 字段 schema、Quality Gate 5 项检查和评分规则。
 - `references/cross-session-handoff.md`：跨会话 handoff 模板、合并规则和 Research Run Metadata。
 - `references/post-research-exits.md`：研究到 PRD/Starter/Demo/Eval/Registry/Review/Roadmap 7 种出口。
-
-## Evaluation Checklist
-
-- Smoke：`帮我系统研究一下 AI Agent Memory，并整理到 Obsidian。`
-- Smoke：`我想先研究 Agent 从聊天到做事这个方向，后面要给 StyleClaw 做 Roadmap。先别直接写 Roadmap，帮我把研究目标和输出要求拆清楚。`
-- Smoke：`研究一下 MCP 安全最佳实践，需要看官方文档、GitHub 和行业案例。`
-- Smoke：`快速了解 Claude Skills 的设计机制，不需要写入 Vault。`
-- Smoke：`帮我轻量解构一下 MCP 的概念源流，输出 PM 决策看板。`
-- Smoke：`分析向量数据库的概念源流、行业演进和 PM 技术评审提问脚本。`
-- Smoke：`我对 Agent Harness 完全陌生，帮我系统学习并整理到 Obsidian。`
-- Smoke：`研究 Harness 对我们推款智能体有什么用。`
-- Smoke：`我是后端工程师，研究 Agent Harness 的权限和 Trace 机制。`
-- Smoke：`研究一个通用能力如何从工具升级成业务工作台，并给出判断矩阵。`
-- Product Candidate：`研究一下市面上的 AI 视频生成方案，先沉淀候选池。` → 应形成 Candidate Backlog，通过 Quality Gate，并建议后续用 `decision-research` 下最终结论。
-- Product Candidate：`这个方向值不值得做？市场上有没有类似的？` → 应输出竞品候选池 + Go/No-Go 判断框架输入，不把弱证据包装成最终决策。
-- Product Candidate Handoff：研究跨多个会话时，后续会话或 `decision-research` 应能从 handoff 文件继续，不重复已有候选。
-- Non-trigger：`帮我对比 Electron vs Tauri vs Flutter Desktop，选一个做桌面端。` 应使用 `decision-research`。
-- Channel selection：学术型主题应启用论文/技术报告。
-- Channel selection：开源工具型主题应启用 GitHub。
-- Channel selection：产品竞品型主题应考虑 Product Hunt、G2、marketplace、定价页、changelog 和用户评论。
-- Channel selection：趋势型主题可启用 X/社区，但必须标注弱证据。
-- Persona：产品经理、工程师、设计师、运营、管理者/创始人应看到不同解释重点和实践任务。
-- Learning pack：只有明确学习包需求或复杂度触发时才建议 `10-12`。
-- Application：研究结论必须能转成判断、方案、模板、任务或实践。
-- Non-trigger：`帮我创建一个 Skill。` 不属于公开 AI PM 研究工作流。
-- Non-trigger：`帮我 review 这个 SKILL.md。` 不属于公开 AI PM 研究工作流。
-- Non-trigger：`搜一下今天某条新闻。` 不应触发本 Skill，除非用户要求沉淀成专题研究。

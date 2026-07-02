@@ -1,0 +1,57 @@
+{
+  "skill_name": "competitive-analysis",
+  "evals": [
+    {
+      "id": "competitor-to-decision-brief",
+      "type": "trigger",
+      "prompt": "打开这个竞品官网看看，对我们 AI PM 工作台有什么产品决策启发。",
+      "should_trigger": true,
+      "expected_route": "competitive-analysis",
+      "expected_output": "Anchors a product decision, selects evidence channels, and outputs a Product Decision Brief rather than a feature list.",
+      "assertions": [
+        {
+          "text": "Translates observations into product implications."
+        }
+      ]
+    },
+    {
+      "id": "pricing-onboarding-analysis",
+      "type": "trigger",
+      "prompt": "帮我分析这个竞品的定价和 onboarding，输出我们下个版本应该学什么、避开什么。",
+      "should_trigger": true,
+      "expected_route": "competitive-analysis",
+      "expected_output": "Uses pricing/onboarding evidence to recommend what to copy, adapt, avoid, and validate next.",
+      "assertions": [
+        {
+          "text": "Includes evidence strength and next validation."
+        }
+      ]
+    },
+    {
+      "id": "non-trigger-candidate-pool",
+      "type": "non-trigger",
+      "prompt": "系统研究整个 AI 项目管理赛道，先沉淀 20 个候选产品。",
+      "should_trigger": false,
+      "expected_route": "research-topic-compiler",
+      "expected_output": "Routes broad candidate discovery to research-topic-compiler.",
+      "assertions": [
+        {
+          "text": "Does not perform a single-product decision brief."
+        }
+      ]
+    },
+    {
+      "id": "non-trigger-final-choice",
+      "type": "non-trigger",
+      "prompt": "基于这三个方案给我最终选一个。",
+      "should_trigger": false,
+      "expected_route": "decision-research",
+      "expected_output": "Routes final selection to decision-research.",
+      "assertions": [
+        {
+          "text": "Does not treat final option choice as competitor evidence collection."
+        }
+      ]
+    }
+  ]
+}

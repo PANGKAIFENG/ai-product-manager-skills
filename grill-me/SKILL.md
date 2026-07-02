@@ -88,4 +88,5 @@ Non-trigger prompts:
 
 ## Resources
 
+- `references/question-patterns.md` 提供依赖、失败模式、取舍和证据类追问模板；需要连续追问但问题质量下降时读取。
 - `references/provenance.md` 记录上游来源、本地重叠和合并说明。

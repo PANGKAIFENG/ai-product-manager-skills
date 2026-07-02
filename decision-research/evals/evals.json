@@ -1,0 +1,92 @@
+{
+  "skill_name": "decision-research",
+  "evals": [
+    {
+      "id": "platform-integration-official-api",
+      "type": "trigger",
+      "prompt": "微信有没有官方 Bot API 可以接入？我们要判断要不要支持用户从微信发消息。",
+      "should_trigger": true,
+      "expected_route": "decision-research",
+      "expected_output": "Frames the integration decision, checks official/compliance paths first, compares feasible options, and gives a recommendation with confidence and overturn conditions.",
+      "assertions": [
+        {
+          "text": "Does not recommend reverse protocol integration as a normal path."
+        },
+        {
+          "text": "Includes official platform evidence and compliance boundary."
+        }
+      ]
+    },
+    {
+      "id": "technical-selection-options",
+      "type": "trigger",
+      "prompt": "我们要在 Electron、Tauri、Flutter Desktop 里选一个做桌面端 Agent Client，帮我调研并给结论。",
+      "should_trigger": true,
+      "expected_route": "decision-research",
+      "expected_output": "Builds a Research Map, compares competing hypotheses, searches for disconfirming evidence, and recommends one path with excluded options.",
+      "assertions": [
+        {
+          "text": "Includes at least two competing hypotheses."
+        },
+        {
+          "text": "States why non-selected options are excluded."
+        }
+      ]
+    },
+    {
+      "id": "business-model-tiering",
+      "type": "trigger",
+      "prompt": "高级版和基础版怎么拉开差异？我需要一个有立场的建议。",
+      "should_trigger": true,
+      "expected_route": "decision-research",
+      "expected_output": "Treats the task as business-model research, identifies the paid trigger and packaging axis, and gives a recommendation rather than only a feature matrix.",
+      "assertions": [
+        {
+          "text": "Includes base/pro tier recommendation."
+        },
+        {
+          "text": "Includes assumptions and overturn conditions."
+        }
+      ]
+    },
+    {
+      "id": "candidate-backlog-final-recommendation",
+      "type": "trigger",
+      "prompt": "基于这个 Candidate Backlog，帮我最终选一个 AI 视频生成方案，并说明为什么排除其他方案。",
+      "should_trigger": true,
+      "expected_route": "decision-research",
+      "expected_output": "Consumes the candidate backlog as known context, checks missing exclusion evidence, and outputs final recommendation, exclusions, confidence, and next validation.",
+      "assertions": [
+        {
+          "text": "Uses candidate backlog as decision input, not as final authority."
+        }
+      ]
+    },
+    {
+      "id": "non-trigger-system-learning",
+      "type": "non-trigger",
+      "prompt": "系统研究一下 AI Agent Memory，整理成长期知识项目。",
+      "should_trigger": false,
+      "expected_route": "research-topic-compiler",
+      "expected_output": "Routes to systematic research instead of forcing a single decision.",
+      "assertions": [
+        {
+          "text": "Does not give a final recommendation when the user asked for a research project."
+        }
+      ]
+    },
+    {
+      "id": "non-trigger-fuzzy-problem",
+      "type": "non-trigger",
+      "prompt": "我感觉桌面端方向不太对，但说不清楚，你先帮我想想。",
+      "should_trigger": false,
+      "expected_route": "ai-collaboration-calibration",
+      "expected_output": "Routes to problem calibration before evidence research.",
+      "assertions": [
+        {
+          "text": "Does not start web research before framing the real question."
+        }
+      ]
+    }
+  ]
+}

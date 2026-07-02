@@ -37,270 +37,54 @@ description: >
 研究框定 → 决策锚定 → 假设显式化 → 竞争假设枚举 → 反对证据搜索 → 三角收敛 → 有立场结论
 ```
 
----
+## Startup Gate
 
-## Loop Extension：Decision Research Loop
+搜索前先完成四件事。详细规则按需读取 `references/research-framing-gate.md`、`references/research-map-template.md` 和 `references/mode-routing.md`。
 
-当用户明确需要“持续推进一个决策”“多轮收敛”“保存状态”“下一轮继续”“更新结论”或“围绕同一决策跟踪证据变化”时，读取 `references/decision-loop-contract.md`。
+1. 判断输入是问题、现象还是解法，并把它提升成一句 `decision_question`。
+2. 判断研究层级和类型：技术选型、平台接入、可行性、产品策略、商业模型、竞品判断或行业格局。
+3. 显式列出当前假设、已知事实、暗知识缺口和停止条件。
+4. 输出 Research Map；如果来自 `research-topic-compiler` 的 Candidate Backlog，先纳入候选、权重和已排除项。
 
-Decision Research Loop 是本 Skill 的状态化扩展，不改变默认边界：
+推荐确认句：
 
-- 默认 `decision-research` 仍然服务于一个具体决策，而不是泛泛主题研究。
-- Loop 只围绕同一个 decision_question 迭代；如果目标变成长期知识沉淀，转交 `research-topic-compiler`。
-- Loop 必须维护 Research Map、竞争假设、证据、Scope Drift、Assumption Ledger、结论版本和停止条件。
-- Loop 不能因为“还能搜”就继续；必须在三角收敛、信息饱和、暗知识缺口、PoC 更便宜或 ROI 熔断时停止。
-- 涉及高风险推荐、决策问题变化、弱证据升级为稳定结论或进入执行前，必须回到用户确认。
+> 你的问题属于 [类型]，层级在 [X]。我理解核心决策是 [Y]。调研结束时需要能判断 [停止条件]。这个理解对吗？
 
-不要因为用户只是说“帮我调研一下”就自动进入 Loop。只有当任务需要多轮状态、可恢复结论或持续更新同一决策时，才启用 Loop contract。
+如果问题还没定义清楚，先转 `ai-collaboration-calibration`。如果目标是长期知识沉淀或候选池，转 `research-topic-compiler`。
 
----
+## Mode Routing
 
-## 启动协议（搜索前必须完成）
+按问题类型只加载必要资产：
 
-### R00 — Research Framing Gate
+| Mode | Use When | Read |
+| --- | --- | --- |
+| `technical-selection` | 选库、框架、模型、服务或实现路径 | `references/modes/technical-selection.md` |
+| `platform-integration` | 接 API、Bot、平台、SDK、开放能力 | `references/modes/platform-integration.md` |
+| `product-strategy` | 产品定位、用户群、差异化、方向判断 | `references/modes/product-strategy.md` |
+| `business-model` | 定价、版本分层、商业包装、升级触发 | `references/modes/business-model.md` |
+| `competitive-decision` | 竞品证据已经收集完，需要做最终判断 | `references/channel-guide.md` + `references/conclusion-template.md` |
 
-**在任何决策锚定之前，先判断研究的类型和层级。**
+当用户明确需要“持续推进一个决策”“保存状态”“下一轮继续”或“更新结论”时读取 `references/decision-loop-contract.md`。Loop 只围绕同一个 decision_question 迭代；如果目标变成研究知识库，转 `research-topic-compiler`。
 
-详细规则见 `references/research-framing-gate.md`。
+## Workflow
 
-操作：
+1. **Frame the decision**：完成 Startup Gate，输出 Research Map。
+2. **Enumerate competing hypotheses**：至少 2 个互斥假设；不能单假设调研。
+3. **Choose channels**：按 `references/channel-guide.md` 选择 3-6 个高价值渠道；动态信息必须实时核验。
+4. **Search for disconfirming evidence**：对每个假设构造“如果它错了会出现什么证据”，主动找反例。
+5. **Run scope drift checks**：每轮信息收集后按 `references/scope-drift-checkpoint.md` 判断是否仍在回答 Research Map 的问题。
+6. **Record user corrections**：用户纠偏时按 `references/assumption-ledger.md` 记录旧假设、新 framing 和影响。
+7. **Stop deliberately**：满足三角收敛、信息饱和、暗知识缺口、PoC 更便宜或 ROI 熔断时停止。
+8. **Give a position**：按 `references/conclusion-template.md` 输出推荐、置信度、排除理由、前提、颠覆条件和待验证项。
 
-1. 判断用户给的是**问题**、**现象**还是**解法**：
-   - 问题：「什么方案能让用户通过微信接入」→ 直接进 R01
-   - 现象：「前端不好用」「桌面端好像该做」→ 先上提一层：它背后的决策是什么？
-   - 解法：「接 Computer Use」「做本地资产治理」→ 问它解决什么更大的问题
+## Evidence Rules
 
-2. 判断研究**层级**：
-   - 行业叙事 / 品类方向
-   - 产品定位 / 用户群体
-   - 业务场景 / 工作流
-   - 能力体系 / 技术模块
-   - 技术实现 / 方案选型
-   - 商业包装 / 版本分层
-
-3. 判断研究**类型**：
-   - 技术选型：选哪个库/框架/服务
-   - 可行性验证：能不能做到
-   - 平台/API 接入：怎么接
-   - 产品策略：产品方向、定位、差异化
-   - 竞品判断：别人怎么做、哪些值得借鉴
-   - 商业模型：怎么卖、怎么分层、怎么升级
-   - 行业格局：主流叙事、趋势、价值主张
-
-4. 如果层级 ≥ 产品定位，触发 **Top-Down Product Research Mode**。
-
-输出：
-
-> 「你的问题属于 [类型]，层级在 [X]。我理解核心决策是 [Y]。这个理解对吗？」
-
-**失败信号**：第一轮搜索就进入具体实现方案，没有先判断层级。
-
-### R01 — 决策问题锚定
-
-调研必须服务于一个具体决策，不是一个研究主题。
-
-AI 把用户描述里隐含的决策问题说出来，让用户确认：
-
-> 「你问的是『接入微信 Bot』，我理解你的决策是：有没有合规、低成本、可维护的方案让用户通过微信发消息？这个理解对吗？」
-
-**同时确认终止条件**：「调研完你需要知道什么才能往下走？」
-
-### R02 — 假设显式化
-
-把 AI 当前持有的倾向性假设列出来，标注哪些是已知的，哪些只是默认：
-
-> 「在开始之前，我注意到这几个预设：[A]、[B]、[C]。哪个你不确定，或者希望调研帮你验证？如果 [A] 是错的，我们应该看到什么信号？」
-
-### R03 — 暗知识缺口识别（Ground Truth 核对）
-
-AI 天然只能获取公开的「廉价地表水」，无法获取用户的隐性知识。
-
-必须主动问：
-
-> 「你有没有见过把这个做得好的案例，或者已有的参考实现？有没有已经排除的方向？」
-
-拿到用户提供的信息后，优先深挖，不开启 Web 搜索。
-
----
-
-## Research Map
-
-在 R00-R03 完成后、正式搜索前，输出 Research Map。详细模板见 `references/research-map-template.md`。
-
-如果输入来自 `research-topic-compiler` 的 Candidate Backlog、评分表或 Cross-Session Handoff，先把它们纳入 `known_context` 和 `competing_hypotheses`，再检查是否还缺少最终决策需要的排除证据、约束权重和颠覆条件。
-
-```
-**Research Map**
-- research_type: [技术选型 / 可行性 / 平台接入 / 产品策略 / 竞品判断 / 商业模型 / 行业格局]
-- current_level: [行业 / 产品 / 场景 / 能力 / 实现 / 商业]
-- decision_question: [一句话决策问题]
-- sub_questions:
-  - [子问题 1]
-  - [子问题 2]
-- known_context: [已知事实]
-- assumptions: [当前预设]
-- competing_hypotheses: [H1 / H2 / H3]
-- evidence_needed: [需要什么类型证据]
-- out_of_scope: [不研究什么]
-- stop_conditions: [什么时候停]
-```
-
-如果用户给出新信息导致研究方向变化，Research Map 必须更新。
-
----
-
-## 执行流程
-
-### 第一步：枚举竞争假设（R04）
-
-不允许单假设调研。在任何搜索之前，先输出：
-
-> 「当前有 N 个可能的结论候选，分别是：[H1]、[H2]、[H3]。」
-
-最低要求：至少 2 个互斥假设。
-
-### 第二步：渠道选择（R05）
-
-不是所有渠道全开，先判断问题类型，再动态选渠道。详细规则见 `references/channel-guide.md`。
-
-| 问题类型 | 优先渠道 | 特殊规则 |
-|---------|---------|---------|
-| 平台/API 接入 | 官方文档、官方 SDK、官方 Changelog | 合规前置拦截：逆向协议直接排除 |
-| 技术选型 | GitHub（dependent repos + issue 活跃度）、官方文档 | 不用 stars 作为主要指标 |
-| 可行性验证 | 官方文档、最小可运行示例、技术报告 | Spike 思路：找最小可验证路径 |
-| 竞品/参考实现 | 公开代码库、产品文档、官方博客 | 先向用户确认参考对象名 |
-| 产品策略 | 官方产品页、产品博客、定价页、changelog、行业报告 | 从行业叙事开始，不从功能列表开始 |
-| 商业模型 | 定价页、投资者资料、行业报告、招聘信息 | 区分已验证 vs 推断 |
-| 行业格局 | 产品页、PH、G2、媒体报道、行业报告、行业大会 | 标注趋势信号为弱证据 |
-| 学术方法/算法 | 论文、技术报告、arXiv、Papers with Code | 标注证据等级 |
-| 趋势/社区观点 | HN、Reddit、X | 标注为弱证据，需交叉验证才能升级 |
-
-每条信息**显式标注来源层级**：
-
-- **L1**：官方文档 / 官方 SDK / 原始文件
-- **L2**：独立第三方研究 / 受信任技术报告
-- **L3**：社区主流实现（依赖数量 + issue 响应速度评估）
-- **L4**：从业者经验 / 二手摘要（可补充，不作为主要依据）
-
-### 第三步：反对证据搜索（R06）
-
-主动搜索「反对证据」，而非支持证据。
-
-对每个假设构造：「如果这个假设是错的，我应该看到什么样的证据？」然后去搜索那个证据。
-
-**诊断性证据标准**：一条证据，在假设 A 成立时「很可能出现」，在假设 B 成立时「几乎不会出现」——这才是有价值的证据。
-
-如果找不到任何反例，这本身是危险信号——说明搜索空间太窄。
-
-### 第四步：里程碑推演（R07）
-
-不在 V1 阶段跳到 V4 结论：
-
-- **V1 — 问题成形**：把决策翻译为可验证的研究问题
-- **V2 — 假设矩阵**：列出竞争假设，标注证据状态
-- **V3 — 排除轮**：用诊断性证据排除假设
-- **V4 — 残差分析**：剩余假设的置信边界
-
-### Scope Drift Checkpoint（每轮信息收集后）
-
-详细规则见 `references/scope-drift-checkpoint.md`。
-
-每完成一轮资料搜集或用户反馈后自检：
-
-- 当前回答的问题还是 Research Map 里的问题吗？
-- 有新增的子问题吗？
-- 有哪些结论因为用户纠偏被降级或废弃？
-- Research Map 是否需要更新？
-
-如果连续 2 次 drift，主动向用户确认方向。
-
-### Assumption Ledger（用户纠偏时触发）
-
-详细规则见 `references/assumption-ledger.md`。
-
-每次用户明确纠正方向后记录：
-
-| old_assumption | user_correction | new_framing | impact |
-|----------------|-----------------|-------------|--------|
-
----
-
-## Top-Down Product Research Mode
-
-详细规则见 `references/top-down-product-mode.md`。
-
-当 R00 判断研究类型为产品策略 / 行业格局 / 商业模型，且层级 ≥ 产品定位时自动启用。
-
-默认下钻顺序：
-
-1. 行业/品类叙事：主流产品在宣称什么价值？
-2. 用户角色与 JTBD：谁在用、解决什么真问题？
-3. 业务场景：哪些工作流能体现差异？
-4. 能力体系：需要什么底层能力？
-5. 技术实现：怎么做？
-6. 商业包装：怎么卖？
-
-**关键规则**：
-- 不允许在 L1 还没建立时直接跳到 L5
-- 每一层的结论需要显式支撑下一层
-- 用户给的具体点（如"桌面端""推款""Computer Use"）先标注层级，不直接展开
-
----
-
-## 终止条件（三选一，满足即停）
-
-### R08 — 三角收敛
-
-剩余假设 ≤ 1 个，且有 ≥ 2 个独立来源支持 → 输出结论。
-
-### R09 — 信息饱和
-
-连续 3 条新证据没有新的排除能力 → 停止搜索。
-
-### R10 — 暗知识缺口
-
-不确定性的核心是「情境变量」→ 转向用户追问，或建议做 PoC。
-
-**ROI 熔断**：调研进行到 50% 时，如果置信度不足，触发范围重新评估。
-
----
-
-## 输出格式（R11）
-
-**禁止输出无立场的「方案矩阵」作为最终结论。**
-
-有立场结论的必要结构。详细模板见 `references/conclusion-template.md`。
-
-```
-推荐：[X]（置信度：高/中/低）
-  原因：[核心依据]，来源 [L1/L2]
-
-排除：[Y]，因为 [具体原因]
-     [Z]，因为 [具体原因]
-
-前提：结论建立在 [假设 A] 成立的基础上
-
-颠覆条件：如果出现 [信号 B]，这个结论需要重新评估
-
-待验证：[单一来源或需要一手验证的结论]
-```
-
-### Evidence vs Interpretation Split
-
-输出时区分每条关键判断的来源性质：
-
-- `[Evidence]`：外部公开资料直接支持
-- `[Local Context]`：本地项目事实
-- `[Inference]`：基于证据的推断
-- `[Judgment]`：当前产品/战略判断
-- `[Open]`：仍未决定
-
-**置信度标签**：
-- 高：≥2 个独立 L1/L2 来源，无重大反对证据
-- 中：有 L1/L2 来源，但存在未解决的竞争假设
-- 低：主要来自 L3/L4，或核心假设未验证
-
-**矩阵的唯一合理使用场景**：用户明确说「帮我比较多个方向，决策权在我」。即便如此，矩阵后必须附立场。
+- 来源层级：`L1` 官方/原始资料，`L2` 独立研究/可信技术报告，`L3` 社区主流实现，`L4` 从业经验/二手摘要。
+- 判断性质：`[Evidence]`、`[Local Context]`、`[Inference]`、`[Judgment]`、`[Open]`。
+- 置信度高：至少 2 个独立 L1/L2 来源且没有重大反证。
+- 置信度中：有 L1/L2 支撑但竞争假设未完全排除。
+- 置信度低：主要来自 L3/L4 或核心假设未验证。
+- 用户明确要矩阵时可以输出矩阵，但矩阵后仍要给立场。
 
 ---
 
@@ -319,6 +103,11 @@ AI 天然只能获取公开的「廉价地表水」，无法获取用户的隐�
 ## 资源指南
 
 - Decision Research Loop 合约：`references/decision-loop-contract.md`
+- 模式路由：`references/mode-routing.md`
+- 技术选型：`references/modes/technical-selection.md`
+- 平台接入：`references/modes/platform-integration.md`
+- 产品策略：`references/modes/product-strategy.md`
+- 商业模型：`references/modes/business-model.md`
 - 研究框定门：`references/research-framing-gate.md`
 - Research Map 模板：`references/research-map-template.md`
 - 自上而下产品研究模式：`references/top-down-product-mode.md`
@@ -327,6 +116,7 @@ AI 天然只能获取公开的「廉价地表水」，无法获取用户的隐�
 - 调研规则详述：`references/research-rules.md`
 - 渠道选择手册：`references/channel-guide.md`
 - 有立场结论模板：`references/conclusion-template.md`
+- 输出检查脚本：`scripts/check_decision_report.py`
 
 ## Definition of Done
 

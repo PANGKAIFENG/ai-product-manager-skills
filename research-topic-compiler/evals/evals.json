@@ -1,0 +1,70 @@
+{
+  "skill_name": "research-topic-compiler",
+  "evals": [
+    {
+      "id": "framing-vague-roadmap-input",
+      "type": "trigger",
+      "prompt": "我想研究 Agent 从聊天到做事这个方向，后面要给 Roadmap 用。先别直接写 Roadmap，帮我拆研究目标和输出要求。",
+      "should_trigger": true,
+      "expected_route": "research-topic-compiler",
+      "expected_output": "Uses Research Goal Framing Gate, produces research goal, questions, out-of-scope, output requirements, and stops before full research if requested.",
+      "assertions": [
+        {
+          "text": "Does not jump straight to roadmap or PRD."
+        }
+      ]
+    },
+    {
+      "id": "normal-research-with-sources",
+      "type": "trigger",
+      "prompt": "帮我系统研究一下 MCP 安全最佳实践，需要看官方文档、GitHub 和行业案例。",
+      "should_trigger": true,
+      "expected_route": "research-topic-compiler",
+      "expected_output": "Selects Normal Research or Application mode, chooses channels, builds evidence matrix and report with source quality boundaries.",
+      "assertions": [
+        {
+          "text": "Includes Research Run Plan before evidence synthesis."
+        }
+      ]
+    },
+    {
+      "id": "product-candidate-research",
+      "type": "trigger",
+      "prompt": "研究一下市面上的 AI 视频生成方案，先沉淀候选池，不要直接帮我选。",
+      "should_trigger": true,
+      "expected_route": "research-topic-compiler",
+      "expected_output": "Uses Product Candidate Research, outputs Candidate Backlog, scoring inputs, and recommends decision-research for final choice.",
+      "assertions": [
+        {
+          "text": "Treats top candidates as decision input, not final recommendation."
+        }
+      ]
+    },
+    {
+      "id": "radar-loop-boundary",
+      "type": "trigger",
+      "prompt": "给这个 AI PM 研究主题做长期雷达，先给 watchlist 和更新日志结构，不要创建自动化。",
+      "should_trigger": true,
+      "expected_route": "research-topic-compiler",
+      "expected_output": "Uses Radar Mode, produces watchlist/update log structure, and does not create automation without explicit authorization.",
+      "assertions": [
+        {
+          "text": "Does not create or enable automation by default."
+        }
+      ]
+    },
+    {
+      "id": "non-trigger-final-selection",
+      "type": "non-trigger",
+      "prompt": "基于这些候选产品，最终选一个并说明为什么排除其他方案。",
+      "should_trigger": false,
+      "expected_route": "decision-research",
+      "expected_output": "Routes final recommendation and exclusion logic to decision-research.",
+      "assertions": [
+        {
+          "text": "Does not claim final decision authority for candidate research."
+        }
+      ]
+    }
+  ]
+}

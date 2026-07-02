@@ -1,0 +1,44 @@
+{
+  "skill_name": "complex-exploration",
+  "evals": [
+    {
+      "id": "roadmap-reframe",
+      "type": "trigger",
+      "prompt": "先不要写 Roadmap，帮我判断这个复杂问题怎么探索。",
+      "should_trigger": true,
+      "expected_route": "complex-exploration",
+      "expected_output": "Identifies task type, hidden assumptions, true management object, exploration path, and next artifact.",
+      "assertions": [
+        {
+          "text": "Does not jump straight into roadmap scheduling."
+        }
+      ]
+    },
+    {
+      "id": "assetize-complex-run",
+      "type": "trigger",
+      "prompt": "这次项目反复了很多版本，帮我复盘哪些反复有价值，并沉淀方法论。",
+      "should_trigger": true,
+      "expected_route": "complex-exploration",
+      "expected_output": "Uses Review or Asset Mode to identify valuable iterations, low-value rework, and reusable assets.",
+      "assertions": [
+        {
+          "text": "Does not produce a simple chronological summary."
+        }
+      ]
+    },
+    {
+      "id": "non-trigger-system-research",
+      "type": "non-trigger",
+      "prompt": "系统研究 MCP 安全最佳实践，整理到 Obsidian。",
+      "should_trigger": false,
+      "expected_route": "research-topic-compiler",
+      "expected_output": "Routes systematic evidence research to research-topic-compiler.",
+      "assertions": [
+        {
+          "text": "Does not treat evidence collection as complex exploration."
+        }
+      ]
+    }
+  ]
+}

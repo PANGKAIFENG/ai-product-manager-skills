@@ -157,6 +157,11 @@ Recommend not assetizing, or only a lightweight note, when:
 - The answer includes a reuse or failure signal.
 - The diagnosis does not expose private context unless the user supplied and authorized it in this run.
 
+## Resources
+
+- `references/asset-layer-rubric.md`：当 Prompt / Context Pack / Workflow / Skill / Loop / System 边界不清时读取。
+- `scripts/check_assetization_report.py`：检查资产化诊断报告是否包含推荐层级、证据、最小下一步和复用信号。
+
 ## Evaluation
 
 Smoke prompts:

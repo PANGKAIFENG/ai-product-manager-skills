@@ -36,6 +36,8 @@ description: "复杂探索资产化 / Complex Exploration：当用户面对复�
 
 按用户输入选择一个主模式，不要机械跑满所有模板。
 
+模式选择不清时先读取 `references/mode-selection.md`。
+
 | Mode | Use When | Primary Output |
 | --- | --- | --- |
 | Quick Mode | 用户刚提出复杂请求，需要快速判断是否应直接执行 | 快速判断：任务类型、是否过窄、真正问题、下一步 |

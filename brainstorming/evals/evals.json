@@ -1,0 +1,57 @@
+{
+  "skill_name": "brainstorming",
+  "evals": [
+    {
+      "id": "design-options-before-prd",
+      "type": "trigger",
+      "prompt": "先不要写 PRD，帮我把这个功能脑暴成几个设计方案。",
+      "should_trigger": true,
+      "expected_route": "brainstorming",
+      "expected_output": "Compares 2-3 options, recommends one, states tradeoffs, and asks for design confirmation before PRD or implementation.",
+      "assertions": [
+        {
+          "text": "Does not create a full PRD before confirmation."
+        }
+      ]
+    },
+    {
+      "id": "visual-design-discovery",
+      "type": "trigger",
+      "prompt": "参考 brainstorming，把这个桌面端需求先变成设计 spec，后面会做 mockup。",
+      "should_trigger": true,
+      "expected_route": "brainstorming",
+      "expected_output": "Produces design spec and includes UI discovery expectations before visual mockup.",
+      "assertions": [
+        {
+          "text": "Mentions downstream ui-mockup-desktop-workbench when high fidelity is needed."
+        }
+      ]
+    },
+    {
+      "id": "non-trigger-fuzzy-problem",
+      "type": "non-trigger",
+      "prompt": "我还没想清楚真正问题是什么，先帮我想想。",
+      "should_trigger": false,
+      "expected_route": "ai-collaboration-calibration",
+      "expected_output": "Routes fuzzy problem definition to calibration.",
+      "assertions": [
+        {
+          "text": "Does not force solution options before the problem is framed."
+        }
+      ]
+    },
+    {
+      "id": "non-trigger-established-solution",
+      "type": "non-trigger",
+      "prompt": "这个方案已经定了，帮我压力测试哪里会失败。",
+      "should_trigger": false,
+      "expected_route": "grill-me",
+      "expected_output": "Routes established-solution pressure testing to grill-me.",
+      "assertions": [
+        {
+          "text": "Does not replace pressure testing with design brainstorming."
+        }
+      ]
+    }
+  ]
+}

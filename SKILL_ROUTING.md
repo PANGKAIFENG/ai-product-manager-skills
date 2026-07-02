@@ -2,6 +2,14 @@
 
 这个文件用于解决公开 AI PM Skill 的相邻触发边界。原则是先判断用户当前处在哪个工作阶段，再选择 Skill；不要因为关键词相似就叠加多个 Skill。
 
+## Quality Asset Rule
+
+每个公开 Skill 都应有 `evals/evals.json` 记录 trigger、non-trigger 和关键回归样例。高风险输出型 Skill 还应有 `scripts/` checker 或确定性验证脚本。仓库级检查入口：
+
+```bash
+python3 scripts/audit_skills.py .
+```
+
 ## 核心路由表
 
 | 用户当前状态 | 优先 Skill | 触发信号 | 不要用它做什么 |
