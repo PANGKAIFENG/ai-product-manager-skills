@@ -62,6 +62,7 @@ PRD Readiness Loop 是本 Skill 的状态化扩展：
 5. 给出“怎么改”而不是只说“哪里有问题”
 6. 在必要时补出可直接替换或新增到 PRD 的修订草案
 7. 检查 PRD 图示是否缺失、不可编辑、引用错误或不足以支撑研发评审
+8. 检查 PRD 是否把产品初版、设计对齐和开发 handoff 混在一起
 
 它不负责：
 
@@ -214,6 +215,10 @@ PRD Readiness Loop 是本 Skill 的状态化扩展：
    - 人工确认
    - 记忆写入
    - 失败回退
+9. 如果 PRD 看起来过重或过技术化，读取 `references/prd-shape-gates.md`，必要时运行 `python3 scripts/check_prd_shape.py <prd.md> --type <lite|standard|ai-native>`
+   - 产品初版正文是否出现 TypeScript / JSON schema / metadata / adapter / endpoint。
+   - 是否应把技术字段移动到开发 handoff 附录。
+   - 是否因为模板章节误激活而掩盖了用户场景、触发、边界和验收。
 
 ## PRD Diagram Review Mode
 
@@ -381,6 +386,8 @@ PRD Review Report: <文件名>
 - `~/.honeycomb-agent/templates/examples/PRD-ai-native-example.md`
 - `references/drawio-templates.md`
 - `scripts/validate_drawio.py`
+- `references/prd-shape-gates.md`
+- `scripts/check_prd_shape.py`
 - `honeycomb diagram-guard <path>` 或 `.claude/hooks/diagram-guard.sh`
 - `references/implementation-plan-readiness.md`
 - `references/prd-readiness-loop-contract.md`
@@ -414,6 +421,7 @@ Smoke prompts:
 - AI-native PRD 时，能否检查协作闭环与回退
 - PRD 引用了图示时，能否区分 `*.drawio.svg` 正式图、`src/*.drawio` 备份源和普通 `.svg`
 - PRD 缺少必要流程图或只给不可编辑截图时，能否作为阻断/重要问题指出并给补图草案
+- PRD 初版包含 TypeScript / JSON schema / metadata 时，能否判断为阶段混淆并建议移到开发 handoff 附录
 
 Non-trigger prompts:
 

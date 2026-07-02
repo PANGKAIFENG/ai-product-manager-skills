@@ -1,0 +1,24 @@
+{
+  "skill_name": "prd-architect",
+  "evals": [
+    {
+      "id": "standard-product-draft-no-schema",
+      "prompt": "帮我写一份 Agent 回答后的下一步行动建议 PRD 初版。下一步行动不是所有回答都有，图片生成后可以改图或生成视频，PPT 成功后下载/编辑是功能按钮，不算 Agent 下一步；点击下一步行动只预填输入框让用户确认。",
+      "expected_output": "选择 PRD-standard 或 PRD-ai-native 的产品讨论稿，重点写场景、触发、不展示条件、功能按钮与 Agent 行动的区别、点击预填输入框、验收标准；不输出 TypeScript interface、JSON schema、metadata 或 adapter 细节。",
+      "files": []
+    },
+    {
+      "id": "lite-existing-page-mockup-handoff",
+      "prompt": "帮我写一个 PRD：在现有聊天页点击发送时，如果沙箱并发已满，要弹出确认提示并保留输入内容。需要说明页面状态和截图承接。",
+      "expected_output": "选择 PRD-lite，加载 mockup handoff，基于真实页面触发点描述弹窗/状态/验收，不强制 Draw.io，不发散成工作区管理页。",
+      "files": []
+    },
+    {
+      "id": "diagram-request-loads-drawio",
+      "prompt": "帮我写一个 PRD，并补一张可编辑 Draw.io 核心流程图，描述用户提交需求后 Agent 澄清、生成、人工确认、失败回退的链路。",
+      "expected_output": "选择 PRD-ai-native，加载 drawio templates，写清人/AI协作、状态反馈、人工确认和失败回退，并要求验证 .drawio 可编辑性。",
+      "files": []
+    }
+  ]
+}
+

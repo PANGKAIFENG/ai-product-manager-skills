@@ -1,0 +1,17 @@
+{
+  "skill_name": "prd-review",
+  "evals": [
+    {
+      "id": "detect-overtechnical-product-draft",
+      "prompt": "帮我 review 这份 Agent 下一步行动建议 PRD。它是初版产品讨论稿，但正文里有 TypeScript interface、JSON 示例、metadata 和 adapter 章节。",
+      "expected_output": "指出阶段混淆和过早技术化，建议把 schema/metadata/adapter 移到开发 handoff 附录，并把主文档改回用户场景、触发、不展示条件、交互、异常和验收。",
+      "files": []
+    },
+    {
+      "id": "diagram-editability-review",
+      "prompt": "帮我审一个 PRD：它说有可编辑流程图，但 Markdown 引用的是普通 png 截图，没有 drawio 源文件。",
+      "expected_output": "区分图示文本要求缺失、文件实际不可验证和可编辑性未验证，建议补 .drawio 或 .drawio.svg 并运行 validate_drawio.py。",
+      "files": []
+    }
+  ]
+}

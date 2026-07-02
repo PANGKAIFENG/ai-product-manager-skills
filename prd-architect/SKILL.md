@@ -4,8 +4,8 @@ description: >
   PRD 架构师 / 需求文档起草：当用户要把一个产品想法、需求草稿、脑暴结果或功能说明整理成 PRD 时使用。
   可用中文唤起：“帮我写 PRD”“帮我选 PRD 模板”“把这个需求整理成 PRD”“判断该用轻量 PRD 还是标准 PRD”
   “补一张可编辑 Draw.io 核心流程图”“PRD 里加架构图”。
-  会根据 PRD-lite、PRD-standard、PRD-ai-native 选择不同模板骨架，并在涉及既有产品界面时要求基于真实项目页面补截图/HTML mockup。
-  不用于直接编码、单纯画 UI，或评审一份已经写好的 PRD。
+  会在 PRD-lite、PRD-standard、PRD-ai-native 中选择一个模板资产按需加载，并在需要时加载 mockup handoff、
+  Draw.io 图示或开发 handoff 附录。不用于直接编码、单纯画 UI，或评审一份已经写好的 PRD。
 ---
 
 # PRD 架构师（prd-architect）
@@ -15,14 +15,18 @@ description: >
 - 中文名：PRD 架构师 / 需求文档起草
 - 英文稳定名：`prd-architect`
 - 你可以这样叫我：`帮我写 PRD`、`帮我选 PRD 模板`、`把这个需求整理成 PRD`、`这个需求该用哪种 PRD`、`PRD 里补 Draw.io 流程图`
-- 适合：需求还在成型，需要先判断文档深度、PRD 类型、当前成熟度和后续 handoff 接口
-- 不适合：已经有完整 PRD 要评审，改用 `prd-review`；只要 UI 线框或直接编码也不应触发
+- 适合：需求还在成型，需要判断 PRD 类型、当前成熟度、模板资产和后续 UI / handoff 承接
+- 不适合：已有完整 PRD 要评审时改用 `prd-review`；只要正式 UI mockup 时改用 `ui-mockup-desktop-workbench`；直接编码不触发
 
 ## Overview
 
-根据需求类型动态选择 PRD 模板，而不是固定套一套重型章节。
+这个 Skill 负责把产品想法组织成结构匹配的 PRD。它不是固定展开重型模板，而是：
 
-这个 skill 的职责是先定模板和阶段，再组织 PRD 的结构与承接关系。
+1. 先判断上游输入是否足够成熟。
+2. 再选择 `PRD-lite / PRD-standard / PRD-ai-native` 其中一个模板资产。
+3. 只加载本轮需要的附加资产，例如 mockup handoff、Draw.io 图示或开发 handoff。
+4. 写出与当前阶段一致的 PRD，并保留明确的待确认项。
+5. 生成文件时尽量运行 PRD shape 自检，避免把初版 PRD 写成实现方案。
 
 ## Upstream Boundaries
 
@@ -32,42 +36,112 @@ description: >
 - 问题已确认，但具体方案、架构、计划或产品决策需要压力测试：先转 `grill-me`。
 - PRD 中存在重大产品、技术、商业或平台选择，且缺少证据：先转 `decision-research`。
 - 已有 PRD/handoff 只是要判断能否交付开发：转 `prd-review`，由它给 readiness verdict。
-- PRD 和 UI 规范都已确认，用户要正式桌面端页面 mockup：转 `ui-mockup-desktop-workbench`。
+- PRD 和 UI 规范都已确认，用户要正式桌面端多状态页面 mockup：转 `ui-mockup-desktop-workbench`。
 
 `prd-architect` 可以根据上游输出起草或修订 PRD，但不自我批准 `Ready for writing-plans`。
 
 ## Responsibilities
 
-这个 skill 负责：
+这个 Skill 负责：
 
-1. 判断需求复杂度
-2. 判断是否属于 AI-native 需求
-3. 在 `PRD-lite / PRD-standard / PRD-ai-native` 中做选择
-4. 判断当前应该输出 `草稿 / 讨论中 / 已确认` 哪一阶段的 PRD
-5. 组织输出结构
-6. 保留必要的待确认假设
-7. 决定下一步是继续深化 PRD，还是可以进入 UI / handoff
-8. 让 PRD 内部直接包含后续可执行的图示 / UI 承接接口
-9. 在 PRD 起草阶段生成可编辑 Draw.io 核心流程图或架构图，并把引用方式写进 PRD
+1. 判断需求复杂度和当前成熟度。
+2. 判断是否属于 AI-native 需求。
+3. 选择并加载一个 PRD 模板资产。
+4. 按需加载 mockup、Draw.io 或 handoff 资产。
+5. 组织 PRD 正文、待确认项和下一步建议。
+6. 在生成到文件时运行可用的确定性检查。
 
 它不负责：
 
-- 直接决定 UI 细节
-- 生成正式桌面端多状态页面 mockup；这由 `ui-mockup-desktop-workbench` 负责
-- 直接开始编码
-- 用重型模板压扁所有需求
-- 把核心规则外包给单独 guide 再让用户自己跳转理解
+- 直接决定 UI 视觉细节。
+- 生成正式桌面端多状态页面 mockup；这由 `ui-mockup-desktop-workbench` 负责。
+- 直接开始编码。
+- 把核心规则外包给单独 guide 再让用户自己跳转理解。
+- 在用户只要“初版 PRD”时展开接口字段、TypeScript、JSON schema、adapter 或 metadata 结构。
 
-### UI Mockup Handoff
+## Workflow
 
-`prd-architect` 只负责把 PRD 中的 UI 承接接口写清楚，例如页面范围、关键状态、交互入口、验收口径、截图或轻量 mockup notes。
+### 1. Intake
 
-当 PRD 已经具备目标用户、页面范围、核心流程、关键状态、异常和验收标准，并且用户要正式桌面端真实页面 mockup 时，转交 `ui-mockup-desktop-workbench`。
+先从用户输入和可发现项目上下文提炼：
 
-如果 mockup 过程中暴露 PRD 缺口：
+- 需求描述、目标用户、当前问题、成功标准。
+- 已知边界、非目标、待确认点。
+- 是否涉及既有界面、截图、HTML mockup 或正式 UI mockup。
+- 是否涉及 AI 协作、模型生成、推荐、记忆、人工确认或人工接管。
+- 是否明确要求开发 handoff、接口字段、协议 schema 或实现计划。
 
-- 文档结构或章节缺失：回到 `prd-architect` 补 PRD。
-- 冲突、不可测试、验收缺失或 readiness 疑问：回到 `prd-review`。
+如果输入缺失，可以基于明确假设先出第一版；不要把缺失业务判断伪装成已确认事实。
+
+### 2. Select Template Asset
+
+读取 `references/template-selection.md`，选择且只选择一个模板：
+
+- `references/templates/prd-lite.md`
+- `references/templates/prd-standard.md`
+- `references/templates/prd-ai-native.md`
+
+不要同时加载三份模板来拼接章节。选中模板后，按模板内的“章节启用条件”和“禁止内容”写正文。
+
+### 3. Activate Optional Assets
+
+只在触发条件满足时加载附加资产：
+
+| 资产 | 何时加载 |
+| --- | --- |
+| `references/mockup-handoff.md` | 涉及既有页面、弹窗、面板、按钮、表单、状态提示、HTML mockup 或截图承接 |
+| `references/drawio-templates.md` | 用户要求可编辑流程图 / 架构图，或 Standard / AI-native 存在多阶段链路、上下游依赖、状态流转 |
+| `references/handoff-appendix.md` | 用户明确要求开发 handoff、字段定义、协议、接口、adapter、metadata 或实现计划前置材料 |
+| `references/prd-shape-gates.md` | 需要自检 PRD 是否过重、过技术化、章节误激活或待确认项处理不当 |
+
+### 4. Write PRD
+
+输出必须做到：
+
+1. 开头用一句话写清“本期只解决什么”。
+2. 结构与问题规模匹配。
+3. 明确事实、假设、待确认项和非目标。
+4. 每个章节回答一个新问题；重复章节要合并或删除。
+5. 如果涉及既有前端页面，先定位真实项目、真实路由和真实组件，再写页面稿。
+6. 如果只是产品初版，不在正文写 TypeScript interface、JSON schema、endpoint、adapter、metadata 或 capability 字段。
+7. 如果用户明确要求 handoff，把字段和协议放到“开发 handoff 附录”，不要污染产品主链路。
+
+### 5. Diagram Mode
+
+当用户要求“写 PRD，并补流程图 / 架构图 / Draw.io 图示”时，本 Skill 直接负责 PRD 内正式图示能力。
+
+执行规则：
+
+1. 先判断图要回答的问题：系统是什么、链路怎么跑、还是人和 AI 如何协作。
+2. 读取 `references/drawio-templates.md`，选择 `architecture` 或 `flow` 布局。
+3. 生成可编辑 `.drawio` 源文件；如果 PRD 需要 Markdown 可预览，优先交付包含 Draw.io 数据的 `*.drawio.svg`。
+4. 在 PRD 正文引用正式图示路径，并说明它支撑哪个章节。
+5. 对 `.drawio` 源文件运行 `python3 scripts/validate_drawio.py <path>`。
+6. 如果验证工具不可用，必须在 PRD 的关联产物或最终说明里标记“图示可编辑性未验证”。
+
+### 6. Mockup Handoff
+
+当需求发生在既有产品页面上，优先读取 `references/mockup-handoff.md`。PRD 中应写清：
+
+- 页面范围、触发入口、关键状态、用户可见反馈。
+- 需要截图、静态 HTML mockup、真实页面截图，还是转交正式 UI mockup。
+- mockup 展示哪个状态：默认态、拦截态、确认态、失败态或成功态。
+
+### 7. Self-check
+
+如果本轮把 PRD 写入 Markdown 文件，尽量运行：
+
+```bash
+python3 scripts/check_prd_shape.py <prd.md> --type <lite|standard|ai-native>
+```
+
+当用户明确要求开发 handoff 时增加：
+
+```bash
+python3 scripts/check_prd_shape.py <prd.md> --type <lite|standard|ai-native> --allow-handoff
+```
+
+检查失败不等于不能交付，但最终说明必须解释哪些 warning 是故意保留的，哪些需要修订。
 
 ## Revision Input Contract
 
@@ -75,327 +149,11 @@ description: >
 
 1. 先识别本轮 patch scope：只修 blocker、补验收、补异常、补图示，还是重组章节。
 2. 把 review finding 分成事实缺口、表达缺口、验收缺口、图示缺口和待确认决策。
-3. 只改能从输入中支撑的内容；缺失业务判断写成待确认项，不伪装成已确认需求。
+3. 只改能从输入中支撑的内容；缺失业务判断写成待确认项。
 4. 输出最小可替换章节或段落，不默认重写整份 PRD。
 5. 修订后建议回到 `prd-review` 做 readiness re-check；readiness verdict 不由本 Skill 给出。
 
-## PRD Diagram Mode
-
-当用户要求“写 PRD，并补流程图 / 架构图 / Draw.io 图示”时，不再调用独立图示 Skill；本 Skill 直接负责 PRD 内正式图示能力。
-
-触发信号：
-
-- “帮我写一个 PRD，并补一张可编辑 Draw.io 核心流程图。”
-- “这个 PRD 需要一张架构图 / 一体化总图 / 流程图。”
-- “把主链路画进 PRD，后续研发评审要能编辑。”
-- `PRD-standard` 或 `PRD-ai-native` 涉及多阶段链路、模块依赖、上下游输入输出、AI 协作闭环或状态流转。
-
-执行规则：
-
-1. 先判断 PRD 类型和成熟度，再决定图示是否必要；简单 `PRD-lite` 不强制正式 Draw.io。
-2. 需要正式图示时，先从 PRD 抽出“图要回答的问题”：系统是什么、链路怎么跑、还是人工/AI 如何协作。
-3. 读取 `references/drawio-templates.md`，选择 `architecture` 或 `flow` 布局，控制节点数量和横向结构。
-4. 生成可编辑 `.drawio` 源文件；如果 PRD 需要 Markdown 可预览，优先生成或要求导出包含图数据的 `*.drawio.svg`。
-5. 在 PRD 正文中引用正式图示路径，并说明它支撑哪个章节的研发评审。
-6. 对 `.drawio` 源文件运行 `python3 scripts/validate_drawio.py <path>`；如果交付 `*.drawio.svg`，还要尽量运行项目已有 `honeycomb diagram-guard <path>` 或人工检查内嵌 Draw.io 数据。
-7. 如果验证工具不可用，必须在 PRD 的关联产物或最终说明里标记“图示可编辑性未验证”，不要声称已通过。
-
-## Decision Rules
-
-先判断需求是否真的需要完整模板。不要因为用户提到 Agent、AI、Sandbox、Workflow 就自动升级成重型 PRD；如果本期只改一个入口、一个弹窗、一个限制规则，默认仍是 `PRD-lite`。
-
-### 选择 `PRD-lite`
-
-当需求满足以下特征时优先：
-
-- 单点改动
-- 需求边界清晰
-- 用户流程短
-- 不涉及复杂状态与数据
-- 只需要让开发理解“触发条件、页面反馈、边界、验收”
-
-### 选择 `PRD-standard`
-
-当需求满足以下特征时优先：
-
-- 常规产品功能
-- 需要完整描述流程和边界
-- 需要后续进入设计或开发
-- 涉及多个状态、字段、异常分支或多个页面区域
-
-### 选择 `PRD-ai-native`
-
-当需求满足以下特征时优先：
-
-- 人和 AI 明显共同完成任务
-- 需要写清人工动作与 AI 动作
-- 需要定义状态反馈、人工接管、闭环
-- 存在模型理解、生成、推荐、记忆、上下文回写或人工确认闭环
-
-### 判断当前阶段
-
-优先按下面规则判断：
-
-- `草稿`
-  - 仍在承接脑爆结果
-  - 存在较多待确认项
-  - 还不适合直接进入 UI
-- `讨论中`
-  - 主链路已经较清楚
-  - 仍有少量关键问题待确认
-  - 可以用来对齐，但还不是最终定稿
-- `已确认`
-  - 核心范围、主链路、关键输入输出与验收口径已基本确认
-  - 不存在阻断性待确认项
-  - 可以进入 UI / handoff / 开发承接
-
-## Input Expectations
-
-最好具备这些输入：
-
-- 需求描述
-- 目标用户
-- 当前问题
-- 成功标准
-- 已知边界
-- 是否涉及界面
-- 是否涉及 AI 协作
-- 如果项目里已有 `docs/PROJECT/` 总控上下文，优先把它当作输入约束之一
-
-如果输入缺失：
-
-- 先列出最少量澄清问题
-- 或基于明确假设先出第一版
-
-## Template Skeletons
-
-本 Skill 必须内置三类 PRD 的输出骨架。`~/.honeycomb-agent/templates/*` 是完整模板源，但输出时不要把完整模板机械展开；先按本节选择最小可用骨架，再只补与本需求相关的章节。
-
-### `PRD-lite` 骨架
-
-用于单点改动、局部体验、轻量规则。目标是让开发能实现和验收，不追求完整系统图。
-
-默认章节：
-
-1. `0. 文档信息`：功能名、需求类型、当前状态、关联模块、更新时间
-2. `1. 功能目标`：要解决的问题、成功标准、非目标
-3. `2. 用户场景`：只保留 1-2 个真实场景
-4. `3. 关键交互`：用表格写触发、系统响应、用户可见反馈、备注
-5. `4. 主流程概览`：3-5 步主链路；有必要时用 Mermaid 草稿
-6. `5. 验收标准`：可验证 checklist
-7. `6. 待确认事项`：只放真实未决问题
-
-Lite 输出压缩规则：
-
-- 如果只有一个核心场景，不要硬写场景 B。
-- 如果不是长期维护的复杂流程，不强制 drawio。
-- 涉及既有页面时，优先补“真实页面截图 / HTML mockup”而不是抽象流程图。
-- 文档目标控制在“开发 5 分钟能读完并开工”。
-
-### `PRD-standard` 骨架
-
-用于常规功能、列表/表单/面板、跨状态交互。目标是让开发、设计、测试都能对齐主流程和边界。
-
-默认章节：
-
-1. `0. 文档信息`
-2. `1. 功能目标`：背景、目标、非目标
-3. `2. 用户场景`：2-3 个关键场景
-4. `3. 全局结构图 / 核心流程图`：有多阶段或上下游依赖时使用 `*.drawio.svg`
-5. `4. 入口与触发`
-6. `5. 页面结构与信息布局`：ASCII 结构或真实页面截图入口
-7. `6. 数据与字段`
-8. `7. 交互逻辑`：正常流程、状态切换
-9. `8. 异常与边界`
-10. `9. 验收标准`
-11. `10. 待确认事项`
-12. `11. 关联产物`
-
-Standard 输出压缩规则：
-
-- 不要同时用“背景、目标、核心规则、页面行为、实现要求”重复讲同一条规则。
-- 如果页面变化能通过截图表达，不要用大量文字描述布局。
-- 如果只影响一个现有页面区域，结构图可以降级为 ASCII 或 HTML screenshot，不强制一体化总图。
-
-### `PRD-ai-native` 骨架
-
-用于 Agent、Workflow、对话式系统、推荐生成、上下文感知模块。目标是写清人和 AI 如何协作、状态如何反馈、结果如何闭环。
-
-默认章节：
-
-1. `0. 文档信息`
-2. `1. 模块定位`：一句话说明为什么存在、产出什么、驱动什么下游
-3. `2. 功能目标`：用户价值、AI 价值、非目标
-4. `3. 用户场景`
-5. `4. 双轨协作定义`：人工动作、AI 动作、边界
-6. `5. 图示总览`：复杂系统用一体化总图和核心流程图
-7. `6. 主链路与阶段流转`
-8. `7. 页面结构与信息布局`
-9. `8. AI 状态反馈设计`
-10. `9. 关键交互逻辑`
-11. `10. 数据闭环与记忆层`
-12. `11. 模块拆解与输入输出`
-13. `12. 人工接管机制`
-14. `13. 异常与边界`
-15. `14. 验收标准`
-16. `15. 待确认事项`
-17. `16. 关联产物`
-
-AI-Native 输出压缩规则：
-
-- 只有当“AI 的判断/生成/记忆/人工确认”是需求核心时才使用该模板。
-- 如果只是 AI 产品里的普通 UI 限制、弹窗、权限、配额、状态提示，不要升级成 AI-Native。
-- 先写一句话定位，再写主链路；不要从能力清单开始。
-- AI 状态表只保留本期真实会出现的状态。
-
-## Output Requirements
-
-输出必须做到：
-
-1. 结构与问题规模匹配
-2. 明确事实与假设
-3. 明确边界和不做项
-4. 给后续 UI 或 handoff 留出承接接口
-5. 如果是 `PRD-standard / PRD-ai-native`，把正式图示规则直接写进模板输出结构
-6. 如果项目提供了 `docs/templates-local/` 下的同名 PRD 模板，优先使用 local override
-7. 如果生成正式 `drawio.svg` 图示，必须避免“编辑视图”和“文档预览”指向不同内容：
-   - Markdown 只引用根目录 `*.drawio.svg`
-   - 不混用同名旧 `*.svg`
-   - 不手工拼接 `mxfile`
-8. 在文档顶部明确填写 `当前状态`，并让正文成熟度与该状态一致
-9. 如果仍存在 `3` 个及以上待确认项，或存在任何阻断性待确认项，下一步默认应是“继续深化 / 对齐 PRD”，而不是 `/generate-ui-mockup`
-10. 只有在 `当前状态=已确认`，且不存在阻断性待确认项时，才推荐 `/generate-ui-mockup`
-11. 如果项目缺少真实 `project-context`，要把它作为 PRD 质量风险显式提醒出来，但不要因此拒绝输出第一版
-12. 文档阶段判断只控制“下一步建议”和“待确认项处理”，不覆盖已有的正式图示要求
-13. 先提炼“本期只讲几件事”。如果核心只有 1-3 条，不要展开成大而全系统 PRD
-14. 面向开发 handoff 时，优先把规则落到“触发点、页面反馈、数据字段、异常、验收”，少写抽象价值判断
-15. 每个章节都要回答新的问题；如果只是复述上一节，合并或删除
-16. 涉及既有前端页面时，必须先定位真实项目、真实路由、真实组件，再写页面稿
-
-## Redundancy Control
-
-如果 PRD 初稿显得冗长，优先检查以下成因：
-
-1. `模板升级过度`：本来是单点交互，却套用了 Standard 或 AI-Native 的全部章节。
-2. `模板只有类型名，没有骨架`：只写了 `PRD-lite / standard / ai-native`，但没有说明每类应该有哪些章节，模型会把所有可能章节都补上。
-3. `背景和目标重复`：背景、目标、核心规则、页面行为、实现要求都在重复同一句业务规则。
-4. `没有锚定真实页面`：脱离当前项目界面后，容易写成泛化管理页、抽象列表页或错误产品页面。
-5. `图示规则压过了交互表达`：简单 UI 需求不需要先上 drawio，总是先问“开发看什么最直接”。
-6. `待确认项太多但仍写成定稿`：未决问题多时应标注讨论中，并把文档压成对齐稿。
-
-优化原则：
-
-- 开头用一句话写清“这期只解决什么”。
-- 对每条需求只保留一个主表达位置：规则在核心规则，页面表现放页面结构，验收放验收标准。
-- 删除不服务本期开发的行业背景、概念解释和长期规划。
-- 对简单限制类需求，优先使用 `PRD-lite + 真实页面截图 + 字段表 + 验收标准`。
-- 对已有项目，截图比抽象页面结构更能减少歧义；PRD 里要链接 HTML 和 PNG。
-
-## Existing Project Screenshot Rule
-
-当 PRD 涉及已有产品页面、弹窗、面板、按钮、表单或状态提示时，优先基于真实项目做可视化 handoff。
-
-执行顺序：
-
-1. 找到真实项目、真实 app、真实路由和真实组件。
-2. 阅读当前页面结构、样式类名、文案和已有交互，不要凭空画一个新页面。
-3. 判断本需求发生在哪个用户动作上，例如点击发送、提交表单、打开面板、选择资源。
-4. 在 PRD 目录补一个静态 HTML mockup，尽量复刻当前页面的关键结构。
-5. 用本地浏览器或截图工具生成 PNG，并在 PRD 中引用。
-6. 在文档中说明这张图展示的是哪个状态：默认态、拦截态、确认态、失败态或成功态。
-
-截图规则：
-
-- 弹窗类需求必须让背景页面仍可识别，避免开发误以为是独立页面。
-- 如果需求发生在按钮点击后，截图中要保留触发按钮或上下文区域。
-- 不要用完全无关的竞品页、抽象后台页或新造页面替代真实项目页面。
-- 如果真实项目无法启动，可以基于已读到的组件结构写静态 HTML，但必须在文档里说明是静态复刻。
-- HTML 和 PNG 建议与 PRD 放在同一目录，并在 `关联产物` 或静态稿章节直接链接。
-
-### 真实页面纠偏模式
-
-如果用户指出“不是这个页面 / 不是这种 HTML / 要基于真实项目展示”，立即按下面方式修正：
-
-1. 回到用户指定的项目和模块，重新确认 repo 边界。
-2. 找到真实页面的入口组件、触发按钮和状态来源。
-3. 把 PRD 的“页面结构”从抽象布局改成“真实页面 + 新增状态/弹窗”。
-4. 删除和错误页面相关的术语、入口、截图和流程。
-5. 保留用户真正关心的业务规则，并映射到真实动作上。
-
-示例抽象：
-
-- 错误方向：把“聊天页点击发送时的沙箱并发拦截”写成独立 Workspace 管理页或后台列表页。
-- 正确方向：在真实聊天页保留 sidebar、composer、发送按钮和当前空态/会话态，在发送触发点上叠加满额弹窗。
-- PRD 表达：写清“用户点击发送 -> 前端准备启动 sandbox -> 检查租户 active count -> 满额则弹窗并保留输入内容”。
-- 截图表达：背景页面必须能看出是原产品页面，弹窗只是当前流程的拦截状态。
-
-### 本轮优化总结模板
-
-当需要总结“基于 Skill 输出后又做了一轮优化”时，按这个结构输出：
-
-1. `原 Skill 的问题`：模板类型只有选择规则，缺少每类模板骨架；容易机械扩写。
-2. `初版 PRD 的偏差`：是否脱离真实项目页面、是否过重、是否重复讲规则。
-3. `本轮优化动作`：收敛为几条核心业务规则；补真实项目截图/HTML；删掉无关页面和冗余章节。
-4. `沉淀到 Skill 的规则`：三类模板骨架、冗余控制、真实项目截图规则。
-5. `后续验收`：用一个类似需求检查是否能自动选 Lite、自动要求真实页面截图、自动压缩文档。
-
-## Visual Rules
-
-### `PRD-lite`
-
-- Lite 不默认要求正式 drawio。
-- 如果本期是既有页面上的局部改动，优先产出 `HTML mockup + PNG screenshot`。
-- 如果有 3-5 步主链路，可用 Mermaid 草稿或文字步骤表达。
-- 不要为了视觉完整性引入和本期无关的管理页、设置页或长期规划页。
-
-### `PRD-standard`
-
-- 如果存在多阶段链路、模块依赖、上下游输入输出，正式稿应直接要求正式 `*.drawio.svg` 阅读终态
-- 正式图示必须是文件本体内嵌 Draw.io 数据、可直接打开编辑的 `*.drawio.svg`
-- Markdown 正式引用只指向根目录 `*.drawio.svg`，不要回退去引用同名普通 `*.svg`
-- 同目录 `src/*.drawio` 只作为可选备份或迁移图源
-- 默认优先读取 `references/drawio-templates.md` 或项目本地 `资产/架构图/_模板/src/` 骨架，不从空白画布起手
-- 系统级 PRD 优先一张一体化架构总图 + 一张核心流程图
-- 架构总图默认使用横向分层 / 泳道式 board，禁止脑图、放射状、树状发散布局
-- 核心流程图默认横向主线，只保留主步骤和关键分支
-- 总图只承载主链路、输出对象、共享支撑层，不承载所有分支细节
-- 主链路节点优先控制在 `6-8` 个，最多不超过 `10` 个
-- 如果图经过文案压缩和结构压缩后仍超过 `2` 屏高度，必须拆图，不继续硬压
-- 同时为后续 `UI-spec-template` 预留接口
-
-### `PRD-ai-native`
-
-- 默认要求一体化总图 + 核心流程图
-- 正式图示必须是文件本体内嵌 Draw.io 数据、可直接打开编辑的 `*.drawio.svg`
-- Markdown 正式引用只指向根目录 `*.drawio.svg`，不要回退去引用同名普通 `*.svg`
-- 同目录 `src/*.drawio` 只作为可选备份或迁移图源
-- 默认优先读取 `references/drawio-templates.md` 或项目本地 `资产/架构图/_模板/src/` 骨架，不从空白画布起手
-- 默认要求模块拆解与输入输出
-- 默认要求人工动作 / AI 动作 / 状态反馈 / 闭环一起成套表达
-- 架构总图默认使用横向分层 / 泳道式 board，禁止脑图、放射状、树状发散布局
-- 核心流程图默认横向主线，只保留 `6-8` 个核心节点
-- 总图只承载主链路、输出对象、共享支撑层，不承载所有分支细节
-- 主流程优先保留 `6-8` 个核心节点
-- 澄清 / 降级 / 记忆写入 / 人工确认等深分支默认拆成子流程图
-- 如果图经过文案压缩和结构压缩后仍超过 `2` 屏高度，必须拆图，不继续硬压
-- 如果鼠标悬浮缩略图还是旧图，优先按编辑器缓存处理，不要直接判定文件失效
-
-## Template References
-
-优先参考：
-
-- `references/drawio-templates.md`
-- `scripts/validate_drawio.py`
-- `~/.honeycomb-agent/templates/PRD-lite.md`
-- `~/.honeycomb-agent/templates/PRD-standard.md`
-- `~/.honeycomb-agent/templates/PRD-ai-native.md`
-- `~/.honeycomb-agent/templates/examples/PRD-ai-native-example.md`
-- `资产/架构图/_模板/src/模块一体化架构总图.drawio`
-- `资产/架构图/_模板/src/模块核心流程图.drawio`
-
-## Superpowers Writing-Plans Handoff
-
-这个 Skill 与 superpowers 的关系是“产品需求输入 -> implementation plan”的上游衔接，不替代开发流。
+## Downstream Handoff
 
 只有 PRD 满足以下条件，才建议进入 superpowers `writing-plans`：
 
@@ -404,39 +162,46 @@ AI-Native 输出压缩规则：
 - 验收标准能被测试、人工检查或通过具体 artifact 验证。
 - 阻断性待确认项已经关闭；若仍有假设，必须明确写成 implementation plan 的前置假设。
 
-如果不满足这些条件，下一步应继续深化 PRD、补 handoff 或做 `prd-review`，不要把模糊需求交给开发计划 Skill。
+如果不满足这些条件，下一步应继续深化 PRD、补 handoff 或做 `prd-review`。
 
 ## Definition of Done
 
 完成标准是：
 
-- 已选定合适的 PRD 类型
-- 当前状态明确
-- 待确认项和假设没有混在一起
-- 图示与 UI 承接规则已写进正文
-- 如果本轮生成 Draw.io 图示，`.drawio` 已通过 `scripts/validate_drawio.py`，或 `*.drawio.svg` 的可编辑性验证限制已明确说明
-- 下一步建议不会把草稿误推成定稿
+- 已选定且只加载一个 PRD 类型模板。
+- 当前状态明确，正文成熟度与状态一致。
+- 待确认项和假设没有混在一起。
+- mockup / 图示 / handoff 附加资产只在需要时启用。
+- 如果本轮生成 Draw.io 图示，`.drawio` 已验证或验证限制已明确说明。
+- 如果本轮写入 PRD 文件，已运行 `check_prd_shape.py` 或说明未运行原因。
+- 下一步建议不会把草稿误推成定稿。
 
 ## Evaluation
 
 Smoke prompts:
 
-- 单点改动，是否会选 `PRD-lite`
-- AI 协作需求，是否会选 `PRD-ai-native`
-- 复杂流程需求，是否会保留 `当前状态` 和待确认项
+- 单点改动，是否只加载 `PRD-lite` 并保持 5 分钟可读。
+- 常规跨状态功能，是否加载 `PRD-standard`，但不默认写 TS/JSON schema。
+- AI 协作需求，是否加载 `PRD-ai-native` 并写清人工动作、AI 动作、状态反馈和闭环。
 - `帮我写一个 PRD，并补一张可编辑 Draw.io 核心流程图。`
+- `回答后下一步行动建议 PRD 初版`，应输出产品规则和 UX 行为，不输出实现 schema。
 
 Non-trigger prompts:
 
-- 直接让它改代码
-- 只让它画 UI
-- 只让它做目录治理
+- 直接让它改代码。
+- 只让它画正式 UI mockup。
+- 只做目录治理。
+- 已有 PRD 要找问题，应转 `prd-review`。
 
 Resources:
 
-- `~/.honeycomb-agent/templates/PRD-lite.md`
-- `~/.honeycomb-agent/templates/PRD-standard.md`
-- `~/.honeycomb-agent/templates/PRD-ai-native.md`
-- `~/.honeycomb-agent/diagram-templates/`
+- `references/template-selection.md`
+- `references/templates/prd-lite.md`
+- `references/templates/prd-standard.md`
+- `references/templates/prd-ai-native.md`
+- `references/mockup-handoff.md`
 - `references/drawio-templates.md`
+- `references/handoff-appendix.md`
+- `references/prd-shape-gates.md`
+- `scripts/check_prd_shape.py`
 - `scripts/validate_drawio.py`
