@@ -56,10 +56,22 @@
 
 只放真实未决问题。不要把假设写成已确认需求。
 
+如果用户说明 PRD 会上传钉钉或作为线上发布版，本节默认不进入正文；改在最终说明里列“发布前需确认”，或放入标注为 `本地草稿，不上传正文` 的附录。
+
 ## Optional Sections
 
 - 涉及既有页面时，加载 `references/mockup-handoff.md`，补真实页面截图或 HTML mockup 承接。
+- 涉及 mock 截图时，截图说明必须贴近对应的页面状态或交互章节，不生成底部“关联产物”聚合区作为默认阅读入口。
 - 用户明确要求开发字段时，加载 `references/handoff-appendix.md`，把字段放在附录。
+
+## Publish-ready Rules
+
+当用户提到“上传钉钉 / 发给开发在线看 / 发布版 PRD”：
+
+- 文档信息表不写 `关联 mock`、本地 HTML、PNG、`file://`、`localhost` 或 `dingtalk-assets` 路径。
+- 截图放在解释它的对应章节下。
+- 默认不输出“关联产物”章节。
+- 默认不输出“待确认事项”正文；仍未确认的内容放到最终回复或本地草稿附录。
 
 ## Prohibited In Main Body
 
@@ -71,4 +83,3 @@
 - adapter 字段。
 - hidden metadata 结构。
 - capability registry。
-

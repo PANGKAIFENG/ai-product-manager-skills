@@ -25,7 +25,7 @@ description: >
 1. 先判断上游输入是否足够成熟。
 2. 再选择 `PRD-lite / PRD-standard / PRD-ai-native` 其中一个模板资产。
 3. 只加载本轮需要的附加资产，例如 mockup handoff、Draw.io 图示或开发 handoff。
-4. 写出与当前阶段一致的 PRD，并保留明确的待确认项。
+4. 写出与当前阶段一致的 PRD，并区分本地草稿内容和可发布正文。
 5. 生成文件时尽量运行 PRD shape 自检，避免把初版 PRD 写成实现方案。
 
 ## Upstream Boundaries
@@ -70,6 +70,7 @@ description: >
 - 是否涉及既有界面、截图、HTML mockup 或正式 UI mockup。
 - 是否涉及 AI 协作、模型生成、推荐、记忆、人工确认或人工接管。
 - 是否明确要求开发 handoff、接口字段、协议 schema 或实现计划。
+- 是否会发布到钉钉或其他在线文档；若会发布，默认按“发布版正文”组织，不把本地路径当成正文信息。
 
 如果输入缺失，可以基于明确假设先出第一版；不要把缺失业务判断伪装成已确认事实。
 
@@ -105,6 +106,8 @@ description: >
 5. 如果涉及既有前端页面，先定位真实项目、真实路由和真实组件，再写页面稿。
 6. 如果只是产品初版，不在正文写 TypeScript interface、JSON schema、endpoint、adapter、metadata 或 capability 字段。
 7. 如果用户明确要求 handoff，把字段和协议放到“开发 handoff 附录”，不要污染产品主链路。
+8. 如果涉及 mock、HTML 预览或截图，把截图说明放到对应功能/页面/状态章节下；不要把开发点击无效的本地 mock 链接放进文档信息表或正文主链路。
+9. 若用户准备把 PRD 发到钉钉，正文默认不输出“关联产物”聚合区和“待确认事项”章节；待确认项只保留在本地草稿、最终说明或明确标注的发布前检查清单中。
 
 ### 5. Diagram Mode
 
@@ -126,8 +129,19 @@ description: >
 - 页面范围、触发入口、关键状态、用户可见反馈。
 - 需要截图、静态 HTML mockup、真实页面截图，还是转交正式 UI mockup。
 - mockup 展示哪个状态：默认态、拦截态、确认态、失败态或成功态。
+- 截图应该插入哪个 PRD 功能模块；同一 mock 可以复用，但不要在底部“关联产物”集中堆图。
 
-### 7. Self-check
+### 7. Publish-ready PRD Mode
+
+当用户明确提到“上传钉钉 / 发到钉钉文档 / 发布给开发看 / 线上 PRD”时，把 PRD 当作发布版写：
+
+1. 文档信息表只放功能名、状态、模块、版本等可读信息，不放本地 mock URL、`.html`、`.png` 或 `dingtalk-assets` 路径。
+2. 页面或 mock 截图应嵌入对应章节，例如输入框状态放在输入框章节、任务卡状态放在任务卡章节、取消逻辑放在取消章节。
+3. “待确认事项”默认不进入发布版正文；确需保留时，改写成“发布前仍需确认”，并在最终说明中提示不要直接上传。
+4. “关联产物”默认不作为发布版正文模块；本地草稿可以保留，但要标记为 `本地草稿，不上传钉钉正文`。
+5. 如果 PRD 后续交给 `dingtalk-prd-publisher`，最终说明提醒它需要做钉钉回读和浏览器可见性验证。
+
+### 8. Self-check
 
 如果本轮把 PRD 写入 Markdown 文件，尽量运行：
 
@@ -139,6 +153,12 @@ python3 scripts/check_prd_shape.py <prd.md> --type <lite|standard|ai-native>
 
 ```bash
 python3 scripts/check_prd_shape.py <prd.md> --type <lite|standard|ai-native> --allow-handoff
+```
+
+当用户说明 PRD 要上传钉钉或发布到在线文档时增加：
+
+```bash
+python3 scripts/check_prd_shape.py <prd.md> --type <lite|standard|ai-native> --publish-ready
 ```
 
 检查失败不等于不能交付，但最终说明必须解释哪些 warning 是故意保留的，哪些需要修订。
@@ -172,6 +192,7 @@ python3 scripts/check_prd_shape.py <prd.md> --type <lite|standard|ai-native> --a
 - 当前状态明确，正文成熟度与状态一致。
 - 待确认项和假设没有混在一起。
 - mockup / 图示 / handoff 附加资产只在需要时启用。
+- 涉及发布到钉钉或在线文档时，本地 mock 链接、截图路径、关联产物和待确认项没有污染发布版正文。
 - 如果本轮生成 Draw.io 图示，`.drawio` 已验证或验证限制已明确说明。
 - 如果本轮写入 PRD 文件，已运行 `check_prd_shape.py` 或说明未运行原因。
 - 下一步建议不会把草稿误推成定稿。
@@ -185,6 +206,7 @@ Smoke prompts:
 - AI 协作需求，是否加载 `PRD-ai-native` 并写清人工动作、AI 动作、状态反馈和闭环。
 - `帮我写一个 PRD，并补一张可编辑 Draw.io 核心流程图。`
 - `回答后下一步行动建议 PRD 初版`，应输出产品规则和 UX 行为，不输出实现 schema。
+- `这份 PRD 后面要上传钉钉，mock 截图直接放到对应模块里。`，应启用发布版正文规则，不输出本地 mock 链接、关联产物聚合区或待确认事项正文。
 
 Non-trigger prompts:
 

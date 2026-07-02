@@ -20,6 +20,15 @@ OVER_TECH_PATTERNS = [
     ("capability_registry", re.compile(r"\b(requiredCapabilities|capability registry|action_template_registry|能力注册)\b", re.I)),
 ]
 
+PUBLISH_CONTAMINATION_PATTERNS = [
+    ("local_html_path", re.compile(r"(?<![\w-])[\w./~ -]+\.html\b|file://|localhost|127\.0\.0\.1", re.I)),
+    ("local_image_path", re.compile(r"(?<![\w-])[\w./~ -]+\.(?:png|jpg|jpeg|webp)\b", re.I)),
+    ("dingtalk_assets_path", re.compile(r"dingtalk-assets|\.dingtalk-assets", re.I)),
+    ("artifact_section", re.compile(r"^#+\s*(?:关联产物|本地草稿附录)", re.M)),
+    ("open_questions_section", re.compile(r"^#+\s*\d*\.?\s*待确认事项", re.M)),
+    ("mock_link_field", re.compile(r"关联\s*mock|关联\s*Mock|Look up|lookup", re.I)),
+]
+
 REQUIRED_BY_TYPE = {
     "lite": ["功能目标", "用户场景", "关键交互", "验收标准", "待确认"],
     "standard": ["功能目标", "用户场景", "入口", "核心对象", "交互逻辑", "异常", "验收标准", "待确认"],
@@ -46,6 +55,7 @@ def main() -> int:
     parser.add_argument("path", help="Path to a Markdown PRD")
     parser.add_argument("--type", choices=sorted(REQUIRED_BY_TYPE), default="standard", help="Expected PRD type")
     parser.add_argument("--allow-handoff", action="store_true", help="Allow technical schema details in the document")
+    parser.add_argument("--publish-ready", action="store_true", help="Check for online-publishing contamination such as local mock links")
     args = parser.parse_args()
 
     path = Path(args.path)
@@ -62,14 +72,21 @@ def main() -> int:
             warnings.append(f"over_technical:{name}")
 
     for required in REQUIRED_BY_TYPE[args.type]:
+        if args.publish_ready and required == "待确认":
+            continue
         if required not in text:
             warnings.append(f"missing_expected_section:{required}")
 
     if "本期只解决" not in text and "本期只讲" not in text:
         warnings.append("missing_scope_sentence")
 
-    if "待确认" not in text:
+    if not args.publish_ready and "待确认" not in text:
         warnings.append("missing_open_questions")
+
+    if args.publish_ready:
+        for name, pattern in PUBLISH_CONTAMINATION_PATTERNS:
+            if pattern.search(body_to_check):
+                warnings.append(f"publish_contamination:{name}")
 
     if warnings:
         print("PRD shape warnings:")
@@ -83,4 +100,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

@@ -18,7 +18,12 @@
       "prompt": "帮我写一个 PRD，并补一张可编辑 Draw.io 核心流程图，描述用户提交需求后 Agent 澄清、生成、人工确认、失败回退的链路。",
       "expected_output": "选择 PRD-ai-native，加载 drawio templates，写清人/AI协作、状态反馈、人工确认和失败回退，并要求验证 .drawio 可编辑性。",
       "files": []
+    },
+    {
+      "id": "publish-ready-mock-screenshots-inline",
+      "prompt": "帮我写一个 PRD，后面要上传钉钉。这个需求有两个 HTML mock：选择文件后的输入框状态、发送后的任务卡状态。mock 截图要放到对应模块里，别放开发点不开的本地链接。",
+      "expected_output": "启用发布版正文规则，选择合适 PRD 模板，加载 mockup handoff；文档信息表不放本地 mock 链接，截图占位嵌入输入框状态和任务卡状态章节，默认不输出关联产物聚合区或待确认事项正文。",
+      "files": []
     }
   ]
 }
-
