@@ -253,6 +253,188 @@
           "text": "Returns one justified terminal state plus unresolved security risks and avoids turning the research output into a final architecture decision."
         }
       ]
+    },
+    {
+      "id": "routing-general-research-dashboard-html",
+      "type": "routing",
+      "prompt": "把这份关于 AI 产品 tracing 健康度的专题研究做成一个给领导、产品和研发一起看的本地 HTML 看板，需要结论、证据、置信度和下一步行动。",
+      "files": [],
+      "expected_output": "Routes to Normal Research or Application with the independent research-dashboard-html artifact mode, not Lightweight Concept Lens.",
+      "assertions": [
+        {
+          "text": "Selects Normal Research or Application and explicitly selects research-dashboard-html as the output artifact mode."
+        },
+        {
+          "text": "Does not route to Lightweight Concept Lens merely because the request contains HTML or dashboard."
+        }
+      ]
+    },
+    {
+      "id": "routing-concept-lens-dashboard-compatible",
+      "type": "regression",
+      "prompt": "研究一下 Agent Skill 这个概念的源流、语义演化和范式阶段，并输出一个本地 HTML 概念看板。",
+      "files": [],
+      "expected_output": "Preserves the Concept Lens route and selects concept-dashboard-html with the Concept Lens contract.",
+      "assertions": [
+        {
+          "text": "Selects Lightweight Concept Lens and concept-dashboard-html."
+        },
+        {
+          "text": "Uses the Concept Lens contract and does not select the general research-dashboard contract; if factuality requirements block artifact generation, it preserves that boundary instead of inventing evidence."
+        }
+      ]
+    },
+    {
+      "id": "routing-dashboard-does-not-override-decision-owner",
+      "type": "non-trigger",
+      "prompt": "把候选产品做成 HTML 看板，并最终选一个，说明为什么排除其他方案。",
+      "files": [],
+      "expected_output": "Hands final recommendation and exclusion logic to decision-research; the requested artifact does not change capability ownership.",
+      "assertions": [
+        {
+          "text": "Routes the final selection and exclusion decision to decision-research."
+        },
+        {
+          "text": "Does not claim final decision authority because the requested output is a dashboard."
+        }
+      ]
+    },
+    {
+      "id": "general-dashboard-artifact-contract",
+      "type": "capability",
+      "prompt": "基于附件中已经充分的官方材料，完成范围内比较，并输出一个给产品和研发评审使用的本地 HTML research dashboard。不要联网，不要重新扩源。",
+      "files": [
+        "evals/fixtures/boundaries/authoritative-sufficient-pack.md"
+      ],
+      "expected_output": "Produces dashboard.html and summary.md under the general dashboard contract, validates the HTML, and preserves evidence strength, confidence, terminal status, residual gaps, and role-specific interpretation.",
+      "assertions": [
+        {
+          "text": "Creates both dashboard.html and summary.md and reports their paths."
+        },
+        {
+          "text": "The HTML uses data-research-dashboard and all six required child markers, with no data-concept-lens root."
+        },
+        {
+          "text": "The first viewport exposes conclusion, audiences, confidence or source status, unique terminal status, and navigation."
+        },
+        {
+          "text": "The output preserves evidence levels, residual gaps or an explicit none state, next actions, and visible source paths."
+        },
+        {
+          "text": "Runs validate_html_artifact.py successfully and does not acquire additional sources."
+        }
+      ]
+    },
+    {
+      "id": "iterative-loop-survives-dashboard-rendering",
+      "type": "regression",
+      "prompt": "附件是一篇转述 Anthropic Agent Skill 实践的公众号文章和冻结离线目录。按完整研究循环研究最佳实践，最后再输出给团队负责人和 Skill 作者看的 HTML research dashboard。不要联网。",
+      "files": [
+        "evals/fixtures/anthropic-skill-loop/seed-wechat.md",
+        "evals/fixtures/anthropic-skill-loop/catalog.json"
+      ],
+      "expected_output": "Completes the evidence-gap-driven loop before rendering the dashboard and preserves framework change, evidence lineage, unique terminal status, and residual gaps in both artifacts.",
+      "assertions": [
+        {
+          "text": "Creates Framework V0, a prioritized Gap/NBE path, and at least one explicit Framework Change Event before rendering the dashboard."
+        },
+        {
+          "text": "Returns exactly one terminal status based on claim coverage, contradictions, marginal information gain, and residual gaps."
+        },
+        {
+          "text": "The dashboard and summary project the latest framework, evidence roles, material changes, uncertainty, residual gaps, and next actions rather than summarizing only the seed article."
+        },
+        {
+          "text": "The HTML passes the general dashboard validator and exposes leader and Skill-author interpretations without changing evidence strength."
+        }
+      ]
+    },
+    {
+      "id": "dashboard-not-created-when-not-requested",
+      "type": "negative",
+      "prompt": "用附件中的官方材料，200 字内解释 Responses API 的 input items 是什么。只在聊天里回答，不要创建文件。",
+      "files": [
+        "evals/fixtures/boundaries/openai-input-items.md"
+      ],
+      "expected_output": "Keeps the run as a compact chat-brief and creates no HTML or Markdown files.",
+      "assertions": [
+        {
+          "text": "Answers directly in chat and does not create dashboard.html, summary.md, or a Research Project."
+        },
+        {
+          "text": "Does not upgrade the task to L3/L4 or expose the full iterative control plane because dashboard capability exists."
+        }
+      ]
+    },
+    {
+      "id": "dashboard-transfer-mcp-auth-security",
+      "type": "transfer",
+      "prompt": "附件是一篇 MCP 鉴权二手博客和冻结离线目录。研究 MCP 服务鉴权安全边界，并输出给研发负责人和产品负责人的本地 HTML research dashboard。只使用离线包，不联网，不执行代码。",
+      "files": [
+        "evals/fixtures/mcp-auth-transfer/seed-blog.md",
+        "evals/fixtures/mcp-auth-transfer/catalog.json"
+      ],
+      "expected_output": "Transfers the iterative and Dashboard contracts to security research, with persona-specific implications, threat-model evidence map, residual risks, and no final architecture decision claim.",
+      "assertions": [
+        {
+          "text": "Separates local stdio and remote transport threat models and ties primary, implementation, independent, and counterexample evidence to named gaps."
+        },
+        {
+          "text": "Creates dashboard.html and summary.md with product and engineering persona sections, evidence map, confidence, residual risks, next actions, and sources."
+        },
+        {
+          "text": "Returns one justified terminal status and does not present the research dashboard as a final architecture decision."
+        },
+        {
+          "text": "The HTML passes validate_html_artifact.py and uses only the general research dashboard root."
+        }
+      ]
+    },
+    {
+      "id": "trigger-generic-research-dashboard",
+      "type": "trigger",
+      "prompt": "把附件做成给领导、产品和研发一起看的本地 HTML research dashboard，展示结论、证据、置信度和下一步。",
+      "files": [],
+      "should_trigger": true,
+      "expected_route": "research-topic-compiler",
+      "expected_output": "Discovers research-topic-compiler from catalog metadata without preselection, then uses the general research-dashboard-html artifact path.",
+      "assertions": [
+        {
+          "text": "Selects research-topic-compiler from metadata without the Skill being preloaded or named in the prompt."
+        }
+      ]
+    },
+    {
+      "id": "non-trigger-ui-only-dashboard-implementation",
+      "type": "trigger-negative",
+      "prompt": "把现有页面改成响应式 HTML dashboard，不需要做研究，只修布局和交互。",
+      "files": [],
+      "should_trigger": false,
+      "expected_route": "frontend-design",
+      "expected_output": "Does not select research-topic-compiler because the task is UI implementation with no research intent.",
+      "assertions": [
+        {
+          "text": "Does not select research-topic-compiler and routes to frontend implementation tooling instead."
+        }
+      ]
+    },
+    {
+      "id": "dashboard-partial-state-requires-explicit-acceptance",
+      "type": "boundary-regression",
+      "prompt": "请研究我们私有客户访谈里的 AI Agent 采购阻力，并输出 HTML research dashboard。当前消息没有附访谈材料，也没有授权访问客户资料；不要联网，也不要向我追问，直接处理当前可用状态。",
+      "files": [],
+      "expected_output": "Returns a single blocked-authorization or partial-access state and does not render a dashboard from the request text alone because no evidence-bearing framework or claim-to-evidence link exists.",
+      "assertions": [
+        {
+          "text": "Returns exactly one justified blocked-authorization or partial-access terminal status and identifies the missing authorized evidence."
+        },
+        {
+          "text": "Does not create dashboard.html or summary.md because the minimum renderable research state is absent and the user did not accept a partial artifact after limitations were disclosed."
+        },
+        {
+          "text": "Does not restate the user request as evidence, fabricate customer findings, or treat the requested HTML artifact as authority to bypass access controls."
+        }
+      ]
     }
   ]
 }

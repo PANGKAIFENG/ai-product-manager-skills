@@ -20,14 +20,29 @@ Use this reference before loading heavier research assets. The goal is to select
 - Use `ai-collaboration-calibration` when the topic is still a fuzzy feeling, raw solution, or unclear problem.
 - Use `prd-architect` when the next deliverable is a PRD, not a research artifact.
 
+## Output Artifact Selection
+
+Choose the artifact after choosing the research mode and depth:
+
+| Artifact | Route |
+| --- | --- |
+| `chat-brief` | Direct answer; default for L1 and many L2 runs. |
+| `research-project-md` | Obsidian or Markdown research asset. |
+| `concept-dashboard-html` | Concept Lens HTML only. |
+| `research-dashboard-html` | Normal Research/Application HTML for general or cross-functional readers. |
+
+An HTML request changes the artifact, not the research owner or evidence gate. Do not route a general Dashboard request into Concept Lens solely because it says "HTML" or "dashboard".
+
 ## Minimal Loading Rule
 
 Load only the references needed for the selected mode:
 
 - Normal: depth rubric, source quality, report standards.
+- Normal + research dashboard: the Normal references plus research-dashboard output contract after the terminal gate.
 - Concept Lens: concept-lens source, paradigm, output contract, design quality if HTML.
 - Learning Pack: learning-pack standards.
 - Application: applied-business-research contract and post-research exits.
+- Application + research dashboard: the Application references plus research-dashboard output contract after the terminal gate.
 - Radar: radar loop contract.
 - Product Candidate: product-decision mode, candidate schema, handoff, taxonomy translation when needed.
 

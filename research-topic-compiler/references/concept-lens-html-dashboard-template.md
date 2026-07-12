@@ -80,7 +80,7 @@ Sources:
 
 ## Design Rules
 
-- Read `design-quality.md` before composing visual style.
+- Read `concept-lens-design-quality.md` before composing visual style.
 - Use a restrained professional interface, not a marketing landing page, portfolio, or decorative artifact.
 - Avoid decorative gradient blobs, oversized hero sections, generic glassmorphism, nested cards, and repeated three-card feature rows.
 - Keep text readable on mobile and desktop; button labels and tab labels must not wrap awkwardly or hide meaning.

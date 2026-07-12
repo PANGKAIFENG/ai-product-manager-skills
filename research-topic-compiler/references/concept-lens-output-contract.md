@@ -39,7 +39,7 @@ The final chat response can summarize the same content briefly, but the file sho
 - Include a debt detector section.
 - Include a visible sources section.
 - Include validation markers required by `scripts/validate_html_artifact.py`.
-- Pass the visual preflight in `references/design-quality.md`.
+- Pass the visual preflight in `references/concept-lens-design-quality.md`.
 
 Required markers:
 
