@@ -35,6 +35,35 @@ Default L3+ and deep research projects use `00-09` when the depth and evidence j
 | `08_最佳实践与应用模板.md` | Reusable practices and persona-adaptive templates for applying the research |
 | `09_更新日志.md` | L5 radar updates and changes over time |
 
+## Iterative Research State Mapping
+
+For L3+ Normal Research/Application, map logical loop state onto existing files instead of creating a second parallel project structure:
+
+| File | Iterative state |
+| --- | --- |
+| `00_研究定义.md` | Run, Framework V0, Evidence Contract, scope, effort budget, authorization |
+| `01_问题清单.md` | Framework Map, Claim Ledger, ranked Gap Ledger |
+| `02_证据与卡片.md` | Source Ledger, Evidence Ledger, Source Graph and lineage roots |
+| `03_阶段结论.md` | Current Framework version, Assumption Ledger, Framework Change Log |
+| `04_下一步.md` | Ranked NBE queue, blocked actions, saturation decision, next exact action |
+| `05_研究报告.md` | Synthesis, unique terminal status, stop reason, unresolved questions, residual risks |
+| `09_更新日志.md` | L5 deltas, `No change` events and cycle checkpoints |
+
+These are responsibilities, not mandatory headings. Add the minimum state required by depth and preserve the project's existing organization. L1/L2 remain chat-only or use an existing compact note unless the user explicitly asks for persistence.
+
+## Checkpoint Contract
+
+Before pausing an L3+ run or handing it to another session, preserve:
+
+- `framework_version` and last completed loop state
+- current Gap and ranked NBE queue
+- completed and blocked actions
+- `next_exact_action`
+- relevant artifact paths
+- access, budget or authorization condition required to resume
+
+Resume by canonical source identity and lineage, not by title. Do not overwrite an older conclusion merely because the new run is later; use an evidence-backed Change Event and the merge rules in `cross-session-handoff.md`.
+
 ## Optional Independent Learning Files
 
 Do not create these by default. Suggest them only when one condition is true:
@@ -132,5 +161,6 @@ Before writing:
 - Check whether existing files contain user edits.
 - Preserve unrelated content and append or integrate carefully.
 - If replacing a prior conclusion, mark it as an update with date and reason.
+- For Normal Research/Application, include the evidence IDs and Change Event that justify replacement; recency alone is not a reason.
 - For L4/L5 or broad edits, get explicit confirmation unless the user already requested implementation.
 - Do not create automation from L5 unless the user explicitly asks to create or schedule it.

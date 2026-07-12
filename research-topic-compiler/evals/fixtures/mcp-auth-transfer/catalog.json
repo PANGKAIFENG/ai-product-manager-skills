@@ -1,0 +1,46 @@
+{
+  "fixture_version": "2026-07-12-v1",
+  "network_allowed": false,
+  "sources": [
+    {
+      "id": "mcp-spec-auth",
+      "title": "MCP authorization specification (frozen excerpt)",
+      "source_type": "official specification",
+      "evidence_role": "Primary",
+      "lineage_root": "model-context-protocol-spec",
+      "independence_group": "mcp-spec",
+      "candidate_for": ["C1-transport-auth-boundary"],
+      "excerpt_file": "sources/mcp-spec-auth.md"
+    },
+    {
+      "id": "mcp-sdk-implementation",
+      "title": "MCP SDK transport examples (frozen excerpt)",
+      "source_type": "canonical implementation",
+      "evidence_role": "Canonical",
+      "lineage_root": "mcp-sdk",
+      "independence_group": "mcp-project",
+      "candidate_for": ["G1-observable-implementation"],
+      "excerpt_file": "sources/mcp-sdk-implementation.md"
+    },
+    {
+      "id": "mcp-independent-security",
+      "title": "Independent MCP threat-model review (frozen excerpt)",
+      "source_type": "independent security review",
+      "evidence_role": "Independent validation",
+      "lineage_root": "security-lab-mcp-review",
+      "independence_group": "security-lab",
+      "candidate_for": ["G2-threat-model-validation"],
+      "excerpt_file": "sources/mcp-independent-security.md"
+    },
+    {
+      "id": "mcp-counterexample",
+      "title": "Local stdio deployment incident note (frozen excerpt)",
+      "source_type": "implementation incident",
+      "evidence_role": "Counterexample",
+      "lineage_root": "local-mcp-incident",
+      "independence_group": "local-operator",
+      "candidate_for": ["G3-local-boundary-counterexample"],
+      "excerpt_file": "sources/mcp-counterexample.md"
+    }
+  ]
+}

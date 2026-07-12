@@ -48,6 +48,20 @@ Depth is not only source count. It is whether the output helps the user understa
 
 These are defaults, not quotas. Stop when evidence converges, the marginal source adds no new insight, or channel quality is too low.
 
+## Iterative Loop Trimming
+
+Normal Research 和 Application 都遵循 `FRAME -> GAP -> NBE -> ACQUIRE -> EVALUATE -> UPDATE -> SATURATION`，但深度决定状态规模和持久化，不允许为了展示流程把 L1/L2 升级成研究工程。
+
+| Level | Loop scope | Acquisition cap | Persistence | Stop bar |
+| --- | --- | --- | --- | --- |
+| L1 | One core Claim/Gap, one ephemeral compressed cycle | Usually 0-1; no expansion when supplied authority is sufficient | None | Core question answered with source, confidence and limitation |
+| L2 | 3-5 framework nodes | At most 2 NBE acquisition actions by default | Inline; no full Source Graph | Core map is fit-for-purpose; unresolved conflict triggers upgrade advice |
+| L3 | All Must Claims carry status | Gap-driven, within agreed budget | `00-05`; compact Claim/Gap/Change state | Must Claims meet contract; secondary core Claims have origin-trace attempt |
+| L4 | Full Claim/Evidence/Source Graph and Change Log | Gap-driven; include independent validation and counterexample search | `00-08` plus Checkpoint as needed | Formal completion gate; saturated only after two independent-lineage low-yield actions |
+| L5 | First run establishes L4 baseline; later runs process deltas | Watchlist and open-Gap driven | `00-09`, including `No change` | Pause after agreed low-yield cycles; automation requires explicit authorization |
+
+Sample counts above are planning budgets only. Do not continue acquiring merely to hit them, and do not stop merely because they were reached.
+
 ## Confirmation Gates
 
 Ask for explicit confirmation before continuing when:
@@ -65,3 +79,5 @@ Ask for explicit confirmation before continuing when:
 - `L3`: `00_研究定义` to `05_研究报告`, with topic map, mechanism explanation, learning route, and minimal practice task.
 - `L4`: `00-08`, cross-channel comparison, case comparison, transfer reasoning, judgment framework, boundaries, counterexamples, staged path, and reusable application template.
 - `L5`: `00-09`, watchlist, refresh cadence, stable/candidate/pending/discarded conclusion states, and automation proposal only if requested.
+
+For Normal Research/Application, apply the unique terminal order from `iterative-research-loop.md`: `blocked-authorization`, `partial-access`, `partial-budget`, `escalated`, `complete-saturated`, then `complete-fit-for-purpose`. A `complete-*` result additionally requires all Must Claims to meet or be explicitly downgraded against the Evidence Contract, no untreated critical contradiction, and no residual Gap that blocks the user's next action.

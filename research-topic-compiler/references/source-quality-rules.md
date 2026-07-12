@@ -1,80 +1,147 @@
-# Source Quality Rules
+# Source Quality and Evidence Lineage Rules
 
-Use these rules when building the evidence matrix and writing conclusions.
+Use these rules when identifying Sources, extracting Evidence, linking Claims, evaluating independence, and writing conclusions.
+
+## Keep Source, Evidence, and Claim Separate
+
+These objects are related but not interchangeable:
+
+- **Source**: the artifact that was retrieved, such as a document, repository, issue, video, dataset, or local file. Store identity, owner, provenance, access, and quality metadata here.
+- **Evidence**: a locatable excerpt, observation, code location, result, or data point extracted from one Source. Store directness, freshness, limitations, and its relationship to a Claim here.
+- **Claim**: a falsifiable statement in the research Framework. A Claim may have multiple supporting, challenging, or contextual Evidence items.
+
+Use the explicit relationship:
+
+```text
+Source ─extracts→ Evidence ─supports/challenges/context_for→ Claim
+```
+
+Do not treat a URL, article title, source summary, search snippet, or the model's interpretation as Evidence by itself. Do not let several Evidence excerpts from one Source appear as several independent Sources.
+
+Minimum records:
+
+```markdown
+Source: source_id, title, owner, URL/path, source_type, primary/secondary,
+        evidence_level, lineage_root, independence_group, access_status,
+        published/updated_at, accessed_at
+Evidence: evidence_id, source_id, claim_id, locator/excerpt,
+          support/challenge/context, directness, freshness,
+          independence_group, limitations
+Claim: claim_id, statement, decision_impact, required_evidence,
+       status, confidence, evidence_ids, open_gaps
+```
+
+## Source Graph and Lineage
+
+Record relevant Source-to-Source relations using the canonical edges below:
+
+- `derived_from`: translation, summary, repost, adaptation, or generated digest derives materially from another source.
+- `cites`: one source points to another but retains its own evidence-bearing content.
+- `same_publisher_as`: sources share the same authoring organization or controlling publisher.
+- `fork_of`: a repository or artifact descends from another implementation.
+- `implementation_of`: code or a working artifact implements a specification, method, or design from another source.
+- `responds_to`: a critique, replication, issue, or counterargument directly addresses another source.
+
+`same_publisher`, `fork`, and `implementation` are shorthand labels only; normalize them to `same_publisher_as`, `fork_of`, and `implementation_of` in the Source Graph.
+
+Assign:
+
+- **lineage_root**: the earliest identifiable source from which the substantive Claim or artifact derives. Reposts, translations, summaries, mirrors, and forks normally inherit that root.
+- **independence_group**: the set of sources that should count as one corroboration unit because they share origin, publisher control, data, implementation ancestry, or coordinated authorship.
+
+Two sources may have different URLs and still be non-independent. Sources may share a publisher without being derived from the same document; retain the `same_publisher_as` edge and place them in the same independence group when publisher control matters to the Claim. Explain uncertain lineage rather than inventing independence.
+
+When resuming a run, de-duplicate by canonical source identity, lineage root, and independence group before counting corroboration. Newer timestamps alone do not make a source independent or allow it to supersede older Evidence.
+
+## Origin Verification and Pseudo-Official Sources
+
+Terms such as “official,” “from the team,” “according to,” logo use, matching titles, repository organization names, and search ranking are not proof of origin.
+
+Verify origin through a canonical owner-controlled domain or repository, an explicit first-party cross-link, signed/verified publication metadata, or another traceable ownership path. If origin cannot be verified:
+
+- set `origin_status: unverified` and label the item `unverified origin`;
+- keep it secondary or discovery-only even if it appears authoritative;
+- do not give it Level A solely because it claims to quote an official source;
+- create an origin-tracing Gap when the Claim is important;
+- disclose the confidence loss if no accessible primary source exists.
+
+An inaccessible or missing original source does not permit a repost to inherit primary-source quality. API providers, aggregators, mirrors, and Obsidian ingestion paths preserve access provenance, not authority.
 
 ## Evidence Strength
 
 | Level | Source type | Can support |
 | --- | --- | --- |
-| A | Official docs, standards, regulator docs, source code, release notes, filings, reproducible benchmarks | Core definitions, mechanisms, constraints, timelines |
+| A | Verified official docs, standards, regulator docs, source code, release notes, filings, reproducible benchmarks | Core definitions, mechanisms, constraints, timelines |
 | B | Maintainer issues/discussions, engineering blogs, SDK examples, package metadata, credible technical reports | Implementation patterns, adoption friction, best practices |
-| C | Reputable secondary analysis, high-quality tutorials, analyst reports, structured reviews | Market interpretation, learning path, product comparison |
+| C | Reputable secondary analysis, high-quality tutorials, analyst reports, structured reviews | Market interpretation, learning paths, product comparison |
 | D | Community posts, X, Reddit, HN, forums, newsletters, videos | Trend signals, pain discovery, hypotheses |
-| E | Unverified claims, reposts, SEO pages, anonymous screenshots | Discovery only; do not use for core conclusions |
+| E | Unverified Claims, reposts, SEO pages, anonymous screenshots, unresolved pseudo-official sources | Discovery only; not core conclusions |
 
-Label each important claim with its strongest supporting evidence level.
+Evidence level is a ceiling, not an automatic score. Also evaluate:
 
-## Source Metadata
+- **directness**: whether the Evidence directly observes the Claim or merely interprets it;
+- **freshness**: whether the publication and observation dates fit a changing topic;
+- **independence**: whether it adds a new corroboration unit;
+- **locator quality**: whether another reviewer can find the exact excerpt, code, or result;
+- **limitations**: domain, sample, method, conflict of interest, missing context, or access constraints.
 
-Record at least:
+Label each important Claim with its strongest Evidence, independence coverage, contrary Evidence, and remaining Gap. Several same-lineage Level A sources do not equal independent validation.
 
-- Title or repository name.
-- Author, company, maintainer, or community.
-- URL or local path.
-- Access date.
-- Publish or update date when available.
-- Channel.
-- Evidence level.
-- Why it was included.
-- What claim it supports.
+## Evidence Admission and Claim Update
+
+Before admitting Evidence to a stable conclusion:
+
+1. Confirm the Source identity, origin status, lineage root, and access status.
+2. Capture a stable locator or excerpt. If none exists, keep the item as context or a lead.
+3. Link the Evidence to a specific Claim as `support`, `challenge`, or `context`.
+4. Record directness, freshness, independence group, and limitations.
+5. Compare it with existing Evidence rather than replacing older material because it is newer.
+6. Update the Claim only when the evidence contract is met; otherwise preserve the open Gap.
+
+Contradictory Evidence makes a Claim `contested` and creates a verification Gap. It is not an execution failure. A new conclusion supersedes an old one only when the relationship is explicit and the Evidence is stronger, more direct, sufficiently current, and appropriately independent for the Claim.
 
 ## Screening Rules
 
 - Prefer primary sources for definitions and platform behavior.
-- Prefer implementation evidence for engineering claims.
-- Prefer recent sources when product behavior, APIs, pricing, law, or market state can change.
-- Cross-check social or community claims with official, implementation, or repeated independent evidence.
-- Avoid using search snippets as evidence when the full source is accessible.
-- Mark stale sources when the topic changes quickly.
-- Do not let user persona or application needs upgrade weak evidence into stable conclusions.
-- When applying a conclusion to the user's context, separate the evidence-backed claim from the inferred implication.
+- Prefer implementation Evidence for engineering Claims.
+- Prefer recent Sources when product behavior, APIs, pricing, law, or market state can change.
+- Cross-check social or community Claims with official, implementation, or repeated independent Evidence.
+- Avoid using search snippets as Evidence when full Sources are accessible.
+- Mark stale Sources and date-sensitive Claims explicitly.
+- Keep evidence-backed Claims separate from inferred product or persona implications.
+- Do not let the user's desired application upgrade weak Evidence into a stable recommendation.
 
 ## Closed and Sensitive Sources
 
 - Use only content the user is authorized to access.
-- Do not bypass paywalls, login flows, API limits, or robots restrictions.
+- Do not bypass paywalls, login flows, API limits, robots restrictions, captcha, or private boundaries.
 - Do not put private customer data, workspace content, or confidential excerpts into public-facing files.
-- If a private source shaped the conclusion, summarize at the right abstraction level and mark it as private evidence.
-- If exact citation is unsafe, cite the artifact class and access date, for example: `Private customer-support export, reviewed 2026-05-28`.
+- If private Evidence shapes a conclusion, summarize it at the appropriate abstraction level and mark it private.
+- If an exact citation is unsafe, cite the artifact class and access date, for example: `Private customer-support export, reviewed 2026-05-28`.
 
-## GitHub Rules
+## GitHub and Implementation Rules
 
-- Default to reading docs, examples, issues, discussions, config, release notes, and source structure.
+- Read docs, source, tests, examples, issues, discussions, config, releases, and package metadata according to the target Gap.
 - Do not run third-party code unless the user explicitly asks and the risk is acceptable.
-- Check recency with commits/releases when maintainability matters.
-- Stars and forks are weak adoption signals; combine them with issue activity, release cadence, ecosystem usage, and documentation quality.
+- Check recency with commits and releases when maintainability matters.
+- Record `fork_of`, `implementation_of`, shared maintainers, copied docs, and shared test/data dependencies before calling projects independent.
+- Treat Stars and forks as weak discovery or popularity signals. Combine them with the actual evidence-bearing artifacts; never use them as proof of correctness, quality, production readiness, or independent validation.
 
-## X and Social Rules
+## Social and Semi-Closed Discovery
 
-- Treat X, Reddit, HN, Discord, Slack, and comments as weak evidence unless confirmed elsewhere.
-- Use social sources to discover new projects, arguments, authors, launch timing, and user pain.
-- Do not let viral claims drive the report unless stronger evidence supports them.
-- If using X systematically, prefer official API access. Without API access, clearly mark the search as partial.
-
-## WeChat and Semi-Closed Discovery Rules
-
-- Treat WeChat Official Account articles as practitioner or market context unless the author is the primary source, the article contains original implementation detail, or claims are verified elsewhere.
-- Use Sogou Weixin, Web search, OpenCLI adapters, and third-party APIs primarily for candidate discovery. Search result snippets are not enough for core conclusions.
-- Prefer original `mp.weixin.qq.com` articles with account name, publish date, and full text available. Mark reposts, unattributed summaries, and AI-generated digest pages as weak or discovery-only.
-- If a direct link triggers anti-spider, login, captcha, phone confirmation, or paywall, do not bypass it. Record the source as `verify later`.
-- When forwarding or syncing an article to Obsidian through WeChat, record the action as ingestion provenance, not evidence strength. The synced article still needs normal source quality screening.
-- Non-official API output must include provider, access date, returned fields, original URL availability, and known limitations.
+- Treat X, Reddit, HN, Discord, Slack, comments, and most WeChat articles as weak Evidence unless confirmed elsewhere.
+- Use social sources to discover projects, arguments, authors, launch timing, pain, and counterexamples.
+- Treat Sogou Weixin, Web search, adapters, and third-party APIs primarily as candidate discovery. Search snippets are not core Evidence.
+- Prefer original full-text WeChat articles with account, date, and provenance. Mark reposts, unattributed summaries, and generated digests as derived or discovery-only.
+- Stop on anti-spider, login, captcha, phone confirmation, paywall, or other access controls and preserve the affected Gap.
+- Record forwarding or Obsidian sync as ingestion provenance only; it does not increase evidence strength.
+- Without official API access, mark systematic social search as partial.
 
 ## Persona and Application Claims
 
-- Label persona-specific takeaways as interpretation when they are inferred from evidence rather than directly stated by sources.
-- Application templates such as PRD snippets, workflows, evals, SOPs, roadmaps, and interface drafts can be generated from synthesis, but they must cite the evidence-backed principles they depend on.
-- If a conclusion is useful for the user's context but supported only by trend or community evidence, mark it as a candidate judgment or experiment, not a stable recommendation.
+- Label persona-specific takeaways as interpretation when Sources do not state them directly.
+- Templates such as PRD snippets, workflows, evals, SOPs, roadmaps, and interface drafts may be synthesized, but cite the evidence-backed principles they depend on.
+- If a useful application judgment relies only on trend or community Evidence, label it a candidate judgment or experiment rather than a stable recommendation.
 
 ## Citation in Reports
 
@@ -86,4 +153,4 @@ Use short citations inside `05_研究报告`:
 - Source title (`path-or-url`) - Evidence A/B/C; supports <claim>.
 ```
 
-Use `02_证据与卡片` for fuller notes, source comparison, and source-by-source detail.
+Use `02_证据与卡片` for Source identity, Evidence locators, lineage, comparison, and source-by-source detail.

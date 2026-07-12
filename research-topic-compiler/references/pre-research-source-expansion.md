@@ -1,116 +1,129 @@
-# Pre-Research Source Expansion
+# Gap-Driven Source Acquisition
 
-Use this reference when a research run needs more input than the user's existing Obsidian inbox or seed files provide.
+Use this reference during `ACQUIRE` when the current Next Best Evidence (NBE) Action requires discovering or retrieving a source. Candidate discovery is not a one-time stage before research and is not a quota-filling exercise. It is a bounded response to the highest-value open Gap.
 
-The goal is not to search every channel. The goal is to widen the candidate pool, screen quickly, and only promote useful sources into the evidence matrix.
+This reference refines evidence acquisition for Normal Research and Application. It does not change mode routing or require Learning Pack, Product Candidate, or Radar to adopt the iterative research loop.
 
-## When to Enable
+## Entry and Skip Gate
 
-Enable this stage when one or more conditions apply:
+Enter source acquisition only when all of the following are true:
 
-- The user says they do not want to rely on pre-collected Obsidian inputs.
-- The topic is new, niche, fast-moving, China-local, product/market-driven, or practice-heavy.
-- Obsidian baseline scan returns too few useful sources.
-- The report needs examples, user pain, competitive products, launch signals, practitioner essays, or implementation references.
-- The user asks to include a new channel such as WeChat Official Accounts, Sogou Weixin, Product Hunt, G2, X, Discord, or a third-party API.
+- The current Framework has an open Gap whose closure would materially improve a Must or Should Claim.
+- The Gap has a closure criterion and a ranked priority.
+- One NBE Action has been selected for that Gap.
+- Existing readable sources do not already meet the Claim's evidence contract.
+- The action is within the run's scope, budget, and authorization.
 
-Skip this stage when the user asks for a quick answer, provides enough authoritative sources, or forbids external discovery.
+Skip external discovery when the user supplied enough authoritative, direct, and current evidence for the present purpose. This is the normal L1/L2 path, not a degraded result. Also skip when the user forbids external discovery, the expected information gain is low, or a required access action is not authorized.
 
-## Candidate Source Table
+Do not enable acquisition merely because the topic is new, a channel exists, Obsidian has few files, or a depth level suggests a candidate count. Source count and channel coverage are budgets, never completion criteria.
 
-Before reading deeply, produce a candidate table:
+## NBE Action Contract
+
+Execute one NBE Action per loop. Record these fields before searching:
 
 ```markdown
-| Title | Channel | Author/account | Date | URL/access | Snippet | Relevance | Quality | Recommended action |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| <title> | <Sogou Weixin / Product Hunt / GitHub / ...> | <author> | <date> | <url or access note> | <short snippet> | <why it matters> | <A-E or Strong/Medium/Weak/Context> | <read now / sync to Obsidian / verify later / skip> |
+- Target Gap: <gap ID and closure criterion>
+- Action type: <trace origin / verify claim / compare peer / inspect implementation / seek independent validation / seek contrast or counterexample>
+- Target: <specific source, owner, project class, or query>
+- Expected information gain: <what uncertainty could decrease and what result would change the framework>
+- Source role: <primary definition / implementation / independent validation / contrast / counterexample / context>
+- Independence target: <required lineage or publisher separation>
+- Cost/access risk: <time, paid/login/private, rate limit, anti-spider, or execution risk>
+- Selection reason: <why this action outranks the next alternative>
 ```
 
-Screening rules:
+If the top-ranked action is skipped, record the access, cost, scope, authorization, or low-yield reason and select the next feasible NBE. Do not silently substitute a convenient channel.
 
-- Keep 5-10 candidates for L3, 10-20 for L4, and a watchlist for L5.
-- Prefer original sources, primary company pages, maintainers, official repos, and sources with implementation details.
-- De-duplicate reposts, SEO clones, AI-generated summaries, and articles that only repeat the same seed.
-- Use snippets only for screening. Do not cite snippets as evidence when the full source is accessible.
-- Put blocked but valuable sources into `04_下一步.md` or `仍需验证`.
+## Acquisition Strategies
+
+Choose the smallest strategy that can close the target Gap:
+
+1. **Trace the origin**: follow citations, document titles, repository references, release links, or quoted phrases from a secondary Seed Corpus to the actual primary source.
+2. **Verify with the same owner**: find official docs, release notes, source code, talks, or examples that clarify what the owner actually claims or implements.
+3. **Test generalization across peers**: only when the Claim applies beyond one platform, select comparable authoritative owners on an explicit comparison dimension.
+4. **Inspect implementation**: examine canonical or independent repositories, examples, issues, configs, releases, and tests to check whether a stated practice is executable.
+5. **Seek independent validation**: choose a different lineage root or publisher that can corroborate the mechanism or observed outcome.
+6. **Seek contrast or counterexample**: look for a materially different design, a failed application, a limitation, or evidence that would challenge the current Claim.
+7. **Acquire practitioner or market context**: use reviews, practitioner essays, communities, or local channels for pain, language, and hypotheses, then verify important Claims with stronger evidence.
+
+Do not mechanically expand from one famous company to every other famous company. Peer expansion requires a cross-platform Gap and a named comparison dimension.
+
+## Candidate Screening
+
+Create a candidate table only when an NBE Action has multiple plausible targets. Keep it as small as needed to choose the next source; do not build a broad inventory by default.
+
+```markdown
+| Candidate | Channel | Source role | Target Gap | Expected information gain | Independence | Cost/access risk | Selection reason | Action |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| <title/repo> | <channel> | <role> | <gap ID> | <uncertainty reduced> | <lineage/publisher relation> | <risk> | <why now> | <acquire / verify later / skip> |
+```
+
+Screen candidates using these rules:
+
+- Prefer sources that can satisfy the Gap's closure criterion, not sources that are merely relevant to the topic.
+- Prefer the original source, direct implementation, or a genuinely independent lineage according to the NBE role.
+- Treat snippets as discovery metadata. Do not cite them as Evidence when the underlying source is accessible.
+- De-duplicate reposts, translations, summaries, SEO clones, forks, and articles that derive from the same lineage root.
+- Put valuable but inaccessible candidates in the blocked action log with the affected Gap; do not count them as acquired Evidence.
+- Stop candidate discovery as soon as one feasible target clearly dominates. Return to `EVALUATE` after acquisition rather than continuing to collect.
 
 ## WeChat Official Account Workflow
 
-WeChat Official Account content is useful for Chinese practitioner essays, product framing, local market context, and early terminology discovery. It is not a default authority source.
+WeChat Official Account content is useful for Chinese practitioner essays, product framing, local market context, and terminology discovery. It is not a default authority source.
 
-Recommended path:
+When the NBE Action calls for this channel:
 
-1. Search candidates through public/open discovery first:
-   - Sogou Weixin result pages.
-   - General Web search with title/account keywords.
-   - OpenCLI Weixin adapter or similar local tools when available.
-   - Third-party WeChat article APIs only with user authorization.
-   - WeWe RSS/RSSHub when the target official account is already known.
-2. Build the candidate table with title, account, date, snippet, access status, and suspected original/repost status.
-3. Promote only selected articles:
-   - `read now` if publicly readable and relevant.
-   - `sync to Obsidian` if the user wants the article in `笔记同步助手` and confirms the sync action.
-   - `verify later` if Sogou redirects to anti-spider, login is required, or only partial metadata is visible.
-4. After articles enter `笔记同步助手`, treat that folder as read-only source material. Curated output belongs in the Research Project.
+1. Discover candidates through public/open paths first: Sogou Weixin, general Web search with title/account keywords, an available local adapter, or RSS for an already-known account.
+2. Record title, account, date, snippet, access status, suspected origin, target Gap, and expected information gain.
+3. Prefer the original `mp.weixin.qq.com` article with readable full text. Mark redirects, partial metadata, reposts, and unresolved origins as `verify later` or discovery-only.
+4. Promote only the article selected for the NBE Action. If the user wants it in `笔记同步助手`, obtain current-run authorization before syncing.
+5. Treat `笔记同步助手` as read-only source material after ingestion. Curated output belongs in the Research Project.
 
-Important limitations:
-
-- Sogou Weixin can often return titles, snippets, dates, and redirect links, but direct article resolution may trigger anti-spider pages. Treat it as discovery, not stable full-text retrieval.
-- The official WeChat Open Platform APIs are mainly for account owners to manage their own published/material content; they are not a general public article search API.
-- Non-official API sites can help with search/detail extraction, but they add dependency, compliance, quota, and freshness risk. Record the API provider, token requirement, access date, and extracted fields.
-- WeWe RSS/RSSHub are better for known accounts and ongoing subscriptions than broad topic search.
+Sogou Weixin may expose titles, snippets, dates, and redirect links while blocking full article resolution. Treat it as discovery, not stable full-text retrieval. The official WeChat Open Platform APIs manage an owner's own content and are not a general public article search API. WeWe RSS/RSSHub are better for known-account monitoring than broad topic discovery.
 
 ## WeChat Client and Obsidian Sync Boundary
 
-Opening the local WeChat client and forwarding articles to `Obsidian @笔记同步科技` or any sync account is a side-effectful communication action.
+Opening the local WeChat client and forwarding an article is a side-effectful communication action.
 
-Rules:
+- Do not silently send, forward, or sync content.
+- Require explicit authorization in the current run and use a visible stop-before-send checkpoint.
+- Stop on phone confirmation, captcha, re-authentication, paywall, anti-spider, or other access controls.
+- Record what was synced, when, where it should appear, and which Gap motivated the action.
+- Treat successful ingestion as provenance only; it does not increase evidence strength.
 
-- Do not silently send, forward, or sync content by default.
-- Require explicit authorization in the current research run before operating WeChat or sending to the sync account.
-- Prefer a visible stop-before-send checkpoint: prepare the selected article/link list, open the target chat if needed, then ask the user to confirm before the final send.
-- If WeChat asks for phone login confirmation, captcha, or re-authentication, stop and mark the channel as blocked.
-- Never bypass login, paywall, anti-spider, API limits, or access controls.
-- Record what was synced, when, and where it is expected to appear in Obsidian.
-
-Safe default:
-
-- Write candidate links and screening notes into `06_外部渠道研究.md`.
-- Ask the user to choose which items to sync.
-- After sync completes, rescan `笔记同步助手` and incorporate the synced articles as read-only evidence.
+Safe default: write the selected link and screening note into `06_外部渠道研究.md`, ask the user whether to sync, and rescan `笔记同步助手` only after the user completes or authorizes the action.
 
 ## Third-Party API Evaluation
 
-Before using a non-official API, check:
+Before using a non-official API, record:
 
-- Access: public, token, paid, login, rate limits.
-- Scope: search only, metadata only, full article detail, account archive, or RSS.
-- Provenance: whether it returns original `mp.weixin.qq.com` URLs, account names, publish dates, and content.
-- Stability: whether the API is actively maintained and can handle anti-spider changes.
-- Compliance: whether use is allowed for the user's research purpose.
-- Evidence role: usually discovery/supporting evidence, not a core source unless the extracted content points back to an original article.
+- access type, token/payment/login needs, quota, and authorization;
+- whether it returns search results, metadata, full text, account archives, or RSS;
+- whether original URL, owner, publish date, and content provenance are available;
+- maintenance, freshness, anti-spider, dependency, and compliance risks;
+- the target Gap, expected information gain, evidence role, independence, and why this provider is the next best action.
 
-Record API-derived evidence as:
+API output without a traceable original source is normally discovery or supporting material. Never upgrade it to primary evidence because the provider labels a result “official.”
 
-```markdown
-- Channel: <provider/tool>
-- Access: <public/token/paid/login>
-- Fields used: <title/date/account/url/content/snippet>
-- Original URL available: <yes/no>
-- Evidence role: <discovery/supporting/full-text source>
-- Limitations: <rate limit/blocked fields/anti-spider/staleness>
-```
+## Product and Market Acquisition
 
-## Product and Market Expansion Channels
+Select product and market channels only when they match the current Gap:
 
-For product research, consider these before generic Web search:
+- launch positioning or maker intent: Product Hunt and official launch posts;
+- buyer pain and category language: G2, Capterra, GetApp, app stores, or marketplaces;
+- packaging and direction: pricing pages, changelogs, release notes, and official demos;
+- ecosystem surface: browser, IDE, Slack, Shopify, Atlassian, or Zapier marketplaces;
+- organizational investment: job posts, filings, and investor materials;
+- adjacent alternatives: AlternativeTo and comparable product directories.
 
-- Product Hunt: launch positioning, maker comments, similar products.
-- G2 / Capterra / GetApp: buyer reviews, pain points, category language.
-- AlternativeTo: adjacent products and user-tagged alternatives.
-- Chrome Web Store / VS Code Marketplace / Slack / Shopify / Atlassian / Zapier marketplaces: ecosystem surface and reviews.
-- Pricing pages and changelogs: packaging, segment, maturity, and direction.
-- App Store / Google Play: consumer reviews and update history.
-- Job posts: indirect roadmap and team investment signals.
+Reviews, directories, and marketplace data usually provide supporting or hypothesis-generating evidence. Corroborate stable product Claims with official artifacts, implementation evidence, or repeated independent observations.
 
-Use product/market channels as `Medium/Weak` evidence unless corroborated by official docs, implementation artifacts, or repeated independent evidence.
+## Exit
+
+After acquiring one source or recording why acquisition is blocked:
+
+1. assign or confirm its source identity and lineage;
+2. pass it to `EVALUATE` for Evidence extraction and Claim impact;
+3. do not continue browsing until the Framework is updated and saturation is checked;
+4. if acquisition failed, preserve the affected Gap and choose an authorized alternative only in the next NBE decision.

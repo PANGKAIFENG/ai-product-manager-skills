@@ -1,0 +1,132 @@
+{
+  "fixture_version": "2026-07-12-v1",
+  "network_allowed": false,
+  "notes": "Frozen summaries for method evaluation. Open excerpt_file only when the source is selected as NBE.",
+  "sources": [
+    {
+      "id": "anthropic-primary",
+      "title": "Anthropic Agent Skills overview (frozen excerpt)",
+      "publisher": "Anthropic",
+      "source_type": "official documentation",
+      "evidence_role": "Primary",
+      "lineage_root": "anthropic-agent-skills-docs",
+      "independence_group": "anthropic",
+      "candidate_for": ["C1-package-structure", "C2-triggering"],
+      "excerpt_file": "sources/anthropic-primary.md"
+    },
+    {
+      "id": "agent-skills-spec",
+      "title": "Agent Skills specification (frozen excerpt)",
+      "publisher": "Agent Skills",
+      "source_type": "public specification",
+      "evidence_role": "Primary standard",
+      "lineage_root": "agent-skills-specification",
+      "independence_group": "agent-skills-spec",
+      "candidate_for": ["C1-package-structure", "C2-triggering"],
+      "excerpt_file": "sources/agent-skills-spec.md"
+    },
+    {
+      "id": "openai-peer",
+      "title": "OpenAI Codex Skills guidance (frozen excerpt)",
+      "publisher": "OpenAI",
+      "source_type": "official documentation",
+      "evidence_role": "Peer authority",
+      "lineage_root": "openai-codex-skills-docs",
+      "independence_group": "openai",
+      "candidate_for": ["G1-cross-platform-generalization"],
+      "excerpt_file": "sources/openai-peer.md"
+    },
+    {
+      "id": "anthropic-same-lineage",
+      "title": "Anthropic engineering explanation (frozen excerpt)",
+      "publisher": "Anthropic",
+      "source_type": "company engineering article",
+      "evidence_role": "Same-publisher explanation",
+      "lineage_root": "anthropic-agent-skills-docs",
+      "independence_group": "anthropic",
+      "candidate_for": ["C1-package-structure"],
+      "excerpt_file": "sources/anthropic-same-lineage.md"
+    },
+    {
+      "id": "repo-canonical",
+      "title": "Canonical examples repository (frozen metadata)",
+      "publisher": "Anthropic",
+      "source_type": "source repository",
+      "evidence_role": "Canonical",
+      "lineage_root": "anthropic-skill-examples",
+      "independence_group": "anthropic",
+      "candidate_for": ["G2-official-implementation"],
+      "excerpt_file": "sources/repo-canonical.md"
+    },
+    {
+      "id": "repo-independent",
+      "title": "Independent production Skill collection (frozen metadata)",
+      "publisher": "Independent maintainers",
+      "source_type": "source repository",
+      "evidence_role": "Independent/Production",
+      "lineage_root": "independent-production-skills",
+      "independence_group": "independent-maintainers",
+      "candidate_for": ["G3-transfer-to-production"],
+      "excerpt_file": "sources/repo-independent.md"
+    },
+    {
+      "id": "repo-counterexample",
+      "title": "Prompt-only Skill repository and issue (frozen metadata)",
+      "publisher": "Community maintainer",
+      "source_type": "repository and issue",
+      "evidence_role": "Contrast/Counterexample",
+      "lineage_root": "prompt-only-skills",
+      "independence_group": "prompt-only-community",
+      "candidate_for": ["G4-boundary-counterexample"],
+      "excerpt_file": "sources/repo-counterexample.md"
+    },
+    {
+      "id": "fake-google-official",
+      "title": "Google 官方发布 Agent Skills 五条原则",
+      "publisher": "AI Future Digest",
+      "source_type": "unverified secondary article",
+      "evidence_role": "Discovery only",
+      "lineage_root": "ai-future-digest-google-claim",
+      "independence_group": "unknown",
+      "candidate_for": ["G1-cross-platform-generalization"],
+      "limitations": ["no canonical Google URL", "no verifiable author", "no locatable original passage"],
+      "excerpt_file": "sources/fake-google-official.md"
+    },
+    {
+      "id": "saturation-independent-a",
+      "title": "Independent packaging survey (frozen excerpt)",
+      "publisher": "Tooling Lab A",
+      "source_type": "independent technical report",
+      "evidence_role": "Independent validation",
+      "lineage_root": "tooling-lab-a-survey",
+      "independence_group": "tooling-lab-a",
+      "candidate_for": ["S1-saturation-check"],
+      "expected_gain": "low: confirms existing package model",
+      "excerpt_file": "sources/saturation-independent-a.md"
+    },
+    {
+      "id": "saturation-independent-b",
+      "title": "Independent maintainability review (frozen excerpt)",
+      "publisher": "Tooling Lab B",
+      "source_type": "independent technical report",
+      "evidence_role": "Independent validation",
+      "lineage_root": "tooling-lab-b-review",
+      "independence_group": "tooling-lab-b",
+      "candidate_for": ["S1-saturation-check"],
+      "expected_gain": "low: no new Must gap",
+      "excerpt_file": "sources/saturation-independent-b.md"
+    },
+    {
+      "id": "repost-duplicates",
+      "title": "Three reposts of the seed article",
+      "publisher": "Various aggregators",
+      "source_type": "reposts",
+      "evidence_role": "Duplicate discovery",
+      "lineage_root": "seed-wechat-skill-practice",
+      "independence_group": "seed-reposts",
+      "candidate_for": ["none"],
+      "expected_gain": "none",
+      "excerpt_file": "sources/repost-duplicates.md"
+    }
+  ]
+}

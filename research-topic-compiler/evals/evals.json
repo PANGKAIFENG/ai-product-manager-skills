@@ -65,6 +65,194 @@
           "text": "Does not claim final decision authority for candidate research."
         }
       ]
+    },
+    {
+      "id": "iterative-anthropic-skill-best-practices",
+      "type": "behavior-regression",
+      "prompt": "附件是一篇转述 Anthropic Agent Skill 实践的公众号文章，以及一份冻结的离线来源目录。请基于它研究‘Agent Skill 的最佳实践’，产出一份能用于优化团队现有 Skill 和 skill-creator 的结论。不要把文章简单汇总成报告；请说明最初形成了什么研究框架、为什么继续查某些权威主体和开源项目、新证据如何改变初始框架、为什么此时可以停止，以及还有哪些问题未解决。只使用离线包，不联网，不执行任何仓库代码。",
+      "files": [
+        "evals/fixtures/anthropic-skill-loop/seed-wechat.md",
+        "evals/fixtures/anthropic-skill-loop/catalog.json"
+      ],
+      "expected_output": "Runs an evidence-gap-driven iterative research loop: treats the WeChat article as a secondary seed, creates Framework V0 and a Gap/NBE queue, traces claims to primary sources, samples peer authorities and open-source projects by evidence role, records substantive framework changes, and returns one justified terminal state with unresolved gaps.",
+      "assertions": [
+        {
+          "text": "Labels the WeChat article as Seed/Secondary or discovery evidence and does not use it as the strongest evidence for a core claim."
+        },
+        {
+          "text": "Creates an explicit Framework V0 with claims or hypotheses, evidence requirements, status, and confidence, plus a prioritized Gap Ledger or equivalent."
+        },
+        {
+          "text": "Each material acquisition is justified as the Next Best Evidence for a named high-value gap rather than as generic channel coverage."
+        },
+        {
+          "text": "Traces at least one seed claim to an Anthropic primary source and distinguishes same-publisher corroboration from independent evidence."
+        },
+        {
+          "text": "Uses OpenAI or another peer authority only for a stated cross-platform generalization gap and explains the comparison dimension."
+        },
+        {
+          "text": "Selects open-source projects by Canonical, Independent, Production, Contrast, or Counterexample role; each selected project is tied to a gap and is not selected primarily by stars."
+        },
+        {
+          "text": "Records at least one Framework Change Event with a valid change type, before, after, evidence, and rationale."
+        },
+        {
+          "text": "Returns exactly one terminal state and explains fit-for-purpose or saturation using claim coverage, unresolved contradictions, marginal information gain, and residual gaps rather than source count."
+        }
+      ]
+    },
+    {
+      "id": "framework-invalidation-by-primary-evidence",
+      "type": "behavior-regression",
+      "prompt": "使用附件离线包验证公众号文章中的主张：‘Agent Skill 只是单个 Markdown Prompt，不应包含脚本或参考资源。’请展示这个初始假设在更强证据到来后如何变化。不要联网。",
+      "files": [
+        "evals/fixtures/anthropic-skill-loop/seed-wechat.md",
+        "evals/fixtures/anthropic-skill-loop/catalog.json"
+      ],
+      "expected_output": "Treats the statement as an initial hypothesis, reads the relevant primary specification and official guidance, then explicitly invalidates or splits the single-file-only framework instead of silently replacing or reconciling it.",
+      "assertions": [
+        {
+          "text": "Represents the seed statement as an initial hypothesis rather than an established fact."
+        },
+        {
+          "text": "Uses the official/specification evidence identified in the catalog to test the hypothesis."
+        },
+        {
+          "text": "Uses Challenge, Invalidate, or Split and preserves before, after, evidence, and rationale; it does not silently overwrite the old framework or merely say both views are valid."
+        },
+        {
+          "text": "The revised framework distinguishes the required SKILL.md entrypoint from optional bundled resources or executable helpers."
+        }
+      ]
+    },
+    {
+      "id": "fake-google-official-source-downgrade",
+      "type": "behavior-regression",
+      "prompt": "评估附件中《Google 官方发布 Agent Skills 五条原则》能否作为核心证据。请沿来源链核验其身份并说明它对研究结论的影响。只使用离线包，不联网。",
+      "files": [
+        "evals/fixtures/anthropic-skill-loop/catalog.json",
+        "evals/fixtures/anthropic-skill-loop/sources/fake-google-official.md"
+      ],
+      "expected_output": "Marks the article as unverified-origin secondary evidence because it lacks a canonical Google source or verifiable author identity, prevents it from supporting stable core claims, and records a verification gap or excludes it.",
+      "assertions": [
+        {
+          "text": "Does not classify the article as official, primary, or A-level evidence based on its title."
+        },
+        {
+          "text": "Identifies the missing canonical URL, author identity, or locatable original passage and labels the origin unverified."
+        },
+        {
+          "text": "Does not allow this source alone to create or close a Must Claim; it records a verification gap, keeps the claim tentative, or excludes the source."
+        }
+      ]
+    },
+    {
+      "id": "saturation-stops-before-reading-duplicates",
+      "type": "behavior-regression",
+      "prompt": "你正在用附件离线包研究 Skill 的模块化结构。当前 Must Claims 已有原始来源、一个独立实现和一个反例检查；目录中还剩多条候选材料。决定下一步读什么、何时停止，并给出唯一终态。不要联网，也不要为了证明完整而读完候选池。",
+      "files": [
+        "evals/fixtures/anthropic-skill-loop/catalog.json"
+      ],
+      "expected_output": "Uses two independent high-quality low-gain sources to test saturation, recognizes remaining same-lineage reposts as low value, and stops with complete-saturated or complete-fit-for-purpose without treating candidate-count exhaustion as the criterion.",
+      "assertions": [
+        {
+          "text": "Ranks candidates by unresolved gap and expected information gain rather than catalog order or popularity."
+        },
+        {
+          "text": "Distinguishes two independent low-gain confirmations from same-lineage duplicates and does not count reposts as independent saturation evidence."
+        },
+        {
+          "text": "Stops without requiring every candidate to be read once Must Claims and contradictions are resolved."
+        },
+        {
+          "text": "Returns exactly one valid terminal state and does not use source count, file completion, or reading the entire candidate pool as the sole stopping reason."
+        }
+      ]
+    },
+    {
+      "id": "l1-quick-answer-does-not-over-loop",
+      "type": "negative",
+      "prompt": "用附件中的 OpenAI 官方摘录，200 字内解释 Responses API 的 input items 是什么，今天开会用。不需要专题研究，也不要联网。",
+      "files": [
+        "evals/fixtures/boundaries/openai-input-items.md"
+      ],
+      "expected_output": "Answers directly with a compact explanation, citation, confidence/limitation, and at most one useful next step; it keeps the research loop ephemeral and does not expose or persist heavy research-control artifacts.",
+      "assertions": [
+        {
+          "text": "Provides a direct answer within the requested compact scope and cites the supplied source."
+        },
+        {
+          "text": "Does not produce a full Research Run Plan, Framework Map, Source Graph, NBE queue, Change Log, or 00-09 Research Project files."
+        },
+        {
+          "text": "Does not seek additional sources, recommend broad channel expansion, or claim that a deep research run is required."
+        }
+      ]
+    },
+    {
+      "id": "l2-compact-map-bounded-acquisition",
+      "type": "negative",
+      "prompt": "基于附件两份官方材料，给我一份 Agent Skill 结构的第一版概念地图和下一步阅读建议。我要先快速入门，不建立 Obsidian 项目，不联网。",
+      "files": [
+        "evals/fixtures/boundaries/l2-agent-skill-official-pack.md"
+      ],
+      "expected_output": "Produces a compact L2 map with roughly 3-5 nodes, uses only lightweight inline gaps, and avoids full persistent state, broad acquisition, or L3/L4 completeness requirements.",
+      "assertions": [
+        {
+          "text": "Selects or behaves like L2 and produces a compact 3-5 node topic map grounded in the supplied materials."
+        },
+        {
+          "text": "Keeps gaps and next reading inline; it does not create full Claim/Evidence/Source Graph state or Research Project files."
+        },
+        {
+          "text": "Does not broaden into external discovery, open-source sampling, peer-platform comparison, or counterexample search without an important conflict."
+        }
+      ]
+    },
+    {
+      "id": "authoritative-materials-sufficient-no-expansion",
+      "type": "negative",
+      "prompt": "附件已经包含 Anthropic 官方说明、Agent Skills 规范和 OpenAI 官方说明。请基于这些材料比较 Skill 的结构与使用方式；如果它们足以支持这个范围就直接完成，只有存在影响结论的关键缺口时才补资料。不要联网。",
+      "files": [
+        "evals/fixtures/boundaries/authoritative-sufficient-pack.md"
+      ],
+      "expected_output": "Recognizes that the supplied primary sources cover the requested definition/structure comparison, completes from them, and avoids a candidate-source expansion or unrelated implementation survey while disclosing the limited scope.",
+      "assertions": [
+        {
+          "text": "Explicitly assesses the supplied authoritative coverage against the requested claims before deciding whether to acquire more evidence."
+        },
+        {
+          "text": "Completes the scoped comparison without external search, a Candidate Source Table, generic channel expansion, or unrelated open-source sampling."
+        },
+        {
+          "text": "States the boundary of the conclusion and leaves only gaps that are genuinely outside the requested definition/structure scope."
+        }
+      ]
+    },
+    {
+      "id": "transfer-mcp-auth-security",
+      "type": "transfer",
+      "prompt": "附件是一篇关于 MCP 鉴权的二手博客和一份离线来源目录。请研究‘MCP 服务鉴权的安全边界’，给研发负责人一份可用于评审方案的判断框架。只使用离线包，不联网，不执行代码。",
+      "files": [
+        "evals/fixtures/mcp-auth-transfer/seed-blog.md",
+        "evals/fixtures/mcp-auth-transfer/catalog.json"
+      ],
+      "expected_output": "Transfers the iterative method outside Agent Skills: traces the secondary claim to the protocol specification, distinguishes local and remote threat models, selects implementation and counterexample evidence by gap, revises the initial framework, and stops with residual risks.",
+      "assertions": [
+        {
+          "text": "Treats the blog as a secondary seed and creates a framework organized by threat model or deployment boundary rather than by channel."
+        },
+        {
+          "text": "Uses the MCP specification as primary evidence and selects implementation, independent analysis, or counterexample material only for named gaps."
+        },
+        {
+          "text": "Challenges or splits the seed claim that every MCP server requires the same OAuth flow, distinguishing local stdio from remote transports."
+        },
+        {
+          "text": "Returns one justified terminal state plus unresolved security risks and avoids turning the research output into a final architecture decision."
+        }
+      ]
     }
   ]
 }

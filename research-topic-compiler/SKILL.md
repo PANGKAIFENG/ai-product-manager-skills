@@ -29,9 +29,11 @@ description: >
 
 - 先把用户原话转成明确研究目标、研究问题和输出要求，再判断研究深度、渠道和样本量。
 - 先解析用户画像，再决定解释方式、案例选择、实践任务和应用转化。
+- Seed Corpus 是线索和初始假设来源，不默认是权威证据；二手核心 Claim 要追溯原始来源或披露无法追溯的影响。
+- Normal Research 和 Application 围绕最高价值证据缺口迭代；每轮只执行一个能降低关键不确定性的 Next Best Evidence Action。
 - Obsidian 是内部基线和默认沉淀位置，不是唯一研究渠道。
 - 外部渠道动态选择，不默认全开；根据主题类型、证据缺口、时效性和可信度要求启用。
-- 研究前可以先做 `Pre-Research Source Expansion`：用公开搜索、垂直 API、RSS、产品/市场目录等渠道扩充候选来源，再筛选进入正式证据矩阵。
+- 需要扩源时把 `Pre-Research Source Expansion` 作为候选发现策略：用公开搜索、垂直 API、RSS、产品/市场目录等渠道寻找能关闭当前 Gap 的来源，再筛选进入正式证据矩阵。
 - 结论必须能回到证据矩阵；`05_研究报告` 是第一阅读入口，`02_证据与卡片` 是按需深挖层。
 - 系统学习不是重型课程仓库；默认保持轻量，只有触发条件满足时才建议独立学习包文件。
 - 当研究会影响产品策略、商业化、工作台/连接器设计、企业 adoption 或其他高成本决策时，默认按高门槛应用研究处理，读取 `references/applied-business-research-contract.md`。
@@ -110,41 +112,59 @@ description: >
 
 ## Pre-Research Source Expansion
 
-当内部输入不足、主题依赖外部生态或用户要求扩源时，读取 `references/pre-research-source-expansion.md`。默认产物是 Candidate Source Table，不把搜索结果直接当结论。登录、付费、私密社区、客户端发送或同步动作都需要当前 run 的明确授权。
+当当前 Gap 需要外部证据、主题依赖外部生态或用户要求扩源时，读取 `references/pre-research-source-expansion.md`。它负责 ACQUIRE 阶段的候选发现，不是每次研究固定执行的前置阶段；默认产物是 Candidate Source Table，不把搜索结果直接当结论。登录、付费、私密社区、客户端发送或同步动作都需要当前 run 的明确授权。
 
 ## Persona-Adaptive Output
 
 按解析出的 `role` 调整输出重点。角色未知时先用通用解释，不要假设用户是工程师或产品经理；具体字段和追问规则见 `references/user-context-standards.md`。
 
-## Workflow
+## Workflow and Mode Routing
 
-1. 捕获用户原话、主题和目标。若输入不够明确，先执行 `Research Goal Framing Gate`，输出 `Research Goal Framing`，把大白话转成研究目标、研究问题、输出要求和 out-of-scope。若用户只要求整理研究 brief、先不要搜资料或先不要开始研究，停在 framing 产物，不继续生成 `Research Run Plan`。
-2. 解析用户画像。按 `User Context Resolution` 选择通用解释或 persona-adaptive 输出。
-3. 判断研究模式和深度。非平凡主题先读 `references/research-depth-rubric.md`，推荐 `L1-L5`，并说明是否启用 Lightweight Concept Lens、Learning Pack、Application Mode、Applied Business Research 或 Product Candidate Research。
-4. 选择渠道。读取 `references/channel-selection-rubric.md` 和 `references/channel-registry.md`，根据主题动态选择 Obsidian 之外的渠道。
-5. 判断是否启用 `Pre-Research Source Expansion`。当内部输入不足、主题依赖外部生态或用户要求扩源时，先生成候选来源表和筛选建议。
-6. 先输出 `Research Run Plan`。包含推荐深度、研究模式、用户画像摘要、主题类型、核心问题、渠道选择、前置扩源渠道、每个渠道启用或不启用的理由、样本量、写入位置、凭据或访问限制。
-7. 做 Obsidian 内部基线扫描。查 `笔记同步助手`、`03_Resources`、已有 Research Project、主题卡片、规则和模板，确认已有沉淀、证据缺口和重复研究风险。
-8. 做外部发现与筛选。只读取公开或用户授权内容；GitHub 仅读文档、源码、配置、issues 和 discussions，默认不执行第三方代码。
-9. 建立证据矩阵。按”研究问题 × 来源 × 结论 × 证据强度 × 对当前用户的启发 × 扩展阅读”组织。
-10. 写入或更新 Obsidian Research Project。默认输出 `00_研究定义` 到 `05_研究报告`；深度专题可增加 `06_外部渠道研究`、`07_行业案例对照`、`08_最佳实践与应用模板`、`09_更新日志`；只在触发条件满足时建议 `10-12` 学习包文件。Lightweight Concept Lens 默认不写入 Obsidian，除非用户要求沉淀。
-11. 输出最终摘要。给出研究报告入口、用户画像适配方式、核心结论、关键证据、应用转化、仍需验证、下一步建议和新增渠道候选。
+1. 捕获用户原话、主题和目标。若输入不够明确，先执行 `Research Goal Framing Gate`，输出 `Research Goal Framing`，把大白话转成研究目标、研究问题、输出要求和 out-of-scope。若用户只要求整理 research brief 或明确“先不要研究”，停在 framing 产物。
+2. 按 `User Context Resolution` 解析用户画像，再选择研究模式和 `L1-L5` 深度。
+3. 输出 `Research Run Plan`，明确 scope、Evidence Contract、预算、授权、产物和确认门禁。L1 直接快答或范围清楚的 L2 可把计划压缩为内部判断，不强制展示完整模板；需要授权或范围确认时仍必须先停在可见门禁。
+4. `Normal Research` 与 `Application` 执行下面的七步控制面；完整对象与恢复规则必须读取 `references/iterative-research-loop.md`。
+5. `Lightweight Concept Lens`、`Learning Pack`、`Product Candidate` 和 `Radar` 保持各自 mode-specific 主流程与产物，不把七步控制面强行替换它们。可复用来源质量和证据追溯规则，但不得因此创建额外状态文件。
+
+### Normal Research / Application Iterative Control Loop
+
+1. **FRAME**：把目标、Seed Claims 和已有材料转成可修订的 Framework V0，定义 Must/Should/Could Claim、证据标准、范围与预算。Seed 的标题或转述不能替代原始来源身份。
+2. **IDENTIFY GAP**：维护按价值排序的 Gap Ledger，标出未知、冲突、原始来源缺失、实现/独立验证/反例和迁移风险。
+3. **PLAN NEXT BEST EVIDENCE**：每轮只选一个 NBE Action，说明 target Gap、预期信息增益、证据角色、独立性、成本/访问风险和选择理由。
+4. **ACQUIRE**：根据 Gap 动态选择渠道并获取公开或已授权来源。Obsidian 是内部基线；扩源、同行权威比较和开源项目抽样都是按需策略，不是固定清单。
+5. **EVALUATE**：把 Source、Evidence、Claim 分开，记录可定位摘录、直接性、新鲜度、lineage 和局限；伪官方或无法验证出处的材料降级，不进入最高等级核心结论。
+6. **UPDATE FRAMEWORK**：用 `Fill / Refine / Split / Merge / Challenge / Invalidate / Expand / No change` 记录 before、after、evidence 和 rationale；不得静默覆盖或强行调和冲突。
+7. **CHECK SATURATION**：只返回 `Continue / Stop / Pause / Escalate` 之一。Continue 回到步骤 2；Stop 后综合报告；Pause 写 Checkpoint；Escalate 转用户确认、深度升级或 `decision-research`。
+
+### Depth Trimming
+
+- `L1`：内部执行一次 ephemeral 压缩循环，只处理一个核心 Claim/Gap；充分权威材料已覆盖时不扩源、不建文件、不向用户暴露控制面术语。
+- `L2`：维护 3-5 个框架节点，最多两个 acquisition action；默认不建完整图谱或持久化状态，输出紧凑结论和未解决问题。
+- `L3`：所有 Must Claim 有状态；核心二手 Claim 至少尝试一次原始来源追溯；按 `00-05` 增量持久化。
+- `L4`：使用完整 Claim/Evidence/Source Graph、Change Log、独立验证、反例和正式饱和门禁。
+- `L5`：首轮建立 L4 基线，后续由 Radar mode 做 delta；记录 `No change`，自动化仍需用户明确授权。
+
+### Unique Terminal Gate
+
+终止时按以下优先级自上而下返回一个状态：`blocked-authorization` → `partial-access` → `partial-budget` → `escalated` → `complete-saturated` → `complete-fit-for-purpose`。命中即停止，不得并列多个终态。
+
+任何 `complete-*` 都要求：Must Claim 达到当前 Evidence Contract 或明确降级、核心来源已追溯或披露损失、关键矛盾已处理、剩余 Gap 不阻碍用户下一步。`complete-saturated` 还要求 L4 最近两个不同 lineage 的高质量 NBE 只产生 `Fill` / `No change` 且没有新 Must Gap。来源数、搜索结果数、候选池耗尽或文件写完都不能单独证明完成。
 
 ### Product Candidate Research 分支步骤
 
-当步骤 3 判定为 Product Candidate Research 模式时，步骤 6-11 替换为以下流程：
+当 Workflow 第 2 步判定为 Product Candidate Research 模式时，在 Research Run Plan 后按以下独立流程继续，不进入 Normal/Application 七步控制面：
 
-6. 输出 `Research Run Plan`（同上），额外包含：决策维度（见 `references/product-decision-mode.md`）、候选池初始边界、评分权重草案。
-7. 读取项目上下文。按 `references/project-context-intake.md` 获取项目阶段、约束、已有决策和用户优先级。
-8. 做内部基线扫描 + 外部发现。与 Normal Research 一致，但聚焦于形成候选列表而非单一结论。
-9. 形成 Candidate Backlog。按 `references/candidate-backlog-schema.md` 的 17 字段 schema 填充每个候选项，通过 Quality Gate 5 项检查。
-10. 评分与排序。按用户确认的维度权重打分，输出排序表和关键差异点。
-11. Taxonomy 转译（可选）。若候选项来自外部体系，按 `references/taxonomy-translation.md` 转译为项目内部分类。
-12. 输出阶段产物：
+1. 在 `Research Run Plan` 增加决策维度（见 `references/product-decision-mode.md`）、候选池初始边界和评分权重草案。
+2. 读取项目上下文。按 `references/project-context-intake.md` 获取项目阶段、约束、已有决策和用户优先级。
+3. 做内部基线扫描 + 外部发现，聚焦于形成候选列表而非单一结论。
+4. 形成 Candidate Backlog。按 `references/candidate-backlog-schema.md` 的 17 字段 schema 填充每个候选项，通过 Quality Gate 5 项检查。
+5. 按用户确认的维度权重评分与排序，输出排序表和关键差异点。
+6. 若候选项来自外部体系，按 `references/taxonomy-translation.md` 转译为项目内部分类。
+7. 输出阶段产物：
     - Candidate Backlog（完整表格）
     - Candidate Summary（Top candidates + 理由 + 风险，标注为决策输入）
     - Cross-Session Handoff（按 `references/cross-session-handoff.md` 格式，供后续会话或 `decision-research` 继续）
-13. 判断 Post-Research Exit。按 `references/post-research-exits.md` 推荐下一步出口（PRD Input / Starter Scenes / Demo Beachhead / Eval 等），不强制执行。
+8. 按 `references/post-research-exits.md` 推荐下一步出口（PRD Input / Starter Scenes / Demo Beachhead / Eval 等），不强制执行。
 
 ## L5 Automation Handling
 
@@ -152,7 +172,7 @@ description: >
 
 ## Research Run Plan
 
-开始研究前输出：
+L3+、需要用户确认范围/授权、或用户明确要求研究计划时输出完整模板。L1 直接快答和范围清楚的 L2 可保持内部轻量计划，不要为了展示流程制造重型前置产物。
 
 ```markdown
 **Research Run Plan**
@@ -165,8 +185,11 @@ description: >
 - Topic type: <平台能力 / 开源工程 / 产品竞品 / 学术方法 / 政策合规 / 市场趋势 / 其他>
 - Core questions: <按理解型 / 判断型 / 设计型 / 实践型 / 复盘型组织>
 - Output requirements: <读者 / 产物 / 必须支持的下一步 / 不做什么>
-- Pre-research expansion: <是否启用 + 候选渠道 + 预期候选数 + 是否需要授权同步>
-- Channels selected: <渠道 + 启用理由 + 样本量>
+- Evidence contract: <Must Claim 所需来源角色、直接性、独立性和完成标准>
+- Effort budget: <时间 / acquisition action / 成本边界>
+- Current highest-value Gap: <Gap + closure criterion，或 none>
+- Next Best Evidence: <单一 action + expected information gain + source role + independence + cost/access risk，或 none>
+- Channels selected: <仅列为当前 NBE 服务的渠道 + 选择理由>
 - Channels skipped: <未启用渠道 + 原因>
 - Access needs: <GitHub token / X token / login / paywall / none>
 - Obsidian output: <chat-only / new Research Project / update existing project>
@@ -178,7 +201,7 @@ description: >
 
 ## Channel Selection Rules
 
-默认不是“所有渠道全开”，而是按主题选择渠道。读取 `references/channel-selection-rubric.md` 和 `references/channel-registry.md`；封闭、付费、登录或私密渠道只在用户授权并说明引用限制后使用。
+默认不是“所有渠道全开”，而是按当前 Gap 所需证据角色、主题类型和访问边界动态选择渠道。读取 `references/channel-selection-rubric.md` 和 `references/channel-registry.md`；封闭、付费、登录或私密渠道只在用户授权并说明引用限制后使用。
 
 ## Obsidian Output Contract
 
@@ -228,7 +251,7 @@ description: >
 
 ## Output Format
 
-完成后输出：
+完成后输出。L1/L2 可压缩为直接答案、来源、置信度/局限和下一步，不强制暴露 Framework、Gap、NBE、Change Event 或终态枚举；下面的完整格式用于 L3+ Normal/Application 或需要交接、暂停和审计的研究：
 
 ```markdown
 **Research Result**
@@ -236,13 +259,16 @@ description: >
 - Depth used: <L1-L5>
 - Research mode: <Normal / Lightweight Concept Lens / Learning Pack / Application / Radar / Product Candidate>
 - Persona adaptation: <role/domain/depth/goal used, or generic>
-- Channels used: <channels and sample counts>
+- Channels used: <channels + each channel's target Gap/evidence role>
 - Core conclusions: <3-7 bullets>
 - Application outputs: <judgment, template, task, PRD/Workflow/Eval/SOP/roadmap, or none>
 - Strongest evidence: <top sources>
 - Weak or trend evidence: <sources that need caution>
 - Added channel candidates: <new registry entries or none>
+- Terminal status: <unique terminal status>
+- Stop reason: <fit-for-purpose / saturation / access / budget / escalation reason>
 - Still uncertain: <evidence gaps>
+- Residual risks: <未关闭但不阻断下一步的风险，或受限造成的影响>
 - Next actions: <what to read or do next>
 ```
 
@@ -271,17 +297,19 @@ description: >
 - `Lightweight Concept Lens`：给出概念源流、语义演化、范式阶段、PM 决策问题、反模式或概念债务判断；如果生成 HTML，静态验证已通过或明确说明限制。
 - `L2`：给出主题地图、核心概念、基础案例、来源和下一步阅读。
 - `L3`：Research Project 或聊天报告已覆盖问题清单、证据矩阵、阶段结论和第一阅读入口式 `05_研究报告`，能帮助陌生领域入门。
-- `L4`：额外形成外部渠道研究、行业案例对照、最佳实践或应用模板，能指导方案设计、选型、商业化、企业 adoption、workflow 设计或 PRD 输入；若是高门槛应用研究，还应给出迁移判断、矩阵、风险和分阶段路径。
+- `L4`：按当前 Gap 和用户目标形成必要的外部渠道研究、行业案例对照、最佳实践或应用模板，能指导方案设计、选型、商业化、企业 adoption、workflow 设计或 PRD 输入；若是高门槛应用研究，还应给出迁移判断、矩阵、风险和分阶段路径。
 - `L5`：形成 watchlist、更新日志、稳定/候选/待验证/废弃结论分层和后续自动化建议；若用户明确确认创建 automation，则调用 Codex `cron` automation，并保留低风险写入边界与人工确认点。
 - Product Candidate Research：候选池通过 Quality Gate（至少 3 个候选项有完整 schema 填充）、评分表输出、Candidate Summary 包含 Top candidates 和风险、Cross-Session Handoff 文件可被后续会话或 `decision-research` 直接消费。
 - Persona-adaptive 输出：关键结论已说明对当前用户画像、业务目标或应用场景的影响。
 - Application 输出：至少给出一个可执行动作、模板、实践任务或判断框架，除非用户只要求快查；当研究是高门槛应用研究时，还要包含决策上下文、证据覆盖、迁移判断、判断矩阵、分阶段建议、风险与待验证假设。
 - 如果渠道受限，必须说明未使用的渠道、限制原因和对结论可信度的影响。
+- Normal Research/Application 只有命中唯一终态门禁后才算完成；`00-08` 和样本量是按需产物与预算参考，不能替代 Must Claim、关键矛盾、来源追溯和残余 Gap 检查。
 
 ## Resource Guide
 
 - `references/mode-selection.md`：主模式选择、相邻 Skill 边界和最小加载规则。
 - `references/research-depth-rubric.md`：判断 `L1-L5` 深度、样本量和确认门禁。
+- `references/iterative-research-loop.md`：Normal Research/Application 的完整状态对象、NBE、Source Graph、框架变化、饱和、失败恢复和 Checkpoint。
 - `references/research-goal-framing-gate.md`：把用户大白话、模糊方向或 Roadmap 前置想法转成研究目标、研究问题、输出要求和 out-of-scope。
 - `references/applied-business-research-contract.md`：高门槛应用研究、商业化/企业 adoption/workflow 决策的证据覆盖、迁移判断和决策产物要求。
 - `references/research-radar-loop-contract.md`：Research Radar Loop 的状态文件、信号分类、更新规则、暂停条件和升级规则。
@@ -290,8 +318,8 @@ description: >
 - `references/default-user-profile.md`：本地默认用户画像；仅作为默认配置，不写死主逻辑。
 - `evals/evals.json`：结构化 trigger / non-trigger / routing 回归样例。
 - `references/learning-pack-standards.md`：轻量系统学习包标准。
-- `references/pre-research-source-expansion.md`：研究前扩源、候选来源筛选和微信公众号/同步渠道边界。
-- `references/channel-selection-rubric.md`：按主题选择渠道。
+- `references/pre-research-source-expansion.md`：ACQUIRE 阶段的 Gap/NBE 驱动候选发现和微信公众号/同步渠道边界。
+- `references/channel-selection-rubric.md`：按当前 Gap、信息增益、证据角色和独立性动态选择渠道与开源项目。
 - `references/channel-registry.md`：预置渠道库和后续补录位置。
 - `references/source-quality-rules.md`：证据强度、来源筛选、引用和封闭渠道处理规则。
 - `references/obsidian-output-contract.md`：Obsidian 写回结构和 Vault 规范。
