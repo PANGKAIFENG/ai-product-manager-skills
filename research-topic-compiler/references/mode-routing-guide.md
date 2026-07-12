@@ -26,6 +26,24 @@ Use this file when `research-topic-compiler/SKILL.md` identifies a mode but the 
 - 冷启动或事实敏感主题先读取 `concept-lens-source-and-factuality.md` 并浏览验证；用到历史来源时区分证据和模型推断。
 - 生成 HTML 后运行 `python3 scripts/validate_html_artifact.py <path-to-dashboard.html>`，并在可用时做浏览器视觉检查。
 
+## General Research Dashboard Output
+
+This is an output artifact route for `Normal Research` and `Application`, not a new research mode.
+
+### Trigger Signals
+
+- 用户明确要求一般专题研究或应用研究的 HTML、网页看板、可视化研究报告。
+- 研究结果需要同时服务领导、产品、研发、设计或运营，并把结论、证据、置信度和行动放在同一个扫描面。
+- 用户已有带来源的 Markdown/Research Project，要求转换为 Dashboard；若现有证据已覆盖目标，不要为了转换格式重新扩源。
+
+### Working Rules
+
+- 选择 `research-dashboard-html`，读取 `research-dashboard-output-contract.md`。
+- Normal Research/Application 先完成适用的迭代循环，并通过 `research-dashboard-output-contract.md` 的 renderable research state 门禁；唯一终态本身不够。不要让页面生成替代 FRAME、Evidence、Framework Change 或 saturation gate。
+- 保留引用、置信度、矛盾、residual Gaps、residual risks 和终态；压缩展示不能把弱证据升级为确定结论。
+- 输出 `dashboard.html` 与 `summary.md`，运行 `python3 scripts/validate_html_artifact.py <path-to-dashboard.html>`，并做桌面/移动端浏览器检查。
+- 普通聊天、Markdown-only、L1/L2 快答和 UI mockup 请求不自动生成 HTML。用户要求最终选一个时仍转交 `decision-research`。
+
 ## Learning Pack Mode
 
 ### Trigger Signals

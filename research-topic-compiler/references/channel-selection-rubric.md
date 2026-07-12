@@ -1,91 +1,120 @@
-# Channel Selection Rubric
+# Dynamic Channel Selection Rubric
 
-Use this rubric after depth selection. The goal is to pick channels that fit the topic instead of searching everywhere.
+Use this rubric when planning a Next Best Evidence (NBE) Action. Select a channel for the current highest-value Gap, not for the topic in the abstract and not once for the entire run.
 
-## Selection Questions
+This rubric refines Normal Research and Application. It does not change routing for Learning Pack, Product Candidate, Radar, or other mode-specific flows.
 
-Answer these before collecting evidence:
+## Selection Gate
 
-- What kind of topic is this: platform, open-source implementation, product/market, academic method, policy/compliance, security, design/UX, trend, or internal knowledge?
-- What claims must the report answer: definition, mechanism, adoption, best practice, evaluation, product fit, market signal, user pain, or risk?
-- How current must the evidence be?
-- Which evidence type is missing from Obsidian: official definition, implementation, user feedback, benchmark, pricing, adoption, or expert intent?
-- Are any useful channels closed, paid, or login-only?
-- Is the current source pool too narrow, requiring a pre-research candidate expansion step before deep reading?
+Before selecting a channel, answer:
 
-## Theme to Channel Mapping
+- Which ranked Gap is the action targeting, and what is its closure criterion?
+- What result would materially change the Claim or Framework?
+- Does the action need an original definition, implementation, independent validation, market signal, contrast, counterexample, or context?
+- Which lineage or publisher must be independent from evidence already held?
+- How current and direct must the Evidence be?
+- What are the time, tool, payment, login, privacy, and authorization risks?
+- Is there already enough authoritative Evidence for the current purpose?
 
-| Topic type | Strong default channels | Optional channels | Usually skip |
-| --- | --- | --- | --- |
-| Platform/API capability | Official docs, release notes, SDK examples, company blogs | GitHub examples, changelog, community issues | Product Hunt unless adoption matters |
-| Open-source engineering | GitHub repos, issues, discussions, package registries, docs | HN, Reddit, blogs, benchmarks | App stores unless end-user product |
-| Product/competitor research | Product Hunt, G2, Capterra, AlternativeTo, app stores, browser/IDE marketplaces, pricing pages, changelogs | Reddit, X, YouTube demos, job posts | Academic papers unless core tech |
-| Academic/method research | Papers, technical reports, benchmarks, Papers with Code, OpenReview | Official labs, GitHub implementations | Product review sites |
-| AI agent/tooling practice | Official docs, GitHub, engineering blogs, examples, marketplace, eval reports | X, HN, Discord if authorized | General news unless launch context |
-| Security/compliance | Vendor security docs, NVD/CVE, advisories, standards, regulator docs | GitHub issues, security blogs | Unverified social posts |
-| Design/UX patterns | Product screenshots, Mobbin, Pageflows, app stores, Figma Community, product docs | YouTube walkthroughs, social launch posts | Academic unless UX research |
-| Market/category sizing | Company filings, investor decks, analyst reports, Crunchbase/PitchBook if available, job posts | News, newsletters, Similarweb/BuiltWith | Random SEO articles |
-| Trend/launch tracking | Official announcements, X, Product Hunt, HN, newsletters, GitHub releases | Reddit, Discord, YouTube | Old evergreen docs alone |
-| China-local practitioner research | WeChat Official Accounts, Sogou Weixin, Chinese tech media, Zhihu, Juejin/CSDN, local cloud docs | WeWe RSS for known accounts, third-party APIs with authorization | Random reposts without original source |
+If the last answer is yes, skip channel expansion and proceed to evaluation or synthesis. Do not search merely to satisfy channel diversity.
 
-## Pre-Research Expansion Decision
+## Rank Actions, Then Channels
 
-Use `references/pre-research-source-expansion.md` when the topic needs broader inputs before formal evidence collection.
+Rank candidate actions by their expected reduction of decision-relevant uncertainty. Default priorities are:
 
-Recommended defaults:
+1. Must Gap before Should before Could.
+2. Trace a secondary Claim to its origin before collecting more summaries of it.
+3. Prefer high decision impact and high uncertainty.
+4. Prefer direct Evidence that can meet the closure criterion.
+5. Prefer a genuinely independent lineage when corroboration or generalization is required.
+6. Prefer the lowest reasonable cost and access risk among actions with similar information gain.
+7. Seek contrast or counterexamples before stabilizing a high-impact generalized Claim.
 
-- New or unfamiliar L3 topic: collect 5-10 candidates from 2-4 high-signal channels.
-- L4 deep topic: collect 10-20 candidates, then promote only the strongest sources into `02_证据与卡片`.
-- Product research: start with Product Hunt, review sites, marketplaces, pricing pages, changelogs, and official demos before generic SEO articles.
-- Chinese practitioner research: use Sogou Weixin/Web discovery, then verify original article/account and avoid treating snippets as final evidence.
-- Known account monitoring: use RSS/WeWe RSS/RSSHub if available; otherwise record as watchlist rather than trying to scrape aggressively.
-
-Do not let expansion become the research itself. Candidate discovery is a triage stage; formal conclusions still need readable sources, provenance, and evidence labels.
+Channel familiarity, brand visibility, search ranking, Stars, and available snippets are weak convenience signals. They do not outrank information gain, directness, independence, or access feasibility.
 
 ## Channel Decision Format
 
-For each channel, record:
+Record each considered action, including the selected one:
 
 ```markdown
-| Channel | Decision | Reason | Sample target | Evidence role |
-| --- | --- | --- | --- | --- |
-| Official docs | Use | Need primary definition | 3-5 docs | Strong definition evidence |
-| X | Skip | Topic is not time-sensitive | 0 | N/A |
+| Target Gap | Candidate action/channel | Source role | Expected information gain | Independence target | Cost/access risk | Decision | Selection reason |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| <gap ID> | <specific target via channel> | <role> | <what uncertainty may change> | <lineage/publisher requirement> | <risk> | <select/defer/skip> | <why it ranks here> |
 ```
 
-## Scoring Channels
+Every selected action must have all seven explanatory fields. “Popular,” “high-star,” “industry leader,” “many results,” or “recommended channel for this topic” is insufficient by itself.
 
-Score candidate channels from 0 to 3:
+## Gap to Channel Lookup
 
-| Score | Meaning |
-| --- | --- |
-| 0 | Irrelevant or too noisy for this topic |
-| 1 | Useful for discovery only |
-| 2 | Useful supporting evidence |
-| 3 | Core evidence channel |
+Use this table as a candidate generator after the Gap and evidence role are known. It is not a fixed itinerary.
 
-Prefer channels with score `2-3`. Use score `1` only to discover leads that can be verified elsewhere.
+| Needed Evidence | Strong candidate channels | Supporting channels |
+| --- | --- | --- |
+| Platform definition or current capability | Official docs, source code, standards, release notes, SDK examples | Maintainer issues, engineering blogs, changelog |
+| Open-source mechanism or implementation | Canonical repo docs/source/tests/releases, package registry | Independent implementations, issues, discussions, benchmarks |
+| Product positioning or packaging | Official product pages, pricing, changelog, launch posts | Product Hunt, marketplaces, demos, reviews |
+| User pain or adoption friction | Structured reviews, support/issue evidence, independent user reports | Reddit, HN, X, videos, authorized communities |
+| Academic method or benchmark | Papers, technical reports, OpenReview, reproducible benchmarks | Lab pages, implementation repos, critique papers |
+| Security or compliance | Standards, regulator docs, NVD/CVE, vendor advisories | Security research, issue trackers, credible technical reports |
+| Design or UX behavior | Current product, product docs, screenshots, Pageflows/Mobbin | App stores, demos, user reports, Figma Community |
+| Market size or organizational investment | Filings, investor materials, regulator statistics | Analyst reports, job posts, Similarweb/BuiltWith |
+| Recent launch or trend | Official announcements, release feeds, changelogs | Product Hunt, HN, X, newsletters, communities |
+| China-local practice | Original WeChat articles, local platform/cloud docs, direct implementations | Sogou discovery, Zhihu, Juejin/CSDN, Chinese tech media |
+
+Use generic Web search to locate candidates across these channels, not as an Evidence class of its own.
+
+## Open-Source Project Sampling
+
+Select repositories by the evidence role required to close the Gap. A project may hold more than one role, but each selected project needs one primary reason for inclusion.
+
+| Role | What it tests | Typical candidate |
+| --- | --- | --- |
+| `Canonical` | What the originating owner officially specifies or implements | Owner-maintained repo or official example |
+| `Independent` | Whether the mechanism transfers outside the original lineage | Separate maintainers with no fork/derivation relation |
+| `Production` | How the practice survives real operations, maintenance, and constraints | Deployed project with releases, issues, tests, and active use evidence |
+| `Contrast` | How a materially different design solves the same problem | Alternative architecture chosen on an explicit comparison dimension |
+| `Counterexample` | Where the Claim fails, causes harm, or does not generalize | Failed implementation, limitation report, rejected design, or conflicting result |
+
+For every selected project, record:
+
+- target Gap and closure criterion;
+- project role and observable artifacts to inspect;
+- expected information gain and framework-changing result;
+- lineage root, fork/derivation relationship, and independence group;
+- cost/access/execution risk and selection reason;
+- limitations such as toy status, stale releases, narrow domain, or missing production evidence.
+
+Do not run third-party code unless the user explicitly asks and the risk is acceptable. Stars and forks may help discover candidates but are weak popularity signals. Never use them as the primary selection reason or as proof of quality, production readiness, correctness, or independent validation. Prefer the evidence-bearing artifacts relevant to the Gap: source, tests, configs, releases, issue history, deployment evidence, maintainer explanations, and reproducible behavior.
+
+## Dynamic Re-selection
+
+Re-run channel selection after each `EVALUATE → UPDATE FRAMEWORK → CHECK SATURATION` cycle. The next Gap may require a different evidence role and channel.
+
+- A recovered original source may eliminate the need for more same-publisher material.
+- A disputed Claim may shift the next action from official docs to independent validation.
+- A generalized Claim may require a peer comparison or counterexample.
+- A low-yield action may lower the rank of that channel for the current Gap without banning the channel globally.
+- A new Must Gap may replace the prior queue leader.
+
+Do not continue collecting from a selected channel after the target Gap closes or its marginal information gain falls below the next feasible action.
 
 ## Closed Channel Handling
 
-Closed or semi-closed channels include paid reports, private Slack/Discord, login-only communities, workspace docs, analytics dashboards, customer support tools, CRM, private repositories, and private Product Hunt/G2 vendor dashboards.
+Closed or semi-closed channels include paid reports, private Slack/Discord, login-only communities, workspace docs, analytics dashboards, customer support tools, CRM, private repositories, and private vendor dashboards.
 
-Rules:
+- Use them only when the user is authorized and explicitly includes the channel in the current run.
+- Do not bypass paywalls, login, robots restrictions, API limits, captcha, or access controls.
+- Record the target Gap, expected value, access risk, and affected Claim when access is blocked.
+- Do not quote sensitive private content into public-facing artifacts without confirmation.
+- A sending or syncing action requires current-run authorization and a visible confirmation point.
+- For unavailable high-value sources, preserve the action as blocked and consider a public alternative in the next NBE decision.
 
-- Use only when the user has authorization and explicitly asks to include that channel.
-- Do not bypass paywalls, login, robots restrictions, or access controls.
-- Do not quote sensitive private content into public-facing files unless the user confirms it belongs in the Vault.
-- Mark access limitations in the evidence matrix.
-- If the channel is valuable but unavailable, list it under `仍需验证` or `04_下一步`.
-- Client-side sending or syncing, such as forwarding WeChat articles to an Obsidian sync account, requires current-run authorization and a visible confirmation point before the final send.
-- Non-official APIs for closed or semi-closed platforms require explicit user approval, token handling discipline, and access-limit notes.
+## When the User Adds a Channel
 
-## When User Adds a Channel
+Classify a user-provided channel without changing other mode routes:
 
-If the user provides a new channel, decide whether it is:
+- `run-only`: useful for the current Gap.
+- `registry-candidate`: potentially reusable but not yet validated across topics.
+- `registry-entry`: the user explicitly requests addition to the channel library.
 
-- `run-only`: useful for this topic only.
-- `registry-candidate`: likely useful for future topics, but needs confirmation.
-- `registry-entry`: user explicitly wants it added to the Skill channel library.
-
-For `registry-entry`, update `channel-registry.md` with best-fit topic, access type, evidence level, query method, risks, and notes.
+For `registry-entry`, update `channel-registry.md` with best-fit evidence roles, access type, query method, source-quality ceiling, independence considerations, risks, and notes. Registry presence only makes a channel discoverable; it never makes the channel mandatory.

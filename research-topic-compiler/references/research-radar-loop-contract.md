@@ -11,6 +11,12 @@ Research Radar Loop is used when a topic is changing over time and the user want
 
 The loop maintains signal quality, evidence changes, conclusion diffs, and practical implications. It is not a generic news monitor, and it does not create Codex automations unless the user explicitly asks to create or schedule one.
 
+## v0.1 Compatibility Boundary
+
+The generic Evidence-Driven Iterative Research Loop applies formally to Normal Research and Application in v0.1. Radar keeps the mode-specific loop, state files, signal taxonomy, pause cadence and output template defined here; do not replace them with the generic seven-step control plane.
+
+Radar may reuse compatible evidence primitives where useful: canonical source identity, lineage-aware deduplication, evidence-backed conclusion diffs, `No change` records and evidence-driven `supersedes`. This reuse must not create parallel state files or change Radar into a one-time research run. Learning Pack and Product Candidate routing are likewise outside this contract.
+
 ## When to Use
 
 Use this contract for topics that meet most of these conditions:

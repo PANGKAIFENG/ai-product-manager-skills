@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>AI 产品 tracing 健康研究看板</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <style>
+    * { box-sizing: border-box; letter-spacing: 0; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: #f5f7f8; color: #172126; }
+    [x-cloak] { display: none !important; }
+    .panel { border: 1px solid #d9e0e3; border-radius: 6px; background: #fff; }
+    .tab-active { background: #0f766e; color: #fff; }
+    .tab-idle { background: #fff; color: #334155; }
+  </style>
+</head>
+<body>
+  <main data-research-dashboard x-data="{ persona: 'leader' }" class="min-h-screen">
+    <header data-dashboard-summary class="border-b border-slate-200 bg-white">
+      <div class="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div class="max-w-4xl">
+            <p class="text-sm font-semibold text-teal-700">Application Research · complete-fit-for-purpose</p>
+            <h1 class="mt-2 text-2xl font-bold text-slate-950 sm:text-3xl">AI 产品 tracing 健康研究看板</h1>
+            <p class="mt-3 text-base leading-7 text-slate-700">首屏应优先暴露业务完成、技术失败和成本倒挂，再把分位耗时与具体 trace 放入下钻。</p>
+          </div>
+          <div data-confidence class="panel grid min-w-72 grid-cols-2 gap-3 p-3 text-sm">
+            <div><span class="block text-slate-500">读者</span><strong>领导 / 产品 / 研发</strong></div>
+            <div><span class="block text-slate-500">置信度</span><strong class="text-teal-700">中高</strong></div>
+            <div><span class="block text-slate-500">来源状态</span><strong>3 个本地来源</strong></div>
+            <div><span class="block text-slate-500">残余 Gap</span><strong class="text-amber-700">2 项</strong></div>
+          </div>
+        </div>
+        <nav class="mt-5 flex flex-wrap gap-4 border-t border-slate-200 pt-4 text-sm font-medium" aria-label="页面导航">
+          <a class="text-teal-700 hover:underline" href="#readers">角色视角</a>
+          <a class="text-teal-700 hover:underline" href="#evidence">证据图</a>
+          <a class="text-teal-700 hover:underline" href="#actions">行动</a>
+          <a class="text-teal-700 hover:underline" href="#sources">来源</a>
+        </nav>
+      </div>
+    </header>
+
+    <div class="mx-auto grid min-w-0 max-w-7xl gap-5 px-4 py-6 sm:px-6 lg:px-8">
+      <section id="readers" data-persona-tabs class="panel p-4 sm:p-5">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <h2 class="text-lg font-bold">角色视角</h2>
+          <div class="inline-flex w-full rounded-md border border-slate-300 p-1 sm:w-auto" role="tablist" aria-label="选择读者角色">
+            <button data-persona-control="leader" class="min-h-10 flex-1 rounded px-4 text-sm font-semibold sm:flex-none" :class="persona === 'leader' ? 'tab-active' : 'tab-idle'" @click="persona = 'leader'" type="button">领导</button>
+            <button data-persona-control="product" class="min-h-10 flex-1 rounded px-4 text-sm font-semibold sm:flex-none" :class="persona === 'product' ? 'tab-active' : 'tab-idle'" @click="persona = 'product'" type="button">产品</button>
+            <button data-persona-control="engineering" class="min-h-10 flex-1 rounded px-4 text-sm font-semibold sm:flex-none" :class="persona === 'engineering' ? 'tab-active' : 'tab-idle'" @click="persona = 'engineering'" type="button">研发</button>
+          </div>
+        </div>
+        <div class="mt-4 min-h-28 border-l-4 border-teal-600 bg-teal-50 p-4">
+          <p data-persona-panel="leader" x-show="persona === 'leader'">先看业务完成、受影响用户和今日前三问题；成本与稳定性必须能进入负责人队列。</p>
+          <p data-persona-panel="product" x-cloak x-show="persona === 'product'">先看一次完成率、纠正/重做/放弃率，以及推理成本与任务价值是否匹配。</p>
+          <p data-persona-panel="engineering" x-cloak x-show="persona === 'engineering'">先看模型、网络、Tool、Skill、Runtime 分层错误，以及根任务和委托链字段覆盖。</p>
+        </div>
+      </section>
+
+      <section id="evidence" data-evidence-map class="grid gap-4 lg:grid-cols-3">
+        <article class="panel p-5">
+          <p class="text-xs font-bold uppercase text-teal-700">强证据</p>
+          <h2 class="mt-2 text-base font-bold">结果指标应高于调用指标</h2>
+          <p class="mt-2 text-sm leading-6 text-slate-600">业务完成率、一次完成率和放弃率直接对应用户是否拿到可用结果。</p>
+        </article>
+        <article class="panel p-5">
+          <p class="text-xs font-bold uppercase text-amber-700">待验证</p>
+          <h2 class="mt-2 text-base font-bold">成本倒挂阈值</h2>
+          <p class="mt-2 text-sm leading-6 text-slate-600">推理点数高于核心工具点数是风险信号，正式阈值需结合任务价值和定价验证。</p>
+        </article>
+        <article class="panel p-5">
+          <p class="text-xs font-bold uppercase text-rose-700">关键 Gap</p>
+          <h2 class="mt-2 text-base font-bold">责任归因字段不完整</h2>
+          <p class="mt-2 text-sm leading-6 text-slate-600">缺少根任务与 Skill 委托链时，不能把执行 Skill 的失败直接解释为业务 Skill 责任。</p>
+        </article>
+      </section>
+
+      <section class="panel overflow-hidden">
+        <div class="border-b border-slate-200 px-5 py-4"><h2 class="text-lg font-bold">框架变化</h2></div>
+        <div class="grid gap-px bg-slate-200 md:grid-cols-2">
+          <div class="bg-white p-5"><span class="text-sm font-semibold text-slate-500">Before</span><p class="mt-2">首屏以调用量、错误率和耗时为主。</p></div>
+          <div class="bg-white p-5"><span class="text-sm font-semibold text-teal-700">After</span><p class="mt-2">首屏采用规模、健康红线、行动队列三层；技术分位数进入下钻。</p></div>
+        </div>
+      </section>
+
+      <section id="actions" data-next-actions class="panel p-5">
+        <div class="flex items-center justify-between gap-4"><h2 class="text-lg font-bold">下一步行动</h2><span class="rounded bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-900">2 个残余 Gap</span></div>
+        <ol class="mt-4 grid gap-3 md:grid-cols-3">
+          <li class="border-l-4 border-teal-600 bg-slate-50 p-4"><strong>01 补归因字段</strong><p class="mt-1 text-sm text-slate-600">root request、tenant、outcome、Skill delegation、runtime stage。</p></li>
+          <li class="border-l-4 border-amber-500 bg-slate-50 p-4"><strong>02 建指标字典</strong><p class="mt-1 text-sm text-slate-600">定义目的、公式、阈值、字段、下钻与责任层。</p></li>
+          <li class="border-l-4 border-slate-500 bg-slate-50 p-4"><strong>03 建复发闭环</strong><p class="mt-1 text-sm text-slate-600">问题簇、负责人、SLA、修复版本和复发率。</p></li>
+        </ol>
+      </section>
+
+      <section id="sources" data-sources class="panel min-w-0 p-5">
+        <h2 class="text-lg font-bold">来源与假设</h2>
+        <div class="mt-4 overflow-x-auto">
+          <table class="w-full min-w-[640px] border-collapse text-left text-sm">
+            <thead><tr class="border-b border-slate-300 text-slate-500"><th class="py-2 pr-4">来源</th><th class="py-2 pr-4">支持范围</th><th class="py-2">级别</th></tr></thead>
+            <tbody>
+              <tr class="border-b border-slate-200"><td class="py-3 pr-4"><code>references/iterative-research-loop.md</code></td><td class="py-3 pr-4">终态与残余 Gap</td><td class="py-3">合同</td></tr>
+              <tr class="border-b border-slate-200"><td class="py-3 pr-4"><code>references/research-dashboard-output-contract.md</code></td><td class="py-3 pr-4">Dashboard 信息架构</td><td class="py-3">合同</td></tr>
+              <tr><td data-source-path class="py-3 pr-4"><code>evals/fixtures/research-dashboard/summary.md</code></td><td class="py-3 pr-4">Fixture 内容</td><td class="py-3">本地样例</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script data-persona-fallback>
+    document.addEventListener('DOMContentLoaded', () => {
+      const controls = [...document.querySelectorAll('[data-persona-control]')];
+      const panels = [...document.querySelectorAll('[data-persona-panel]')];
+      const activate = (persona) => {
+        controls.forEach((control) => {
+          const active = control.dataset.personaControl === persona;
+          control.setAttribute('aria-selected', String(active));
+          control.classList.toggle('tab-active', active);
+          control.classList.toggle('tab-idle', !active);
+        });
+        panels.forEach((panel) => {
+          panel.removeAttribute('x-cloak');
+          panel.hidden = panel.dataset.personaPanel !== persona;
+        });
+      };
+      controls.forEach((control) => {
+        control.addEventListener('click', () => activate(control.dataset.personaControl));
+      });
+      activate('leader');
+    });
+  </script>
+</body>
+</html>
