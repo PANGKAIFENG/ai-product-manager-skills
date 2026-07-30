@@ -22,6 +22,18 @@
 
 不要凭空画一个新页面代替真实项目页面。
 
+## UI Source Resolution Gate
+
+把“找到一个看起来像前端的目录”和“确认真实 UI 基线”分开处理：
+
+1. 用户明确给出 repo/app/route 时，验证目标页面和组件确实存在。
+2. 未给出路径时，可以发现候选，但只有唯一候选且产品标识、路由或组件证据一致时才直接使用。
+3. 候选不唯一、页面归属不明或无法验证时，停止视觉生成并问用户一个来源确认问题；不要按目录名、最近修改时间或 `latest` 后缀猜测。
+4. 用户确认没有真实前端后，才降级到 `design-system`、`reference-html` 或 `screenshot`。截图推断要记录原图 hash，并明确哪些规范可观察、哪些生产组件和 token 未验证。
+5. 没有任何可用视觉证据时，PRD 可继续写，但 HTML/截图状态停在 `source_resolution_required`，不得声称项目 UI 对齐。
+
+来源选择和选择依据必须写入 `mockup-evidence.json`；详细字段和状态迁移见 `mockup-evidence-manifest.md`。
+
 ## Static HTML / Screenshot Criteria
 
 以下情况必须补静态 HTML mockup 或 preview，并生成截图：
@@ -61,6 +73,8 @@ PRD 中写清：
 3. PRD 明确定义的关键失败态、空态、确认态或成功态，按验收需要补充截图。
 4. 将图片嵌入对应功能/页面/状态章节，并在图片附近说明状态和检查重点。
 5. 同一截图可以复用，但不能只集中放在文末“关联产物”或“本地草稿附录”。
+6. HTML 或 UI 基线更新后，现有截图立即视为 stale。重新渲染后用 `capture_mockup_evidence.py` 记录 HTML hash、截图 hash 和截图来源 HTML hash。
+7. 截图修改时间早于 HTML、截图来源 hash 与当前 HTML 不一致、或 PRD 没有引用 manifest 中的截图时，不得声明完成。
 
 仅在以下情况允许跳过实际截图：
 
@@ -108,6 +122,8 @@ PRD 中至少写：
 - 实际生成的截图文件。
 - 对应功能章节中的 Markdown 图片或等价的正文图片引用。
 - 原型匹配结论：目标态、现状参考或结构不匹配。
+- UI 来源种类、路径与 commit/hash；无法确定真实前端时的用户确认结果。
+- `mockup-evidence.json` 路径及当前状态；只有通过新鲜度校验的截图可以作为目标态证据。
 
 ## Correction Mode
 

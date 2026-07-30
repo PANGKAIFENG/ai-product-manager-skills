@@ -19,6 +19,7 @@ This project uses semantic-ish release tags for public snapshots. The current fo
 
 ### Changed
 
+- Updated `prd-architect` with an explicit UI source-resolution gate, screenshot/reference fallback rules, and a durable mockup evidence manifest that invalidates stale screenshots after HTML or baseline changes.
 - Refactored `prd-review`, `decision-research`, and `research-topic-compiler` toward router-plus-assets structure with detailed rules in `references/`.
 - Replaced public UI wireframe references to local templates with bundled `references/templates/`.
 - Documented maintainer-only runtime sync guidance in `docs/local-distribution.md` instead of public Skill bodies.

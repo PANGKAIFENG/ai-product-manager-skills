@@ -94,6 +94,7 @@ description: >
 | 资产 | 何时加载 |
 | --- | --- |
 | `references/mockup-handoff.md` | PRD 涉及任何用户可见页面、弹窗、面板、按钮、表单或状态提示；即使用户没有单独要求 HTML 也要加载 |
+| `references/mockup-evidence-manifest.md` | 页面型 PRD 需要解析真实 UI 来源、生成 HTML/截图并验证证据新鲜度 |
 | `references/drawio-templates.md` | 用户要求可编辑流程图 / 架构图，或 Standard / AI-native 存在多阶段链路、上下游依赖、状态流转 |
 | `references/handoff-appendix.md` | 用户明确要求开发 handoff、字段定义、协议、接口、adapter、metadata 或实现计划前置材料 |
 | `references/prd-shape-gates.md` | 需要自检 PRD 是否过重、过技术化、章节误激活或待确认项处理不当 |
@@ -114,6 +115,36 @@ description: >
 6. 截图直接插入它解释的功能或状态章节，不在文末集中堆放。
 7. standalone HTML 必须明确标记为视觉交付参考，不得声称它是生产代码。
 8. 只有用户明确要求纯文本、需求完全无界面、阻断性页面决策未关闭、或真实项目不可访问且无法形成有证据的静态复刻时可以跳过。最终说明要写清原因、受影响页面和待补动作。
+
+### 3B. Resolve The UI Baseline
+
+生成视觉产物前必须先把 UI 来源解析为唯一、可追溯的基线。不要仅凭目录名包含 `latest`、更新时间较新或页面名称相似就自行选择前端项目。
+
+按以下顺序处理：
+
+1. 用户已给出明确前端仓库、app、路由或组件时，读取并验证它确实承载目标页面。
+2. 用户没有给路径时，可以在已授权的 workspace 和会话上下文中发现候选仓库；只有存在唯一且能由路由、组件或产品标识证明的候选时才直接采用。
+3. 存在多个候选、找不到目标页面或无法证明仓库身份时，停止生成 HTML，向用户问一个简短的来源确认问题。PRD 文案可以继续，但视觉证据状态必须标为 `source_resolution_required`。
+4. 用户确认没有可访问的真实前端后，优先请其提供当前页面截图、参考 HTML 或 UI 规范。允许从这些证据提取颜色、字体、间距、圆角、密度、导航结构和组件形态，但来源必须记为 `screenshot` 或 `reference-html`，并明确“截图推断，不代表生产组件已验证”。
+5. 既没有真实前端，也没有截图、参考 HTML 或 UI 规范时，不生成声称项目对齐的高保真 HTML；说明缺少什么证据以及用户补充后从哪个状态继续。
+
+来源强度从高到低为：`frontend-repo > design-system > reference-html > screenshot`。低强度来源可以支撑视觉草稿，但不能升级为“生产对齐”结论。
+
+### 3C. Durable UI Evidence Workflow
+
+页面证据链按轻量、可恢复状态机执行：
+
+`source_resolution_required -> source_resolved -> mockup_built -> screenshots_fresh -> prd_embedded -> verified`
+
+这类似 Temporal 的 durable workflow 思路，但默认不引入 Temporal 服务依赖。使用 `mockup-evidence.json` 保存 checkpoint 和 provenance，使用确定性脚本验证状态迁移：
+
+- UI 基线变化会使 `mockup_built` 及其后状态失效。
+- HTML 内容变化会使 `screenshots_fresh`、`prd_embedded` 和 `verified` 失效。
+- 截图变化或丢失会使 `prd_embedded` 和 `verified` 失效。
+- PRD 修改后必须重新记录并验证正文图片引用。
+- 不允许仅凭“文件存在”恢复到完成态；必须重新计算 commit/hash 并通过门禁。
+
+读取 `references/mockup-evidence-manifest.md`，按其中命令捕获和验证 evidence manifest。截图时间早于 HTML 时必须失败并要求重拍；不要通过触碰文件时间或重新保存旧图绕过。
 
 ### 4. Write PRD
 
@@ -189,17 +220,12 @@ python3 scripts/check_prd_shape.py <prd.md> --type <lite|standard|ai-native> --a
 python3 scripts/check_prd_shape.py <prd.md> --type <lite|standard|ai-native> --publish-ready
 ```
 
-当已有与目标 PRD 一致的 HTML/mock，或用户明确要求“截图放入对应模块”时增加：
-
-```bash
-python3 scripts/check_prd_shape.py <prd.md> --type <lite|standard|ai-native> --require-mockup-evidence
-```
-
-页面型 PRD 还必须把本轮生成的 HTML 作为独立产物传给检查器：
+页面型 PRD 的完成态必须同时检查正文截图、本轮 HTML 和 evidence manifest：
 
 ```bash
 python3 scripts/check_prd_shape.py <prd.md> --type <lite|standard|ai-native> \
-  --require-mockup-evidence --require-mockup-artifact <mockup.html>
+  --require-mockup-evidence --require-mockup-artifact <mockup.html> \
+  --require-current-mockup-evidence --mockup-manifest <mockup-evidence.json>
 ```
 
 该门禁会检查功能正文中是否有图片证据，并验证本地图片引用是否真实存在；只放在“本地草稿附录/关联产物”中的图片不算完成。发布版应先完成本地证据检查，再由发布流程上传或重写图片引用。
@@ -236,6 +262,8 @@ python3 scripts/check_prd_shape.py <prd.md> --type <lite|standard|ai-native> \
 - 待确认项和假设没有混在一起。
 - mockup / 图示 / handoff 附加资产只在需要时启用。
 - 页面型 PRD 已在同一交付中生成项目 UI 对齐的 HTML/preview，关键状态已实际截图并嵌入对应功能章节；旧原型不匹配时已更新或明确停止使用。
+- 页面型 PRD 已解析并记录唯一 UI 基线；来源不明确时已询问用户，没有真实前端时才使用用户确认的截图或参考 HTML，并标注证据强度。
+- `mockup-evidence.json` 已记录基线 commit/hash、HTML hash、截图来源 hash 和 PRD hash；当前文件通过新鲜度门禁，HTML 更新后的旧截图不能继续充当完成证据。
 - 无截图只允许发生在明确的跳过条件下，且原因和待补状态已说明；HTML 路径或截图计划本身不算页面证据。
 - 涉及发布到钉钉或在线文档时，本地 mock 链接、截图路径、关联产物和待确认项没有污染发布版正文。
 - 如果本轮生成 Draw.io 图示，`.drawio` 已验证或验证限制已明确说明。
@@ -254,6 +282,9 @@ Smoke prompts:
 - `这份 PRD 后面要上传钉钉，mock 截图直接放到对应模块里。`，应启用发布版正文规则，不输出本地 mock 链接、关联产物聚合区或待确认事项正文。
 - `基于已有 HTML mockup 起草多页面 PRD，并把关键页面截图放到对应功能章节。`，应先校验原型与目标结构是否一致；一致则实际生成截图并内嵌，不一致则更新原型或明确停止把旧原型当目标稿。
 - `基于真实项目写一个新增审批抽屉的 PRD。`，即使用户没有说 HTML，也应在同一交付中生成 UI 对齐 HTML、关键状态截图并回填对应章节。
+- `工作区里有两个可能的前端仓库，但我没说用哪个。`，应先问一个来源确认问题，不自行选择名称带 `latest` 的目录。
+- `我们没有可访问的前端项目，我只给你一张现有页面截图。`，应把截图作为低置信视觉基线，提取可观察规范并记录 hash，不声称已验证生产组件。
+- `HTML 刚更新过，但目录里已有上一版截图。`，必须让截图失效并重拍，不能因图片文件存在而通过。
 - `写一个完全没有用户界面的 API 限流策略 PRD。`，不应生成 HTML 或截图。
 
 Non-trigger prompts:
@@ -270,8 +301,10 @@ Resources:
 - `references/templates/prd-standard.md`
 - `references/templates/prd-ai-native.md`
 - `references/mockup-handoff.md`
+- `references/mockup-evidence-manifest.md`
 - `references/drawio-templates.md`
 - `references/handoff-appendix.md`
 - `references/prd-shape-gates.md`
 - `scripts/check_prd_shape.py`
+- `scripts/capture_mockup_evidence.py`
 - `scripts/validate_drawio.py`

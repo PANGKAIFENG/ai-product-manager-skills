@@ -66,6 +66,39 @@
         "不存在 HTML 或截图产物。",
         "说明该需求没有用户可见界面，因此未触发 UI 证据链。"
       ]
+    },
+    {
+      "id": "ambiguous-frontend-source-asks-before-visual-generation",
+      "prompt": "帮我给现有企业后台新增审批中心并生成 PRD 和 HTML。当前 workspace 里有 admin-web、console-latest 两个可能的前端仓库，我没有说明真实页面在哪个项目。",
+      "expected_output": "识别 UI 来源不唯一，先问一个简短的真实前端确认问题；可以继续整理 PRD 文案，但不得自行选择名称带 latest 的目录生成声称项目对齐的 HTML。",
+      "files": [],
+      "expectations": [
+        "视觉工作流停在 source_resolution_required。",
+        "问题只要求确认真实 repo/app/route，不重复询问可从仓库读取的信息。",
+        "确认来源前不存在声称项目对齐的 HTML 或截图。"
+      ]
+    },
+    {
+      "id": "screenshot-fallback-records-lower-confidence-baseline",
+      "prompt": "我们没有可访问的前端仓库，只能给你一张当前页面截图。请按截图风格写页面型 PRD、生成 HTML 和截图。",
+      "expected_output": "在用户已确认无仓库的前提下，以 screenshot 作为低置信 UI 基线，提取可观察的颜色、字体、间距、圆角、密度和导航结构；记录原图 hash，不声称生产组件或 token 已验证，并完成 manifest 新鲜度门禁。",
+      "files": [],
+      "expectations": [
+        "mockup-evidence.json 的 baseline.kind 为 screenshot。",
+        "输出明确区分截图可观察规范与未验证的生产实现。",
+        "HTML、截图和 PRD 引用通过当前证据校验。"
+      ]
+    },
+    {
+      "id": "updated-html-invalidates-existing-screenshots",
+      "prompt": "页面型 PRD 的 mockup.html 刚按最新前端改过，但 screenshots 目录仍是旧版图片。请检查并完成交付。",
+      "expected_output": "识别 HTML 变化使现有截图失效，重新渲染关键状态、更新 PRD 内嵌图片并生成 mockup-evidence.json；不得因为旧图片存在而声明完成。",
+      "files": [],
+      "expectations": [
+        "旧截图在重拍前被判定为 stale。",
+        "每张新截图记录当前 HTML SHA-256 为 source_mockup_sha256。",
+        "PRD 引用、HTML hash、截图 hash 和 UI baseline 通过确定性门禁。"
+      ]
     }
   ]
 }
