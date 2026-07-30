@@ -22,8 +22,50 @@
     {
       "id": "publish-ready-mock-screenshots-inline",
       "prompt": "帮我写一个 PRD，后面要上传钉钉。这个需求有两个 HTML mock：选择文件后的输入框状态、发送后的任务卡状态。mock 截图要放到对应模块里，别放开发点不开的本地链接。",
-      "expected_output": "启用发布版正文规则，选择合适 PRD 模板，加载 mockup handoff；文档信息表不放本地 mock 链接，截图占位嵌入输入框状态和任务卡状态章节，默认不输出关联产物聚合区或待确认事项正文。",
-      "files": []
+      "expected_output": "启用发布版正文规则，选择合适 PRD 模板，加载 mockup handoff；实际渲染两个目标一致的 HTML mock、生成截图，并把截图嵌入输入框状态和任务卡状态章节；文档信息表不放本地 mock 链接，默认不输出关联产物聚合区或待确认事项正文。",
+      "files": [],
+      "expectations": [
+        "实际生成至少一张截图文件，而不是只写截图占位或截图计划。",
+        "PRD 正文存在 Markdown 图片引用，且图片位于对应功能或状态章节。",
+        "本地附录或 HTML 路径不被当作正文截图的替代品。"
+      ]
+    },
+    {
+      "id": "legacy-mock-mismatch-does-not-become-target-evidence",
+      "prompt": "基于提供的旧版 HTML mockup 写一份 AI 产品健康看板 PRD。新方案收敛为四个页面：每日指挥台、结果与成本、能力健康、问题中心。请把关键页面截图放进对应功能章节。",
+      "expected_output": "先识别输入 HTML 是五页签旧结构，与四页面目标不一致；不得直接把旧截图当目标稿。应先更新 HTML 后渲染截图并内嵌，或明确标注结构不匹配并转 UI mockup；不能只在附录列 HTML 路径后结束。",
+      "files": [
+        "evals/fixtures/legacy-five-tab-dashboard.html"
+      ],
+      "expectations": [
+        "明确指出旧 HTML 的五页签结构与新 PRD 的四页面结构不一致。",
+        "旧 HTML 截图没有被标记或表述为目标状态设计。",
+        "若交付目标态 PRD，则先生成与四页面结构一致的 HTML 和真实截图文件。",
+        "目标态截图嵌入对应功能章节，而不是只出现在关联产物或本地草稿附录。",
+        "无法更新原型或截图时，明确说明跳过原因、受影响页面和待补动作。"
+      ]
+    },
+    {
+      "id": "ui-bearing-prd-auto-generates-artifacts",
+      "prompt": "基于可读取的真实项目写一份 PRD：在现有订单列表新增退款审批抽屉，包含默认、无权限、审批成功和审批失败状态。请把产物写入输出目录。",
+      "expected_output": "即使用户没有额外说要 HTML，也识别为页面型 PRD，自动生成项目 UI 对齐 HTML、关键状态截图，并把截图嵌入对应功能或状态章节。",
+      "files": [],
+      "expectations": [
+        "输出目录存在 PRD Markdown、HTML mockup 和至少一张关键状态截图。",
+        "PRD 功能正文存在指向真实截图文件的 Markdown 图片引用。",
+        "交付说明列出真实项目 UI 证据，standalone HTML 被标记为视觉参考而非生产代码。"
+      ]
+    },
+    {
+      "id": "backend-only-prd-does-not-generate-ui",
+      "prompt": "写一份内部事件 API 的租户级限流、重试和告警策略 PRD。该能力完全没有用户可见界面，也不需要运营后台。",
+      "expected_output": "只交付 PRD，不生成 HTML 或截图，并说明未触发 UI 证据链。",
+      "files": [],
+      "expectations": [
+        "存在 PRD Markdown。",
+        "不存在 HTML 或截图产物。",
+        "说明该需求没有用户可见界面，因此未触发 UI 证据链。"
+      ]
     }
   ]
 }

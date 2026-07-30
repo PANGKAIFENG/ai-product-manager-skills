@@ -29,6 +29,16 @@ PUBLISH_CONTAMINATION_PATTERNS = [
     ("mock_link_field", re.compile(r"关联\s*mock|关联\s*Mock|Look up|lookup", re.I)),
 ]
 
+MARKDOWN_IMAGE_PATTERN = re.compile(
+    r"!\[[^\]\n]*\]\(\s*(?:<([^>\n]+)>|([^\s)\n]+))(?:\s+[\"'][^)\n]*[\"'])?\s*\)",
+    re.I,
+)
+HTML_IMAGE_PATTERN = re.compile(r"<img\b[^>]*\bsrc\s*=\s*[\"']([^\"']+)[\"']", re.I)
+NON_FEATURE_SECTION_PATTERN = re.compile(
+    r"^(?:本地草稿附录|关联产物|local draft appendix|related artifacts?)\b",
+    re.I,
+)
+
 REQUIRED_BY_TYPE = {
     "lite": ["功能目标", "用户场景", "关键交互", "验收标准", "待确认"],
     "standard": ["功能目标", "用户场景", "入口", "核心对象", "交互逻辑", "异常", "验收标准", "待确认"],
@@ -50,12 +60,66 @@ def strip_handoff_appendix(text: str) -> str:
     return text
 
 
+def strip_non_feature_sections(text: str) -> str:
+    """Remove appendix-style sections that cannot satisfy inline mockup evidence."""
+    kept: list[str] = []
+    excluded_level: int | None = None
+
+    for line in text.splitlines(keepends=True):
+        heading = re.match(r"^(#{1,6})\s+(.+?)\s*$", line)
+        if heading:
+            level = len(heading.group(1))
+            title = heading.group(2).strip()
+            if NON_FEATURE_SECTION_PATTERN.match(title):
+                excluded_level = level
+                continue
+            if excluded_level is not None and level <= excluded_level:
+                excluded_level = None
+
+        if excluded_level is None:
+            kept.append(line)
+
+    return "".join(kept)
+
+
+def extract_image_targets(text: str) -> list[str]:
+    targets = [match.group(1) or match.group(2) for match in MARKDOWN_IMAGE_PATTERN.finditer(text)]
+    targets.extend(match.group(1) for match in HTML_IMAGE_PATTERN.finditer(text))
+    return targets
+
+
+def missing_local_image_targets(prd_path: Path, targets: list[str]) -> list[str]:
+    missing: list[str] = []
+    for target in targets:
+        clean_target = target.split("#", 1)[0].split("?", 1)[0]
+        if not clean_target or re.match(r"^(?:https?:|data:)", clean_target, re.I):
+            continue
+        image_path = Path(clean_target)
+        if not image_path.is_absolute():
+            image_path = prd_path.parent / image_path
+        if not image_path.exists():
+            missing.append(target)
+    return missing
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Check PRD shape and warn on over-technical drafts.")
     parser.add_argument("path", help="Path to a Markdown PRD")
     parser.add_argument("--type", choices=sorted(REQUIRED_BY_TYPE), default="standard", help="Expected PRD type")
     parser.add_argument("--allow-handoff", action="store_true", help="Allow technical schema details in the document")
     parser.add_argument("--publish-ready", action="store_true", help="Check for online-publishing contamination such as local mock links")
+    parser.add_argument(
+        "--require-mockup-evidence",
+        action="store_true",
+        help="Require a real screenshot reference in a feature section, not only in a local appendix",
+    )
+    parser.add_argument(
+        "--require-mockup-artifact",
+        action="append",
+        default=[],
+        metavar="PATH",
+        help="Require a generated HTML mockup artifact; may be passed more than once",
+    )
     args = parser.parse_args()
 
     path = Path(args.path)
@@ -87,6 +151,29 @@ def main() -> int:
         for name, pattern in PUBLISH_CONTAMINATION_PATTERNS:
             if pattern.search(body_to_check):
                 warnings.append(f"publish_contamination:{name}")
+
+    if args.require_mockup_evidence:
+        feature_text = strip_non_feature_sections(text)
+        image_targets = extract_image_targets(feature_text)
+        if not image_targets:
+            warnings.append("missing_mockup_evidence")
+        else:
+            for target in missing_local_image_targets(path, image_targets):
+                warnings.append(f"missing_mockup_file:{target}")
+
+    for target in args.require_mockup_artifact:
+        artifact_path = Path(target)
+        if not artifact_path.is_absolute():
+            artifact_path = path.parent / artifact_path
+        if not artifact_path.is_file():
+            warnings.append(f"missing_mockup_artifact:{target}")
+            continue
+        if artifact_path.suffix.lower() not in {".html", ".htm"}:
+            warnings.append(f"invalid_mockup_artifact_type:{target}")
+            continue
+        artifact_text = artifact_path.read_text(encoding="utf-8", errors="ignore")
+        if not re.search(r"<body\b[^>]*>.*\S.*</body>", artifact_text, re.I | re.S):
+            warnings.append(f"empty_mockup_artifact:{target}")
 
     if warnings:
         print("PRD shape warnings:")

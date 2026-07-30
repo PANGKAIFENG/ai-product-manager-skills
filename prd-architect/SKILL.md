@@ -5,7 +5,8 @@ description: >
   可用中文唤起：“帮我写 PRD”“帮我选 PRD 模板”“把这个需求整理成 PRD”“判断该用轻量 PRD 还是标准 PRD”
   “补一张可编辑 Draw.io 核心流程图”“PRD 里加架构图”。
   会在 PRD-lite、PRD-standard、PRD-ai-native 中选择一个模板资产按需加载，并在需要时加载 mockup handoff、
-  Draw.io 图示或开发 handoff 附录。不用于直接编码、单纯画 UI，或评审一份已经写好的 PRD。
+  Draw.io 图示或开发 handoff 附录；页面型 PRD 默认联动生成项目 UI 对齐的 HTML、关键截图和正文证据。
+  不用于直接编码、单纯画 UI，或评审一份已经写好的 PRD。
 ---
 
 # PRD 架构师（prd-architect）
@@ -24,7 +25,7 @@ description: >
 
 1. 先判断上游输入是否足够成熟。
 2. 再选择 `PRD-lite / PRD-standard / PRD-ai-native` 其中一个模板资产。
-3. 只加载本轮需要的附加资产，例如 mockup handoff、Draw.io 图示或开发 handoff。
+3. 只加载本轮需要的附加资产；页面型 PRD 自动激活 mockup handoff 和 UI 证据链。
 4. 写出与当前阶段一致的 PRD，并区分本地草稿内容和可发布正文。
 5. 生成文件时尽量运行 PRD shape 自检，避免把初版 PRD 写成实现方案。
 
@@ -50,11 +51,12 @@ description: >
 4. 按需加载 mockup、Draw.io 或 handoff 资产。
 5. 组织 PRD 正文、待确认项和下一步建议。
 6. 在生成到文件时运行可用的确定性检查。
+7. 当 PRD 包含用户可见界面时，编排 `ui-mockup-desktop-workbench`，在同一交付中完成 HTML、关键截图和正文回填。
 
 它不负责：
 
 - 直接决定 UI 视觉细节。
-- 生成正式桌面端多状态页面 mockup；这由 `ui-mockup-desktop-workbench` 负责。
+- 把 standalone HTML 当成生产代码；正式视觉实现由 `ui-mockup-desktop-workbench` 负责，但本 Skill 负责触发、收口和验收这条交付链。
 - 直接开始编码。
 - 把核心规则外包给单独 guide 再让用户自己跳转理解。
 - 在用户只要“初版 PRD”时展开接口字段、TypeScript、JSON schema、adapter 或 metadata 结构。
@@ -68,6 +70,7 @@ description: >
 - 需求描述、目标用户、当前问题、成功标准。
 - 已知边界、非目标、待确认点。
 - 是否涉及既有界面、截图、HTML mockup 或正式 UI mockup。
+- 已有页面资产属于现状参考、与本期目标一致的目标稿，还是已经过期/结构不匹配的旧原型。
 - 是否涉及 AI 协作、模型生成、推荐、记忆、人工确认或人工接管。
 - 是否明确要求开发 handoff、接口字段、协议 schema 或实现计划。
 - 是否会发布到钉钉或其他在线文档；若会发布，默认按“发布版正文”组织，不把本地路径当成正文信息。
@@ -90,10 +93,27 @@ description: >
 
 | 资产 | 何时加载 |
 | --- | --- |
-| `references/mockup-handoff.md` | 涉及既有页面、弹窗、面板、按钮、表单、状态提示、HTML mockup 或截图承接 |
+| `references/mockup-handoff.md` | PRD 涉及任何用户可见页面、弹窗、面板、按钮、表单或状态提示；即使用户没有单独要求 HTML 也要加载 |
 | `references/drawio-templates.md` | 用户要求可编辑流程图 / 架构图，或 Standard / AI-native 存在多阶段链路、上下游依赖、状态流转 |
 | `references/handoff-appendix.md` | 用户明确要求开发 handoff、字段定义、协议、接口、adapter、metadata 或实现计划前置材料 |
 | `references/prd-shape-gates.md` | 需要自检 PRD 是否过重、过技术化、章节误激活或待确认项处理不当 |
+
+### 3A. Detect UI-bearing PRDs
+
+只要本期定义了用户可见的页面、弹窗、抽屉、表单、卡片、导航、按钮、空态、错误态、确认态或成功态，就把它判定为页面型 PRD。页面型 PRD 的默认交付不是单一 Markdown，而是：
+
+`PRD + 项目 UI 对齐 HTML/preview + 关键状态截图 + PRD 对应章节内嵌截图`
+
+执行规则：
+
+1. 用户不需要再次说“生成 HTML”或“补截图”；页面型判断本身就是触发条件。
+2. 先定位真实项目、app/路由、组件、样式 token、图标和相邻页面状态，再调用 `ui-mockup-desktop-workbench`。
+3. 默认选择 `visual-handoff`，在 PRD 产物目录生成独立 HTML，不修改生产前端；只有用户明确要求项目内 preview 或真实实现承接时才选择 `project-native-preview`。
+4. 讨论中 PRD 可以生成“目标态草稿” HTML，但必须把未决内容标成假设；只有阻断性的页面信息架构或状态决策未关闭时才跳过。
+5. 至少截取每个实质变化页面的默认态；PRD 明确定义的关键拦截、失败、确认或成功态按验收需要补图。
+6. 截图直接插入它解释的功能或状态章节，不在文末集中堆放。
+7. standalone HTML 必须明确标记为视觉交付参考，不得声称它是生产代码。
+8. 只有用户明确要求纯文本、需求完全无界面、阻断性页面决策未关闭、或真实项目不可访问且无法形成有证据的静态复刻时可以跳过。最终说明要写清原因、受影响页面和待补动作。
 
 ### 4. Write PRD
 
@@ -106,7 +126,7 @@ description: >
 5. 如果涉及既有前端页面，先定位真实项目、真实路由和真实组件，再写页面稿。
 6. 如果只是产品初版，不在正文写 TypeScript interface、JSON schema、endpoint、adapter、metadata 或 capability 字段。
 7. 如果用户明确要求 handoff，把字段和协议放到“开发 handoff 附录”，不要污染产品主链路。
-8. 如果涉及 mock、HTML 预览或截图，把截图说明放到对应功能/页面/状态章节下；不要把开发点击无效的本地 mock 链接放进文档信息表或正文主链路。
+8. 页面型 PRD 无论是否已有 HTML/mock，都要在本轮完成目标态 HTML、关键状态截图和正文回填。已有旧原型与新 PRD 不一致时先更新原型，不把旧截图冒充目标稿。
 9. 若用户准备把 PRD 发到钉钉，正文默认不输出“关联产物”聚合区和“待确认事项”章节；待确认项只保留在本地草稿、最终说明或明确标注的发布前检查清单中。
 
 ### 5. Diagram Mode
@@ -130,6 +150,14 @@ description: >
 - 需要截图、静态 HTML mockup、真实页面截图，还是转交正式 UI mockup。
 - mockup 展示哪个状态：默认态、拦截态、确认态、失败态或成功态。
 - 截图应该插入哪个 PRD 功能模块；同一 mock 可以复用，但不要在底部“关联产物”集中堆图。
+
+页面型 PRD 执行页面证据门禁：
+
+1. 先判断原型与本期 PRD 的页面、模块和状态是否一致。
+2. 没有目标态原型时，调用 `ui-mockup-desktop-workbench` 新建；已有且一致时实际打开或渲染。至少截取每个实质变化页面的默认态，关键失败态、空态、确认态或成功态按需补图。
+3. 将每张截图直接嵌入它解释的功能/页面/状态章节，图片下说明状态和验证重点。本地附录里的 HTML/PNG 路径不能替代正文截图。
+4. 仅代表现状的截图要标注“现状参考”；与本期结构不一致的旧原型要先更新，或转 `ui-wireframe-to-html` / `ui-mockup-desktop-workbench`，不能作为目标态证据。
+5. 只有 3A 节规定的跳过条件成立时可以跳过；原型不可运行时先尝试安全修复或重新生成，不把“当前没有 HTML”当作跳过理由。
 
 ### 7. Publish-ready PRD Mode
 
@@ -160,6 +188,21 @@ python3 scripts/check_prd_shape.py <prd.md> --type <lite|standard|ai-native> --a
 ```bash
 python3 scripts/check_prd_shape.py <prd.md> --type <lite|standard|ai-native> --publish-ready
 ```
+
+当已有与目标 PRD 一致的 HTML/mock，或用户明确要求“截图放入对应模块”时增加：
+
+```bash
+python3 scripts/check_prd_shape.py <prd.md> --type <lite|standard|ai-native> --require-mockup-evidence
+```
+
+页面型 PRD 还必须把本轮生成的 HTML 作为独立产物传给检查器：
+
+```bash
+python3 scripts/check_prd_shape.py <prd.md> --type <lite|standard|ai-native> \
+  --require-mockup-evidence --require-mockup-artifact <mockup.html>
+```
+
+该门禁会检查功能正文中是否有图片证据，并验证本地图片引用是否真实存在；只放在“本地草稿附录/关联产物”中的图片不算完成。发布版应先完成本地证据检查，再由发布流程上传或重写图片引用。
 
 检查失败不等于不能交付，但最终说明必须解释哪些 warning 是故意保留的，哪些需要修订。
 
@@ -192,6 +235,8 @@ python3 scripts/check_prd_shape.py <prd.md> --type <lite|standard|ai-native> --p
 - 当前状态明确，正文成熟度与状态一致。
 - 待确认项和假设没有混在一起。
 - mockup / 图示 / handoff 附加资产只在需要时启用。
+- 页面型 PRD 已在同一交付中生成项目 UI 对齐的 HTML/preview，关键状态已实际截图并嵌入对应功能章节；旧原型不匹配时已更新或明确停止使用。
+- 无截图只允许发生在明确的跳过条件下，且原因和待补状态已说明；HTML 路径或截图计划本身不算页面证据。
 - 涉及发布到钉钉或在线文档时，本地 mock 链接、截图路径、关联产物和待确认项没有污染发布版正文。
 - 如果本轮生成 Draw.io 图示，`.drawio` 已验证或验证限制已明确说明。
 - 如果本轮写入 PRD 文件，已运行 `check_prd_shape.py` 或说明未运行原因。
@@ -207,6 +252,9 @@ Smoke prompts:
 - `帮我写一个 PRD，并补一张可编辑 Draw.io 核心流程图。`
 - `回答后下一步行动建议 PRD 初版`，应输出产品规则和 UX 行为，不输出实现 schema。
 - `这份 PRD 后面要上传钉钉，mock 截图直接放到对应模块里。`，应启用发布版正文规则，不输出本地 mock 链接、关联产物聚合区或待确认事项正文。
+- `基于已有 HTML mockup 起草多页面 PRD，并把关键页面截图放到对应功能章节。`，应先校验原型与目标结构是否一致；一致则实际生成截图并内嵌，不一致则更新原型或明确停止把旧原型当目标稿。
+- `基于真实项目写一个新增审批抽屉的 PRD。`，即使用户没有说 HTML，也应在同一交付中生成 UI 对齐 HTML、关键状态截图并回填对应章节。
+- `写一个完全没有用户界面的 API 限流策略 PRD。`，不应生成 HTML 或截图。
 
 Non-trigger prompts:
 
