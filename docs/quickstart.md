@@ -2,7 +2,7 @@
 
 This guide helps you try AI Product Manager Skills Library in a local Agent workflow.
 
-The repository contains root-level Skill folders. Each Skill folder has a `SKILL.md` file with a stable `name` and `description`.
+The repository contains one installable root at `skills/`. Each child folder has a `SKILL.md` file with a stable `name` and `description`.
 
 ## 1. Clone The Repository
 
@@ -39,7 +39,7 @@ Recommended paths:
 - Claude Code users: [install-claude-code.md](install-claude-code.md)
 - skillshare users: use `skillshare install` and `skillshare sync`
 
-If your tool supports manually loaded Agent Skills, copy or symlink the thirteen root-level Skill directories into the tool's Skills directory.
+If your tool supports manually loaded Agent Skills, copy or symlink the thirteen child directories under `skills/` into the tool's Skills directory.
 
 ## 4. Verify Skill Discovery
 

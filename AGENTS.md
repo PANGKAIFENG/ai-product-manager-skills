@@ -6,8 +6,9 @@ This is a thin index for agents working in this repository. It does not replace 
 
 1. Read `SKILL_ROUTING.md` before choosing between adjacent Skills.
 2. Use `SKILL_REGISTRY.md` for catalog status, Chinese names, and public boundaries.
-3. Use `README.md` for human-facing workflow orientation.
-4. Load only the relevant Skill and reference files for the user's current stage.
+3. Use `catalog/skills.yaml` for the machine-readable Skill inventory and paths.
+4. Use `README.md` for human-facing workflow orientation.
+5. Load only the relevant Skill and reference files for the user's current stage.
 
 ## Role Model
 
@@ -29,9 +30,9 @@ This is a thin index for agents working in this repository. It does not replace 
 
 Loop patterns are orchestration docs, not new Skills:
 
-- `loop-patterns/prd-readiness-loop.md`
-- `loop-patterns/decision-research-loop.md`
-- `loop-patterns/research-radar-loop.md`
+- `docs/workflows/prd-readiness-loop.md`
+- `docs/workflows/decision-research-loop.md`
+- `docs/workflows/research-radar-loop.md`
 
 Use loop patterns only when the user needs multi-round state, resumability, readiness convergence, or a repeated handoff between Skills.
 
@@ -66,7 +67,8 @@ When adding or publicizing a Skill, update the coordinated surfaces together:
 - `README.md`
 - `SKILL_REGISTRY.md`
 - `SKILL_ROUTING.md`
+- `catalog/skills.yaml`
 - install / quickstart docs
 - examples or issue templates when relevant
 
-Keep root-level Skill folder names stable. The flat namespace is the public invocation surface.
+Keep each stable Skill ID at `skills/<skill-id>/`. Do not add installable Skill directories at the repository root or under documentation categories.

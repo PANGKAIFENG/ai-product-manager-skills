@@ -1,6 +1,6 @@
 # Install For Codex
 
-Codex supports Agent Skills as directories that contain a `SKILL.md` file. Skills can be discovered from user-level and repo-level locations. This repository keeps each public Skill as a root-level folder for stable names and simple copying.
+Codex supports Agent Skills as directories that contain a `SKILL.md` file. Skills can be discovered from user-level and repo-level locations. This repository keeps all public Skills under `skills/`, with one stable Skill ID per child directory.
 
 ## Option A: User-Level Skills
 
@@ -25,7 +25,7 @@ for skill in \
   grill-me \
   ai-work-assetization-diagnoser
 do
-  ln -sfn "$(pwd)/$skill" "$HOME/.agents/skills/$skill"
+  ln -sfn "$(pwd)/skills/$skill" "$HOME/.agents/skills/$skill"
 done
 ```
 
@@ -53,7 +53,7 @@ for skill in \
   grill-me \
   ai-work-assetization-diagnoser
 do
-  cp -R "$skill" "/path/to/your-project/.agents/skills/$skill"
+  cp -R "skills/$skill" "/path/to/your-project/.agents/skills/$skill"
 done
 ```
 

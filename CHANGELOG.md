@@ -8,8 +8,10 @@ This project uses semantic-ish release tags for public snapshots. The current fo
 
 ### Added
 
+- A single installable root at `skills/`, backed by the machine-readable `catalog/skills.yaml` inventory.
+- GitHub Actions checks for catalog consistency, repository links, self-contained duplicate drift, and existing regression tests.
 - Repository-level Skill audit gate: `scripts/audit_skills.py`.
-- Shared eval schema in `docs/eval-schema.md` and local optimization issue backlog under `docs/issues/`.
+- Shared eval schema in `docs/eval-schema.md`; the completed optimization issue backlog is archived under `docs/archive/issues/`.
 - `evals/evals.json` coverage for all 13 public Skills.
 - Lightweight checker scripts for high-risk output Skills, including decision reports, issue plans, UI wireframe/mockup packages, design specs, competitive briefs, and assetization reports.
 - `complex-exploration` Skill for complex, multi-round product strategy, Roadmap, pricing, positioning, review, and methodology tasks that need task typing, problem reframing, exploration planning, and reusable asset extraction.
@@ -19,6 +21,8 @@ This project uses semantic-ish release tags for public snapshots. The current fo
 
 ### Changed
 
+- Moved all 13 public Skills from the repository root to `skills/<skill-id>/` without changing Skill behavior.
+- Moved examples to `docs/examples/`, Loop orchestration to `docs/workflows/`, social preview sources to `.github/assets/`, and completed maintenance material to `docs/archive/`.
 - Updated `prd-architect` with an explicit UI source-resolution gate, screenshot/reference fallback rules, and a durable mockup evidence manifest that invalidates stale screenshots after HTML or baseline changes.
 - Refactored `prd-review`, `decision-research`, and `research-topic-compiler` toward router-plus-assets structure with detailed rules in `references/`.
 - Replaced public UI wireframe references to local templates with bundled `references/templates/`.

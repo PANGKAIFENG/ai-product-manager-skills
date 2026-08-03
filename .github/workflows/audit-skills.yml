@@ -1,0 +1,34 @@
+name: Audit Skills
+
+on:
+  pull_request:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install audit dependencies
+        run: python3 -m pip install -r requirements-dev.txt
+
+      - name: Audit catalog and repository structure
+        run: python3 scripts/audit_skills.py .
+
+      - name: Run PRD regression tests
+        run: python3 -m unittest discover -s skills/prd-architect/tests -p "test_*.py" -v
+
+      - name: Run research dashboard regression tests
+        run: python3 -m unittest discover -s skills/research-topic-compiler/tests -p "test_*.py" -v

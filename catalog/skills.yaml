@@ -1,0 +1,82 @@
+schema_version: 1
+skills_root: skills
+
+skills:
+  - id: ai-collaboration-calibration
+    path: skills/ai-collaboration-calibration
+    name_zh: 协作校准 / 认知校准
+    category: collaboration-thinking
+    status: core
+    example: docs/examples/ai-collaboration-calibration.md
+  - id: complex-exploration
+    path: skills/complex-exploration
+    name_zh: 复杂探索资产化 / 复杂探索协作
+    category: collaboration-thinking
+    status: active
+    example: docs/examples/complex-exploration.md
+  - id: research-topic-compiler
+    path: skills/research-topic-compiler
+    name_zh: 专题研究编译器 / 概念源流研究助手
+    category: research-learning
+    status: core
+    example: docs/examples/research-topic-compiler.md
+  - id: competitive-analysis
+    path: skills/competitive-analysis
+    name_zh: 竞品决策分析 / 竞品决策简报
+    category: decision-research
+    status: active
+    example: docs/examples/competitive-analysis.md
+  - id: decision-research
+    path: skills/decision-research
+    name_zh: 决策调研 / 决策驱动调研
+    category: decision-research
+    status: active
+    example: docs/examples/decision-research.md
+  - id: brainstorming
+    path: skills/brainstorming
+    name_zh: 设计脑暴 / 实现前方案校准
+    category: collaboration-thinking
+    status: core
+    example: docs/examples/brainstorming.md
+  - id: prd-architect
+    path: skills/prd-architect
+    name_zh: PRD 架构师 / 需求文档起草
+    category: product-prd
+    status: core
+    example: docs/examples/prd-architect.md
+  - id: prd-review
+    path: skills/prd-review
+    name_zh: PRD 评审 / 需求评审
+    category: product-prd
+    status: core
+    example: docs/examples/prd-review.md
+  - id: prd-to-issues
+    path: skills/prd-to-issues
+    name_zh: PRD 到研发 Issue 拆解
+    category: product-prd
+    status: active
+    example: docs/examples/prd-to-issues.md
+  - id: ui-wireframe-to-html
+    path: skills/ui-wireframe-to-html
+    name_zh: PRD 到 UI 线框 / 结构阶段
+    category: product-prd
+    status: active
+    example: docs/examples/ui-wireframe-to-html.md
+  - id: ui-mockup-desktop-workbench
+    path: skills/ui-mockup-desktop-workbench
+    name_zh: 高保真 UI 交付对齐器 / 桌面工作台 UI Mockup 生成器
+    category: product-prd
+    status: active
+    example: docs/examples/ui-mockup-desktop-workbench.md
+  - id: grill-me
+    path: skills/grill-me
+    name_zh: 方案拷问 / 压力测试
+    category: collaboration-thinking
+    status: active
+    example: docs/examples/grill-me.md
+  - id: ai-work-assetization-diagnoser
+    path: skills/ai-work-assetization-diagnoser
+    name_zh: AI 工作资产化诊断器 / 资产化路由器
+    category: collaboration-thinking
+    status: active
+    example: docs/examples/ai-work-assetization-diagnoser.md

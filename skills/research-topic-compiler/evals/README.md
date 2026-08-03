@@ -26,11 +26,11 @@ Use `graders/dashboard-artifact-rubric.md` for `research-dashboard-html` runs. G
 Run from the repository root:
 
 ```bash
-python3 -m unittest discover -s research-topic-compiler/tests -v
-python3 -m py_compile research-topic-compiler/scripts/validate_html_artifact.py
-python3 research-topic-compiler/scripts/validate_html_artifact.py \
-  research-topic-compiler/evals/fixtures/research-dashboard/dashboard.html
-jq empty research-topic-compiler/evals/evals.json
+python3 -m unittest discover -s skills/research-topic-compiler/tests -v
+python3 -m py_compile skills/research-topic-compiler/scripts/validate_html_artifact.py
+python3 skills/research-topic-compiler/scripts/validate_html_artifact.py \
+  skills/research-topic-compiler/evals/fixtures/research-dashboard/dashboard.html
+jq empty skills/research-topic-compiler/evals/evals.json
 ```
 
 The unit suite covers both dashboard roots, required real-element attributes, missing markers, dual roots, comment/script fake markers, backend calls, unresolved placeholders, local source paths, and the persisted general Dashboard fixture.

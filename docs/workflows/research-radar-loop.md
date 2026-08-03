@@ -1,6 +1,6 @@
 # Research Radar Loop Pattern
 
-This is a thin research orchestration pattern. It does not replace `research-topic-compiler/references/research-radar-loop-contract.md`; that file remains the state contract owned by `research-topic-compiler`.
+This is a thin research orchestration pattern. It does not replace `skills/research-topic-compiler/references/research-radar-loop-contract.md`; that file remains the state contract owned by `research-topic-compiler`.
 
 ## Purpose
 
@@ -35,7 +35,7 @@ Use this loop when an evolving topic needs a living research base, recurring evi
 
 ## State Reference
 
-Use `research-topic-compiler/references/research-radar-loop-contract.md` for state files:
+Use `skills/research-topic-compiler/references/research-radar-loop-contract.md` for state files:
 
 - `00_研究定义.md`
 - `01_研究地图.md`

@@ -1,6 +1,6 @@
 # PRD Readiness Loop Pattern
 
-This is a thin multi-Skill orchestration pattern. It does not replace `prd-review/references/prd-readiness-loop-contract.md`; that file remains the state contract owned by `prd-review`.
+This is a thin multi-Skill orchestration pattern. It does not replace `skills/prd-review/references/prd-readiness-loop-contract.md`; that file remains the state contract owned by `prd-review`.
 
 ## Purpose
 
@@ -59,7 +59,7 @@ Suggested files:
 | `prd-revision-input.md` | Inputs for `prd-architect` revision. |
 | `review-state.md` | Link or summary of `prd-review` loop state. |
 
-For review state, prefer the parent contract: `prd-review/references/prd-readiness-loop-contract.md`.
+For review state, prefer the parent contract: `skills/prd-review/references/prd-readiness-loop-contract.md`.
 
 ## Handoff Payloads
 

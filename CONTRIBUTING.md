@@ -27,14 +27,14 @@ Out of scope:
 2. Check [SKILL_ROUTING.md](SKILL_ROUTING.md) for adjacent boundaries.
 3. Decide whether the change updates an existing Skill or introduces a new one.
 4. Remove private context, secrets, customer names, and internal-only terminology.
-5. Add or update an example in [examples/](examples/) when the workflow changes.
+5. Add or update an example in [docs/examples/](docs/examples/) when the workflow changes.
 
 ## Adding a New Skill
 
-Use a root-level directory with a stable English slug:
+Use a directory under `skills/` with a stable English slug:
 
 ```text
-new-skill-name/
+skills/new-skill-name/
   SKILL.md
   references/
   scripts/
@@ -50,7 +50,8 @@ Required checklist:
 - `README.md` is updated if it belongs to the public AI PM workflow.
 - `SKILL_REGISTRY.md` is updated.
 - `SKILL_ROUTING.md` is updated if adjacent triggers could conflict.
-- `examples/<skill-name>.md` is added or updated.
+- `catalog/skills.yaml` is updated.
+- `docs/examples/<skill-name>.md` is added or updated.
 
 ## Editing an Existing Skill
 
@@ -60,6 +61,7 @@ If behavior changes, update:
 
 - The Skill's `description`.
 - The relevant example.
+- `catalog/skills.yaml` if inventory metadata changes.
 - `SKILL_REGISTRY.md`.
 - `SKILL_ROUTING.md` if routing changes.
 - `CHANGELOG.md`.

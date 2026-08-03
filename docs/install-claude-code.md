@@ -6,22 +6,22 @@ Claude Code setups can vary by version and organization policy. Use this guide a
 
 ## Recommended Copy List
 
-Copy or symlink these folders:
+Copy or symlink these folders from the repository root:
 
 ```text
-ai-collaboration-calibration/
-complex-exploration/
-research-topic-compiler/
-competitive-analysis/
-decision-research/
-brainstorming/
-prd-architect/
-prd-review/
-prd-to-issues/
-ui-wireframe-to-html/
-ui-mockup-desktop-workbench/
-grill-me/
-ai-work-assetization-diagnoser/
+skills/ai-collaboration-calibration/
+skills/complex-exploration/
+skills/research-topic-compiler/
+skills/competitive-analysis/
+skills/decision-research/
+skills/brainstorming/
+skills/prd-architect/
+skills/prd-review/
+skills/prd-to-issues/
+skills/ui-wireframe-to-html/
+skills/ui-mockup-desktop-workbench/
+skills/grill-me/
+skills/ai-work-assetization-diagnoser/
 ```
 
 Each folder must include its `SKILL.md` file.
@@ -48,7 +48,7 @@ If you manage Claude Code Skills manually:
 
 1. Clone this repository.
 2. Locate your Claude Code Skills directory.
-3. Copy or symlink the thirteen public Skill folders into that directory.
+3. Copy or symlink the thirteen child folders under `skills/` into that directory; do not copy the `skills/` container itself unless your runtime expects that extra level.
 4. Restart Claude Code if new Skills are not detected.
 5. Test explicit invocation by Skill name.
 

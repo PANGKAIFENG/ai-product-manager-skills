@@ -318,7 +318,7 @@ L1/L2 的状态反馈保持自然语言和紧凑输出，不展示内部枚举�
 
 ### 14.1 必改
 
-- `research-topic-compiler/SKILL.md`：增加 Normal/Application 共用循环、深度裁剪和停止门禁摘要，替换这两条路径的线性 Workflow 控制逻辑。
+- `skills/research-topic-compiler/SKILL.md`：增加 Normal/Application 共用循环、深度裁剪和停止门禁摘要，替换这两条路径的线性 Workflow 控制逻辑。
 - 新增 `references/iterative-research-loop.md`：承载完整状态模型、NBE、Source Graph、变更分类、停止和恢复规则。
 - `pre-research-source-expansion.md`：从一次性前置阶段改为 ACQUIRE 的候选发现策略。
 - `channel-selection-rubric.md`：由主题到渠道映射升级为 Gap 驱动的动态选择，并增加开源抽样规则。
