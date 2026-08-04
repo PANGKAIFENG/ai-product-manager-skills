@@ -38,21 +38,36 @@ Each public Skill should eventually include:
 | --- | --- | --- |
 | `skill_name` | yes | Must match the Skill folder name. |
 | `evals` | yes | Non-empty array of eval cases. |
-| `id` | yes | Stable string or number. Prefer strings for long-lived cases. |
+| `id` | yes | Stable, non-empty string. IDs must be unique within this eval file. |
+| `type` | yes | Non-empty string describing the case type, such as `trigger`, `non-trigger`, or `routing-regression`. |
 | `prompt` | yes | Realistic user wording. Do not leak the expected fix. |
+| `should_trigger` | yes | JSON boolean: `true` for trigger cases, `false` for non-trigger or handoff cases. |
+| `expected_route` | yes | Non-empty string naming a Skill in this repository, or an explicit `external:<skill-id>` handoff. Trigger cases must name their own Skill; non-trigger cases must name another route. |
 | `expected_output` | yes | Human-readable expected behavior. |
-| `assertions` | recommended | List of observable invariants. |
-| `should_trigger` | recommended | `true` for trigger cases, `false` for non-trigger cases. |
-| `expected_route` | recommended | Expected Skill or handoff target. |
+| `assertions` | yes | Non-empty list of assertion objects. Each object must contain a non-empty string `text`. |
 | `known_regression` | optional | Link to a prior failure, report, or issue. |
+
+All required string fields must contain at least one non-whitespace character. Eval IDs
+that previously used numbers have been migrated to strings; numeric IDs are not accepted.
+IDs are checked for duplicates per file, so the same paired-case ID may intentionally
+appear in different Skills' eval files.
+
+Repository routes must match a canonical `skills/<skill-id>/SKILL.md` directory. External
+handoffs must use `external:<skill-id>`, where `<skill-id>` follows the same lowercase,
+hyphen-separated ID format. Bare unknown routes, empty external routes, trigger cases
+pointing elsewhere, and non-trigger cases pointing back to their own Skill fail CI.
 
 ## Minimum Coverage
 
-Every active Skill should include at least:
+CI enforces the following deterministic minimum for every active Skill:
 
-- 2 happy-path trigger cases.
-- 2 non-trigger or handoff cases.
+- 2 cases whose `should_trigger` value is the JSON boolean `true`.
+- 2 cases whose `should_trigger` value is the JSON boolean `false`.
 - 1 known-risk or historical-regression case.
+
+Only strict JSON booleans count toward trigger and non-trigger coverage. A case counts as
+known-risk when `known_regression` is a non-empty string, or when its valid string `type`
+contains `risk` or `regression`, case-insensitively.
 
 High-risk output-producing Skills should also include capability assertions:
 
@@ -64,6 +79,8 @@ High-risk output-producing Skills should also include capability assertions:
 ## Review Rules
 
 - Evals are not a substitute for deterministic scripts.
-- A passing eval file means the intended behavior is documented, not automatically proven.
+- Schema compliance proves only that routing intent and minimum coverage are documented.
+  It does not prove that a model selects the expected route when each prompt is run in a
+  clean context.
 - Use scripts for format and package invariants; use evals for routing, judgment, and semantic output shape.
 - Keep eval prompts realistic and clean-context friendly.

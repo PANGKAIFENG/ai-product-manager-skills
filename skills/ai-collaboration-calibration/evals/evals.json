@@ -39,6 +39,59 @@
           "text": "Does not stay in calibration when the plan is already concrete."
         }
       ]
+    },
+    {
+      "id": "paired-problem-unstable-before-design-options",
+      "type": "routing-regression",
+      "prompt": "我们要改进 Agent 任务卡，但真正问题和判断标准还没确认；先挑战假设并校准问题，不比较解决方案。",
+      "should_trigger": true,
+      "expected_route": "ai-collaboration-calibration",
+      "expected_output": "Calibrates the unstable problem and decision criteria before any solution comparison.",
+      "assertions": [
+        {
+          "text": "Selects problem calibration and does not compare design options yet."
+        }
+      ],
+      "known_regression": "docs/audits/skill-overlap-v0.2.1.md"
+    },
+    {
+      "id": "paired-problem-stable-needs-design-options",
+      "type": "non-trigger",
+      "prompt": "我们要改进 Agent 任务卡，真正问题和判断标准已经确认；请比较三种设计路径并收敛 design spec，不重新定义问题。",
+      "should_trigger": false,
+      "expected_route": "brainstorming",
+      "expected_output": "Hands the stable problem to brainstorming for design-option comparison and design-spec convergence.",
+      "assertions": [
+        {
+          "text": "Does not reopen problem calibration after the problem and criteria are confirmed."
+        }
+      ]
+    },
+    {
+      "id": "paired-single-fuzzy-problem-before-complex-exploration",
+      "type": "trigger",
+      "prompt": "这个方向让我不安，但我还说不清真正问题；先做一次问题校准，不规划多轮探索。",
+      "should_trigger": true,
+      "expected_route": "ai-collaboration-calibration",
+      "expected_output": "Performs one focused problem calibration and stops before planning a multi-round exploration.",
+      "assertions": [
+        {
+          "text": "Keeps the task as focused calibration rather than creating an exploration program."
+        }
+      ]
+    },
+    {
+      "id": "paired-multiround-complex-exploration",
+      "type": "non-trigger",
+      "prompt": "这个复杂任务需要多轮定题、探索、收敛和中间产物；请先规划探索路径，不把它压缩成一次问题校准。",
+      "should_trigger": false,
+      "expected_route": "complex-exploration",
+      "expected_output": "Hands the explicitly multi-round task to complex-exploration for exploration planning and intermediate artifacts.",
+      "assertions": [
+        {
+          "text": "Does not reduce a multi-round exploration task to one calibration exchange."
+        }
+      ]
     }
   ]
 }

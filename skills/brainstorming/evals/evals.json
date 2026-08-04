@@ -52,6 +52,46 @@
           "text": "Does not replace pressure testing with design brainstorming."
         }
       ]
+    },
+    {
+      "id": "paired-problem-unstable-before-design-options",
+      "type": "non-trigger",
+      "prompt": "我们要改进 Agent 任务卡，但真正问题和判断标准还没确认；先挑战假设并校准问题，不比较解决方案。",
+      "should_trigger": false,
+      "expected_route": "ai-collaboration-calibration",
+      "expected_output": "Hands the unstable problem to calibration before comparing design options.",
+      "assertions": [
+        {
+          "text": "Does not brainstorm solutions before the problem and decision criteria are confirmed."
+        }
+      ]
+    },
+    {
+      "id": "paired-problem-stable-needs-design-options",
+      "type": "routing-regression",
+      "prompt": "我们要改进 Agent 任务卡，真正问题和判断标准已经确认；请比较三种设计路径并收敛 design spec，不重新定义问题。",
+      "should_trigger": true,
+      "expected_route": "brainstorming",
+      "expected_output": "Compares three design paths and converges a design spec without reopening problem definition.",
+      "assertions": [
+        {
+          "text": "Selects design-option comparison after the problem and criteria are confirmed."
+        }
+      ],
+      "known_regression": "docs/audits/skill-overlap-v0.2.1.md"
+    },
+    {
+      "id": "paired-multiround-complex-exploration",
+      "type": "non-trigger",
+      "prompt": "这个复杂任务需要多轮定题、探索、收敛和中间产物；请先规划探索路径，不把它压缩成一次问题校准。",
+      "should_trigger": false,
+      "expected_route": "complex-exploration",
+      "expected_output": "Hands the multi-round task to complex-exploration instead of reducing it to design-option comparison.",
+      "assertions": [
+        {
+          "text": "Does not substitute a design-spec exercise for an explicit multi-round exploration program."
+        }
+      ]
     }
   ]
 }

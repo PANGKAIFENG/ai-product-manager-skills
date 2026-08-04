@@ -52,6 +52,46 @@
           "text": "Does not skip readiness review when the user asks for review."
         }
       ]
+    },
+    {
+      "id": "paired-prd-drafting-stage",
+      "type": "non-trigger",
+      "prompt": "当前只有一个已确认的产品想法，还没有 PRD；请起草 PRD，暂不评审 readiness，也不拆研发 issues。",
+      "should_trigger": false,
+      "expected_route": "prd-architect",
+      "expected_output": "Hands the idea to prd-architect because issue decomposition requires a PRD artifact.",
+      "assertions": [
+        {
+          "text": "Does not invent an issue backlog before the PRD exists."
+        }
+      ]
+    },
+    {
+      "id": "paired-prd-readiness-review-stage",
+      "type": "non-trigger",
+      "prompt": "已有一份 PRD，但交付开发前的阻断项还没评审；请给 readiness verdict，暂不拆研发 issues。",
+      "should_trigger": false,
+      "expected_route": "prd-review",
+      "expected_output": "Hands the unreviewed PRD to prd-review before issue decomposition.",
+      "assertions": [
+        {
+          "text": "Does not hide unresolved readiness blockers inside implementation issues."
+        }
+      ]
+    },
+    {
+      "id": "paired-prd-ready-issue-decomposition-stage",
+      "type": "routing-regression",
+      "prompt": "PRD 已完成评审并标记 Ready；请按 vertical slice 拆成可领取的研发 issues，不再改写或评审 PRD。",
+      "should_trigger": true,
+      "expected_route": "prd-to-issues",
+      "expected_output": "Decomposes the Ready PRD into vertical-slice issues with coverage and dependency information.",
+      "assertions": [
+        {
+          "text": "Owns issue decomposition once the PRD is explicitly Ready."
+        }
+      ],
+      "known_regression": "docs/audits/skill-overlap-v0.2.1.md"
     }
   ]
 }

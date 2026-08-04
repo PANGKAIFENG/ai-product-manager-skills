@@ -52,6 +52,33 @@
           "text": "Does not treat final option choice as competitor evidence collection."
         }
       ]
+    },
+    {
+      "id": "paired-competitor-evidence-still-missing",
+      "type": "routing-regression",
+      "prompt": "我们要判断是否跟进三个竞品的 onboarding 方案；当前还缺官方定价页、产品流程和用户评论证据，请先采集并整理这些竞品证据，不做最终选型。",
+      "should_trigger": true,
+      "expected_route": "competitive-analysis",
+      "expected_output": "Acquires and structures the missing competitor evidence as product-decision input without making the final selection.",
+      "assertions": [
+        {
+          "text": "Collects pricing, workflow, and user-signal evidence before any final choice."
+        }
+      ],
+      "known_regression": "docs/audits/skill-overlap-v0.2.1.md"
+    },
+    {
+      "id": "paired-competitor-evidence-ready-final-selection",
+      "type": "non-trigger",
+      "prompt": "三个竞品的官方定价页、产品流程和用户评论证据已经整理齐；现在只做最终选择，给出推荐、排除理由和颠覆条件，不再扩展竞品取证。",
+      "should_trigger": false,
+      "expected_route": "decision-research",
+      "expected_output": "Hands the evidence-complete decision to decision-research for final recommendation, exclusions, and overturn conditions.",
+      "assertions": [
+        {
+          "text": "Does not continue competitor evidence acquisition after the evidence set is declared complete."
+        }
+      ]
     }
   ]
 }

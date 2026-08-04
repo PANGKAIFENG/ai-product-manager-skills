@@ -32,13 +32,40 @@
       "type": "non-trigger",
       "prompt": "直接帮我创建一个 Skill。",
       "should_trigger": false,
-      "expected_route": "skill-creator",
+      "expected_route": "external:skill-creator",
       "expected_output": "Routes creation to skill-creator after diagnosis is no longer needed.",
       "assertions": [
         {
           "text": "Does not stay in diagnosis mode for direct creation."
         }
       ]
+    },
+    {
+      "id": "paired-complex-run-content-retrospective",
+      "type": "non-trigger",
+      "prompt": "这次复杂探索刚结束，请复盘关键反复并沉淀本次方法论，不判断 Prompt/Workflow/Skill/Loop 层级。",
+      "should_trigger": false,
+      "expected_route": "complex-exploration",
+      "expected_output": "Hands the retrospective of one complex exploration run to complex-exploration Asset Mode.",
+      "assertions": [
+        {
+          "text": "Does not turn a run-specific methodology retrospective into an asset-layer diagnosis."
+        }
+      ]
+    },
+    {
+      "id": "paired-repeated-ai-work-needs-layer-diagnosis",
+      "type": "routing-regression",
+      "prompt": "这类 AI 工作已经重复多次，请判断应沉淀为 Prompt、Workflow、Skill 还是 Loop，不复盘某一次探索内容。",
+      "should_trigger": true,
+      "expected_route": "ai-work-assetization-diagnoser",
+      "expected_output": "Diagnoses the reusable asset layer for repeated AI work without performing a run-specific exploration retrospective.",
+      "assertions": [
+        {
+          "text": "Recommends one asset layer and excludes adjacent layers based on repetition and state needs."
+        }
+      ],
+      "known_regression": "docs/audits/skill-overlap-v0.2.1.md"
     }
   ]
 }

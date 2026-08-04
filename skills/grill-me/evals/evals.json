@@ -29,7 +29,7 @@
     },
     {
       "id": "non-trigger-prd-readiness",
-      "type": "non-trigger",
+      "type": "routing-regression",
       "prompt": "帮我审 PRD，看能不能交付开发。",
       "should_trigger": false,
       "expected_route": "prd-review",
@@ -37,6 +37,20 @@
       "assertions": [
         {
           "text": "Does not replace artifact review with interactive grilling."
+        }
+      ],
+      "known_regression": "docs/audits/skill-overlap-v0.2.1.md"
+    },
+    {
+      "id": "non-trigger-fuzzy-problem-calibration",
+      "type": "non-trigger",
+      "prompt": "我还没有方案，只是感觉问题方向不对但说不清楚，先帮我校准真正问题。",
+      "should_trigger": false,
+      "expected_route": "ai-collaboration-calibration",
+      "expected_output": "Routes fuzzy problem definition to ai-collaboration-calibration before solution pressure testing.",
+      "assertions": [
+        {
+          "text": "Does not pressure-test a solution that does not yet exist."
         }
       ]
     }
