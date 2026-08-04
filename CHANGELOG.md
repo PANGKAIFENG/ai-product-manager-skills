@@ -6,6 +6,8 @@ This project uses semantic-ish release tags for public snapshots. The current fo
 
 ## Unreleased
 
+## [0.2.0] - 2026-08-04
+
 ### Added
 
 - A single installable root at `skills/`, backed by the machine-readable `catalog/skills.yaml` inventory.

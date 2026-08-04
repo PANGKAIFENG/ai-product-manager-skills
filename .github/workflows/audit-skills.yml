@@ -13,19 +13,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
+          cache-dependency-path: requirements-dev.txt
 
       - name: Install audit dependencies
         run: python3 -m pip install -r requirements-dev.txt
 
       - name: Audit catalog and repository structure
         run: python3 scripts/audit_skills.py .
+
+      - name: Run repository audit regression tests
+        run: python3 -m unittest discover -s scripts/tests -p "test_*.py" -v
 
       - name: Run PRD regression tests
         run: python3 -m unittest discover -s skills/prd-architect/tests -p "test_*.py" -v

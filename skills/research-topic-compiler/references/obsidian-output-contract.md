@@ -7,7 +7,7 @@ This contract keeps research runs aligned with the Vault structure while support
 Create or update research projects under:
 
 ```text
-/Users/linctex/Documents/ClawVault/02_Projects/Research_Projects/
+<obsidian-vault>/02_Projects/Research_Projects/
 ```
 
 Default folder name:

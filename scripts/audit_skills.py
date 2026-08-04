@@ -144,30 +144,47 @@ def list_skill_dirs(root: Path) -> list[Path]:
     )
 
 
+def validate_skill_manifest_locations(root: Path) -> list[str]:
+    errors: list[str] = []
+    for manifest in sorted(root.rglob("SKILL.md")):
+        relative = manifest.relative_to(root)
+        if ".git" in relative.parts:
+            continue
+        if (
+            len(relative.parts) != 3
+            or relative.parts[0] != SKILLS_PATH.as_posix()
+            or relative.parts[2] != "SKILL.md"
+        ):
+            errors.append(f"SKILL.md outside canonical installable root: {relative}")
+    return errors
+
+
 def validate_eval_file(skill_dir: Path) -> list[str]:
-    warnings: list[str] = []
+    errors: list[str] = []
     eval_path = skill_dir / "evals" / "evals.json"
     if not eval_path.exists():
-        warnings.append("missing evals/evals.json")
-        return warnings
+        errors.append("missing evals/evals.json")
+        return errors
     try:
         payload = json.loads(eval_path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as error:
         return [f"invalid evals/evals.json: {error}"]
+    if not isinstance(payload, dict):
+        return ["evals/evals.json must contain an object"]
     if payload.get("skill_name") != skill_dir.name:
-        warnings.append("eval skill_name does not match folder")
+        errors.append("eval skill_name does not match folder")
     evals = payload.get("evals")
     if not isinstance(evals, list) or not evals:
-        warnings.append("evals array is missing or empty")
-        return warnings
+        errors.append("evals array is missing or empty")
+        return errors
     for item in evals:
         if not isinstance(item, dict):
-            warnings.append("eval item is not an object")
+            errors.append("eval item is not an object")
             continue
         for field in ("id", "prompt", "expected_output"):
             if field not in item:
-                warnings.append(f"eval {item.get('id', '<unknown>')} missing {field}")
-    return warnings
+                errors.append(f"eval {item.get('id', '<unknown>')} missing {field}")
+    return errors
 
 
 def validate_duplicate_prd_files(root: Path) -> list[str]:
@@ -241,15 +258,7 @@ def audit(root: Path) -> int:
     if not skill_dirs:
         errors.append(f"no Skill directories found under {SKILLS_PATH}/")
 
-    root_level_skills = sorted(
-        path.name
-        for path in root.iterdir()
-        if path.is_dir() and (path / "SKILL.md").exists()
-    )
-    if root_level_skills:
-        errors.append(
-            "root-level Skill directories are not allowed: " + ", ".join(root_level_skills)
-        )
+    errors.extend(validate_skill_manifest_locations(root))
 
     for skill_dir in skill_dirs:
         skill_id = skill_dir.name
@@ -269,11 +278,11 @@ def audit(root: Path) -> int:
         if LOCAL_PATH_RE.search(text):
             warnings.append(f"{skill_id}: public SKILL.md contains local/private runtime reference(s)")
 
-        warnings.extend(
+        errors.extend(
             f"{skill_id}: {warning}" for warning in validate_eval_file(skill_dir)
         )
         if skill_id in HIGH_RISK_SCRIPT_SKILLS and not (skill_dir / "scripts").exists():
-            warnings.append(f"{skill_id}: high-risk output Skill has no scripts/ checker")
+            errors.append(f"{skill_id}: high-risk output Skill has no scripts/ checker")
 
     if catalog:
         errors.extend(validate_catalog_surfaces(root, catalog, actual_ids))

@@ -8,6 +8,7 @@ Use this when you want the Skills available across many repositories.
 
 ```bash
 git clone https://github.com/PANGKAIFENG/ai-product-manager-skills.git
+cd ai-product-manager-skills
 mkdir -p "$HOME/.agents/skills"
 
 for skill in \

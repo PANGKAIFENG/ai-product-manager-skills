@@ -53,7 +53,7 @@ Use the snapshot SHA in run metadata. Do not rewrite the existing `iteration-1-n
 To create a static review artifact with the shared viewer:
 
 ```bash
-python3 /Users/linctex/.config/skillshare/skills/skill-creator/eval-viewer/generate_review.py \
+python3 /path/to/skill-creator/eval-viewer/generate_review.py \
   /absolute/path/to/dashboard-reintegration/iteration-N \
   --skill-name research-topic-compiler \
   --static /absolute/path/to/dashboard-reintegration/iteration-N/review.html
