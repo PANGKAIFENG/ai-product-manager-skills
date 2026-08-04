@@ -177,13 +177,120 @@ def validate_eval_file(skill_dir: Path) -> list[str]:
     if not isinstance(evals, list) or not evals:
         errors.append("evals array is missing or empty")
         return errors
+
+    seen_ids: set[str] = set()
+    repository_skill_ids = {
+        path.name for path in list_skill_dirs(skill_dir.parent.parent)
+    }
+    trigger_count = 0
+    non_trigger_count = 0
+    known_risk_count = 0
     for item in evals:
         if not isinstance(item, dict):
             errors.append("eval item is not an object")
             continue
-        for field in ("id", "prompt", "expected_output"):
+
+        item_id = item.get("id")
+        case_id = (
+            item_id
+            if isinstance(item_id, str) and item_id.strip()
+            else "<unknown>"
+        )
+        for field in ("id", "type", "prompt", "expected_route", "expected_output"):
             if field not in item:
-                errors.append(f"eval {item.get('id', '<unknown>')} missing {field}")
+                errors.append(f"eval {case_id} missing {field}")
+            elif not isinstance(item[field], str) or not item[field].strip():
+                errors.append(
+                    f"eval {case_id} {field} must be a non-empty string"
+                )
+
+        if isinstance(item_id, str) and item_id.strip():
+            if item_id in seen_ids:
+                errors.append(f"duplicate eval id: {item_id}")
+            seen_ids.add(item_id)
+
+        if "should_trigger" not in item:
+            errors.append(f"eval {case_id} missing should_trigger")
+        elif type(item["should_trigger"]) is not bool:
+            errors.append(f"eval {case_id} should_trigger must be boolean")
+        elif item["should_trigger"]:
+            trigger_count += 1
+        else:
+            non_trigger_count += 1
+
+        expected_route = item.get("expected_route")
+        if isinstance(expected_route, str) and expected_route.strip():
+            external_skill_id = (
+                expected_route.removeprefix("external:")
+                if expected_route.startswith("external:")
+                else None
+            )
+            route_is_valid = expected_route in repository_skill_ids or (
+                external_skill_id is not None
+                and SKILL_ID_RE.fullmatch(external_skill_id) is not None
+            )
+            if not route_is_valid:
+                errors.append(
+                    f"eval {case_id} expected_route must name a repository Skill "
+                    "or use external:<skill-id>"
+                )
+
+            should_trigger = item.get("should_trigger")
+            if type(should_trigger) is bool:
+                if should_trigger and expected_route != skill_dir.name:
+                    errors.append(
+                        f"eval {case_id} trigger expected_route must be "
+                        f"{skill_dir.name}"
+                    )
+                elif not should_trigger and expected_route == skill_dir.name:
+                    errors.append(
+                        f"eval {case_id} non-trigger expected_route must not be "
+                        f"{skill_dir.name}"
+                    )
+
+        assertions = item.get("assertions")
+        if "assertions" not in item:
+            errors.append(f"eval {case_id} missing assertions")
+        elif not isinstance(assertions, list) or not assertions:
+            errors.append(f"eval {case_id} assertions must be a non-empty list")
+        else:
+            for index, assertion in enumerate(assertions, start=1):
+                if not isinstance(assertion, dict):
+                    errors.append(
+                        f"eval {case_id} assertion {index} must be an object"
+                    )
+                    continue
+                text = assertion.get("text")
+                if not isinstance(text, str) or not text.strip():
+                    errors.append(
+                        f"eval {case_id} assertion {index} text must be a non-empty string"
+                    )
+
+        eval_type = item.get("type")
+        known_regression = item.get("known_regression")
+        has_known_regression = (
+            isinstance(known_regression, str) and bool(known_regression.strip())
+        )
+        has_risk_type = isinstance(eval_type, str) and any(
+            marker in eval_type.lower() for marker in ("risk", "regression")
+        )
+        if has_known_regression or has_risk_type:
+            known_risk_count += 1
+
+    if trigger_count < 2:
+        errors.append(
+            f"eval coverage requires at least 2 trigger cases; found {trigger_count}"
+        )
+    if non_trigger_count < 2:
+        errors.append(
+            "eval coverage requires at least 2 non-trigger cases; "
+            f"found {non_trigger_count}"
+        )
+    if known_risk_count < 1:
+        errors.append(
+            "eval coverage requires at least 1 known-risk or regression case; "
+            f"found {known_risk_count}"
+        )
     return errors
 
 

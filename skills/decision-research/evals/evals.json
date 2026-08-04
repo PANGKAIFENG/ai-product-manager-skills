@@ -87,6 +87,59 @@
           "text": "Does not start web research before framing the real question."
         }
       ]
+    },
+    {
+      "id": "paired-competitor-evidence-still-missing",
+      "type": "non-trigger",
+      "prompt": "我们要判断是否跟进三个竞品的 onboarding 方案；当前还缺官方定价页、产品流程和用户评论证据，请先采集并整理这些竞品证据，不做最终选型。",
+      "should_trigger": false,
+      "expected_route": "competitive-analysis",
+      "expected_output": "Hands competitor evidence acquisition to competitive-analysis before final selection.",
+      "assertions": [
+        {
+          "text": "Does not force a final recommendation while material competitor evidence is still missing."
+        }
+      ]
+    },
+    {
+      "id": "paired-competitor-evidence-ready-final-selection",
+      "type": "routing-regression",
+      "prompt": "三个竞品的官方定价页、产品流程和用户评论证据已经整理齐；现在只做最终选择，给出推荐、排除理由和颠覆条件，不再扩展竞品取证。",
+      "should_trigger": true,
+      "expected_route": "decision-research",
+      "expected_output": "Uses the complete competitor evidence to make the final recommendation with exclusions and overturn conditions.",
+      "assertions": [
+        {
+          "text": "Owns final selection once evidence is complete and does not reopen broad competitor acquisition."
+        }
+      ],
+      "known_regression": "docs/audits/skill-overlap-v0.2.1.md"
+    },
+    {
+      "id": "paired-unstable-exploration-before-decision",
+      "type": "non-trigger",
+      "prompt": "我们要决定桌面端 Agent 的产品方向，但真正问题、候选路径和判断标准都还不稳定；先重构问题并设计探索路径，不做最终推荐。",
+      "should_trigger": false,
+      "expected_route": "complex-exploration",
+      "expected_output": "Hands the unstable decision framing to complex-exploration before recommendation research.",
+      "assertions": [
+        {
+          "text": "Does not produce a final recommendation before the problem, options, and criteria stabilize."
+        }
+      ]
+    },
+    {
+      "id": "paired-stable-decision-ready-for-recommendation",
+      "type": "trigger",
+      "prompt": "我们要决定桌面端 Agent 的产品方向，真正问题、候选路径和判断标准已经确认；请基于现有材料给出最终推荐、排除理由和颠覆条件。",
+      "should_trigger": true,
+      "expected_route": "decision-research",
+      "expected_output": "Researches and delivers the final recommendation for the stable decision question, including exclusions and overturn conditions.",
+      "assertions": [
+        {
+          "text": "Treats the confirmed problem, options, and criteria as decision inputs rather than reopening exploration framing."
+        }
+      ]
     }
   ]
 }

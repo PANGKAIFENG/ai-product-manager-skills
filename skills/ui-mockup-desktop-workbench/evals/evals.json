@@ -2,10 +2,13 @@
   "skill_name": "ui-mockup-desktop-workbench",
   "evals": [
     {
-      "id": 1,
+      "id": "1",
+      "type": "trigger",
       "prompt": "基于 /path/to/desktop-agent-prd.md、/path/to/ui-spec.md 和 /path/to/frontend-app 输出桌面端 Agent 工作台高保真 preview。这个 UI 后续要让前端完全按真实项目组件实现。",
       "expected_output": "Chooses project-native-preview, performs design discovery, creates or proposes an isolated preview route/component, and includes screen-contract.md, component-map.md, implementation-notes.md, screenshots or verification notes, and migration boundary.",
       "files": [],
+      "should_trigger": true,
+      "expected_route": "ui-mockup-desktop-workbench",
       "assertions": [
         {
           "text": "Selects project-native-preview instead of standalone HTML when a frontend project path and implementation intent are provided."
@@ -22,10 +25,13 @@
       ]
     },
     {
-      "id": 2,
+      "id": "2",
+      "type": "trigger",
       "prompt": "把这个桌面工作台 PRD 做成视觉 handoff，暂时不要改真实项目，但开发要能知道每个区域复用什么组件。需要一个可打开的 HTML 辅助确认。",
       "expected_output": "Chooses visual-handoff, creates high-fidelity visual reference plus mandatory component map and implementation notes, and clearly labels standalone HTML as visual reference rather than production code.",
       "files": [],
+      "should_trigger": true,
+      "expected_route": "ui-mockup-desktop-workbench",
       "assertions": [
         {
           "text": "Selects visual-handoff mode."
@@ -39,10 +45,13 @@
       ]
     },
     {
-      "id": 3,
+      "id": "3",
+      "type": "trigger",
       "prompt": "我还在早期讨论，只想快速看下桌面端布局是否合理。请用一个 standalone HTML 做概念稿，不需要开发直接复用。",
       "expected_output": "Chooses concept-html, keeps output lightweight, includes screen contract and assumptions, and does not overstate implementation reusability.",
       "files": [],
+      "should_trigger": true,
+      "expected_route": "ui-mockup-desktop-workbench",
       "assertions": [
         {
           "text": "Selects concept-html mode."
@@ -56,10 +65,13 @@
       ]
     },
     {
-      "id": 4,
+      "id": "4",
+      "type": "behavior-regression",
       "prompt": "这里有 PRD、线上截图和前端项目路径，但项目本地启动失败了。请继续给高保真 UI handoff，要求说明哪些是静态推断。",
       "expected_output": "Attempts or records project inspection, marks unavailable runtime evidence, uses static inference cautiously, and avoids claiming production match without evidence.",
       "files": [],
+      "should_trigger": true,
+      "expected_route": "ui-mockup-desktop-workbench",
       "assertions": [
         {
           "text": "Records that the project could not be fully run or inspected."
@@ -73,10 +85,13 @@
       ]
     },
     {
-      "id": 5,
+      "id": "5",
+      "type": "behavior-regression",
       "prompt": "PRD 已经确认了，现在要让前端完全复刻这个 UI。你需要输出能指导开发的内容，不要只给一个 HTML。",
       "expected_output": "Treats the task as implementation-oriented, refuses to use standalone HTML as the sole deliverable, and outputs the full implementation handoff contract.",
       "files": [],
+      "should_trigger": true,
+      "expected_route": "ui-mockup-desktop-workbench",
       "assertions": [
         {
           "text": "Does not deliver HTML as the only artifact."
@@ -90,10 +105,13 @@
       ]
     },
     {
-      "id": 6,
+      "id": "6",
+      "type": "routing-regression",
       "prompt": "从这份桌面端 Agent PRD 开始，先输出 UI 结构、状态模型和 ASCII 布局，确认结构后再继续做高保真 visual handoff。",
       "expected_output": "Treats wireframe as the first stage of the ui-mockup workflow, produces structure-stage deliverables before visual handoff, includes a structure review gate, then continues or pauses based on confirmation needs.",
       "files": [],
+      "should_trigger": true,
+      "expected_route": "ui-mockup-desktop-workbench",
       "assertions": [
         {
           "text": "Produces or requires screen inventory, state model, and ASCII layout before high-fidelity visuals."
@@ -107,13 +125,17 @@
         {
           "text": "Still includes screen contract, component map, and implementation notes when moving into visual handoff."
         }
-      ]
+      ],
+      "known_regression": "docs/audits/skill-overlap-v0.2.1.md"
     },
     {
-      "id": 7,
+      "id": "7",
+      "type": "non-trigger",
       "prompt": "帮我写一份桌面端 Agent 工作台 PRD，先不要做 UI mockup。",
       "expected_output": "Routes to prd-architect or states that PRD drafting should happen before ui-mockup-desktop-workbench. Does not produce visual mockup deliverables.",
       "files": [],
+      "should_trigger": false,
+      "expected_route": "prd-architect",
       "assertions": [
         {
           "text": "Does not treat PRD drafting as a ui-mockup-desktop-workbench task."
@@ -127,10 +149,13 @@
       ]
     },
     {
-      "id": 8,
+      "id": "8",
+      "type": "non-trigger",
       "prompt": "只审一下这个 PRD 有没有问题，从研发和测试视角挑缺口。",
       "expected_output": "Routes to prd-review or states that PRD review should happen before formal mockup. Does not generate UI artifacts.",
       "files": [],
+      "should_trigger": false,
+      "expected_route": "prd-review",
       "assertions": [
         {
           "text": "Does not treat PRD review as a ui-mockup-desktop-workbench task."
@@ -144,10 +169,13 @@
       ]
     },
     {
-      "id": 9,
+      "id": "9",
+      "type": "non-trigger",
       "prompt": "做一个手机端营销 landing page，视觉要漂亮一点。",
       "expected_output": "Does not use ui-mockup-desktop-workbench because the task is mobile/marketing rather than desktop workbench handoff. Routes to a frontend/design flow if needed.",
       "files": [],
+      "should_trigger": false,
+      "expected_route": "external:frontend-design",
       "assertions": [
         {
           "text": "Rejects or avoids ui-mockup-desktop-workbench routing for mobile landing page work."
@@ -158,10 +186,13 @@
       ]
     },
     {
-      "id": 10,
+      "id": "10",
+      "type": "non-trigger",
       "prompt": "直接实现这个生产功能并补测试，不需要视觉确认。",
       "expected_output": "Does not use ui-mockup-desktop-workbench as an implementation workflow. Routes to engineering planning or implementation flow.",
       "files": [],
+      "should_trigger": false,
+      "expected_route": "external:writing-plans",
       "assertions": [
         {
           "text": "Does not treat production implementation and tests as a mockup task."
@@ -171,6 +202,45 @@
         },
         {
           "text": "Does not claim mockup artifacts are production code."
+        }
+      ]
+    },
+    {
+      "id": "paired-prd-only-before-ui-structure",
+      "type": "non-trigger",
+      "prompt": "当前只有桌面工作台需求想法，还没有 PRD；请先起草 PRD，暂不输出线框或高保真 UI。",
+      "should_trigger": false,
+      "expected_route": "prd-architect",
+      "expected_output": "Hands PRD drafting to prd-architect before any UI handoff.",
+      "assertions": [
+        {
+          "text": "Does not create high-fidelity artifacts before a usable PRD exists."
+        }
+      ]
+    },
+    {
+      "id": "paired-structure-stage-before-high-fidelity",
+      "type": "non-trigger",
+      "prompt": "桌面工作台 PRD 已可用，但页面结构和状态模型还没确认；请只输出 screen inventory、state model 和 ASCII layout，停在低保真结构阶段。",
+      "should_trigger": false,
+      "expected_route": "ui-wireframe-to-html",
+      "expected_output": "Hands the explicitly structure-only request to ui-wireframe-to-html.",
+      "assertions": [
+        {
+          "text": "Does not force the full high-fidelity handoff when the user explicitly wants to stop at structure."
+        }
+      ]
+    },
+    {
+      "id": "paired-high-fidelity-after-structure-confirmed",
+      "type": "trigger",
+      "prompt": "桌面工作台 PRD、页面结构和状态模型已经确认；请输出高保真 UI handoff、component map 和 implementation notes。",
+      "should_trigger": true,
+      "expected_route": "ui-mockup-desktop-workbench",
+      "expected_output": "Produces the high-fidelity UI handoff, component map, and implementation notes from the confirmed PRD and structure.",
+      "assertions": [
+        {
+          "text": "Owns the high-fidelity handoff after PRD and structure confirmation."
         }
       ]
     }

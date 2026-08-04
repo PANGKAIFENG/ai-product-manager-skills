@@ -74,6 +74,8 @@
         "evals/fixtures/anthropic-skill-loop/seed-wechat.md",
         "evals/fixtures/anthropic-skill-loop/catalog.json"
       ],
+      "should_trigger": true,
+      "expected_route": "research-topic-compiler",
       "expected_output": "Runs an evidence-gap-driven iterative research loop: treats the WeChat article as a secondary seed, creates Framework V0 and a Gap/NBE queue, traces claims to primary sources, samples peer authorities and open-source projects by evidence role, records substantive framework changes, and returns one justified terminal state with unresolved gaps.",
       "assertions": [
         {
@@ -110,6 +112,8 @@
         "evals/fixtures/anthropic-skill-loop/seed-wechat.md",
         "evals/fixtures/anthropic-skill-loop/catalog.json"
       ],
+      "should_trigger": true,
+      "expected_route": "research-topic-compiler",
       "expected_output": "Treats the statement as an initial hypothesis, reads the relevant primary specification and official guidance, then explicitly invalidates or splits the single-file-only framework instead of silently replacing or reconciling it.",
       "assertions": [
         {
@@ -134,6 +138,8 @@
         "evals/fixtures/anthropic-skill-loop/catalog.json",
         "evals/fixtures/anthropic-skill-loop/sources/fake-google-official.md"
       ],
+      "should_trigger": true,
+      "expected_route": "research-topic-compiler",
       "expected_output": "Marks the article as unverified-origin secondary evidence because it lacks a canonical Google source or verifiable author identity, prevents it from supporting stable core claims, and records a verification gap or excludes it.",
       "assertions": [
         {
@@ -154,6 +160,8 @@
       "files": [
         "evals/fixtures/anthropic-skill-loop/catalog.json"
       ],
+      "should_trigger": true,
+      "expected_route": "research-topic-compiler",
       "expected_output": "Uses two independent high-quality low-gain sources to test saturation, recognizes remaining same-lineage reposts as low value, and stops with complete-saturated or complete-fit-for-purpose without treating candidate-count exhaustion as the criterion.",
       "assertions": [
         {
@@ -177,6 +185,8 @@
       "files": [
         "evals/fixtures/boundaries/openai-input-items.md"
       ],
+      "should_trigger": true,
+      "expected_route": "research-topic-compiler",
       "expected_output": "Answers directly with a compact explanation, citation, confidence/limitation, and at most one useful next step; it keeps the research loop ephemeral and does not expose or persist heavy research-control artifacts.",
       "assertions": [
         {
@@ -197,6 +207,8 @@
       "files": [
         "evals/fixtures/boundaries/l2-agent-skill-official-pack.md"
       ],
+      "should_trigger": true,
+      "expected_route": "research-topic-compiler",
       "expected_output": "Produces a compact L2 map with roughly 3-5 nodes, uses only lightweight inline gaps, and avoids full persistent state, broad acquisition, or L3/L4 completeness requirements.",
       "assertions": [
         {
@@ -217,6 +229,8 @@
       "files": [
         "evals/fixtures/boundaries/authoritative-sufficient-pack.md"
       ],
+      "should_trigger": true,
+      "expected_route": "research-topic-compiler",
       "expected_output": "Recognizes that the supplied primary sources cover the requested definition/structure comparison, completes from them, and avoids a candidate-source expansion or unrelated implementation survey while disclosing the limited scope.",
       "assertions": [
         {
@@ -238,6 +252,8 @@
         "evals/fixtures/mcp-auth-transfer/seed-blog.md",
         "evals/fixtures/mcp-auth-transfer/catalog.json"
       ],
+      "should_trigger": true,
+      "expected_route": "research-topic-compiler",
       "expected_output": "Transfers the iterative method outside Agent Skills: traces the secondary claim to the protocol specification, distinguishes local and remote threat models, selects implementation and counterexample evidence by gap, revises the initial framework, and stops with residual risks.",
       "assertions": [
         {
@@ -259,6 +275,8 @@
       "type": "routing",
       "prompt": "把这份关于 AI 产品 tracing 健康度的专题研究做成一个给领导、产品和研发一起看的本地 HTML 看板，需要结论、证据、置信度和下一步行动。",
       "files": [],
+      "should_trigger": true,
+      "expected_route": "research-topic-compiler",
       "expected_output": "Routes to Normal Research or Application with the independent research-dashboard-html artifact mode, not Lightweight Concept Lens.",
       "assertions": [
         {
@@ -274,6 +292,8 @@
       "type": "regression",
       "prompt": "研究一下 Agent Skill 这个概念的源流、语义演化和范式阶段，并输出一个本地 HTML 概念看板。",
       "files": [],
+      "should_trigger": true,
+      "expected_route": "research-topic-compiler",
       "expected_output": "Preserves the Concept Lens route and selects concept-dashboard-html with the Concept Lens contract.",
       "assertions": [
         {
@@ -289,6 +309,8 @@
       "type": "non-trigger",
       "prompt": "把候选产品做成 HTML 看板，并最终选一个，说明为什么排除其他方案。",
       "files": [],
+      "should_trigger": false,
+      "expected_route": "decision-research",
       "expected_output": "Hands final recommendation and exclusion logic to decision-research; the requested artifact does not change capability ownership.",
       "assertions": [
         {
@@ -306,6 +328,8 @@
       "files": [
         "evals/fixtures/boundaries/authoritative-sufficient-pack.md"
       ],
+      "should_trigger": true,
+      "expected_route": "research-topic-compiler",
       "expected_output": "Produces dashboard.html and summary.md under the general dashboard contract, validates the HTML, and preserves evidence strength, confidence, terminal status, residual gaps, and role-specific interpretation.",
       "assertions": [
         {
@@ -333,6 +357,8 @@
         "evals/fixtures/anthropic-skill-loop/seed-wechat.md",
         "evals/fixtures/anthropic-skill-loop/catalog.json"
       ],
+      "should_trigger": true,
+      "expected_route": "research-topic-compiler",
       "expected_output": "Completes the evidence-gap-driven loop before rendering the dashboard and preserves framework change, evidence lineage, unique terminal status, and residual gaps in both artifacts.",
       "assertions": [
         {
@@ -356,6 +382,8 @@
       "files": [
         "evals/fixtures/boundaries/openai-input-items.md"
       ],
+      "should_trigger": true,
+      "expected_route": "research-topic-compiler",
       "expected_output": "Keeps the run as a compact chat-brief and creates no HTML or Markdown files.",
       "assertions": [
         {
@@ -374,6 +402,8 @@
         "evals/fixtures/mcp-auth-transfer/seed-blog.md",
         "evals/fixtures/mcp-auth-transfer/catalog.json"
       ],
+      "should_trigger": true,
+      "expected_route": "research-topic-compiler",
       "expected_output": "Transfers the iterative and Dashboard contracts to security research, with persona-specific implications, threat-model evidence map, residual risks, and no final architecture decision claim.",
       "assertions": [
         {
@@ -410,7 +440,7 @@
       "prompt": "把现有页面改成响应式 HTML dashboard，不需要做研究，只修布局和交互。",
       "files": [],
       "should_trigger": false,
-      "expected_route": "frontend-design",
+      "expected_route": "external:frontend-design",
       "expected_output": "Does not select research-topic-compiler because the task is UI implementation with no research intent.",
       "assertions": [
         {
@@ -423,6 +453,8 @@
       "type": "boundary-regression",
       "prompt": "请研究我们私有客户访谈里的 AI Agent 采购阻力，并输出 HTML research dashboard。当前消息没有附访谈材料，也没有授权访问客户资料；不要联网，也不要向我追问，直接处理当前可用状态。",
       "files": [],
+      "should_trigger": true,
+      "expected_route": "research-topic-compiler",
       "expected_output": "Returns a single blocked-authorization or partial-access state and does not render a dashboard from the request text alone because no evidence-bearing framework or claim-to-evidence link exists.",
       "assertions": [
         {
@@ -435,6 +467,33 @@
           "text": "Does not restate the user request as evidence, fabricate customer findings, or treat the requested HTML artifact as authority to bypass access controls."
         }
       ]
+    },
+    {
+      "id": "paired-research-path-still-unstable",
+      "type": "non-trigger",
+      "prompt": "我们要研究 Agent Memory，但真正问题、研究边界和探索路径还不稳定；先设计探索框架和中间产物，不开始系统取证。",
+      "should_trigger": false,
+      "expected_route": "complex-exploration",
+      "expected_output": "Hands the unstable research framing to complex-exploration before systematic evidence collection.",
+      "assertions": [
+        {
+          "text": "Does not start systematic acquisition before the research problem, boundary, and path stabilize."
+        }
+      ]
+    },
+    {
+      "id": "paired-research-question-stable-systematic-evidence",
+      "type": "routing-regression",
+      "prompt": "我们要研究 Agent Memory，研究问题、边界和证据要求已经确认；请按既定问题系统收集证据并形成证据矩阵，不再重构探索路径。",
+      "should_trigger": true,
+      "expected_route": "research-topic-compiler",
+      "expected_output": "Systematically collects evidence for the fixed research question and produces an evidence matrix without reopening exploration design.",
+      "assertions": [
+        {
+          "text": "Owns systematic evidence engineering once the research contract is stable."
+        }
+      ],
+      "known_regression": "docs/audits/skill-overlap-v0.2.1.md"
     }
   ]
 }
