@@ -10,6 +10,7 @@
 - `workflows/`: cross-Skill orchestration patterns; these are not installable Skills.
 - `examples/`: copyable prompts and expected output shapes.
 - `prd/`: product requirements for repository capabilities.
+- `audits/`: active repository and Skill audit reports; move completed audits to `archive/audits/` after the resulting work is closed.
 - `archive/`: completed issues, historical audits, and promotion material.
 
 The installable inventory lives in `../skills/`. The machine-readable catalog is `../catalog/skills.yaml`.
