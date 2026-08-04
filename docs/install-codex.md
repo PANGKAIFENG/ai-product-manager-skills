@@ -84,7 +84,7 @@ skillshare install \
   --name prd-architect
 ```
 
-Before replacing an existing locally modified Skill, add `--dry-run` and review the result. See the [v0.2 migration guide](migration-v0.2.md) for the old-root-path compatibility boundary.
+Before replacing an existing locally modified Skill, repeat the command with `--force --dry-run` and review the result. Keep `--dry-run` attached: `--force` without it can overwrite the local Skill. See the [v0.2 migration guide](migration-v0.2.md) for the old-root-path compatibility boundary.
 
 ## Verify
 

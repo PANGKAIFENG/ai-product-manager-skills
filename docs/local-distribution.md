@@ -46,12 +46,13 @@ Before changing an existing Skillshare-managed Skill:
      PANGKAIFENG/ai-product-manager-skills/skills/prd-architect \
      -b v0.2.0-restructure \
      --name prd-architect \
+     --force \
      --dry-run
    ```
 
 5. Stop if the destination contains modifications that have not been preserved.
 
-Skillshare v0.20.22 does not expose a metadata-only source-rebind command. A later direct install with `--force` may replace content while updating metadata; do not treat it as a harmless path edit.
+For an existing destination, Skillshare v0.20.22 requires `--force` to reach the overwrite preview. The paired `--dry-run` prevents writes; verify that it remains present before running the command. Skillshare v0.20.22 does not expose a metadata-only source-rebind command. A later direct install with `--force` but without `--dry-run` may replace content while updating metadata; do not treat it as a harmless path edit.
 
 After a reviewed reinstall, run:
 

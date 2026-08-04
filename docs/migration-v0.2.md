@@ -52,10 +52,11 @@ skillshare install \
   PANGKAIFENG/ai-product-manager-skills/skills/prd-architect \
   -b v0.2.0-restructure \
   --name prd-architect \
+  --force \
   --dry-run
 ```
 
-Do not add `--force` until local modifications have been reviewed and preserved.
+For an existing destination, Skillshare v0.20.22 requires `--force` before it will show the dry-run overwrite preview. The paired `--dry-run` keeps this command read-only. Never run the same `--force` command without `--dry-run` until local modifications have been reviewed and preserved.
 
 ## Upgrade After v0.2 Is Released
 
@@ -77,7 +78,7 @@ For an existing locally modified Skill:
 
 1. Record its current metadata and diff it against the v0.2 source.
 2. Preserve the local changes in a patch, branch, or separate directory.
-3. Run the direct new-path command with `--dry-run`.
+3. Run the direct new-path command with `--force --dry-run`; for an existing destination, `--dry-run` alone exits before showing the overwrite preview.
 4. Use `--force` only after deciding which local changes should survive.
 5. Run `skillshare sync --dry-run` and inspect unrelated target changes before any actual sync.
 

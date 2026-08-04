@@ -51,7 +51,7 @@ skillshare install \
   --name prd-review
 ```
 
-Use `--dry-run` before replacing an existing locally modified Skill. The [v0.2 migration guide](migration-v0.2.md) explains why an old `subdir: prd-review` source must become `subdir: skills/prd-review` for future updates.
+For an existing destination, repeat the command with `--force --dry-run` to preview replacement. Keep `--dry-run` attached: `--force` without it can overwrite the local Skill. The [v0.2 migration guide](migration-v0.2.md) explains why an old `subdir: prd-review` source must become `subdir: skills/prd-review` for future updates.
 
 ## Manual Path
 
