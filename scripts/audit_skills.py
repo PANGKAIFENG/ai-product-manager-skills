@@ -39,6 +39,7 @@ HIGH_RISK_SCRIPT_SKILLS = {
     "prd-review",
     "prd-to-issues",
     "research-topic-compiler",
+    "stylework-yunxiao-workitem-submitter",
     "ui-mockup-desktop-workbench",
     "ui-wireframe-to-html",
 }

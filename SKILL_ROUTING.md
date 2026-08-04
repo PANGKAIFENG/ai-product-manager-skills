@@ -22,6 +22,7 @@ python3 scripts/audit_skills.py .
 | 问题基本成立，但进入 PRD、mockup 或开发计划前需要比较设计路径 | `brainstorming` | “先脑暴几个方案”“先不要写 PRD，帮我设计几种路径”“把这个需求变成 design spec”“实现前先讨论设计” | 不替代问题定义校准，不直接写 PRD，不直接实现；涉及 UI/mockup 时必须先发现项目视觉规范，不直接套通用页面 |
 | 要把想法、脑暴或需求草稿整理成 PRD | `prd-architect` | “帮我写 PRD”“选 PRD 模板”“把需求整理成 PRD”“PRD 里补 Draw.io 图” | 不评审已经成稿的 PRD，不直接写代码 |
 | 已有 PRD/handoff，需要找缺口并修订 | `prd-review` | “帮我审 PRD”“从研发测试视角挑问题”“能不能交付开发”“检查图示是否可编辑” | 不从零生成 PRD，不做纯语言润色 |
+| 要把 StyleWork 讨论或排查证据整理成云效需求/缺陷并提交 | `stylework-yunxiao-workitem-submitter` | “把这次排查提成云效缺陷”“附上截图和证据”“先预览再提交” | 不批量排期，不导出到钉钉，不更新已有工作项，不绕过确认或云效 MCP |
 | PRD 已 ready，需要拆成研发可领取的 GitHub issue backlog | `prd-to-issues` | “把 PRD 拆成 issue”“需求文档拆任务”“生成 GitHub issues”“按 vertical slice 拆开发票” | 不从零写 PRD，不评审 PRD 缺口，不替代 Superpowers `writing-plans` |
 | PRD 已可用，但只想先确认 UI 结构、状态模型、ASCII 布局或低保真 HTML | `ui-wireframe-to-html` | “先出 UI 结构”“先做 ASCII 布局”“不要高保真”“只确认布局和状态” | 不做高保真视觉；不做真实项目 preview；不输出 component map / implementation notes |
 | PRD/UI 方向已确认，需要从结构进入高保真 UI handoff 或项目原生 preview | `ui-mockup-desktop-workbench` | “基于 PRD 出高保真 mockup”“先结构再高保真”“开发要复刻这个 UI”“做真实项目 preview”“输出 component map” | 不替代 PRD 起草/评审；不把 standalone HTML 当生产实现 |
@@ -38,6 +39,7 @@ python3 scripts/audit_skills.py .
 | 用户是在处理一个复杂任务，而不是单点问题校准吗？ | 如果需要任务类型判断、隐含假设、真正问题、探索路径、中间产物和资产沉淀，用 `complex-exploration`。 | 如果只是“方向是不是错了”，先用 `ai-collaboration-calibration`；如果只是比较落地方案，用 `brainstorming`。 |
 | 用户是在问“先比较几个设计方案，再决定怎么写 PRD、mockup 或怎么实现”吗？ | 用 `brainstorming`，输出方案比较、推荐路径和设计 spec；涉及 UI 时先补项目视觉规范发现摘要。 | 如果已经要正式 PRD，转 `prd-architect`；如果方案已定要找漏洞，转 `grill-me`。 |
 | 用户是在问“这份 PRD 是否可开发、可测试、可交付”吗？ | 用 `prd-review`，并输出 readiness verdict。 | 如果问的是“PRD 背后的方案是否会失败”，用 `grill-me`。 |
+| 用户是在创建新的云效需求/缺陷，还是管理已有工作项？ | 新建且需要证据、确认和回读时用 `stylework-yunxiao-workitem-submitter`。 | 排期、导出或更新已有工作项时转相邻专用流程。 |
 | 用户是在问“把 ready PRD 拆成 GitHub issues 或开发工单”吗？ | 用 `prd-to-issues`，默认先 draft-only，输出 coverage matrix 和 AFK / HITL 标注。 | 如果要的是文件级实现计划、测试策略和提交顺序，转 Superpowers `writing-plans`。 |
 | 用户是在问“先只确认 UI 结构和状态，不要视觉 polish”吗？ | 用 `ui-wireframe-to-html`，输出 screen inventory、state model、ASCII layout 和可选低保真 HTML。 | 如果最终要高保真、组件映射或开发复刻，转 `ui-mockup-desktop-workbench`。 |
 | 用户要的是候选池还是最终选择？ | 候选池、长期追踪、Research Project 用 `research-topic-compiler`。 | 最终推荐、排除理由、颠覆条件用 `decision-research`。 |
@@ -55,6 +57,7 @@ python3 scripts/audit_skills.py .
 | `brainstorming` | 问题基本成立，但方案、范围、交互、视觉约束或技术切分未定 | 2-3 个方案、推荐路径、视觉约束摘要、设计 spec、下游 handoff | 用户确认设计或明确待确认项 |
 | `prd-architect` | 要把想法、草稿或 review feedback 整理成 PRD | PRD-lite / standard / ai-native、图示或 UI 承接接口 | PRD 草稿达到当前阶段目标 |
 | `prd-review` | 已有 PRD/handoff artifact | Findings、Revision Draft、Implementation-Plan Readiness | Ready / Ready with assumptions / Not ready |
+| `stylework-yunxiao-workitem-submitter` | 已有 StyleWork 讨论、问题或排查证据，需要新建云效工作项 | 需求/缺陷判断、证据账本、完整预览、确认 fingerprint、创建与附件回读 | 已验证创建结果，或明确停在未创建/结果未知/部分成功状态 |
 | `prd-to-issues` | PRD 已可交付，且用户要 issue backlog 或 GitHub issues | Issue Breakdown Draft、AFK / HITL 标注、Coverage Matrix、可选发布结果 | 用户确认粒度、依赖、标签和是否发布 |
 | `ui-wireframe-to-html` | PRD 已可用，但只需要结构/状态/线框 | Screen inventory、state model、ASCII layout、可选低保真 HTML、结构确认问题 | 结构已确认，或转入 `ui-mockup-desktop-workbench` |
 | `ui-mockup-desktop-workbench` | PRD 和 UI 规范足够明确，且需要 UI 可确认、可验收、可交给前端实现 | 结构阶段产物、`project-native-preview`、`visual-handoff` 或 `concept-html`，包含状态说明、组件映射、实现说明和截图/验证备注 | UI contract 可验收，迁移边界明确 |
@@ -85,6 +88,19 @@ python3 scripts/audit_skills.py .
 - “打开 Krowork 看看对我们的 AI PM 工作台定位和 onboarding 有什么启发。” -> `competitive-analysis`。
 - “我们应该选 MCP 还是自研工具协议？” -> `decision-research`。
 - “基于这个 Candidate Backlog 给我一个最终推荐。” -> `decision-research`。
+
+## 云效工作项分流规则
+
+`stylework-yunxiao-workitem-submitter` 只负责新建一个或少量明确数量的 StyleWork 云效需求/缺陷。它把证据、颗粒度、预览确认、附件和创建回读绑定为一条外部写入链路。
+
+| 用户目标 | 路由 |
+| --- | --- |
+| 把当前讨论、排查、日志、代码或截图整理成新需求/缺陷 | `stylework-yunxiao-workitem-submitter` |
+| 分析一批需求的优先级、迭代或排期 | `external:stylework-requirement-planning` |
+| 从云效导出需求并同步到钉钉表格 | `external:stylework-yunxiao-requirement-sync` |
+| 修改已有工作项的优先级、迭代、负责人或状态 | 不由本 Skill 处理，转明确的工作项编辑流程 |
+
+当前异常本应可用但必须绕路时优先提 `缺陷`；新增生命周期治理能力时才提 `需求`。任何创建都必须先展示最终字段和完整描述，确认后最多创建一次，再回读工作项与附件。
 
 ## Loop Extension 分流规则
 

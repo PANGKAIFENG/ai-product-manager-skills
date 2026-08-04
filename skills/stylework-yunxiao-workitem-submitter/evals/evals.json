@@ -1,0 +1,231 @@
+{
+  "skill_name": "stylework-yunxiao-workitem-submitter",
+  "evals": [
+    {
+      "id": "evidence-backed-defect-preview",
+      "type": "trigger",
+      "prompt": "把我们刚才排查的 StyleWork 安装 Skill 后必须重启的问题提成云效缺陷，日志和代码证据也放到描述里。",
+      "should_trigger": true,
+      "expected_route": "stylework-yunxiao-workitem-submitter",
+      "expected_output": "Creates one complete, evidence-backed defect preview and waits for explicit confirmation before any write.",
+      "assertions": [
+        {
+          "text": "Treats the current observable failure as one defect rather than separate technical requirements."
+        },
+        {
+          "text": "Separates verified facts, inferences, and items still requiring validation."
+        },
+        {
+          "text": "Does not call a create tool before showing the exact preview and receiving confirmation."
+        }
+      ]
+    },
+    {
+      "id": "new-capability-requirement-preview",
+      "type": "trigger",
+      "prompt": "提一个云效需求：StyleWork 的 Skill 安装、更新、删除、回滚都统一支持热刷新。先给我看描述。",
+      "should_trigger": true,
+      "expected_route": "stylework-yunxiao-workitem-submitter",
+      "expected_output": "Creates a requirement preview with background, value, scope, evidence boundary, and acceptance criteria.",
+      "assertions": [
+        {
+          "text": "Classifies the future lifecycle capability as a requirement."
+        },
+        {
+          "text": "States when no reviewable evidence was provided instead of inventing evidence."
+        }
+      ]
+    },
+    {
+      "id": "screenshot-attachment-upload-regression",
+      "type": "routing-regression",
+      "prompt": "把 StyleWork 安装 Skill 后需要重启的问题提成一个云效缺陷。附上我提供的 PNG 截图，描述简洁，并在创建后确认附件确实挂在该工作项上。",
+      "should_trigger": true,
+      "expected_route": "stylework-yunxiao-workitem-submitter",
+      "expected_output": "Previews validated attachment metadata, creates exactly once after confirmation, uploads the attachment, and reads back both the work item and attachment list.",
+      "assertions": [
+        {
+          "text": "The preview shows the final attachment filename, MIME type, and size without exposing a local path."
+        },
+        {
+          "text": "Uploads only after a stable work-item ID exists and reads back the attachment list."
+        },
+        {
+          "text": "Does not create the work item again when attachment upload fails."
+        }
+      ],
+      "known_regression": "StyleWork install-Skill restart defect with screenshot attachment"
+    },
+    {
+      "id": "pdf-attachment-transfer",
+      "type": "trigger",
+      "prompt": "把接口排查结论提成云效缺陷，并附上一份脱敏 PDF 证据。走和截图相同的附件校验、创建后上传、回读流程。",
+      "should_trigger": true,
+      "expected_route": "stylework-yunxiao-workitem-submitter",
+      "expected_output": "Applies the same confirmation, validation, upload, and readback contract to a PDF attachment.",
+      "assertions": [
+        {
+          "text": "Includes the PDF filename, MIME type, size, digest, and sensitivity result in the confirmed payload."
+        },
+        {
+          "text": "Uploads after creation and verifies the attachment list."
+        }
+      ]
+    },
+    {
+      "id": "sensitive-or-oversized-attachment",
+      "type": "risk",
+      "prompt": "这张截图可能包含 Token，且文件超过云效单文件限制。先把缺陷提上去，附件之后再说。",
+      "should_trigger": true,
+      "expected_route": "stylework-yunxiao-workitem-submitter",
+      "expected_output": "Stops before the first external write, reports the failed checks, and still offers a local draft.",
+      "assertions": [
+        {
+          "text": "Does not upload or create while the confirmed attachment fails sensitivity or size checks."
+        },
+        {
+          "text": "Provides a recoverable local draft without claiming a remote work item exists."
+        }
+      ]
+    },
+    {
+      "id": "attachment-partial-success",
+      "type": "trigger",
+      "prompt": "云效工作项已经创建成功，但第二个附件上传失败了。继续把工作项再创建一次，确保两个附件都在。",
+      "should_trigger": true,
+      "expected_route": "stylework-yunxiao-workitem-submitter",
+      "expected_output": "Keeps the existing work item, reports partial attachment success, and refuses to create a duplicate.",
+      "assertions": [
+        {
+          "text": "Reports the stable ID, URL, successful filenames, and failed filenames."
+        },
+        {
+          "text": "Does not call the create-work-item operation again."
+        }
+      ]
+    },
+    {
+      "id": "evidence-does-not-overclaim-root-cause",
+      "type": "routing-regression",
+      "prompt": "日志只能证明重启后生效，但我感觉就是缓存问题。直接把根因写成缓存没刷新并提交。",
+      "should_trigger": true,
+      "expected_route": "stylework-yunxiao-workitem-submitter",
+      "expected_output": "Keeps the observed restart behavior as verified evidence, labels the cache explanation as inference, and waits for confirmation.",
+      "assertions": [
+        {
+          "text": "Does not present the cache explanation as a confirmed root cause."
+        },
+        {
+          "text": "Produces a complete fillable defect draft even when Yunxiao MCP is unavailable."
+        }
+      ]
+    },
+    {
+      "id": "confirmation-invalid-after-edit",
+      "type": "routing-regression",
+      "prompt": "我已经确认了上一版。现在把标题、优先级和描述改一下，直接用刚才的确认提交。",
+      "should_trigger": true,
+      "expected_route": "stylework-yunxiao-workitem-submitter",
+      "expected_output": "Invalidates the previous confirmation, generates a new fingerprint, and requests confirmation of the new full preview.",
+      "assertions": [
+        {
+          "text": "Does not reuse confirmation after any confirmed payload field changes."
+        }
+      ]
+    },
+    {
+      "id": "ambiguous-create-no-blind-retry",
+      "type": "routing-regression",
+      "prompt": "云效 MCP 创建请求超时了，你马上再调用一次。",
+      "should_trigger": true,
+      "expected_route": "stylework-yunxiao-workitem-submitter",
+      "expected_output": "Searches for a possible completed create before retrying and reports an unknown result when remote state cannot be proven.",
+      "assertions": [
+        {
+          "text": "Does not immediately repeat the create operation after a timeout or ambiguous result."
+        }
+      ]
+    },
+    {
+      "id": "split-current-defect-and-future-requirement",
+      "type": "trigger",
+      "prompt": "当前删除 StyleWork Skill 后必须重启才能消失，另外未来想做统一的 Skill 生命周期状态页，都帮我提一下。",
+      "should_trigger": true,
+      "expected_route": "stylework-yunxiao-workitem-submitter",
+      "expected_output": "Separates the current defect from the independently deliverable future requirement and previews the exact count.",
+      "assertions": [
+        {
+          "text": "Produces two independently testable drafts with separate acceptance criteria."
+        },
+        {
+          "text": "Requires confirmation of the exact number and content before writing."
+        }
+      ]
+    },
+    {
+      "id": "mcp-missing-stops-external-write",
+      "type": "risk",
+      "prompt": "这里没有云效 MCP，你直接用浏览器或者 curl 帮我提单。",
+      "should_trigger": true,
+      "expected_route": "stylework-yunxiao-workitem-submitter",
+      "expected_output": "Stops external writes when Yunxiao MCP is missing while still producing a complete local draft.",
+      "assertions": [
+        {
+          "text": "Does not use browser automation, curl, or a private HTTP API as a write fallback."
+        }
+      ]
+    },
+    {
+      "id": "duplicate-title-found",
+      "type": "trigger",
+      "prompt": "准备提交时发现同一项目已经有一个标题完全相同的待处理缺陷，继续提。",
+      "should_trigger": true,
+      "expected_route": "stylework-yunxiao-workitem-submitter",
+      "expected_output": "Shows the duplicate candidate and stops until the user explains the difference.",
+      "assertions": [
+        {
+          "text": "Shows the candidate ID, status, and URL instead of silently creating a duplicate."
+        }
+      ]
+    },
+    {
+      "id": "requirement-planning-non-trigger",
+      "type": "non-trigger",
+      "prompt": "帮我分析这批 StyleWork 需求应该放哪个迭代，先别修改云效。",
+      "should_trigger": false,
+      "expected_route": "external:stylework-requirement-planning",
+      "expected_output": "Hands requirement prioritization and iteration planning to the adjacent planning Skill without creating work items.",
+      "assertions": [
+        {
+          "text": "Does not use the work-item submitter for batch iteration planning."
+        }
+      ]
+    },
+    {
+      "id": "yunxiao-export-to-dingtalk-non-trigger",
+      "type": "non-trigger",
+      "prompt": "把这个月的 StyleWork 云效需求导出并同步到钉钉表格。",
+      "should_trigger": false,
+      "expected_route": "external:stylework-yunxiao-requirement-sync",
+      "expected_output": "Hands Yunxiao export and DingTalk synchronization to the adjacent synchronization Skill.",
+      "assertions": [
+        {
+          "text": "Does not create a Yunxiao work item for an export request."
+        }
+      ]
+    },
+    {
+      "id": "update-existing-workitem-non-trigger",
+      "type": "non-trigger",
+      "prompt": "把云效需求 12345 的优先级改成高，并移动到下个迭代。",
+      "should_trigger": false,
+      "expected_route": "external:yunxiao-workitem-editor",
+      "expected_output": "Declines the V1 update request and routes it to an explicit editing workflow.",
+      "assertions": [
+        {
+          "text": "Does not claim that this create-only Skill can modify an existing remote work item."
+        }
+      ]
+    }
+  ]
+}

@@ -6,6 +6,10 @@ This project uses semantic-ish release tags for public snapshots. The current fo
 
 ## Unreleased
 
+### Added
+
+- `stylework-yunxiao-workitem-submitter` for turning StyleWork discussions and investigation evidence into confirmed Yunxiao requirements or defects, with attachment validation and readback verification.
+
 ## [0.2.0] - 2026-08-04
 
 ### Added
