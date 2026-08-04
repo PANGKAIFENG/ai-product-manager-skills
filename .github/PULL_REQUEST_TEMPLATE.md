@@ -14,6 +14,7 @@ Describe what changed and why.
 
 - [ ] I checked `SKILL_REGISTRY.md`.
 - [ ] I checked `SKILL_ROUTING.md`.
+- [ ] I updated `catalog/skills.yaml` if inventory metadata changed.
 - [ ] I updated examples if behavior changed.
 - [ ] I updated `CHANGELOG.md` if this affects public use.
 - [ ] I removed secrets, customer data, and private company context.

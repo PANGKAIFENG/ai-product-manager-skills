@@ -1,6 +1,6 @@
 # Decision Research Loop Pattern
 
-This is a thin multi-Skill orchestration pattern. It does not replace `decision-research/references/decision-loop-contract.md`; that file remains the state contract owned by `decision-research`.
+This is a thin multi-Skill orchestration pattern. It does not replace `skills/decision-research/references/decision-loop-contract.md`; that file remains the state contract owned by `decision-research`.
 
 ## Purpose
 
@@ -34,7 +34,7 @@ Use this loop when one concrete decision needs more than one pass of evidence, c
 
 ## State Reference
 
-Use `decision-research/references/decision-loop-contract.md` for state files:
+Use `skills/decision-research/references/decision-loop-contract.md` for state files:
 
 - `research_map.md`
 - `hypothesis_matrix.md`

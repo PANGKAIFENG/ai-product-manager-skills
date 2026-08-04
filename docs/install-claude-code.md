@@ -6,22 +6,22 @@ Claude Code setups can vary by version and organization policy. Use this guide a
 
 ## Recommended Copy List
 
-Copy or symlink these folders:
+Copy or symlink these folders from the repository root:
 
 ```text
-ai-collaboration-calibration/
-complex-exploration/
-research-topic-compiler/
-competitive-analysis/
-decision-research/
-brainstorming/
-prd-architect/
-prd-review/
-prd-to-issues/
-ui-wireframe-to-html/
-ui-mockup-desktop-workbench/
-grill-me/
-ai-work-assetization-diagnoser/
+skills/ai-collaboration-calibration/
+skills/complex-exploration/
+skills/research-topic-compiler/
+skills/competitive-analysis/
+skills/decision-research/
+skills/brainstorming/
+skills/prd-architect/
+skills/prd-review/
+skills/prd-to-issues/
+skills/ui-wireframe-to-html/
+skills/ui-mockup-desktop-workbench/
+skills/grill-me/
+skills/ai-work-assetization-diagnoser/
 ```
 
 Each folder must include its `SKILL.md` file.
@@ -31,7 +31,8 @@ Each folder must include its `SKILL.md` file.
 If your Claude Code setup is managed with `skillshare`, use:
 
 ```bash
-skillshare install https://github.com/PANGKAIFENG/ai-product-manager-skills --track
+skillshare install https://github.com/PANGKAIFENG/ai-product-manager-skills --track --all
+skillshare sync --dry-run
 skillshare sync
 ```
 
@@ -42,13 +43,23 @@ skillshare status
 skillshare list
 ```
 
+For a single Skill in v0.2 or later, include the canonical `skills/` subdirectory:
+
+```bash
+skillshare install \
+  PANGKAIFENG/ai-product-manager-skills/skills/prd-review \
+  --name prd-review
+```
+
+For an existing destination, repeat the command with `--force --dry-run` to preview replacement. Keep `--dry-run` attached: `--force` without it can overwrite the local Skill. The [v0.2 migration guide](migration-v0.2.md) explains why an old `subdir: prd-review` source must become `subdir: skills/prd-review` for future updates.
+
 ## Manual Path
 
 If you manage Claude Code Skills manually:
 
 1. Clone this repository.
 2. Locate your Claude Code Skills directory.
-3. Copy or symlink the thirteen public Skill folders into that directory.
+3. Copy or symlink the thirteen child folders under `skills/` into that directory; do not copy the `skills/` container itself unless your runtime expects that extra level.
 4. Restart Claude Code if new Skills are not detected.
 5. Test explicit invocation by Skill name.
 
@@ -107,5 +118,6 @@ Expected behavior:
 ## Compatibility Notes
 
 - The Skills are Chinese-first but include stable English slug names.
+- Existing v0.1 runtime copies keep working; direct repository symlinks and stored single-Skill source paths need the new `skills/<skill-id>` target only when upgrading.
 - The repository does not require tool-specific wrappers for the first release.
 - If your team needs one-click install, track the future plugin packaging work in issues or releases.

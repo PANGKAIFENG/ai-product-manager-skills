@@ -1,6 +1,6 @@
 # Install For Codex
 
-Codex supports Agent Skills as directories that contain a `SKILL.md` file. Skills can be discovered from user-level and repo-level locations. This repository keeps each public Skill as a root-level folder for stable names and simple copying.
+Codex supports Agent Skills as directories that contain a `SKILL.md` file. Skills can be discovered from user-level and repo-level locations. This repository keeps all public Skills under `skills/`, with one stable Skill ID per child directory.
 
 ## Option A: User-Level Skills
 
@@ -8,6 +8,7 @@ Use this when you want the Skills available across many repositories.
 
 ```bash
 git clone https://github.com/PANGKAIFENG/ai-product-manager-skills.git
+cd ai-product-manager-skills
 mkdir -p "$HOME/.agents/skills"
 
 for skill in \
@@ -25,7 +26,7 @@ for skill in \
   grill-me \
   ai-work-assetization-diagnoser
 do
-  ln -sfn "$(pwd)/$skill" "$HOME/.agents/skills/$skill"
+  ln -sfn "$(pwd)/skills/$skill" "$HOME/.agents/skills/$skill"
 done
 ```
 
@@ -53,7 +54,7 @@ for skill in \
   grill-me \
   ai-work-assetization-diagnoser
 do
-  cp -R "$skill" "/path/to/your-project/.agents/skills/$skill"
+  cp -R "skills/$skill" "/path/to/your-project/.agents/skills/$skill"
 done
 ```
 
@@ -62,7 +63,8 @@ done
 If you use `skillshare`, install and sync from the GitHub repository:
 
 ```bash
-skillshare install https://github.com/PANGKAIFENG/ai-product-manager-skills --track
+skillshare install https://github.com/PANGKAIFENG/ai-product-manager-skills --track --all
+skillshare sync --dry-run
 skillshare sync
 ```
 
@@ -74,6 +76,16 @@ skillshare list
 ```
 
 to inspect what was installed and synced.
+
+For a single Skill in v0.2 or later, include the canonical `skills/` subdirectory:
+
+```bash
+skillshare install \
+  PANGKAIFENG/ai-product-manager-skills/skills/prd-architect \
+  --name prd-architect
+```
+
+Before replacing an existing locally modified Skill, repeat the command with `--force --dry-run` and review the result. Keep `--dry-run` attached: `--force` without it can overwrite the local Skill. See the [v0.2 migration guide](migration-v0.2.md) for the old-root-path compatibility boundary.
 
 ## Verify
 
@@ -136,4 +148,5 @@ Expected behavior:
 - Keep the Skill directory names stable; they are the public invocation names.
 - Some Codex setups scan `$HOME/.codex/skills` instead of `$HOME/.agents/skills`; use the directory your local Codex reports.
 - If you copy instead of symlink, pull updates from this repository and copy again when upgrading.
+- Existing v0.1 local copies remain usable after the repository moves to `skills/`; only direct repository symlinks or stored single-Skill source paths need rebinding for future updates.
 - For team distribution, consider packaging these Skills as a Codex plugin in a future release.

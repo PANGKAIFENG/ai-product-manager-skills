@@ -2,7 +2,7 @@
 
 这个文件用于解释公开 AI PM Skill catalog 中每个 Skill 是什么、中文怎么叫、什么时候用、什么时候不用、当前维护状态和公开边界。
 
-真实 Skill 目录保持在仓库根目录，确保 GitHub 历史、运行时分发和 Skill 触发名称稳定。分类信息是 catalog metadata，不代表真实运行时目录；任何额外浏览索引都只是阅读辅助，不作为 skillshare 或 Agent runtime 的加载入口。
+真实 Skill 统一位于 `skills/<skill-id>/`，稳定的 `skill-id` 仍是运行时触发名称。机器可读的路径、分类与状态由 [`catalog/skills.yaml`](catalog/skills.yaml) 维护；本文件是面向人的 Catalog/status 说明，不作为运行时加载入口。
 
 ## 状态含义
 
@@ -39,13 +39,13 @@
 
 ## Loop Extension Catalog
 
-Loop Extension 是现有 Skill 内的状态化合约，不是新增公开 Skill，不改变根目录 Skill 数量。
+Loop Extension 是现有 Skill 内的状态化合约，不是新增公开 Skill，不进入 `skills/` 目录清单。
 
 | Loop Extension | Parent Skill | 触发信号 | 合约文件 |
 | --- | --- | --- | --- |
-| Decision Research Loop | `decision-research` | “持续跟踪这个决策”“多轮收敛”“保存状态”“下一轮继续更新结论” | `decision-research/references/decision-loop-contract.md` |
-| Research Radar Loop | `research-topic-compiler` | “长期雷达”“持续更新这个主题”“定期复盘”“更新已有研究项目” | `research-topic-compiler/references/research-radar-loop-contract.md` |
-| PRD Readiness Loop | `prd-review` | “继续上一轮 review”“关闭阻断项”“判断是否能进 writing-plans”“跟踪修订状态” | `prd-review/references/prd-readiness-loop-contract.md` |
+| Decision Research Loop | `decision-research` | “持续跟踪这个决策”“多轮收敛”“保存状态”“下一轮继续更新结论” | `skills/decision-research/references/decision-loop-contract.md` |
+| Research Radar Loop | `research-topic-compiler` | “长期雷达”“持续更新这个主题”“定期复盘”“更新已有研究项目” | `skills/research-topic-compiler/references/research-radar-loop-contract.md` |
+| PRD Readiness Loop | `prd-review` | “继续上一轮 review”“关闭阻断项”“判断是否能进 writing-plans”“跟踪修订状态” | `skills/prd-review/references/prd-readiness-loop-contract.md` |
 
 ## 推荐白名单
 

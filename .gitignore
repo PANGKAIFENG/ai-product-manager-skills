@@ -2,5 +2,6 @@ gstack/
 gstack.bak/
 .DS_Store
 __pycache__/
-*.pyc
+*.py[cod]
 .skillignore.local
+.loop-state/

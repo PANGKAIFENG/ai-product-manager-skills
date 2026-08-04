@@ -5,7 +5,7 @@ description: Research mode routing guide for research-topic-compiler
 
 # Research Mode Routing Guide
 
-Use this file when `research-topic-compiler/SKILL.md` identifies a mode but the run needs detailed trigger or execution rules.
+Use this file when `SKILL.md` identifies a mode but the run needs detailed trigger or execution rules.
 
 ## Lightweight Concept Lens Mode
 
