@@ -25,6 +25,7 @@ Start with one workflow:
 | Brainstorm a design before PRD or implementation | `brainstorming` | `$brainstorming 先不要写 PRD，帮我脑暴 2-3 个设计方案` |
 | Draft a PRD | `prd-architect` | `$prd-architect 把这个想法整理成 PRD-lite` |
 | Review a PRD | `prd-review` | `$prd-review 从研发和测试视角审一下这个 PRD` |
+| Submit a StyleWork Yunxiao requirement or defect | `stylework-yunxiao-workitem-submitter` | `$stylework-yunxiao-workitem-submitter 把这次排查整理成云效缺陷，先预览再提交` |
 | Break a ready PRD into GitHub issues | `prd-to-issues` | `$prd-to-issues 把这个 PRD 拆成 GitHub implementation issues，先给我 draft` |
 | Confirm UI structure and states | `ui-wireframe-to-html` | `$ui-wireframe-to-html 基于 PRD 先出 UI 结构、状态模型和 ASCII 布局` |
 | Create a high-fidelity desktop UI handoff | `ui-mockup-desktop-workbench` | `$ui-mockup-desktop-workbench 基于 PRD、UI 规范和真实前端项目生成高保真 UI handoff` |
@@ -39,7 +40,7 @@ Recommended paths:
 - Claude Code users: [install-claude-code.md](install-claude-code.md)
 - skillshare users: use `skillshare install` and `skillshare sync`
 
-If your tool supports manually loaded Agent Skills, copy or symlink the thirteen child directories under `skills/` into the tool's Skills directory.
+If your tool supports manually loaded Agent Skills, copy or symlink the fourteen child directories under `skills/` into the tool's Skills directory.
 
 ## 4. Verify Skill Discovery
 
@@ -69,6 +70,7 @@ $decision-research 帮我比较候选方案，给一个有立场推荐
 $brainstorming 先不要写 PRD，帮我脑暴 2-3 个设计方案并推荐一个
 $prd-architect 基于上面的结论写 PRD-standard
 $prd-review 从研发和测试视角审这个 PRD
+$stylework-yunxiao-workitem-submitter 把已经确认的问题和证据整理成一个云效缺陷，先给完整预览
 $prd-to-issues 把 ready PRD 拆成 vertical-slice GitHub issues，先 draft-only
 $ui-wireframe-to-html 基于 PRD 先出 UI 结构、状态模型和 ASCII 布局
 $ui-mockup-desktop-workbench 基于 PRD、UI 规范和真实前端项目生成高保真 UI handoff

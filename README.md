@@ -2,13 +2,13 @@
 
 [![Release](https://img.shields.io/github/v/release/PANGKAIFENG/ai-product-manager-skills?display_name=tag)](https://github.com/PANGKAIFENG/ai-product-manager-skills/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-13-2563eb.svg)](SKILL_REGISTRY.md)
+[![Skills](https://img.shields.io/badge/skills-14-2563eb.svg)](SKILL_REGISTRY.md)
 [![Codex](https://img.shields.io/badge/Codex-skills-111827.svg)](docs/install-codex.md)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-skills-111827.svg)](docs/install-claude-code.md)
 
 中文优先的 AI 产品经理 Agent Skill 库，用来把高频 PM 工作流沉淀成可复用的 Codex Skills、Claude Code Skills 和 Agent Skills。
 
-它重点覆盖：AI 协作脑暴、复杂探索资产化、主题研究、竞品决策分析、决策调研、方案脑暴、PRD 起草、PRD 评审、PRD 到 GitHub issue 拆解、UI 线框/高保真 mockup、方案压测、AI 工作资产化诊断，以及把需求交给 Superpowers 开发计划前的交付准备。
+它重点覆盖：AI 协作脑暴、复杂探索资产化、主题研究、竞品决策分析、决策调研、方案脑暴、PRD 起草、PRD 评审、StyleWork 云效需求/缺陷提报、PRD 到 GitHub issue 拆解、UI 线框/高保真 mockup、方案压测、AI 工作资产化诊断，以及把需求交给 Superpowers 开发计划前的交付准备。
 
 ## Why This Exists
 
@@ -40,6 +40,7 @@ $decision-research 帮我比较这几个方案，给一个有立场推荐
 $brainstorming 先不要写 PRD，帮我脑暴 2-3 个设计方案
 $prd-architect 把这个想法整理成 PRD-lite
 $prd-review 从研发和测试视角审一下这个 PRD
+$stylework-yunxiao-workitem-submitter 把这次排查整理成一个云效缺陷，先预览再提交
 $prd-to-issues 把这个 PRD 拆成 GitHub implementation issues，先给我 draft
 $ui-wireframe-to-html 先把 PRD 转成 UI 结构、状态模型和 ASCII 布局
 $ui-mockup-desktop-workbench 基于 PRD、UI 规范和真实前端项目生成高保真 UI handoff / preview
@@ -81,6 +82,7 @@ Quality gates:
 | [`brainstorming`](skills/brainstorming/) | 设计脑暴 / 实现前方案校准 | 在 PRD、mockup 或开发计划前，把已基本成立的想法收敛成 2-3 个可比较方案；涉及 UI 时先对齐项目视觉规范，再形成设计 spec。 | [example](docs/examples/brainstorming.md) |
 | [`prd-architect`](skills/prd-architect/) | PRD 架构师 / 需求文档起草 | 从想法或草稿起草 PRD，并在需要时补可编辑 Draw.io 图。 | [example](docs/examples/prd-architect.md) |
 | [`prd-review`](skills/prd-review/) | PRD 评审 / 需求评审 | 评审已有 PRD/handoff，检查文字、流程、验收和图示是否能支撑交付；需要关闭阻断项时可进入 PRD Readiness Loop。 | [example](docs/examples/prd-review.md) |
+| [`stylework-yunxiao-workitem-submitter`](skills/stylework-yunxiao-workitem-submitter/) | StyleWork 云效工作项提报 | 把讨论或排查结论整理成证据化云效需求/缺陷，经精确预览确认后创建、上传附件并回读验证。 | [example](docs/examples/stylework-yunxiao-workitem-submitter.md) |
 | [`prd-to-issues`](skills/prd-to-issues/) | PRD 到研发 Issue 拆解 | 把 ready 的 PRD 拆成 vertical-slice GitHub implementation issues，先产出 draft，再按确认发布。 | [example](docs/examples/prd-to-issues.md) |
 | [`ui-wireframe-to-html`](skills/ui-wireframe-to-html/) | PRD 到 UI 线框 / 结构阶段 | 从 PRD 先输出 screen inventory、状态模型、ASCII 布局和可选低保真 HTML，只确认结构和状态。 | [example](docs/examples/ui-wireframe-to-html.md) |
 | [`ui-mockup-desktop-workbench`](skills/ui-mockup-desktop-workbench/) | 高保真 UI 交付对齐器 / 桌面工作台 UI Mockup 生成器 | PRD/UI 方向确认后，先承接结构阶段，再把桌面工作台 UI 转成可截图确认、可映射真实组件、可交给前端实现的 project-native preview / visual handoff / concept HTML。 | [example](docs/examples/ui-mockup-desktop-workbench.md) |
@@ -97,12 +99,13 @@ Quality gates:
 | 4. 方案脑暴 | 问题基本成立，但还没确定方案、范围、交互、视觉约束或技术切分 | “先脑暴几个方案”“先不要写 PRD，帮我设计几种路径” | [`brainstorming`](skills/brainstorming/) | 得到推荐方案、取舍、视觉约束摘要和设计 spec |
 | 5. PRD 起草 | 要把想法、脑暴或草稿整理成需求文档 | “帮我写 PRD”“帮我选 PRD 模板”“PRD 里补 Draw.io 图” | [`prd-architect`](skills/prd-architect/) | 形成 PRD-lite、PRD-standard 或 PRD-ai-native |
 | 6. PRD 评审 | 已有 PRD，需要找缺口、冲突和不可测试点 | “帮我审 PRD”“从研发测试视角挑问题” | [`prd-review`](skills/prd-review/) | 修订 PRD，关闭阻断项 |
-| 7. PRD 拆 issue | PRD 已可交付，需要形成研发可领取 backlog | “把 PRD 拆成 issue”“生成 GitHub issues”“按 vertical slice 拆开发票” | [`prd-to-issues`](skills/prd-to-issues/) | 得到 draft issue plan、coverage matrix，确认后可发布到 GitHub |
-| 8. UI 结构线框 | PRD 已可用，但还需要先确认页面结构、状态模型和布局骨架 | “先出 UI 结构”“先做 ASCII 布局”“不要高保真” | [`ui-wireframe-to-html`](skills/ui-wireframe-to-html/) | 得到 screen inventory、state model、ASCII layout 和结构确认问题 |
-| 9. 高保真 UI 对齐 | PRD、UI 结构和 UI 规范已可用，需要确认桌面端真实页面并交给前端实现 | “基于 PRD 出高保真 mockup”“开发要复刻这个 UI” | [`ui-mockup-desktop-workbench`](skills/ui-mockup-desktop-workbench/) | 得到结构阶段产物、screen contract、component map、implementation notes 和 preview/handoff |
-| 10. 方案压测 | 已有方案，但担心盲点和失败模式 | “拷问我的方案”“这个方案哪里会翻车” | [`grill-me`](skills/grill-me/) | 明确取舍、风险和前置条件 |
-| 11. 资产化诊断 | 一段 AI 工作重复出现，不确定该沉淀到哪层 | “这个 prompt 应该做成 workflow 还是 Skill” | [`ai-work-assetization-diagnoser`](skills/ai-work-assetization-diagnoser/) | 得到最小资产建议和复用验证信号 |
-| 12. 开发计划 | PRD 或 issue backlog 已可交付，需要拆实现步骤 | “基于这个 PRD 写开发计划”“基于这些 issues 写实现计划” | Superpowers `writing-plans` | 进入实现计划、测试策略和提交节奏 |
+| 7. 云效工作项提报 | 已有讨论或排查结论，需要形成可追溯的 StyleWork 云效需求/缺陷 | “把这次排查提成云效缺陷”“附上证据，先预览再提交” | [`stylework-yunxiao-workitem-submitter`](skills/stylework-yunxiao-workitem-submitter/) | 得到完整预览；确认后创建、上传附件并回读 |
+| 8. PRD 拆 issue | PRD 已可交付，需要形成研发可领取 backlog | “把 PRD 拆成 issue”“生成 GitHub issues”“按 vertical slice 拆开发票” | [`prd-to-issues`](skills/prd-to-issues/) | 得到 draft issue plan、coverage matrix，确认后可发布到 GitHub |
+| 9. UI 结构线框 | PRD 已可用，但还需要先确认页面结构、状态模型和布局骨架 | “先出 UI 结构”“先做 ASCII 布局”“不要高保真” | [`ui-wireframe-to-html`](skills/ui-wireframe-to-html/) | 得到 screen inventory、state model、ASCII layout 和结构确认问题 |
+| 10. 高保真 UI 对齐 | PRD、UI 结构和 UI 规范已可用，需要确认桌面端真实页面并交给前端实现 | “基于 PRD 出高保真 mockup”“开发要复刻这个 UI” | [`ui-mockup-desktop-workbench`](skills/ui-mockup-desktop-workbench/) | 得到结构阶段产物、screen contract、component map、implementation notes 和 preview/handoff |
+| 11. 方案压测 | 已有方案，但担心盲点和失败模式 | “拷问我的方案”“这个方案哪里会翻车” | [`grill-me`](skills/grill-me/) | 明确取舍、风险和前置条件 |
+| 12. 资产化诊断 | 一段 AI 工作重复出现，不确定该沉淀到哪层 | “这个 prompt 应该做成 workflow 还是 Skill” | [`ai-work-assetization-diagnoser`](skills/ai-work-assetization-diagnoser/) | 得到最小资产建议和复用验证信号 |
+| 13. 开发计划 | PRD 或 issue backlog 已可交付，需要拆实现步骤 | “基于这个 PRD 写开发计划”“基于这些 issues 写实现计划” | Superpowers `writing-plans` | 进入实现计划、测试策略和提交节奏 |
 
 ## Loop Extensions
 
@@ -135,6 +138,7 @@ See [docs/superpowers-comparison.md](docs/superpowers-comparison.md) for the pro
 - 问题基本成立，但进入 PRD、mockup 或开发计划前还需要比较多个设计路径：用 `brainstorming`。
 - 要从想法或草稿写 PRD：用 `prd-architect`。
 - 已有 PRD 要找缺口、检查图示或判断能否交付：用 `prd-review`。
+- 要把 StyleWork 讨论或排查结论整理成云效需求/缺陷并在确认后创建：用 `stylework-yunxiao-workitem-submitter`。
 - PRD 已 ready，需要拆成可领取 GitHub implementation issues：用 `prd-to-issues`。
 - PRD 已明确，但只想先确认 UI 结构、状态模型、ASCII 布局或低保真 HTML：用 `ui-wireframe-to-html`。
 - PRD、UI 结构和 UI 规范已明确，要出高保真桌面工作台 UI handoff、项目原生 preview 或真实组件映射：用 `ui-mockup-desktop-workbench`。

@@ -20,6 +20,7 @@ for skill in \
   brainstorming \
   prd-architect \
   prd-review \
+  stylework-yunxiao-workitem-submitter \
   prd-to-issues \
   ui-wireframe-to-html \
   ui-mockup-desktop-workbench \
@@ -48,6 +49,7 @@ for skill in \
   brainstorming \
   prd-architect \
   prd-review \
+  stylework-yunxiao-workitem-submitter \
   prd-to-issues \
   ui-wireframe-to-html \
   ui-mockup-desktop-workbench \
@@ -81,8 +83,8 @@ For a single Skill in v0.2 or later, include the canonical `skills/` subdirector
 
 ```bash
 skillshare install \
-  PANGKAIFENG/ai-product-manager-skills/skills/prd-architect \
-  --name prd-architect
+  PANGKAIFENG/ai-product-manager-skills/skills/stylework-yunxiao-workitem-submitter \
+  --name stylework-yunxiao-workitem-submitter
 ```
 
 Before replacing an existing locally modified Skill, repeat the command with `--force --dry-run` and review the result. Keep `--dry-run` attached: `--force` without it can overwrite the local Skill. See the [v0.2 migration guide](migration-v0.2.md) for the old-root-path compatibility boundary.
@@ -129,6 +131,12 @@ or:
 
 ```text
 $competitive-analysis 研究这个竞品对我们的产品决策有什么启发
+```
+
+or:
+
+```text
+$stylework-yunxiao-workitem-submitter 把这次排查整理成一个云效缺陷，附上证据，先给我完整预览
 ```
 
 or:
