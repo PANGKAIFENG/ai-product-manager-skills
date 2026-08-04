@@ -9,6 +9,7 @@ This project uses semantic-ish release tags for public snapshots. The current fo
 ### Added
 
 - A single installable root at `skills/`, backed by the machine-readable `catalog/skills.yaml` inventory.
+- A v0.2 migration guide covering stable Skill IDs, old-to-new source paths, direct symlinks, copied installs, and Skillshare metadata rebinding.
 - GitHub Actions checks for catalog consistency, repository links, self-contained duplicate drift, and existing regression tests.
 - Repository-level Skill audit gate: `scripts/audit_skills.py`.
 - Shared eval schema in `docs/eval-schema.md`; the completed optimization issue backlog is archived under `docs/archive/issues/`.
@@ -27,6 +28,7 @@ This project uses semantic-ish release tags for public snapshots. The current fo
 - Refactored `prd-review`, `decision-research`, and `research-topic-compiler` toward router-plus-assets structure with detailed rules in `references/`.
 - Replaced public UI wireframe references to local templates with bundled `references/templates/`.
 - Documented maintainer-only runtime sync guidance in `docs/local-distribution.md` instead of public Skill bodies.
+- Updated Codex and Claude Code installation guidance for nested Skill discovery, single-Skill source paths, dry-run checks, and locally modified v0.1 installs.
 - Updated catalog, routing, install docs, quickstart, examples, and promotion copy for the complex-exploration workflow.
 - Updated catalog, routing, install docs, and Superpowers handoff docs for the PRD-to-issue workflow.
 - Updated catalog, routing, install docs, quickstart, and examples for the competitive-analysis workflow.

@@ -31,7 +31,8 @@ Each folder must include its `SKILL.md` file.
 If your Claude Code setup is managed with `skillshare`, use:
 
 ```bash
-skillshare install https://github.com/PANGKAIFENG/ai-product-manager-skills --track
+skillshare install https://github.com/PANGKAIFENG/ai-product-manager-skills --track --all
+skillshare sync --dry-run
 skillshare sync
 ```
 
@@ -41,6 +42,16 @@ Then check:
 skillshare status
 skillshare list
 ```
+
+For a single Skill in v0.2 or later, include the canonical `skills/` subdirectory:
+
+```bash
+skillshare install \
+  PANGKAIFENG/ai-product-manager-skills/skills/prd-review \
+  --name prd-review
+```
+
+Use `--dry-run` before replacing an existing locally modified Skill. The [v0.2 migration guide](migration-v0.2.md) explains why an old `subdir: prd-review` source must become `subdir: skills/prd-review` for future updates.
 
 ## Manual Path
 
@@ -107,5 +118,6 @@ Expected behavior:
 ## Compatibility Notes
 
 - The Skills are Chinese-first but include stable English slug names.
+- Existing v0.1 runtime copies keep working; direct repository symlinks and stored single-Skill source paths need the new `skills/<skill-id>` target only when upgrading.
 - The repository does not require tool-specific wrappers for the first release.
 - If your team needs one-click install, track the future plugin packaging work in issues or releases.

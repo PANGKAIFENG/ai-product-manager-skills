@@ -62,7 +62,8 @@ done
 If you use `skillshare`, install and sync from the GitHub repository:
 
 ```bash
-skillshare install https://github.com/PANGKAIFENG/ai-product-manager-skills --track
+skillshare install https://github.com/PANGKAIFENG/ai-product-manager-skills --track --all
+skillshare sync --dry-run
 skillshare sync
 ```
 
@@ -74,6 +75,16 @@ skillshare list
 ```
 
 to inspect what was installed and synced.
+
+For a single Skill in v0.2 or later, include the canonical `skills/` subdirectory:
+
+```bash
+skillshare install \
+  PANGKAIFENG/ai-product-manager-skills/skills/prd-architect \
+  --name prd-architect
+```
+
+Before replacing an existing locally modified Skill, add `--dry-run` and review the result. See the [v0.2 migration guide](migration-v0.2.md) for the old-root-path compatibility boundary.
 
 ## Verify
 
@@ -136,4 +147,5 @@ Expected behavior:
 - Keep the Skill directory names stable; they are the public invocation names.
 - Some Codex setups scan `$HOME/.codex/skills` instead of `$HOME/.agents/skills`; use the directory your local Codex reports.
 - If you copy instead of symlink, pull updates from this repository and copy again when upgrading.
+- Existing v0.1 local copies remain usable after the repository moves to `skills/`; only direct repository symlinks or stored single-Skill source paths need rebinding for future updates.
 - For team distribution, consider packaging these Skills as a Codex plugin in a future release.
