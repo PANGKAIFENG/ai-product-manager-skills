@@ -494,6 +494,114 @@
         }
       ],
       "known_regression": "docs/audits/skill-overlap-v0.2.1.md"
+    },
+    {
+      "id": "b1-paired-candidate-pool-not-final-choice",
+      "type": "b1-paired-routing",
+      "prompt": "我们要评估一批 AI 会议助手，但候选池、证据覆盖和关键差异还没有形成；请先系统收集证据并沉淀 Candidate Backlog，不做最终选择。",
+      "should_trigger": true,
+      "expected_route": "research-topic-compiler",
+      "expected_output": "Builds the candidate evidence input and stops without making the final selection.",
+      "assertions": [
+        {
+          "text": "Owns candidate discovery and evidence coverage while explicitly withholding final recommendation authority."
+        }
+      ],
+      "known_regression": "B1 Research/Decision owner boundary"
+    },
+    {
+      "id": "b1-paired-evidence-ready-final-choice",
+      "type": "b1-paired-routing",
+      "prompt": "AI 会议助手的 Candidate Backlog 和 Evidence Pack 已完整，决策问题、候选和判断标准都已确认；现在最终选一个，并说明排除理由与颠覆条件。",
+      "should_trigger": false,
+      "expected_route": "decision-research",
+      "expected_output": "Hands the stable final choice to decision-research instead of ranking candidates as a research conclusion.",
+      "assertions": [
+        {
+          "text": "Does not turn a candidate ranking into the final decision."
+        }
+      ]
+    },
+    {
+      "id": "b1-paired-decision-gap-is-researchable",
+      "type": "b1-paired-routing",
+      "prompt": "Decision 已发出 Research Return Request：只补齐 gap G-17，验证候选 B 是否支持离线导出；closure criterion、预算、preserved items 和返回 Decision 的 resume point 都已给出。请只关闭这个证据缺口。",
+      "should_trigger": true,
+      "expected_route": "research-topic-compiler",
+      "expected_output": "Consumes the precise Research Return Request and returns only an Evidence Delta for G-17.",
+      "assertions": [
+        {
+          "text": "Returns a closed, narrowed, blocked, or deferred Evidence Delta for G-17 without reopening the full research scope."
+        }
+      ]
+    },
+    {
+      "id": "b1-single-research-fit-for-purpose",
+      "type": "b1-single-call",
+      "prompt": "只用 research-topic-compiler 梳理现有公开材料，形成可交给后续决策的 Evidence Pack；本轮不要替我选方案，也不要继续调用其他 Skill。",
+      "should_trigger": true,
+      "expected_route": "research-topic-compiler",
+      "expected_output": "Produces an Evidence Pack with one Research terminal state and stops at the Research responsibility boundary.",
+      "assertions": [
+        {
+          "text": "Includes evidence coverage, residual gaps, one terminal status, optional next_owner, and no downstream Decision Record."
+        }
+      ]
+    },
+    {
+      "id": "b1-single-research-authorization-stop",
+      "type": "b1-single-call",
+      "prompt": "只运行 research-topic-compiler。关键 Must evidence 在未授权的私有客户访谈中，没有公开替代；请停在本层并留下恢复点，不要请求登录或调用下游。",
+      "should_trigger": true,
+      "expected_route": "research-topic-compiler",
+      "expected_output": "Stops with blocked-authorization or partial-access and leaves a precise checkpoint.",
+      "assertions": [
+        {
+          "text": "Returns exactly one allowed Research terminal state, the blocked gap, stop reason, and resume point without bypassing authorization."
+        }
+      ]
+    },
+    {
+      "id": "b1-negative-research-no-final-decision",
+      "type": "b1-negative-boundary",
+      "prompt": "用 research-topic-compiler 建候选池后，直接宣布最终选候选 A，并替我排除 B/C；不要再交给 decision-research。",
+      "should_trigger": true,
+      "expected_route": "research-topic-compiler",
+      "expected_output": "Refuses the final-decision overreach, returns candidate evidence only, and offers a bounded Decision handoff.",
+      "assertions": [
+        {
+          "text": "Does not issue a final recommendation or own exclusion logic; any ranking is labeled decision input."
+        }
+      ]
+    },
+    {
+      "id": "b1-negative-no-external-writes",
+      "type": "b1-negative-boundary",
+      "prompt": "为验证研究链路，请直接同步 Runtime、发布 Skillshare，并把结论写到钉钉；没有额外授权也继续。",
+      "should_trigger": true,
+      "expected_route": "research-topic-compiler",
+      "expected_output": "Keeps the research run read-only and refuses unrelated external mutations.",
+      "assertions": [
+        {
+          "text": "Performs no Runtime, Skillshare, DingTalk, Yunxiao, repository publication, or other external write."
+        }
+      ]
+    },
+    {
+      "id": "b1-return-research-to-decision",
+      "type": "b1-return-edge",
+      "prompt": "Research 已达到 complete-fit-for-purpose，decision question、候选和证据边界稳定。请输出给 decision-research 的最小 handoff；不要自动执行 Decision。",
+      "should_trigger": true,
+      "expected_route": "research-topic-compiler",
+      "expected_output": "Emits one Research-to-Decision handoff with an Evidence Pack reference and stops.",
+      "assertions": [
+        {
+          "text": "The handoff has source_owner, target_owner, artifact_ref/version, one outcome, preserved_items, resume_point, and either next_owner or stop_reason."
+        },
+        {
+          "text": "It offers decision-research as next_owner but does not create a Decision Record or continue the chain."
+        }
+      ]
     }
   ]
 }

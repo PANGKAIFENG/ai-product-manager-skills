@@ -49,17 +49,26 @@ python3 scripts/audit_skills.py .
 | --- | --- | --- | --- |
 | `ai-collaboration-calibration` | 问题、目标或约束还不稳定 | 真实问题陈述、关键假设、判断标准 | Done Signal 三问或用户确认进入执行 |
 | `complex-exploration` | 已经是复杂任务，不能一次答完，需要定题、探索、收敛和资产化 | 任务类型、隐含假设、真正问题、分析框架、调研规划、中间产物、反复判断、五类资产 | 探索路径清楚，或转交研究、方案、PRD、压测、资产化诊断 |
-| `research-topic-compiler` | 需要理解主题、沉淀知识、扩展候选池或长期雷达 | Research Project、证据矩阵、PM 决策看板、Candidate Backlog | 信息饱和、用户确认或转交决策 |
+| `research-topic-compiler` | 需要理解主题、沉淀知识、扩展候选池、补一个精确 evidence gap 或长期雷达 | Research Project、Evidence Pack/Delta、证据矩阵、Candidate Backlog | fit-for-purpose、access/budget 阻断或 handoff offered |
 | `competitive-analysis` | 产品决策已基本存在，需要竞品/替代方案/市场信号作为决策输入 | Product Decision Brief、证据等级、Copy/Adapt/Avoid、下一步验证 | 决策影响清楚，或发现需要转 `decision-research` / PRD / mockup |
-| `decision-research` | 决策问题已定义或可快速框定 | 最终推荐、排除理由、置信度、颠覆条件 | 三角收敛、信息饱和、PoC 更便宜或用户决策 |
-| `brainstorming` | 问题基本成立，但方案、范围、交互、视觉约束或技术切分未定 | 2-3 个方案、推荐路径、视觉约束摘要、设计 spec、下游 handoff | 用户确认设计或明确待确认项 |
+| `decision-research` | 决策问题已定义或可快速框定 | Decision Record：最终推荐、排除理由、置信度、颠覆条件 | recommendation、PoC、低 ROI、Human Gate 或精确 Research Return |
+| `brainstorming` | 问题基本成立，但方案、范围、交互、视觉约束或技术切分未定 | Maker 的方案比较、Design Spec/Delta、下游 handoff | 等待确认、critic-ready、revision-required 或 owner-confirmed |
 | `prd-architect` | 要把想法、草稿或 review feedback 整理成 PRD | PRD-lite / standard / ai-native、图示或 UI 承接接口 | PRD 草稿达到当前阶段目标 |
 | `prd-review` | 已有 PRD/handoff artifact | Findings、Revision Draft、Implementation-Plan Readiness | Ready / Ready with assumptions / Not ready |
 | `prd-to-issues` | PRD 已可交付，且用户要 issue backlog 或 GitHub issues | Issue Breakdown Draft、AFK / HITL 标注、Coverage Matrix、可选发布结果 | 用户确认粒度、依赖、标签和是否发布 |
 | `ui-wireframe-to-html` | PRD 已可用，但只需要结构/状态/线框 | Screen inventory、state model、ASCII layout、可选低保真 HTML、结构确认问题 | 结构已确认，或转入 `ui-mockup-desktop-workbench` |
 | `ui-mockup-desktop-workbench` | PRD 和 UI 规范足够明确，且需要 UI 可确认、可验收、可交给前端实现 | 结构阶段产物、`project-native-preview`、`visual-handoff` 或 `concept-html`，包含状态说明、组件映射、实现说明和截图/验证备注 | UI contract 可验收，迁移边界明确 |
-| `grill-me` | 方案、架构、计划或决策已成形 | 决策记录、被否选项、未解问题、推荐下一步 | 关键分支已探索或需要用户决策 |
+| `grill-me` | 版本化方案、架构、计划或决策已成形 | Critic 的 Challenge/Critic Handoff、唯一 return owner | challenge-open、clear-for-owner-confirmation 或 Human Gate |
 | `ai-work-assetization-diagnoser` | 重复 AI 工作、prompt、流程或团队场景需要沉淀判断 | 推荐资产层、相邻层排除理由、最小下一步 artifact、复用信号 | 得到明确资产化建议或不沉淀结论 |
+
+## Product Work Graph Core Loop
+
+- 四个公开节点保持独立：Research 负责 Evidence，Decision 负责最终选择，`brainstorming` 是 Maker，`grill-me` 是 Critic。
+- handoff edge 只表示允许的最小交接，不是自动执行承诺；普通单点调用在当前 owner 的唯一 outcome 后停止。
+- return edge 只返回一个最高优先 gap 给最小责任节点，保留 artifact/version、closure criterion、preserved items 和 resume point；同一 gap 两轮无收敛即 Human Gate。
+- Product Work Graph 的方案发散节点必须选择 PUBLIC unqualified `brainstorming`。
+- `superpowers:brainstorming` 仅在用户显式写出该完整限定名时可选；不得把未限定的 `brainstorming` 推断为 plugin route，也不得修改或禁用 Superpowers plugin。
+- 这组合同不新增第五个 Skill、mega Skill、Orchestrator、中心状态机或 Runtime 服务。专业字段见四个 Skill 各自的 handoff reference。
 
 ## 研究类分流规则
 

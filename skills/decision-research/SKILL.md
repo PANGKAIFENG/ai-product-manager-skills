@@ -10,6 +10,7 @@ description: >
   「这个产品方向对不对」「我们应该怎么定位」「行业怎么做」。
   与 research-topic-compiler 的边界：需要最终选择、推荐、排除理由、置信度和颠覆条件时用这个；
   如果目标是长期学习、候选池沉淀或 Research Project，用 research-topic-compiler，再把 Candidate Backlog 交回本 Skill 做最终决策。
+  只有发现一个会实质改变结论、可研究且可关闭的证据 gap 时，才向 research-topic-compiler 发出精确 Return Request。
   不用于：问题还没定义清楚时（先用 ai-collaboration-calibration L4-fuzzy 脑暴）。
 ---
 
@@ -28,6 +29,8 @@ description: >
 ## 核心原则
 
 **调研是服务于决策的，不是服务于信息完整性的。**
+
+本 Skill 拥有最终推荐、排除理由、置信度和颠覆条件，也拥有当前 `decision_question` 内为选择服务的有界取证与反证搜索；不拥有开放式知识工程，不执行已经通过 Research Return Request 明确交给 Research 的证据 gap，也不拥有方案设计、Critic clearance 或 readiness 审批。
 
 去掉所有图表和术语，剩下的结论能不能让用户敢于立刻做决定？如果不能，问题出在信息太浅，或者决策问题本身还没定义清楚。
 
@@ -77,6 +80,16 @@ description: >
 7. **Stop deliberately**：满足三角收敛、信息饱和、暗知识缺口、PoC 更便宜或 ROI 熔断时停止。
 8. **Give a position**：按 `references/conclusion-template.md` 输出推荐、置信度、排除理由、前提、颠覆条件和待验证项。
 
+## Core Loop Handoff
+
+消费 Research Evidence Pack、精确退回一个证据 gap、把已定决策约束交给 `brainstorming`，或消费 Critic 的选择标准 gap 时，读取 `references/core-loop-decision-handoff.md`。
+
+- 单点调用在一个 Decision outcome 后停止；只有用户或调用方已授权串联时才消费下游 handoff。
+- Research return 必须同时满足 material、researchable、closable，并包含一个 gap、closure criterion、preserved items、resume point 与 effort budget；否则选择 `poc-needed`、`human-decision-required` 或 `low-roi-stop`。
+- Evidence Delta 返回后只恢复原 Decision artifact 的受影响位置，不重开已确认内容。
+- 交给 `brainstorming` 的是版本化 Decision 约束，不替 Maker 创建方案。
+- 同一 gap 完成两轮回流后仍未关闭或缩小时，停止自动回流并进入 Human Gate。
+
 ## Evidence Rules
 
 - 来源层级：`L1` 官方/原始资料，`L2` 独立研究/可信技术报告，`L3` 社区主流实现，`L4` 从业经验/二手摘要。
@@ -103,6 +116,7 @@ description: >
 ## 资源指南
 
 - Decision Research Loop 合约：`references/decision-loop-contract.md`
+- Core Loop handoff：`references/core-loop-decision-handoff.md`
 - 模式路由：`references/mode-routing.md`
 - 技术选型：`references/modes/technical-selection.md`
 - 平台接入：`references/modes/platform-integration.md`

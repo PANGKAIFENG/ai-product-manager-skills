@@ -75,16 +75,16 @@ Quality gates:
 | --- | --- | --- | --- |
 | [`ai-collaboration-calibration`](skills/ai-collaboration-calibration/) | 协作校准 / 认知校准 | 问题还没定义清楚时，先挑战假设、澄清目标和判断标准。 | [example](docs/examples/ai-collaboration-calibration.md) |
 | [`complex-exploration`](skills/complex-exploration/) | 复杂探索资产化 / 复杂探索协作 | 面对复杂、不确定、多轮迭代的 Roadmap、定价、定位、复盘或方法论任务时，先定题、探索、收敛，再沉淀五类可复用资产。 | [example](docs/examples/complex-exploration.md) |
-| [`research-topic-compiler`](skills/research-topic-compiler/) | 专题研究编译器 / 概念源流研究助手 | 把大白话或模糊方向转成研究目标、研究问题和输出要求，再做系统研究、概念源流、行业演进和 PM 决策看板；需要持续更新时可进入 Research Radar Loop。 | [example](docs/examples/research-topic-compiler.md) |
+| [`research-topic-compiler`](skills/research-topic-compiler/) | 专题研究编译器 / 概念源流研究助手 | 拥有证据覆盖与残余 gap；交付 Evidence Pack 或精确 Evidence Delta，但不做最终选择。 | [example](docs/examples/research-topic-compiler.md) |
 | [`competitive-analysis`](skills/competitive-analysis/) | 竞品决策分析 / 竞品决策简报 | 围绕一个产品决策，把竞品、替代方案、市场信号和可选产品走查转成定位、路线图、定价、功能优先级、差异化或 Go/No-Go 输入。 | [example](docs/examples/competitive-analysis.md) |
-| [`decision-research`](skills/decision-research/) | 决策调研 / 决策驱动调研 | 明确具体决策、接入可行性、方案选型和一次性决策调研；需要多轮收敛时可进入 Decision Research Loop。 | [example](docs/examples/decision-research.md) |
-| [`brainstorming`](skills/brainstorming/) | 设计脑暴 / 实现前方案校准 | 在 PRD、mockup 或开发计划前，把已基本成立的想法收敛成 2-3 个可比较方案；涉及 UI 时先对齐项目视觉规范，再形成设计 spec。 | [example](docs/examples/brainstorming.md) |
+| [`decision-research`](skills/decision-research/) | 决策调研 / 决策驱动调研 | 拥有最终推荐、排除理由、置信度和颠覆条件；只精确退回一个可关闭证据 gap。 | [example](docs/examples/decision-research.md) |
+| [`brainstorming`](skills/brainstorming/) | 设计脑暴 / 实现前方案校准 | 作为 Maker 形成 Design Spec/Delta；不自批 Critic、PRD 或实现 readiness。 | [example](docs/examples/brainstorming.md) |
 | [`prd-architect`](skills/prd-architect/) | PRD 架构师 / 需求文档起草 | 从想法或草稿起草 PRD，并在需要时补可编辑 Draw.io 图。 | [example](docs/examples/prd-architect.md) |
 | [`prd-review`](skills/prd-review/) | PRD 评审 / 需求评审 | 评审已有 PRD/handoff，检查文字、流程、验收和图示是否能支撑交付；需要关闭阻断项时可进入 PRD Readiness Loop。 | [example](docs/examples/prd-review.md) |
 | [`prd-to-issues`](skills/prd-to-issues/) | PRD 到研发 Issue 拆解 | 把 ready 的 PRD 拆成 vertical-slice GitHub implementation issues，先产出 draft，再按确认发布。 | [example](docs/examples/prd-to-issues.md) |
 | [`ui-wireframe-to-html`](skills/ui-wireframe-to-html/) | PRD 到 UI 线框 / 结构阶段 | 从 PRD 先输出 screen inventory、状态模型、ASCII 布局和可选低保真 HTML，只确认结构和状态。 | [example](docs/examples/ui-wireframe-to-html.md) |
 | [`ui-mockup-desktop-workbench`](skills/ui-mockup-desktop-workbench/) | 高保真 UI 交付对齐器 / 桌面工作台 UI Mockup 生成器 | PRD/UI 方向确认后，先承接结构阶段，再把桌面工作台 UI 转成可截图确认、可映射真实组件、可交给前端实现的 project-native preview / visual handoff / concept HTML。 | [example](docs/examples/ui-mockup-desktop-workbench.md) |
-| [`grill-me`](skills/grill-me/) | 方案拷问 / 压力测试 | 对已有方案连续追问，暴露盲点、失败模式和前置条件。 | [example](docs/examples/grill-me.md) |
+| [`grill-me`](skills/grill-me/) | 方案拷问 / 压力测试 | 作为 Critic 输出 Challenge/Critic Handoff，把一个 gap 返回最小责任节点。 | [example](docs/examples/grill-me.md) |
 | [`ai-work-assetization-diagnoser`](skills/ai-work-assetization-diagnoser/) | AI 工作资产化诊断器 / 资产化路由器 | 判断重复 AI 工作应沉淀为 Prompt、Context Pack、Workflow、Skill、Loop、System，或不值得沉淀。 | [example](docs/examples/ai-work-assetization-diagnoser.md) |
 
 ## AI PM Workflow
@@ -113,6 +113,10 @@ Loop Extension 不新增 Skill，也不进入 `skills/`。它是在部分高价�
 | Decision Research Loop | [`decision-research`](skills/decision-research/) | 围绕同一个决策多轮收敛，跟踪假设、证据、反证、范围漂移和结论版本。 | [`decision-loop-contract.md`](skills/decision-research/references/decision-loop-contract.md) | [`decision-research-loop.md`](docs/workflows/decision-research-loop.md) |
 | Research Radar Loop | [`research-topic-compiler`](skills/research-topic-compiler/) | 围绕持续变化主题维护 watchlist、证据更新、阶段结论 Diff 和更新日志。 | [`research-radar-loop-contract.md`](skills/research-topic-compiler/references/research-radar-loop-contract.md) | [`research-radar-loop.md`](docs/workflows/research-radar-loop.md) |
 | PRD Readiness Loop | [`prd-review`](skills/prd-review/) | 围绕同一份 PRD 多轮 review、修订、关闭阻断项，并判断能否进入 `writing-plans`。 | [`prd-readiness-loop-contract.md`](skills/prd-review/references/prd-readiness-loop-contract.md) | [`prd-readiness-loop.md`](docs/workflows/prd-readiness-loop.md) |
+
+四个核心节点保持可独立调用：Research 交 Evidence，Decision 做最终选择，`brainstorming` 作为 Maker 形成方案，`grill-me` 作为 Critic 返回 Challenge。跨节点只传一个可关闭 gap 的差量 handoff，已确认项必须保留；同一 gap 两轮未关闭或缩小即停止到 Human Gate。详细合同留在四个 Skill 各自的 handoff reference。
+
+Product Work Graph 的方案发散固定路由到本仓 PUBLIC unqualified `brainstorming`。只有用户显式调用完整限定名 `superpowers:brainstorming` 时才选择 Superpowers plugin；本仓不修改或禁用该 plugin。
 
 PRD 进入 Superpowers `writing-plans` 前，至少应满足：
 

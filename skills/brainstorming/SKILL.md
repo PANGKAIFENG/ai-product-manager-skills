@@ -5,7 +5,7 @@ description: >
   或进入开发计划前，先比较方案、确认取舍、对齐 UI/视觉约束，并收敛成可执行设计 spec 时使用。
   可用中文唤起：“先脑暴一下方案”“先不要写 PRD，帮我设计几种路径”“参考 brainstorming 把这个需求变成设计 spec”
   “实现前先讨论设计”。问题还没定义清楚时先用 ai-collaboration-calibration；已有方案要压力测试时用 grill-me；
-  直接写 PRD 时用 prd-architect。
+  直接写 PRD 时用 prd-architect；grill-me 返回精确设计 gap 时，本 Skill 只输出 Design Delta。
 ---
 
 # 设计脑暴（brainstorming）
@@ -26,6 +26,8 @@ description: >
 
 它的默认下游可以是 `prd-architect`、`ui-mockup-desktop-workbench`、`prd-to-issues` 或实现计划；如果方案涉及 UI/mockup/HTML 可视化，必须先对齐项目已有视觉语言，避免生成与真实产品割裂的通用页面。
 
+本 Skill 是方案 Maker：拥有真实备选、推荐与取舍、scope、流程、状态、风险和 Design Delta；不拥有 Critic clearance、PRD/实现 readiness 或发布审批。
+
 ## Boundary
 
 先判断用户当前阶段：
@@ -36,6 +38,7 @@ description: >
 - 用户明确要 PRD 文档、PRD 模板、PRD 图示或正式需求章节：转 `prd-architect`。
 - 用户已有 PRD/handoff，要判断能否开发、可测试、可交付：转 `prd-review`。
 - 用户已有 PRD 和 UI 规范，要真实桌面端 mockup：转 `ui-mockup-desktop-workbench`。
+- Product Work Graph 的方案发散节点：使用 PUBLIC unqualified `brainstorming`。只有用户显式调用完整名称 `superpowers:brainstorming` 时才走该 plugin Skill；不得从未限定的 “brainstorming” 推断它。
 
 ## Hard Gate
 
@@ -149,6 +152,13 @@ description: >
 
 ## Handoff
 
+需要把版本化方案交给 `grill-me`，或消费 Critic 返回的单一设计 gap 时，先读取 `references/maker-handoff-contract.md`。
+
+- 单点调用输出方案或 Design Spec 后停止；`next_owner` 只是建议，不自动运行 Critic、PRD、issues 或实现计划。
+- Maker 只输出 `design-confirmation-needed`、`critic-ready`、`revision-required` 或 `owner-confirmed`；不得自称 `clear`、`ready`、`approved` 或已经通过压力测试。
+- Critic return 必须引用准确 artifact/version、一个 gap、closure criterion、preserved items 和 resume point；只修改受影响部分并返回 Design Delta。
+- 同一 challenge 完成两轮回流后仍未关闭或缩小时，停止自动回流并进入 Human Gate。
+
 根据设计成熟度选择下游：
 
 - 要写正式需求文档：交给 `prd-architect`。
@@ -194,5 +204,6 @@ Regression checks:
 ## Resources
 
 - `references/design-spec-contract.md`：正式设计 spec 的结构、轻重选择和自检清单。
+- `references/maker-handoff-contract.md`：Maker 单点停止、Critic handoff、Design Delta 与 Human Gate 合同。
 - `references/visual-design-standards.md`：UI/mockup/HTML 可视化前的项目规范发现、默认视觉标准和质量门禁。
 - `scripts/check_design_spec.py`：检查设计 spec 是否包含当前问题、推荐方案、不做范围、风险和待确认项。

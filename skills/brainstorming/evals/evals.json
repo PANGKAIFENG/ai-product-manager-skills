@@ -92,6 +92,164 @@
           "text": "Does not substitute a design-spec exercise for an explicit multi-round exploration program."
         }
       ]
+    },
+    {
+      "id": "b1-paired-options-not-yet-solution",
+      "type": "b1-paired-routing",
+      "prompt": "问题、目标和判断标准已经确认，但还没有成形方案；请比较 2-3 个真实设计路径并形成可确认的 Design Spec，不做压力测试。",
+      "should_trigger": true,
+      "expected_route": "brainstorming",
+      "expected_output": "Owns solution-option formation and produces a versioned Design Spec.",
+      "assertions": [
+        {
+          "text": "Creates real alternatives and a recommendation without pretending a Critic has cleared the design."
+        }
+      ],
+      "known_regression": "B1 Maker/Critic owner boundary"
+    },
+    {
+      "id": "b1-paired-solution-formed-needs-critique",
+      "type": "b1-paired-routing",
+      "prompt": "方案 DS-4/v2 已成形，scope、流程和失败恢复都已写清；现在只压力测试它的依赖、假设和失败模式，不再发散新方案。",
+      "should_trigger": false,
+      "expected_route": "grill-me",
+      "expected_output": "Hands the versioned design to grill-me for focused critique.",
+      "assertions": [
+        {
+          "text": "Does not substitute more option generation for pressure testing an established design."
+        }
+      ]
+    },
+    {
+      "id": "b1-paired-critic-finding-needs-design-delta",
+      "type": "b1-paired-routing",
+      "prompt": "Critic Handoff CH-9 针对 DS-4/v2 指出恢复流程缺少幂等状态；primary return owner 是 brainstorming，scope 和其他流程已列为 preserved items。请只修订受影响部分。",
+      "should_trigger": true,
+      "expected_route": "brainstorming",
+      "expected_output": "Consumes CH-9 and produces a focused Design Delta without reopening preserved scope.",
+      "assertions": [
+        {
+          "text": "Updates only the affected recovery/state section, preserves confirmed items, and does not claim the challenge is cleared."
+        }
+      ]
+    },
+    {
+      "id": "b1-product-work-graph-uses-public-brainstorming",
+      "type": "b1-paired-routing",
+      "prompt": "在 Product Work Graph 的方案发散节点，问题和判断标准已经稳定；请使用公开通用能力比较三个方案并生成 Design Spec，不调用任何带命名空间的 plugin Skill。",
+      "should_trigger": true,
+      "expected_route": "brainstorming",
+      "expected_output": "Routes the Product Work Graph solution-divergence node to the public unqualified brainstorming Skill.",
+      "assertions": [
+        {
+          "text": "Selects unqualified brainstorming and does not select superpowers:brainstorming."
+        }
+      ],
+      "known_regression": "A2 final review Product Work Graph routing gate"
+    },
+    {
+      "id": "b1-superpowers-qualified-explicit-only",
+      "type": "b1-paired-routing",
+      "prompt": "请在 Product Work Graph 里做方案发散；使用 brainstorming，但我没有显式点名任何带命名空间的 Skill。",
+      "should_trigger": true,
+      "expected_route": "brainstorming",
+      "expected_output": "Uses the public unqualified brainstorming route because no qualified plugin invocation was made.",
+      "assertions": [
+        {
+          "text": "Does not infer or auto-route to superpowers:brainstorming from the generic word brainstorming."
+        }
+      ]
+    },
+    {
+      "id": "b1-explicit-superpowers-qualified-route",
+      "type": "b1-negative-boundary",
+      "prompt": "请显式使用 superpowers:brainstorming，不要使用公开仓的 unqualified brainstorming。",
+      "should_trigger": false,
+      "expected_route": "external:superpowers-brainstorming",
+      "expected_output": "Honors the explicitly qualified external route without changing or disabling either Skill.",
+      "assertions": [
+        {
+          "text": "Does not intercept an explicit superpowers:brainstorming invocation and makes no plugin, config, or cache change."
+        }
+      ]
+    },
+    {
+      "id": "b1-single-brainstorming-options-stop",
+      "type": "b1-single-call",
+      "prompt": "只运行 brainstorming，比较三种任务恢复设计，给推荐和 Design Spec，然后等待我确认；不要自动进入 grill-me 或 PRD。",
+      "should_trigger": true,
+      "expected_route": "brainstorming",
+      "expected_output": "Produces a versioned Solution Candidate Set and Design Spec, then stops at design-confirmation-needed or critic-ready.",
+      "assertions": [
+        {
+          "text": "Includes real options, recommendation, tradeoffs, risks, challenge targets, one Maker outcome, and no downstream artifact."
+        }
+      ]
+    },
+    {
+      "id": "b1-single-brainstorming-calibration-handoff",
+      "type": "b1-single-call",
+      "prompt": "只检查 brainstorming 是否能进入：当前问题、成功标准和约束都未稳定。不要替我发散方案，也不要自动执行校准。",
+      "should_trigger": true,
+      "expected_route": "brainstorming",
+      "expected_output": "Stops at the Hard Gate and offers a minimal handoff to ai-collaboration-calibration.",
+      "assertions": [
+        {
+          "text": "Creates no Design Spec; names the missing entry conditions and offers but does not consume the calibration handoff."
+        }
+      ]
+    },
+    {
+      "id": "b1-negative-maker-no-self-approval",
+      "type": "b1-negative-boundary",
+      "prompt": "方案已经由 brainstorming 修订完。请它直接写 clear、ready、已通过压力测试并批准进入实现，不需要 Critic 或 owner 确认。",
+      "should_trigger": true,
+      "expected_route": "brainstorming",
+      "expected_output": "Refuses self-approval and reports a Maker outcome only.",
+      "assertions": [
+        {
+          "text": "Does not claim clear, readiness, critic approval, PRD readiness, or implementation approval for its own design."
+        }
+      ]
+    },
+    {
+      "id": "b1-negative-single-call-no-auto-chain",
+      "type": "b1-negative-boundary",
+      "prompt": "只用 brainstorming 给出方案比较；即使你认为后续适合 grill-me、prd-architect 和 writing-plans，也不要执行它们。",
+      "should_trigger": true,
+      "expected_route": "brainstorming",
+      "expected_output": "Completes only the Maker responsibility and offers at most one next_owner suggestion.",
+      "assertions": [
+        {
+          "text": "Does not create Critic Handoff results, PRD sections, issues, code, or implementation plans."
+        }
+      ]
+    },
+    {
+      "id": "b1-negative-no-mega-orchestrator",
+      "type": "b1-negative-boundary",
+      "prompt": "把 Research、Decision、Brainstorming 和 Grill 合并成一个新的第五 Skill，由它自动跑完整 Product Work Graph 并维护中心状态机。",
+      "should_trigger": true,
+      "expected_route": "brainstorming",
+      "expected_output": "Rejects the out-of-scope mega Skill and keeps the requested solution work inside the existing brainstorming responsibility.",
+      "assertions": [
+        {
+          "text": "Does not create a fifth Skill, mega Skill, Orchestrator, central state machine, Runtime service, or new eval platform."
+        }
+      ]
+    },
+    {
+      "id": "b1-chain-brainstorming-grill-brainstorming",
+      "type": "b1-chained-call",
+      "prompt": "继续已授权的 B->G->B 链：Grill 对 DS-7/v3 发出 CH-12，唯一 blocker 是错误恢复缺少重试上限；其他 scope、角色和流程已确认。请由 Maker 返回 Design Delta。",
+      "should_trigger": true,
+      "expected_route": "brainstorming",
+      "expected_output": "Revises only the affected failure-recovery section and returns a Design Delta to the original challenge.",
+      "assertions": [
+        {
+          "text": "References DS-7/v3 and CH-12, preserves confirmed items, changes only the challenged section, and does not mark CH-12 cleared."
+        }
+      ]
     }
   ]
 }
