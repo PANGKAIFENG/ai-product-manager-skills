@@ -318,6 +318,46 @@
           "text": "Does not claim PRD drafting owns high-fidelity component mapping and implementation notes."
         }
       ]
+    },
+    {
+      "id": "EVAL-B2-01",
+      "type": "capability",
+      "prompt": "为一个带退款审批抽屉的页面型 PRD 建立 Product Delivery Package。输入提供 PRD、当前前端基线、HTML、Action Contract、默认/无权限/成功/失败截图和对应 PRD 章节；先完成 Maker 阶段并运行 Manifest validator，不要替 Reviewer 下结论。",
+      "expected_output": "Creates product-delivery-manifest.yaml, records ui_required=true and the page evidence graph, computes the current input fingerprint, and stops at review_pending without writing review, approval, or release facts.",
+      "files": [],
+      "should_trigger": true,
+      "expected_route": "prd-architect",
+      "assertions": [
+        {
+          "text": "Manifest records PRD, Action Contract, HTML, screenshots, baseline, and anchors using Package-relative allowlisted artifact paths."
+        },
+        {
+          "text": "The deterministic validator passes and derives review_pending rather than package_ready."
+        },
+        {
+          "text": "Maker does not write review, approval, or release results."
+        }
+      ]
+    },
+    {
+      "id": "EVAL-B2-02",
+      "type": "boundary-risk",
+      "prompt": "检查两个 Product Delivery Package：A 定义用户可见配置页却缺 HTML、截图和 anchor；B 是完全无用户可见 surface 的内部限流规则，并显式写 no_user_visible_surface。不要为了过门禁伪造 UI 证据。",
+      "expected_output": "Fails Package A closed, accepts Package B without UI artifacts, and rejects frontend-unavailable or time-pressure as no-UI reasons.",
+      "files": [],
+      "should_trigger": true,
+      "expected_route": "prd-architect",
+      "assertions": [
+        {
+          "text": "The page Package cannot pass without HTML, Action Contract, screenshots, anchors, and a current UI baseline."
+        },
+        {
+          "text": "The no-UI Package may omit HTML and screenshots only with reason no_user_visible_surface."
+        },
+        {
+          "text": "No fake UI artifact is created to satisfy the contract."
+        }
+      ]
     }
   ]
 }

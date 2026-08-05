@@ -95,6 +95,7 @@ description: >
 | --- | --- |
 | `references/mockup-handoff.md` | PRD 涉及任何用户可见页面、弹窗、面板、按钮、表单或状态提示；即使用户没有单独要求 HTML 也要加载 |
 | `references/mockup-evidence-manifest.md` | 页面型 PRD 需要解析真实 UI 来源、生成 HTML/截图并验证证据新鲜度 |
+| `references/product-delivery-manifest.md` | 用户要求建立/更新 Product Delivery Package，或下游 Review/Publisher 要消费 Manifest |
 | `references/drawio-templates.md` | 用户要求可编辑流程图 / 架构图，或 Standard / AI-native 存在多阶段链路、上下游依赖、状态流转 |
 | `references/handoff-appendix.md` | 用户明确要求开发 handoff、字段定义、协议、接口、adapter、metadata 或实现计划前置材料 |
 | `references/prd-shape-gates.md` | 需要自检 PRD 是否过重、过技术化、章节误激活或待确认项处理不当 |
@@ -145,6 +146,16 @@ description: >
 - 不允许仅凭“文件存在”恢复到完成态；必须重新计算 commit/hash 并通过门禁。
 
 读取 `references/mockup-evidence-manifest.md`，按其中命令捕获和验证 evidence manifest。截图时间早于 HTML 时必须失败并要求重拍；不要通过触碰文件时间或重新保存旧图绕过。
+
+### 3D. Product Delivery Package Mode
+
+用户明确要求 Product Delivery Package、提供 `product-delivery-manifest.yaml`，或交付目标包含完整 Package Review/发布时，读取 `references/product-delivery-manifest.md`。
+
+1. 把 Manifest 作为输入和产物索引，不把它当第二份 PRD；已有 Manifest 时先读取再修改 Maker 分区。
+2. 显式记录 `ui_requirement.required`。只要本期存在用户可见 surface 就是 `true`；只有 `reason: no_user_visible_surface` 才能为 `false`。前端不可访问、浏览器失败或时间不足都不能改成无 UI。
+3. Maker 只写 Package identity、revision、UI applicability、sources、decisions 和 PRD artifact。不要写 `review`、`approvals` 或 `release`，也不要把本 Skill 的 shape check 当独立 Review。
+4. 页面型 Package 交给 UI Skill 补齐 HTML/preview、Action Contract、截图、baseline 和 anchor；无页面 Package 不为满足形式伪造 HTML 或截图。
+5. 运行 `scripts/validate_product_delivery_manifest.py` 计算当前 input fingerprint 和最早恢复节点。校验成功最多把 Maker 交付推进到 `review_pending`，不能自行产生 `package_ready`。
 
 ### 4. Write PRD
 
@@ -302,9 +313,11 @@ Resources:
 - `references/templates/prd-ai-native.md`
 - `references/mockup-handoff.md`
 - `references/mockup-evidence-manifest.md`
+- `references/product-delivery-manifest.md`
 - `references/drawio-templates.md`
 - `references/handoff-appendix.md`
 - `references/prd-shape-gates.md`
 - `scripts/check_prd_shape.py`
 - `scripts/capture_mockup_evidence.py`
+- `scripts/validate_product_delivery_manifest.py`
 - `scripts/validate_drawio.py`

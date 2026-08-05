@@ -246,12 +246,24 @@ Default deliverables:
 - `mockup.html`, high-fidelity React artifact, or project-native page/component depending on the chosen mode.
 - Screenshot or browser verification notes when feasible.
 
+### Product Delivery Package Evidence
+
+When a `product-delivery-manifest.yaml` is present, read the canonical contract from `prd-architect/references/product-delivery-manifest.md` before packaging the result.
+
+- Update only the UI Producer partition: `artifacts.action_contract`, `artifacts.html`, `artifacts.screenshots`, `ui_baselines`, and `anchors`.
+- Every HTML/preview record binds to a current baseline. Every screenshot records the current source HTML ref/hash, state, viewport, and stable artifact ID; changing HTML makes its old screenshots stale regardless of mtime.
+- The Action Contract must identify screens, states, actions, next states, and recovery paths. An HTML file without this contract is incomplete Package evidence.
+- Each required screenshot must bind to a stable PRD anchor ID, heading path, normalized anchor content fingerprint, screen/state/action semantics, and the screenshot artifact ID.
+- Use the screenshot coverage defined by the PRD acceptance criteria and Action Contract: every materially changed page default state plus success, failure, permission, or confirmation states that change acceptance. Do not invent a cross-project screenshot checklist.
+- Run the canonical Manifest validator after updating evidence. Do not write the Package verdict, approval, release record, or a ready state.
+
 ## Resource Guide
 
 - `references/output-mode-selection.md`：选择 `project-native-preview`、`visual-handoff` 或 `concept-html`。
 - `references/verification-checklist.md`：最终视觉和交付包验证清单。
 - `references/desktop-workbench-ui-principles.md`：桌面 Agent 工作台布局和状态规则。
 - `references/mockup-output-contract.md`：交付物结构、迁移边界和 implementation handoff。
+- `../prd-architect/references/product-delivery-manifest.md`：Package 中 HTML、Action Contract、截图、anchor、baseline 与写权限合同。
 - `scripts/check_mockup_package.py`：检查 mockup package 的最小文件结构。
 
 ## Side Effects And Safety
