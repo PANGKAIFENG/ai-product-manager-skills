@@ -89,11 +89,24 @@ python3 scripts/validate_drawio.py <path>
 
    - 脚本 warning 是 review 证据，不自动等同于阻断；结合 PRD 阶段和用户目标判断。
 
+   - 输入包含 `product-delivery-manifest.yaml` 时，先运行 canonical Manifest validator，再评审整个 Package；validator 只证明确定性结构，不替代 Reviewer 判断。
+
 5. **Produce repair-ready output**
    - Findings 按严重程度排序。
    - 必须给 revision draft：最小可替换章节、段落、验收/边界/异常清单三者至少一种。
    - 必须列 open questions。
    - 必须给 `Implementation-Plan Readiness` verdict：`Ready for writing-plans`、`Ready with assumptions` 或 `Not ready`。
+
+### Product Delivery Package Verdict
+
+Package Review 与普通 PRD readiness 并存但不可混用。输入包含 Product Delivery Manifest 时：
+
+1. 实际读取 Manifest allowlist 中的 PRD、UI artifact、Action Contract、截图、anchor、baseline 和发布计划，不对未读取的 revision 给 verdict。
+2. 验证 `reviewer_identity` 与当前 revision 的全部 Maker/UI Producer identities 不同；Reviewer 不修改被评审 artifact。
+3. 只输出一条 Package verdict：`ready` 或 `changes_requested`，并包含且只包含 `content`、`artifacts`、`publish` 三项 `passed/failed` 检查。
+4. `ready` 必须绑定 validator 返回的当前 `package_input_fingerprint`，且三项检查全部通过。`Ready with assumptions` 不能产生 `package_ready` 或发布授权。
+5. findings 记录 severity、证据来源、责任节点、受影响对象和最小重跑 scope；输入变化后旧 verdict 立即 stale。
+6. Reviewer 只写 Manifest 的 `review` 分区。Human approval 与 DingTalk release 仍由各自角色负责。
 
 ## Writing Rules
 

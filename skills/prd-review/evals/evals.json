@@ -131,6 +131,26 @@
           "text": "Does not repeat readiness review after the PRD is explicitly Ready."
         }
       ]
+    },
+    {
+      "id": "EVAL-B2-04",
+      "type": "independence-boundary",
+      "prompt": "评审一个 Product Delivery Package：Maker 自己写了 ready，reviewer_identity 与 maker_identity 相同，而且 Package verdict 只有 content/artifacts 两项检查。请给 Package verdict，不要修改被评审产物。",
+      "expected_output": "Rejects the self-review, requires one verdict bound to the current input fingerprint with content/artifacts/publish checks, writes only the review partition, and does not produce package_ready.",
+      "files": [],
+      "should_trigger": true,
+      "expected_route": "prd-review",
+      "assertions": [
+        {
+          "text": "Reviewer identity must be independent from every Maker/UI Producer identity for the revision."
+        },
+        {
+          "text": "Package verdict contains exactly content, artifacts, and publish checks and binds the current input fingerprint."
+        },
+        {
+          "text": "The invalid self-review remains changes_requested and cannot authorize publication."
+        }
+      ]
     }
   ]
 }

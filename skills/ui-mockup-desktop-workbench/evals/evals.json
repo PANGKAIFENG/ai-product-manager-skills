@@ -243,6 +243,26 @@
           "text": "Owns the high-fidelity handoff after PRD and structure confirmation."
         }
       ]
+    },
+    {
+      "id": "EVAL-B2-03",
+      "type": "freshness",
+      "prompt": "Product Delivery Package 的 mockup.html 已修改，目录里仍有旧截图；Action Contract 还缺失败态恢复动作，PRD anchor 仍指向旧正文。更新 UI evidence，但不要修改产品决策、Package verdict、approval 或 release。",
+      "expected_output": "Invalidates screenshots bound to the old HTML hash, repairs the Action Contract and anchor evidence, captures required current screenshots, updates only the UI Producer partition, and returns the Package to review.",
+      "files": [],
+      "should_trigger": true,
+      "expected_route": "ui-mockup-desktop-workbench",
+      "assertions": [
+        {
+          "text": "Old screenshots remain stale even if their mtime is touched; current screenshots bind to the new HTML SHA-256."
+        },
+        {
+          "text": "Action Contract and PRD anchors cover the acceptance-relevant failure and recovery state."
+        },
+        {
+          "text": "Only UI artifacts, baseline, and anchor fields change; review, approval, and release are not written."
+        }
+      ]
     }
   ]
 }
