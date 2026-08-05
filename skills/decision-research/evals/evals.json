@@ -140,6 +140,140 @@
           "text": "Treats the confirmed problem, options, and criteria as decision inputs rather than reopening exploration framing."
         }
       ]
+    },
+    {
+      "id": "b1-paired-candidate-pool-not-final-choice",
+      "type": "b1-paired-routing",
+      "prompt": "我们要评估一批 AI 会议助手，但候选池、证据覆盖和关键差异还没有形成；请先系统收集证据并沉淀 Candidate Backlog，不做最终选择。",
+      "should_trigger": false,
+      "expected_route": "research-topic-compiler",
+      "expected_output": "Hands candidate discovery and evidence coverage to research-topic-compiler.",
+      "assertions": [
+        {
+          "text": "Does not force a recommendation before the candidate evidence exists."
+        }
+      ]
+    },
+    {
+      "id": "b1-paired-evidence-ready-final-choice",
+      "type": "b1-paired-routing",
+      "prompt": "AI 会议助手的 Candidate Backlog 和 Evidence Pack 已完整，决策问题、候选和判断标准都已确认；现在最终选一个，并说明排除理由与颠覆条件。",
+      "should_trigger": true,
+      "expected_route": "decision-research",
+      "expected_output": "Consumes the Evidence Pack and owns the final recommendation, exclusions, confidence, and reversal conditions.",
+      "assertions": [
+        {
+          "text": "Reuses the supplied evidence and does not reopen broad candidate research."
+        }
+      ],
+      "known_regression": "B1 Research/Decision owner boundary"
+    },
+    {
+      "id": "b1-paired-decision-gap-is-researchable",
+      "type": "b1-paired-routing",
+      "prompt": "Decision 已发出 Research Return Request：只补齐 gap G-17，验证候选 B 是否支持离线导出；closure criterion、预算、preserved items 和返回 Decision 的 resume point 都已给出。请只关闭这个证据缺口。",
+      "should_trigger": false,
+      "expected_route": "research-topic-compiler",
+      "expected_output": "Leaves the bounded evidence acquisition to research-topic-compiler and waits at the saved Decision resume point.",
+      "assertions": [
+        {
+          "text": "Does not perform open-ended research or change the recommendation before the Evidence Delta returns."
+        }
+      ]
+    },
+    {
+      "id": "b1-single-decision-recommendation",
+      "type": "b1-single-call",
+      "prompt": "只运行 decision-research。现有 Evidence Pack 足够，帮我在 A/B 中给最终推荐、排除理由、置信度和颠覆条件；不要继续调用 brainstorming。",
+      "should_trigger": true,
+      "expected_route": "decision-research",
+      "expected_output": "Produces one Decision Record with recommendation outcome and stops.",
+      "assertions": [
+        {
+          "text": "Includes recommendation, excluded option, confidence, evidence references, reversal conditions, one outcome, and no Solution Spec."
+        }
+      ]
+    },
+    {
+      "id": "b1-single-decision-poc-stop",
+      "type": "b1-single-call",
+      "prompt": "只运行 decision-research。公开证据无法判断方案在我们的真实负载下是否达标，继续查资料的价值很低；请给下一状态，不要泛化退回 Research。",
+      "should_trigger": true,
+      "expected_route": "decision-research",
+      "expected_output": "Stops with poc-needed and states the exact validation gate.",
+      "assertions": [
+        {
+          "text": "Uses poc-needed rather than a vague research-return and does not start implementation or the PoC."
+        }
+      ]
+    },
+    {
+      "id": "b1-negative-decision-no-vague-return",
+      "type": "b1-negative-boundary",
+      "prompt": "证据看起来还不够。请让 research-topic-compiler 把所有方向再完整调研一遍，不需要说明影响哪个候选、关闭标准、预算或恢复点。",
+      "should_trigger": true,
+      "expected_route": "decision-research",
+      "expected_output": "Rejects the vague return and requires one material, researchable, closable gap or chooses another stop outcome.",
+      "assertions": [
+        {
+          "text": "Does not emit research-return without one gap, why_it_matters, closure_criterion, preserved_items, budget, and resume_point."
+        }
+      ]
+    },
+    {
+      "id": "b1-chain-research-to-decision",
+      "type": "b1-chained-call",
+      "prompt": "用户已授权 R->D 串联。Research 提供 Evidence Pack EP-3/v2，包含稳定 decision question、A/B 候选、已关闭 Must gaps 和残余风险。请从 Decision 节点继续。",
+      "should_trigger": true,
+      "expected_route": "decision-research",
+      "expected_output": "Consumes EP-3/v2 and creates a Decision Record without re-running broad research.",
+      "assertions": [
+        {
+          "text": "References EP-3/v2, preserves its confirmed evidence boundary, and outputs recommendation, exclusions, confidence, and reversal conditions."
+        }
+      ]
+    },
+    {
+      "id": "b1-chain-decision-research-decision",
+      "type": "b1-chained-call",
+      "prompt": "继续已授权的 D->R->D 链：Decision DR-8/v1 只退回 gap G-17；Research 已返回 ED-17/v1，并将 gap 标成 narrowed。请从原 resume point 复核，不重开 preserved items。",
+      "should_trigger": true,
+      "expected_route": "decision-research",
+      "expected_output": "Resumes DR-8/v1 at the saved point, consumes only ED-17/v1, and updates the Decision outcome.",
+      "assertions": [
+        {
+          "text": "Preserves unaffected options, criteria, and evidence; it does not restart the Decision or Research workflow."
+        }
+      ]
+    },
+    {
+      "id": "b1-return-decision-to-research",
+      "type": "b1-return-edge",
+      "prompt": "Decision DR-12/v3 发现唯一 material 且可研究的 gap G-21：候选 C 的数据导出限制可能改变推荐。请只生成 Research Return Request。",
+      "should_trigger": true,
+      "expected_route": "decision-research",
+      "expected_output": "Emits one bounded Research Return Request and pauses Decision at a precise resume point.",
+      "assertions": [
+        {
+          "text": "The request has one target_owner research-topic-compiler, artifact/version, gap ID, why_it_matters, expected evidence role, closure criterion, budget, preserved_items, resume_point, and cycle_count."
+        },
+        {
+          "text": "It does not collect the evidence itself or ask Research to repeat the full topic."
+        }
+      ]
+    },
+    {
+      "id": "b1-return-decision-to-human",
+      "type": "b1-return-edge",
+      "prompt": "Decision 的剩余 blocker 是本公司可接受的年度预算和法务风险偏好，公开证据与四个专业 Skill 都无法代替 owner 决定。",
+      "should_trigger": true,
+      "expected_route": "decision-research",
+      "expected_output": "Stops at human-decision-required with the exact local decision needed.",
+      "assertions": [
+        {
+          "text": "Routes to Human Gate, preserves the Decision artifact/version, states the unresolved local choice and resume point, and does not send it to Research."
+        }
+      ]
     }
   ]
 }

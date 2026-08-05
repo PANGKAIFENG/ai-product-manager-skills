@@ -53,6 +53,202 @@
           "text": "Does not pressure-test a solution that does not yet exist."
         }
       ]
+    },
+    {
+      "id": "b1-paired-options-not-yet-solution",
+      "type": "b1-paired-routing",
+      "prompt": "问题、目标和判断标准已经确认，但还没有成形方案；请比较 2-3 个真实设计路径并形成可确认的 Design Spec，不做压力测试。",
+      "should_trigger": false,
+      "expected_route": "brainstorming",
+      "expected_output": "Hands option formation to brainstorming because there is no versioned solution to critique.",
+      "assertions": [
+        {
+          "text": "Does not invent a target design or begin pressure testing before the Maker artifact exists."
+        }
+      ]
+    },
+    {
+      "id": "b1-paired-solution-formed-needs-critique",
+      "type": "b1-paired-routing",
+      "prompt": "方案 DS-4/v2 已成形，scope、流程和失败恢复都已写清；现在只压力测试它的依赖、假设和失败模式，不再发散新方案。",
+      "should_trigger": true,
+      "expected_route": "grill-me",
+      "expected_output": "Critiques DS-4/v2 one challenge at a time and emits a Critic outcome.",
+      "assertions": [
+        {
+          "text": "References DS-4/v2, identifies one primary challenge, and does not reopen broad option generation."
+        }
+      ],
+      "known_regression": "B1 Maker/Critic owner boundary"
+    },
+    {
+      "id": "b1-paired-critic-finding-needs-design-delta",
+      "type": "b1-paired-routing",
+      "prompt": "Critic Handoff CH-9 针对 DS-4/v2 指出恢复流程缺少幂等状态；primary return owner 是 brainstorming，scope 和其他流程已列为 preserved items。请只修订受影响部分。",
+      "should_trigger": false,
+      "expected_route": "brainstorming",
+      "expected_output": "Returns the design revision to brainstorming rather than rewriting it inside the Critic.",
+      "assertions": [
+        {
+          "text": "Does not produce the Design Delta or a replacement Design Spec."
+        }
+      ]
+    },
+    {
+      "id": "b1-product-work-graph-uses-public-brainstorming",
+      "type": "b1-paired-routing",
+      "prompt": "在 Product Work Graph 的方案发散节点，问题和判断标准已经稳定；请使用公开通用能力比较三个方案并生成 Design Spec，不调用任何带命名空间的 plugin Skill。",
+      "should_trigger": false,
+      "expected_route": "brainstorming",
+      "expected_output": "Hands solution divergence to the public unqualified brainstorming Skill.",
+      "assertions": [
+        {
+          "text": "Does not pressure-test before a solution exists and does not route to superpowers:brainstorming."
+        }
+      ]
+    },
+    {
+      "id": "b1-superpowers-qualified-explicit-only",
+      "type": "b1-paired-routing",
+      "prompt": "请在 Product Work Graph 里做方案发散；使用 brainstorming，但我没有显式点名任何带命名空间的 Skill。",
+      "should_trigger": false,
+      "expected_route": "brainstorming",
+      "expected_output": "Hands the unqualified request to the public brainstorming Skill.",
+      "assertions": [
+        {
+          "text": "Does not interpret an unqualified name as superpowers:brainstorming."
+        }
+      ]
+    },
+    {
+      "id": "b1-single-grill-challenge",
+      "type": "b1-single-call",
+      "prompt": "只运行 grill-me 压测 DS-11/v1，一次只处理一个 blocker，给出 Challenge Record 和推荐答案；不要自动调用修订节点。",
+      "should_trigger": true,
+      "expected_route": "grill-me",
+      "expected_output": "Produces one version-bound Challenge Record and stops after locating a primary return owner.",
+      "assertions": [
+        {
+          "text": "Includes challenge ID, artifact/version, type, severity, issue, recommended answer, closure criterion, one return owner, and preserved items."
+        }
+      ]
+    },
+    {
+      "id": "b1-single-grill-clear-not-ready",
+      "type": "b1-single-call",
+      "prompt": "只运行 grill-me 复查 DS-11/v2。没有 blocker/high challenge 时给出你的 Critic outcome，但不要写 PRD ready、implementation ready 或发布批准。",
+      "should_trigger": true,
+      "expected_route": "grill-me",
+      "expected_output": "Returns clear-for-owner-confirmation and stops without a readiness verdict.",
+      "assertions": [
+        {
+          "text": "Uses clear-for-owner-confirmation and explicitly leaves confirmation/readiness to the appropriate owner or reviewer."
+        }
+      ]
+    },
+    {
+      "id": "b1-negative-critic-no-rewrite",
+      "type": "b1-negative-boundary",
+      "prompt": "作为 grill-me，发现方案有问题后请直接重写完整 Design Spec、PRD 和实现计划，并宣布新方案已通过。",
+      "should_trigger": true,
+      "expected_route": "grill-me",
+      "expected_output": "Refuses to replace the Maker artifact and emits only a Challenge/Critic Handoff.",
+      "assertions": [
+        {
+          "text": "Does not rewrite the complete design, PRD, or implementation plan and does not issue readiness or approval."
+        }
+      ]
+    },
+    {
+      "id": "b1-negative-cycle-limit-stops",
+      "type": "b1-negative-boundary",
+      "prompt": "同一 blocker CH-22 已在 cycle_count=2 的两次回流中保持 open，closure criterion 没有缩小。请继续自动退回原 Skill 第三轮，不要询问人类。",
+      "should_trigger": true,
+      "expected_route": "grill-me",
+      "expected_output": "Stops the return loop and enters human-decision-required.",
+      "assertions": [
+        {
+          "text": "Does not emit a third automatic return edge; reports cycle-limit-reached, preserved items, unresolved blocker, and required Human Gate decision."
+        }
+      ]
+    },
+    {
+      "id": "b1-chain-brainstorming-to-grill",
+      "type": "b1-chained-call",
+      "prompt": "用户已授权 B->G 串联。Brainstorming 提供 DS-5/v2、已确认 scope 和三个 challenge targets；请从 Critic 节点继续，一次处理一个 challenge。",
+      "should_trigger": true,
+      "expected_route": "grill-me",
+      "expected_output": "Consumes DS-5/v2, preserves confirmed scope, and emits one focused Challenge Record.",
+      "assertions": [
+        {
+          "text": "References DS-5/v2, selects one challenge, and does not rewrite the Design Spec or run downstream nodes."
+        }
+      ]
+    },
+    {
+      "id": "b1-chain-research-decision-brainstorming-grill",
+      "type": "b1-chained-call",
+      "prompt": "用户已授权 R->D->B->G。Evidence Pack EP-9/v1 和 Decision Record DR-9/v2 已确认，Brainstorming 生成 DS-9/v1；请由 Grill 只挑战方案，不重开已关闭证据或 Decision 结论。",
+      "should_trigger": true,
+      "expected_route": "grill-me",
+      "expected_output": "Critiques DS-9/v1 while preserving EP-9/v1 and DR-9/v2 as upstream confirmed inputs.",
+      "assertions": [
+        {
+          "text": "Keeps owner order R-D-B-G, references all artifact versions, and does not reopen preserved Research or Decision items."
+        }
+      ]
+    },
+    {
+      "id": "b1-return-grill-to-research",
+      "type": "b1-return-edge",
+      "prompt": "Grill 发现 DS-14/v1 依赖一个没有证据支持的用户行为假设；这是最早因果缺口。请输出 Critic Handoff，不要自己调研或重写方案。",
+      "should_trigger": true,
+      "expected_route": "grill-me",
+      "expected_output": "Returns the evidence gap to research-topic-compiler as the sole primary owner.",
+      "assertions": [
+        {
+          "text": "Targets research-topic-compiler with one evidence gap, closure criterion, preserved items, resume point, and cycle_count."
+        }
+      ]
+    },
+    {
+      "id": "b1-return-grill-to-decision",
+      "type": "b1-return-edge",
+      "prompt": "Grill 发现 DS-15/v2 的推荐依赖一组互相冲突的评价权重，现有证据充足但选择标准未决。请输出唯一 return owner。",
+      "should_trigger": true,
+      "expected_route": "grill-me",
+      "expected_output": "Returns the criteria and exclusion-logic gap to decision-research.",
+      "assertions": [
+        {
+          "text": "Targets decision-research, explains how the criteria change the recommendation, preserves evidence and design sections, and does not rewrite the decision."
+        }
+      ]
+    },
+    {
+      "id": "b1-return-grill-to-brainstorming",
+      "type": "b1-return-edge",
+      "prompt": "Grill 发现 DS-16/v4 的失败恢复流程缺少 retry exhaustion 状态；证据和选择标准均已确认。请输出唯一 return owner。",
+      "should_trigger": true,
+      "expected_route": "grill-me",
+      "expected_output": "Returns the solution-design gap to brainstorming.",
+      "assertions": [
+        {
+          "text": "Targets brainstorming with the exact design location and closure criterion while preserving confirmed scope, evidence, and decision."
+        }
+      ]
+    },
+    {
+      "id": "b1-return-cycle-limit-to-human",
+      "type": "b1-return-edge",
+      "prompt": "Critic blocker CH-30 针对 DS-18/v2 已完成两轮 return，gap ID 未变且仍未 narrowed/closed。请决定下一条边。",
+      "should_trigger": true,
+      "expected_route": "grill-me",
+      "expected_output": "Emits no professional return edge and stops at Human Gate.",
+      "assertions": [
+        {
+          "text": "Sets human-decision-required or cycle-limit-reached, retains CH-30 and DS-18/v2, states the human decision needed, and emits no third automatic return."
+        }
+      ]
     }
   ]
 }

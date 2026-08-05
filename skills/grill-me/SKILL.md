@@ -4,6 +4,7 @@ description: >
   方案拷问 / 压力测试：当用户有一个产品方案、架构设计、计划或决策，想被连续追问、反方挑战、
   压测取舍和失败模式时使用。可用中文唤起：“拷问我的方案”“压力测试这个设计”“帮我问 hard questions”
   “这个方案哪里会翻车”“grill me”。目标是一问一答把决策树走清楚，不是直接替用户写最终方案。
+  跨 Skill 运行时只输出 Challenge/Critic Handoff，并把一个 gap 返回最小责任节点；不重写完整方案。
   如果用户还不知道真正问题是什么，先用 ai-collaboration-calibration；如果用户要标准 PRD 交付准备度评审，
   用 prd-review。
 ---
@@ -21,6 +22,8 @@ description: >
 ## Overview
 
 使用这个 Skill 对方案或设计做聚焦访谈式压力测试。目标是达成共同理解，而不是抛出一长串互不相干的问题。
+
+本 Skill 是 Critic：拥有 challenge、严重度、推荐答案/假设、关闭标准、唯一 return owner 和复查；不拥有完整研究、最终选择、方案重写或 readiness/发布审批。
 
 ## Boundary
 
@@ -42,6 +45,16 @@ description: >
 5. 如果问题可以通过读取代码库、PRD、ADR 或本地文档回答，先去查证，不要把可查问题丢给用户。
 6. 按依赖顺序解决分支；上游约束还不稳定时，不要跳到下游细节。
 7. 当拷问暂停或结束时，汇总结论、被否掉的选项、仍未解决的问题和计划变化。
+
+## Critic Handoff
+
+需要跨 Skill 返回 blocker 或复查 delta 时，读取 `references/critic-handoff-contract.md`。
+
+- 必须引用版本化 artifact，一次只输出一个 Challenge 和一个 primary return owner；finding 涉及多节点时选择最早因果缺口。
+- 证据 gap 返回 `research-topic-compiler`，选择标准/排除逻辑返回 `decision-research`，scope/flow/state/recovery 返回 `brainstorming`，本地权限、预算或不可逆取舍进入 Human Gate。
+- 只输出 Challenge/Critic Handoff，不替目标节点生成完整 Evidence、Decision、Design Spec、PRD 或实现计划。
+- delta 返回后只复查原 challenge；无 blocker/high 时可输出 `clear-for-owner-confirmation`，但这不是任何 readiness verdict。
+- 同一 challenge 完成两轮回流后仍未关闭或缩小时，停止自动回流并进入 Human Gate。
 
 ## Context Intake
 
@@ -89,4 +102,5 @@ Non-trigger prompts:
 ## Resources
 
 - `references/question-patterns.md` 提供依赖、失败模式、取舍和证据类追问模板；需要连续追问但问题质量下降时读取。
+- `references/critic-handoff-contract.md` 定义 Challenge、最小责任节点、差量复查与 Human Gate。
 - `references/provenance.md` 记录上游来源、本地重叠和合并说明。

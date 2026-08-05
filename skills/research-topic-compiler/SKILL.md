@@ -9,6 +9,7 @@ description: >
   “整理到 Obsidian”“做深度专题”“研究行业最佳实践”“概念解读”“概念源流”“PM 技术评审提问脚本”
   “行业演进看板”“这个主题对我的业务有什么用”。不适合创建 Skill、评审 SKILL.md、普通即时搜索或一次性摘要。
   当用户已经要在明确候选项中选一个、需要最终推荐和排除理由时，应使用 decision-research。
+  当 decision-research 或 grill-me 返回一个可研究、可关闭的精确证据 gap 时，也使用本 Skill 只补 Evidence Delta。
 ---
 
 # 专题研究编译器（research-topic-compiler）
@@ -32,6 +33,7 @@ description: >
 - 先解析用户画像，再决定解释方式、案例选择、实践任务和应用转化。
 - Seed Corpus 是线索和初始假设来源，不默认是权威证据；二手核心 Claim 要追溯原始来源或披露无法追溯的影响。
 - Normal Research 和 Application 围绕最高价值证据缺口迭代；每轮只执行一个能降低关键不确定性的 Next Best Evidence Action。
+- Research 只拥有证据覆盖、来源、矛盾、置信度和残余 gap；最终推荐、排除逻辑、方案设计和 readiness 属于其他 owner。
 - Obsidian 是内部基线和默认沉淀位置，不是唯一研究渠道。
 - 外部渠道动态选择，不默认全开；根据主题类型、证据缺口、时效性和可信度要求启用。
 - 需要扩源时把 `Pre-Research Source Expansion` 作为候选发现策略：用公开搜索、垂直 API、RSS、产品/市场目录等渠道寻找能关闭当前 Gap 的来源，再筛选进入正式证据矩阵。
@@ -269,6 +271,17 @@ L3+、需要用户确认范围/授权、或用户明确要求研究计划时输�
 
 使用 Product Candidate Research 时，按 `references/product-decision-mode.md` 和 `references/cross-session-handoff.md` 输出决策问题、候选数量、Top candidates、差异、评分、置信度、handoff、推荐出口和开放问题；明确它们是决策输入，不是最终推荐。
 
+## Core Loop Handoff
+
+需要把证据交给 `decision-research`，或消费 Decision/Critic 返回的单一证据 gap 时，读取 `references/core-loop-research-handoff.md`。
+
+- 单点调用在 Evidence Pack 或一个 Research 终态后停止；`next_owner` 只是建议，不代表自动执行下游。
+- Evidence Pack 可以提供决策输入，但不得包含最终选择或替其他 Skill 排除候选。
+- Return Request 必须指向一个可研究、可关闭的稳定 gap；只返回 Evidence Delta，不重跑整份研究或改写 Decision。
+- handoff 保留唯一 target owner、artifact/version、closure criterion、preserved items、resume point 和 cycle count。
+- handoff/chain 不构成外部写入授权；Runtime sync、Skillshare/Multica 发布、钉钉/云效写入不属于 Research/B1 合同。遇到这些动作必须停止，并交给另行明确授权的专业 publisher/operation。
+- 同一 gap 完成两轮回流后仍未关闭或缩小时，停止自动回流并进入 Human Gate。
+
 ## Definition of Done
 
 任务完成必须满足至少一种情况：
@@ -295,4 +308,5 @@ L3+、需要用户确认范围/授权、或用户明确要求研究计划时输�
 - 渠道与写回：`pre-research-source-expansion.md`、`channel-selection-rubric.md`、`channel-registry.md`、`obsidian-output-contract.md`。
 - Concept Lens / HTML：相应 `concept-lens-*` references；一般研究 Dashboard 使用 `research-dashboard-output-contract.md` 和 `scripts/validate_html_artifact.py`。
 - Product Candidate：`product-decision-mode.md`、`project-context-intake.md`、`taxonomy-translation.md`、`candidate-backlog-schema.md`、`cross-session-handoff.md`、`post-research-exits.md`。
+- Core Loop：`core-loop-research-handoff.md`；只有发生跨 Skill handoff 或 return edge 时读取。
 - Learning/Radar：`learning-pack-standards.md`、`research-radar-loop-contract.md`；回归样例见 `evals/evals.json`。
