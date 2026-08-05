@@ -50,12 +50,6 @@ skills:
     category: product-prd
     status: core
     example: docs/examples/prd-review.md
-  - id: stylework-yunxiao-workitem-submitter
-    path: skills/stylework-yunxiao-workitem-submitter
-    name_zh: StyleWork 云效工作项提报
-    category: product-prd
-    status: review
-    example: docs/examples/stylework-yunxiao-workitem-submitter.md
   - id: prd-to-issues
     path: skills/prd-to-issues
     name_zh: PRD 到研发 Issue 拆解

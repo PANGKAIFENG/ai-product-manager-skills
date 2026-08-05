@@ -2,7 +2,7 @@
 
 This repository uses the common Agent Skill shape: each Skill is a directory with a `SKILL.md` file containing frontmatter, a trigger description, and workflow instructions.
 
-Claude Code setups can vary by version and organization policy. Use this guide as a conservative installation pattern: put the fourteen Skill directories in the location your Claude Code environment scans for Skills, then verify by explicit invocation.
+Claude Code setups can vary by version and organization policy. Use this guide as a conservative installation pattern: put the thirteen Skill directories in the location your Claude Code environment scans for Skills, then verify by explicit invocation.
 
 ## Recommended Copy List
 
@@ -17,7 +17,6 @@ skills/decision-research/
 skills/brainstorming/
 skills/prd-architect/
 skills/prd-review/
-skills/stylework-yunxiao-workitem-submitter/
 skills/prd-to-issues/
 skills/ui-wireframe-to-html/
 skills/ui-mockup-desktop-workbench/
@@ -48,8 +47,8 @@ For a single Skill in v0.2 or later, include the canonical `skills/` subdirector
 
 ```bash
 skillshare install \
-  PANGKAIFENG/ai-product-manager-skills/skills/stylework-yunxiao-workitem-submitter \
-  --name stylework-yunxiao-workitem-submitter
+  PANGKAIFENG/ai-product-manager-skills/skills/prd-review \
+  --name prd-review
 ```
 
 For an existing destination, repeat the command with `--force --dry-run` to preview replacement. Keep `--dry-run` attached: `--force` without it can overwrite the local Skill. The [v0.2 migration guide](migration-v0.2.md) explains why an old `subdir: prd-review` source must become `subdir: skills/prd-review` for future updates.
@@ -60,7 +59,7 @@ If you manage Claude Code Skills manually:
 
 1. Clone this repository.
 2. Locate your Claude Code Skills directory.
-3. Copy or symlink the fourteen child folders under `skills/` into that directory; do not copy the `skills/` container itself unless your runtime expects that extra level.
+3. Copy or symlink the thirteen child folders under `skills/` into that directory; do not copy the `skills/` container itself unless your runtime expects that extra level.
 4. Restart Claude Code if new Skills are not detected.
 5. Test explicit invocation by Skill name.
 
@@ -115,18 +114,6 @@ Expected behavior:
 - The agent uses `competitive-analysis`.
 - It anchors the product decision before collecting evidence.
 - It outputs a Product Decision Brief rather than a generic feature list.
-
-StyleWork Yunxiao work item:
-
-```text
-$stylework-yunxiao-workitem-submitter 把这次排查整理成一个云效缺陷，附上截图证据，先给我完整预览
-```
-
-Expected behavior:
-
-- The agent classifies the work item type and granularity.
-- It separates verified evidence from inference.
-- It does not write to Yunxiao before exact preview confirmation.
 
 ## Compatibility Notes
 
