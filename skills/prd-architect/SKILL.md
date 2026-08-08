@@ -26,8 +26,9 @@ description: >
 1. 先判断上游输入是否足够成熟。
 2. 再选择 `PRD-lite / PRD-standard / PRD-ai-native` 其中一个模板资产。
 3. 只加载本轮需要的附加资产；页面型 PRD 自动激活 mockup handoff 和 UI 证据链。
-4. 写出与当前阶段一致的 PRD，并区分本地草稿内容和可发布正文。
-5. 生成文件时尽量运行 PRD shape 自检，避免把初版 PRD 写成实现方案。
+4. 以“短背景 + 功能模块”为正文主干，把目标态 UI 和功能逻辑放在同一个模块内。
+5. 只有复杂链路才生成 Draw.io，不为简单需求补装饰性流程图。
+6. 生成文件时尽量运行 PRD shape 自检，避免把初版 PRD 写成实现方案。
 
 ## Upstream Boundaries
 
@@ -96,7 +97,7 @@ description: >
 | `references/mockup-handoff.md` | PRD 涉及任何用户可见页面、弹窗、面板、按钮、表单或状态提示；即使用户没有单独要求 HTML 也要加载 |
 | `references/mockup-evidence-manifest.md` | 页面型 PRD 需要解析真实 UI 来源、生成 HTML/截图并验证证据新鲜度 |
 | `references/product-delivery-manifest.md` | 用户要求建立/更新 Product Delivery Package，或下游 Review/Publisher 要消费 Manifest |
-| `references/drawio-templates.md` | 用户要求可编辑流程图 / 架构图，或 Standard / AI-native 存在多阶段链路、上下游依赖、状态流转 |
+| `references/drawio-templates.md` | 用户明确要求正式图示，或链路跨多角色/系统、含关键判断或回流、异步恢复，或达到 6 个及以上相互依赖步骤 |
 | `references/handoff-appendix.md` | 用户明确要求开发 handoff、字段定义、协议、接口、adapter、metadata 或实现计划前置材料 |
 | `references/prd-shape-gates.md` | 需要自检 PRD 是否过重、过技术化、章节误激活或待确认项处理不当 |
 
@@ -161,28 +162,30 @@ description: >
 
 输出必须做到：
 
-1. 开头用一句话写清“本期只解决什么”。
-2. 结构与问题规模匹配。
-3. 明确事实、假设、待确认项和非目标。
-4. 每个章节回答一个新问题；重复章节要合并或删除。
-5. 如果涉及既有前端页面，先定位真实项目、真实路由和真实组件，再写页面稿。
-6. 如果只是产品初版，不在正文写 TypeScript interface、JSON schema、endpoint、adapter、metadata 或 capability 字段。
-7. 如果用户明确要求 handoff，把字段和协议放到“开发 handoff 附录”，不要污染产品主链路。
-8. 页面型 PRD 无论是否已有 HTML/mock，都要在本轮完成目标态 HTML、关键状态截图和正文回填。已有旧原型与新 PRD 不一致时先更新原型，不把旧截图冒充目标稿。
-9. 若用户准备把 PRD 发到钉钉，正文默认不输出“关联产物”聚合区和“待确认事项”章节；待确认项只保留在本地草稿、最终说明或明确标注的发布前检查清单中。
+1. 背景只说明当前问题、主要影响和为什么现在处理，最多 200 字；能更短说清就不要凑字数，调研过程和长期愿景不进入正文。
+2. 用一句话写清“本期只解决什么”，并只保留最容易误解的非目标。
+3. 不单列“用户场景、入口与触发、页面结构、核心对象、交互逻辑”作为默认章节；把这些信息放进对应功能模块。
+4. 每个功能模块先说明一句话目的；页面型模块紧接目标态 UI 截图，再用短表写条件/状态、用户动作、系统行为和 UI 反馈。
+5. 状态名称相近但主体或作用域不同，补“主体、判定时点、影响范围、用途”，不要用一个模糊状态承载多种规则。
+6. 同一规则只写一次；跨两个及以上模块的规则才进入“跨模块规则”。
+7. 如果涉及既有前端页面，先定位真实项目、真实路由和真实组件，再写页面稿。
+8. 如果只是产品初版，不在正文写 TypeScript interface、JSON schema、endpoint、adapter、metadata 或 capability 字段；明确要求 handoff 时才放入开发附录。
+9. 页面型 PRD 无论是否已有 HTML/mock，都要在本轮完成目标态 HTML、关键状态截图和正文回填。已有旧原型与新 PRD 不一致时先更新原型，不把旧截图冒充目标稿。
+10. 若用户准备把 PRD 发到钉钉，正文默认不输出“关联产物”聚合区和“待确认事项”章节；待确认项只保留在本地草稿、最终说明或明确标注的发布前检查清单中。
 
 ### 5. Diagram Mode
 
-当用户要求“写 PRD，并补流程图 / 架构图 / Draw.io 图示”时，本 Skill 直接负责 PRD 内正式图示能力。
+正式流程图统一使用 Draw.io。用户明确要求图示时直接启用；用户未要求时，只有复杂度门槛成立才启用。
 
 执行规则：
 
-1. 先判断图要回答的问题：系统是什么、链路怎么跑、还是人和 AI 如何协作。
-2. 读取 `references/drawio-templates.md`，选择 `architecture` 或 `flow` 布局。
-3. 生成可编辑 `.drawio` 源文件；如果 PRD 需要 Markdown 可预览，优先交付包含 Draw.io 数据的 `*.drawio.svg`。
-4. 在 PRD 正文引用正式图示路径，并说明它支撑哪个章节。
-5. 对 `.drawio` 源文件运行 `python3 scripts/validate_drawio.py <path>`。
-6. 如果验证工具不可用，必须在 PRD 的关联产物或最终说明里标记“图示可编辑性未验证”。
+1. 先检查用户是否明确要求正式图示；明确要求时无条件启用。只有用户未要求时，才判断是否跨多个角色/系统、存在关键判断或回流、包含异步等待/恢复，或达到 6 个及以上相互依赖步骤；都不满足才省略整个流程图章节。
+2. 需要图时判断它要回答的问题：系统是什么、链路怎么跑、还是人和 AI 如何协作。
+3. 读取 `references/drawio-templates.md`，选择 `architecture` 或 `flow` 布局；不要先画 Mermaid / ASCII 再重复画正式图。
+4. 生成可编辑 `.drawio` 源文件；如果 PRD 需要 Markdown 可预览，优先交付包含 Draw.io 数据的 `*.drawio.svg`。
+5. 在 PRD 的“核心流程”处引用图示，并说明它支撑哪些功能模块。
+6. 对 `.drawio` 源文件运行 `python3 scripts/validate_drawio.py <path>`。
+7. 如果验证工具不可用，必须在最终说明里标记“图示可编辑性未验证”。
 
 ### 6. Mockup Handoff
 
@@ -239,7 +242,7 @@ python3 scripts/check_prd_shape.py <prd.md> --type <lite|standard|ai-native> \
   --require-current-mockup-evidence --mockup-manifest <mockup-evidence.json>
 ```
 
-该门禁会检查功能正文中是否有图片证据，并验证本地图片引用是否真实存在；只放在“本地草稿附录/关联产物”中的图片不算完成。发布版应先完成本地证据检查，再由发布流程上传或重写图片引用。
+该门禁会检查每个功能模块是否各自包含目标态图片和功能逻辑，并验证本地图片引用是否真实存在；只放在背景、“本地草稿附录”或“关联产物”中的图片不算完成。脚本会从文档信息自动识别成熟度；非常规格式可用 `--maturity draft|discussing|confirmed` 显式指定。发布版应先完成本地证据检查，再由发布流程上传或重写图片引用。
 
 检查失败不等于不能交付，但最终说明必须解释哪些 warning 是故意保留的，哪些需要修订。
 
@@ -270,6 +273,9 @@ python3 scripts/check_prd_shape.py <prd.md> --type <lite|standard|ai-native> \
 
 - 已选定且只加载一个 PRD 类型模板。
 - 当前状态明确，正文成熟度与状态一致。
+- 背景不超过 200 字且不为凑字数扩写，正文以功能模块为主，没有模板填空式的用户场景或重复章节。
+- 页面型模块的目标态 UI 与功能逻辑就近呈现；同一规则没有跨背景、流程、模块和验收重复。
+- 只有复杂度门槛成立或用户明确要求时才生成 Draw.io；简单需求没有装饰性流程图。
 - 待确认项和假设没有混在一起。
 - mockup / 图示 / handoff 附加资产只在需要时启用。
 - 页面型 PRD 已在同一交付中生成项目 UI 对齐的 HTML/preview，关键状态已实际截图并嵌入对应功能章节；旧原型不匹配时已更新或明确停止使用。
@@ -286,8 +292,9 @@ python3 scripts/check_prd_shape.py <prd.md> --type <lite|standard|ai-native> \
 Smoke prompts:
 
 - 单点改动，是否只加载 `PRD-lite` 并保持 5 分钟可读。
-- 常规跨状态功能，是否加载 `PRD-standard`，但不默认写 TS/JSON schema。
-- AI 协作需求，是否加载 `PRD-ai-native` 并写清人工动作、AI 动作、状态反馈和闭环。
+- 常规跨状态功能，是否加载 `PRD-standard`，以功能模块承载目标态 UI 和逻辑，不生成独立用户场景章节。
+- AI 协作需求，是否加载 `PRD-ai-native`，把人工动作、AI 动作、系统反馈和回退写进对应模块。
+- 简单页面改动是否省略流程图；复杂多角色回流链路是否生成并验证 Draw.io。
 - `帮我写一个 PRD，并补一张可编辑 Draw.io 核心流程图。`
 - `回答后下一步行动建议 PRD 初版`，应输出产品规则和 UX 行为，不输出实现 schema。
 - `这份 PRD 后面要上传钉钉，mock 截图直接放到对应模块里。`，应启用发布版正文规则，不输出本地 mock 链接、关联产物聚合区或待确认事项正文。

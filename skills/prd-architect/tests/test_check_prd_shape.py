@@ -33,35 +33,54 @@ class CheckResult:
     stderr: str = ""
 
 
-def standard_prd(body: str) -> str:
+def standard_prd(body: str, *, background: str = "当前页面缺少本期目标状态，研发和测试无法直接对齐改动结果。") -> str:
     return f"""# Test PRD
 
-本期只解决 mockup 证据承接。
+## 背景与目标
 
-## 功能目标
-目标。
+- **背景**：{background}
+- **本期只解决**：补齐 mockup 证据承接。
+- **成功标准**：功能模块可直接验证。
 
-## 用户场景
-场景。
+## 功能模块
 
-## 入口
-入口。
+### 目标状态
 
-## 核心对象
-对象。
+**模块目的**：让读者直接理解目标状态。
 
-## 交互逻辑
 {body}
 
-## 异常
-异常。
+| 条件 / 状态 | 用户操作 | 系统行为 | UI 反馈 |
+| --- | --- | --- | --- |
+| 默认 | 打开页面 | 展示目标状态 | 页面可见 |
 
-## 验收标准
+## 整体验收
 验收。
 
-## 待确认
+## 待确认事项
 无。
 """
+
+
+def run_shape_only(
+    markdown: str,
+    *,
+    prd_type: str = "standard",
+    publish_ready: bool = False,
+    maturity: str | None = None,
+) -> CheckResult:
+    with tempfile.TemporaryDirectory() as tmpdir:
+        path = Path(tmpdir) / "prd.md"
+        path.write_text(markdown, encoding="utf-8")
+        argv = [str(SCRIPT), str(path), "--type", prd_type]
+        if publish_ready:
+            argv.append("--publish-ready")
+        if maturity:
+            argv.extend(["--maturity", maturity])
+        stdout = io.StringIO()
+        with patch.object(sys, "argv", argv), redirect_stdout(stdout):
+            returncode = CHECKER.main()
+        return CheckResult(returncode=returncode, stdout=stdout.getvalue())
 
 
 def run_check(
@@ -160,7 +179,7 @@ def run_manifest_check(
         screenshot_path = screenshot_dir / "default.png"
         screenshot_path.write_bytes(b"current screenshot")
         prd_path = root / "prd.md"
-        prd_path.write_text(standard_prd("![默认态](./screenshots/default.png)"), encoding="utf-8")
+        prd_path.write_text(standard_prd("![目标态：默认态](./screenshots/default.png)"), encoding="utf-8")
         manifest_path = write_manifest(root, prd_path, mockup_path, screenshot_path, baseline_path)
 
         if mutate == "html":
@@ -171,7 +190,7 @@ def run_manifest_check(
         elif mutate == "baseline":
             baseline_path.write_bytes(b"new baseline")
         elif mutate == "prd-reference":
-            prd_path.write_text(standard_prd("![别的状态](./screenshots/other.png)"), encoding="utf-8")
+            prd_path.write_text(standard_prd("![目标态：别的状态](./screenshots/other.png)"), encoding="utf-8")
 
         argv = [
             str(SCRIPT),
@@ -194,18 +213,18 @@ class MockupEvidenceGateTest(unittest.TestCase):
         result = run_check(standard_prd("只有 HTML 原型路径，没有截图。"))
 
         self.assertEqual(result.returncode, 1)
-        self.assertIn("missing_mockup_evidence", result.stdout)
+        self.assertIn("missing_module_target_state_evidence:目标状态", result.stdout)
 
     def test_inline_screenshot_in_feature_section_passes(self) -> None:
         result = run_check(
-            standard_prd("![默认态](./assets/default-state.png)"),
+            standard_prd("![目标态：默认态](./assets/default-state.png)"),
             ("assets/default-state.png",),
         )
 
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
     def test_missing_local_screenshot_file_is_reported(self) -> None:
-        result = run_check(standard_prd("![默认态](./assets/not-generated.png)"))
+        result = run_check(standard_prd("![目标态：默认态](./assets/not-generated.png)"))
 
         self.assertEqual(result.returncode, 1)
         self.assertIn("missing_mockup_file", result.stdout)
@@ -219,11 +238,11 @@ class MockupEvidenceGateTest(unittest.TestCase):
         result = run_check(markdown, ("assets/overview.png",))
 
         self.assertEqual(result.returncode, 1)
-        self.assertIn("missing_mockup_evidence", result.stdout)
+        self.assertIn("missing_module_target_state_evidence:目标状态", result.stdout)
 
     def test_existing_html_mockup_artifact_passes(self) -> None:
         result = run_check(
-            standard_prd("![默认态](./assets/default-state.png)"),
+            standard_prd("![目标态：默认态](./assets/default-state.png)"),
             ("assets/default-state.png",),
             "mockup.html",
             create_mockup=True,
@@ -233,7 +252,7 @@ class MockupEvidenceGateTest(unittest.TestCase):
 
     def test_missing_html_mockup_artifact_is_reported(self) -> None:
         result = run_check(
-            standard_prd("![默认态](./assets/default-state.png)"),
+            standard_prd("![目标态：默认态](./assets/default-state.png)"),
             ("assets/default-state.png",),
             "missing-mockup.html",
         )
@@ -277,7 +296,7 @@ class MockupEvidenceGateTest(unittest.TestCase):
             prd_path = Path(tmpdir) / "prd.md"
             screenshot_path = Path(tmpdir) / "default.png"
             screenshot_path.write_bytes(b"screenshot")
-            prd_path.write_text(standard_prd("![默认态](./default.png)"), encoding="utf-8")
+            prd_path.write_text(standard_prd("![目标态：默认态](./default.png)"), encoding="utf-8")
             argv = [
                 str(SCRIPT),
                 str(prd_path),
@@ -303,7 +322,7 @@ class MockupEvidenceGateTest(unittest.TestCase):
             mockup_path = root / "mockup.html"
             mockup_path.write_text("<!doctype html><html><body>New</body></html>", encoding="utf-8")
             prd_path = root / "prd.md"
-            prd_path.write_text(standard_prd("![默认态](./default.png)"), encoding="utf-8")
+            prd_path.write_text(standard_prd("![目标态：默认态](./default.png)"), encoding="utf-8")
 
             result = subprocess.run(
                 [
@@ -331,6 +350,226 @@ class MockupEvidenceGateTest(unittest.TestCase):
 
         self.assertEqual(result.returncode, 2)
         self.assertIn("stale screenshot", result.stderr)
+
+
+class FlexibleTemplateShapeTest(unittest.TestCase):
+    def test_concise_standard_without_legacy_sections_passes(self) -> None:
+        result = run_shape_only(standard_prd("功能逻辑已写入模块。"))
+
+        self.assertEqual(result.returncode, 0, result.stdout)
+
+    def test_missing_feature_module_capability_is_reported(self) -> None:
+        markdown = standard_prd("功能逻辑已写入模块。").replace("## 功能模块", "## 方案说明")
+        result = run_shape_only(markdown)
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("missing_expected_capability:feature_modules", result.stdout)
+
+    def test_background_over_200_visible_characters_is_reported(self) -> None:
+        result = run_shape_only(standard_prd("功能逻辑已写入模块。", background="背" * 201))
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("background_too_long:201", result.stdout)
+
+    def test_heading_background_excludes_scope_and_success_fields(self) -> None:
+        markdown = standard_prd("功能逻辑已写入模块。").replace(
+            "- **背景**：当前页面缺少本期目标状态，研发和测试无法直接对齐改动结果。",
+            f"### 背景\n\n{'背' * 190}",
+        )
+
+        result = run_shape_only(markdown)
+
+        self.assertEqual(result.returncode, 0, result.stdout)
+
+    def test_publish_ready_does_not_require_open_questions(self) -> None:
+        markdown = standard_prd("功能逻辑已写入模块。").replace("\n## 待确认事项\n无。\n", "\n")
+        result = run_shape_only(markdown, publish_ready=True)
+
+        self.assertEqual(result.returncode, 0, result.stdout)
+
+    def test_confirmed_maturity_does_not_require_open_questions(self) -> None:
+        markdown = standard_prd("功能逻辑已写入模块。").replace(
+            "# Test PRD",
+            "# Test PRD\n\n**文档状态**：已确认",
+        ).replace("\n## 待确认事项\n无。\n", "\n")
+
+        result = run_shape_only(markdown)
+
+        self.assertEqual(result.returncode, 0, result.stdout)
+
+    def test_confirmed_maturity_is_detected_from_document_table(self) -> None:
+        markdown = standard_prd("功能逻辑已写入模块。").replace(
+            "# Test PRD",
+            "# Test PRD\n\n## 文档信息\n\n| 功能名 | 状态 | 模块 |\n| --- | --- | --- |\n| 测试功能 | 已确认 | 订单 |",
+        ).replace("\n## 待确认事项\n无。\n", "\n")
+
+        result = run_shape_only(markdown)
+
+        self.assertEqual(result.returncode, 0, result.stdout)
+
+    def test_feature_state_does_not_override_document_maturity(self) -> None:
+        markdown = standard_prd("**文档状态**：已确认\n\n| 结果状态 | 用户操作 | 系统行为 | UI 反馈 |\n| --- | --- | --- | --- |\n| 已确认 | 查看 | 展示结果 | 可见 |").replace(
+            "\n## 待确认事项\n无。\n",
+            "\n",
+        )
+
+        result = run_shape_only(markdown)
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("missing_expected_capability:open_questions", result.stdout)
+
+    def test_draft_maturity_requires_open_questions(self) -> None:
+        markdown = standard_prd("功能逻辑已写入模块。").replace("\n## 待确认事项\n无。\n", "\n")
+
+        result = run_shape_only(markdown, maturity="draft")
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("missing_expected_capability:open_questions", result.stdout)
+
+    def test_heading_background_over_200_visible_characters_is_reported(self) -> None:
+        markdown = standard_prd("功能逻辑已写入模块。").replace(
+            "- **背景**：当前页面缺少本期目标状态，研发和测试无法直接对齐改动结果。",
+            f"### 背景\n\n{'背' * 201}",
+        )
+
+        result = run_shape_only(markdown)
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("background_too_long:", result.stdout)
+
+    def test_unparseable_background_region_is_reported(self) -> None:
+        markdown = standard_prd("功能逻辑已写入模块。").replace(
+            "- **背景**：当前页面缺少本期目标状态，研发和测试无法直接对齐改动结果。",
+            "当前页面说明未标记背景边界。",
+        )
+
+        result = run_shape_only(markdown)
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("background_uncheckable", result.stdout)
+
+    def test_legacy_parallel_section_is_reported(self) -> None:
+        markdown = standard_prd("功能逻辑已写入模块。").replace(
+            "## 功能模块",
+            "## 用户场景\n\n用户打开页面。\n\n## 功能模块",
+        )
+
+        result = run_shape_only(markdown)
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("legacy_parallel_section:用户场景", result.stdout)
+
+    def test_interaction_heading_cannot_substitute_for_feature_modules(self) -> None:
+        markdown = standard_prd("功能逻辑已写入模块。").replace("## 功能模块", "## 交互逻辑")
+
+        result = run_shape_only(markdown)
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("missing_expected_capability:feature_modules", result.stdout)
+        self.assertIn("legacy_parallel_section:交互逻辑", result.stdout)
+
+    def test_each_module_requires_its_own_ui_evidence(self) -> None:
+        markdown = standard_prd("模块一没有目标态截图。").replace(
+            "- **成功标准**：功能模块可直接验证。",
+            "- **成功标准**：功能模块可直接验证。\n\n![现状参考](./assets/current.png)",
+        ).replace(
+            "## 整体验收",
+            """### 模块二
+
+**模块目的**：展示第二个状态。
+
+| 条件 / 状态 | 用户操作 | 系统行为 | UI 反馈 |
+| --- | --- | --- | --- |
+| 默认 | 打开页面 | 展示状态 | 页面可见 |
+
+## 整体验收""",
+        )
+
+        result = run_check(markdown, ("assets/current.png",))
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("missing_module_target_state_evidence:目标状态", result.stdout)
+        self.assertIn("missing_module_target_state_evidence:模块二", result.stdout)
+
+    def test_current_state_image_cannot_substitute_for_target_state_evidence(self) -> None:
+        result = run_check(
+            standard_prd("![现状参考](./assets/current.png)"),
+            ("assets/current.png",),
+        )
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("missing_module_target_state_evidence:目标状态", result.stdout)
+
+    def test_module_without_logic_table_is_reported(self) -> None:
+        markdown = standard_prd("功能逻辑已写入模块。").replace(
+            "| 条件 / 状态 | 用户操作 | 系统行为 | UI 反馈 |\n| --- | --- | --- | --- |\n| 默认 | 打开页面 | 展示目标状态 | 页面可见 |",
+            "打开页面后展示目标状态。",
+        )
+
+        result = run_shape_only(markdown)
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("missing_module_logic:目标状态", result.stdout)
+
+    def test_module_logic_table_requires_a_nonempty_data_row(self) -> None:
+        markdown = standard_prd("功能逻辑已写入模块。").replace(
+            "| 默认 | 打开页面 | 展示目标状态 | 页面可见 |",
+            "|  |  |  |  |",
+        )
+
+        result = run_shape_only(markdown)
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("missing_module_logic:目标状态", result.stdout)
+
+    def test_lite_module_first_shape_passes(self) -> None:
+        markdown = """# Lite PRD
+
+## 背景与目标
+- **背景**：当前按钮缺少权限反馈。
+- **本期只解决**：补充无权限提示。
+
+## 功能模块
+### 下载权限提示
+| 条件 / 状态 | 用户操作 | 系统行为 | UI 反馈 |
+| --- | --- | --- | --- |
+| 无权限 | 点击下载 | 保留筛选条件 | 展示权限提示 |
+
+## 验收标准
+- 无权限用户看到提示。
+
+## 待确认事项
+无。
+"""
+        result = run_shape_only(markdown, prd_type="lite")
+
+        self.assertEqual(result.returncode, 0, result.stdout)
+
+    def test_ai_native_module_first_shape_passes(self) -> None:
+        markdown = """# AI PRD
+
+## 背景与目标
+- **背景**：当前生成结果缺少人工确认。
+- **本期只解决**：增加确认与回退。
+
+## AI 协作边界
+人工确认，AI 生成，系统反馈。
+
+## 功能模块
+### 结果确认
+| 条件 / 状态 | 用户动作 | AI 动作 | 系统反馈 | 失败 / 接管 |
+| --- | --- | --- | --- | --- |
+| 待确认 | 确认结果 | 保存确认 | 展示成功 | 可回退 |
+
+## 整体验收
+- 确认和回退可验证。
+
+## 待确认事项
+无。
+"""
+        result = run_shape_only(markdown, prd_type="ai-native")
+
+        self.assertEqual(result.returncode, 0, result.stdout)
 
 
 if __name__ == "__main__":

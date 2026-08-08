@@ -6,6 +6,14 @@ This project uses semantic-ish release tags for public snapshots. The current fo
 
 ## Unreleased
 
+## [0.3.1] - 2026-08-08
+
+### Changed
+
+- Simplified `prd-architect` around concise background, Draw.io when explicitly requested or justified by workflow complexity, and feature modules that pair target-state UI with functional logic.
+- Replaced fixed-heading PRD checks with equivalent capability groups, added a 200-character background guard, and kept the mirrored `prd-review` checker compatible.
+- Added regression coverage for chapter compression, simple-flow diagram suppression, complex Draw.io routing, and state semantics split by subject and scope.
+
 ## [0.3.0] - 2026-08-08
 
 ### Added

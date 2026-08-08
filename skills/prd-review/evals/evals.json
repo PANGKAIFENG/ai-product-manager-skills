@@ -7,7 +7,7 @@
       "prompt": "帮我 review 这份 Agent 下一步行动建议 PRD。它是初版产品讨论稿，但正文里有 TypeScript interface、JSON 示例、metadata 和 adapter 章节。",
       "should_trigger": true,
       "expected_route": "prd-review",
-      "expected_output": "指出阶段混淆和过早技术化，建议把 schema/metadata/adapter 移到开发 handoff 附录，并把主文档改回用户场景、触发、不展示条件、交互、异常和验收。",
+      "expected_output": "指出阶段混淆和过早技术化，建议把 schema/metadata/adapter 移到开发 handoff 附录，并把主文档压缩为短背景和功能模块，在对应模块内说明目标态 UI、触发、系统行为、UI 反馈、异常和验收。",
       "assertions": [
         {
           "text": "Flags over-technical content as a PRD shape issue."
@@ -31,6 +31,22 @@
         },
         {
           "text": "Recommends validate_drawio.py when a .drawio source exists."
+        }
+      ]
+    },
+    {
+      "id": "explicit-drawio-request-is-not-overridden-by-complexity",
+      "type": "boundary-regression",
+      "prompt": "帮我审这份 PRD：需求只是给一个按钮增加无权限提示，用户明确要求附一张可编辑 Draw.io，但作者以流程不够复杂为由省略了。",
+      "should_trigger": true,
+      "expected_route": "prd-review",
+      "expected_output": "指出显式图示请求优先于自动复杂度门槛；建议将 Lite 升级为 Standard，补可编辑 Draw.io 并验证，而不是接受省略理由。",
+      "assertions": [
+        {
+          "text": "Treats the user's explicit Draw.io request as an unconditional diagram requirement."
+        },
+        {
+          "text": "Recommends upgrading Lite to Standard and validating the editable artifact."
         }
       ]
     },
