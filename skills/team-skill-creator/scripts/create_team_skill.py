@@ -75,9 +75,9 @@ def normalize_remote(value: str) -> str:
     return normalized.lower()
 
 
-def is_within(path: Path, root: Path) -> bool:
+def is_within(path: Path, allowed_root: Path) -> bool:
     try:
-        path.relative_to(root)
+        path.relative_to(allowed_root)
     except ValueError:
         return False
     return True

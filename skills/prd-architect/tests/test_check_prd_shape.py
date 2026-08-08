@@ -101,7 +101,7 @@ def file_hash(path: Path) -> str:
 
 
 def write_manifest(
-    root: Path,
+    temp_root: Path,
     prd_path: Path,
     mockup_path: Path,
     screenshot_path: Path,
@@ -109,7 +109,7 @@ def write_manifest(
     *,
     source_mockup_hash: str | None = None,
 ) -> Path:
-    manifest_path = root / "mockup-evidence.json"
+    manifest_path = temp_root / "mockup-evidence.json"
     mockup_hash = file_hash(mockup_path)
     manifest = {
         "schema_version": 1,
@@ -129,7 +129,7 @@ def write_manifest(
         "screenshots": [
             {
                 "state": "default",
-                "path": screenshot_path.relative_to(root).as_posix(),
+                "path": screenshot_path.relative_to(temp_root).as_posix(),
                 "sha256": file_hash(screenshot_path),
                 "source_mockup_sha256": source_mockup_hash or mockup_hash,
                 "mtime_ns": screenshot_path.stat().st_mtime_ns,

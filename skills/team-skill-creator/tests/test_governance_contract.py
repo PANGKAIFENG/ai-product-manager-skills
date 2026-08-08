@@ -41,9 +41,9 @@ def load_creator_module():
     return module
 
 
-def init_git_repo(root: Path, remote: str = "git@github.com:example/skills.git") -> None:
-    subprocess.run(["git", "init", "-q", str(root)], check=True)
-    subprocess.run(["git", "-C", str(root), "remote", "add", "origin", remote], check=True)
+def init_git_repo(repo_root: Path, remote: str = "git@github.com:example/skills.git") -> None:
+    subprocess.run(["git", "init", "-q", str(repo_root)], check=True)
+    subprocess.run(["git", "-C", str(repo_root), "remote", "add", "origin", remote], check=True)
 
 
 class GovernanceContractTest(unittest.TestCase):

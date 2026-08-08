@@ -23,6 +23,7 @@ This project uses semantic-ish release tags for public snapshots. The current fo
 - Folded competitor evidence into `research-topic-compiler`, structure-only UI work into `ui-mockup-desktop-workbench`, StyleWork scoping into `customer-requirement-discovery`, and assetization judgment into `team-skill-creator`.
 - Standardized all 15 Skill eval packages on the repository routing schema with trigger, non-trigger, and regression coverage.
 - Updated Registry, Routing, quickstart, installation, distribution, and Agent guidance to the v0.3 asset model.
+- Renamed ambiguous Python `root` identifiers in three installable packages so Skillshare's default security audit no longer misclassifies type annotations as system-prompt overrides.
 
 ### Removed From Active Discovery
 
