@@ -21,10 +21,10 @@ PRODUCT_DELIVERY_VALIDATOR = os.environ.get("PRODUCT_DELIVERY_VALIDATOR")
 
 
 class PublishPrdTest(unittest.TestCase):
-    def make_fake_dws(self, root: Path, *, log_name: str = "dws-calls.jsonl") -> tuple[Path, Path]:
-        bin_dir = root / "bin"
+    def make_fake_dws(self, temp_root: Path, *, log_name: str = "dws-calls.jsonl") -> tuple[Path, Path]:
+        bin_dir = temp_root / "bin"
         bin_dir.mkdir(exist_ok=True)
-        log = root / log_name
+        log = temp_root / log_name
         dws = bin_dir / "dws"
         dws.write_text(
             textwrap.dedent(
@@ -131,17 +131,17 @@ class PublishPrdTest(unittest.TestCase):
 
     def run_publish(
         self,
-        root: Path,
+        temp_root: Path,
         *args: str,
         log_name: str = "dws-calls.jsonl",
         default_parent: str | None = "https://alidocs.dingtalk.com/i/nodes/default-parent",
         html_files: list[tuple[str, int]] | None = None,
     ) -> tuple[subprocess.CompletedProcess[str], list[list[str]]]:
-        bin_dir, log = self.make_fake_dws(root, log_name=log_name)
-        prd = root / "PRD.md"
+        bin_dir, log = self.make_fake_dws(temp_root, log_name=log_name)
+        prd = temp_root / "PRD.md"
         prd.write_text("# My PRD\n\nBody.\n", encoding="utf-8")
         for relative_path, modified_at in html_files or []:
-            html = root / relative_path
+            html = temp_root / relative_path
             html.parent.mkdir(parents=True, exist_ok=True)
             html.write_text(f"<html><body>{relative_path}</body></html>\n", encoding="utf-8")
             os.utime(html, (modified_at, modified_at))
@@ -155,7 +155,7 @@ class PublishPrdTest(unittest.TestCase):
         env["DINGTALK_PRD_TIMESTAMP"] = "20260702-1700"
         result = subprocess.run(
             ["/bin/bash", str(SCRIPT), str(prd), "--name", "My PRD", *args],
-            cwd=str(root),
+            cwd=str(temp_root),
             env=env,
             text=True,
             stdout=subprocess.PIPE,
@@ -167,8 +167,8 @@ class PublishPrdTest(unittest.TestCase):
             calls = [json.loads(line) for line in log.read_text(encoding="utf-8").splitlines()]
         return result, calls
 
-    def artifact(self, root: Path, relative: str, content: bytes, artifact_id: str, **extra) -> dict:
-        path = root / relative
+    def artifact(self, temp_root: Path, relative: str, content: bytes, artifact_id: str, **extra) -> dict:
+        path = temp_root / relative
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(content)
         return {
@@ -178,25 +178,25 @@ class PublishPrdTest(unittest.TestCase):
             **extra,
         }
 
-    def make_approved_package(self, root: Path) -> tuple[Path, str]:
+    def make_approved_package(self, temp_root: Path) -> tuple[Path, str]:
         if PRODUCT_DELIVERY_VALIDATOR is None:
             self.skipTest("set PRODUCT_DELIVERY_VALIDATOR to run Package mode integration tests")
         prd = self.artifact(
-            root,
+            temp_root,
             "PRD.md",
             b"# Package PRD\n\n## Default\nBody.\n\n![Default](ui/screenshots/default.png)\n",
             "ART-PRD",
         )
-        action = self.artifact(root, "ui/screen-contract.md", b"# Action Contract\n", "ART-ACTION")
+        action = self.artifact(temp_root, "ui/screen-contract.md", b"# Action Contract\n", "ART-ACTION")
         html = self.artifact(
-            root,
+            temp_root,
             "ui/approved.html",
             b"<html><body>approved</body></html>\n",
             "ART-HTML",
             baseline_ref="BASE-1",
         )
         shot = self.artifact(
-            root,
+            temp_root,
             "ui/screenshots/default.png",
             b"fake-approved-screenshot",
             "ART-SHOT",
@@ -269,7 +269,7 @@ class PublishPrdTest(unittest.TestCase):
             "last_transition": None,
             "extensions": {},
         }
-        manifest_path = root / "product-delivery-manifest.yaml"
+        manifest_path = temp_root / "product-delivery-manifest.yaml"
         manifest_path.write_text(yaml.safe_dump(manifest, sort_keys=False), encoding="utf-8")
         initial = subprocess.run(
             [sys.executable, PRODUCT_DELIVERY_VALIDATOR, str(manifest_path), "--json"],
@@ -305,7 +305,7 @@ class PublishPrdTest(unittest.TestCase):
 
     def run_manifest_publish(
         self,
-        root: Path,
+        temp_root: Path,
         manifest: Path,
         payload_fingerprint: str,
         *args: str,
@@ -315,7 +315,7 @@ class PublishPrdTest(unittest.TestCase):
     ) -> tuple[subprocess.CompletedProcess[str], list[list[str]]]:
         if PRODUCT_DELIVERY_VALIDATOR is None:
             self.skipTest("set PRODUCT_DELIVERY_VALIDATOR to run Package mode integration tests")
-        bin_dir, log = self.make_fake_dws(root, log_name="package-dws-calls.jsonl")
+        bin_dir, log = self.make_fake_dws(temp_root, log_name="package-dws-calls.jsonl")
         env = os.environ.copy()
         env["PATH"] = f"{bin_dir}{os.pathsep}{env['PATH']}"
         env["DWS_FAKE_LOG"] = str(log)
@@ -323,7 +323,7 @@ class PublishPrdTest(unittest.TestCase):
         env["DINGTALK_PRD_OCCURRED_AT"] = "2026-08-06T12:01:00+08:00"
         if fail_media_once:
             env["DWS_FAKE_FAIL_MEDIA_ONCE"] = fail_media_once
-            env["DWS_FAKE_FAIL_STATE"] = str(root / ".fake-media-failed")
+            env["DWS_FAKE_FAIL_STATE"] = str(temp_root / ".fake-media-failed")
         env.update(fake_env or {})
         result = subprocess.run(
             [
@@ -339,7 +339,7 @@ class PublishPrdTest(unittest.TestCase):
                 "run-publisher",
                 *args,
             ],
-            cwd=str(root),
+            cwd=str(temp_root),
             env=env,
             text=True,
             stdout=subprocess.PIPE,

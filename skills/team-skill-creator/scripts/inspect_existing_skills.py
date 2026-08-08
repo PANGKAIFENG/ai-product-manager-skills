@@ -33,7 +33,7 @@ class Skill:
     name: str
     description: str
     path: Path
-    root: Path
+    root_path: Path
     source: str
     frontmatter: dict[str, Any]
 
@@ -41,7 +41,7 @@ class Skill:
 @dataclass
 class CatalogEntry:
     skill_name: str
-    root: Path
+    root_path: Path
     category_id: str
     category_label: str
     status: str
@@ -56,12 +56,12 @@ class Category:
     category_id: str
     label: str
     boundary: str
-    root: Path
+    root_path: Path
 
 
-def run_git(root: Path, *args: str) -> tuple[int, str, str]:
+def run_git(repo_root: Path, *args: str) -> tuple[int, str, str]:
     proc = subprocess.run(
-        ["git", "-C", str(root), *args],
+        ["git", "-C", str(repo_root), *args],
         check=False,
         text=True,
         stdout=subprocess.PIPE,
@@ -89,30 +89,30 @@ def unique_resolved_paths(paths: list[Path]) -> list[Path]:
     return unique
 
 
-def git_catalog_status(root: Path, fetch: bool = False) -> dict[str, Any]:
-    if not (root / ".git").exists():
+def git_catalog_status(repo_root: Path, fetch: bool = False) -> dict[str, Any]:
+    if not (repo_root / ".git").exists():
         return {
-            "root": str(root),
+            "root": str(repo_root),
             "is_git_repo": False,
             "source_of_truth": "github-online",
         }
 
     if fetch:
-        fetch_code, fetch_stdout, fetch_stderr = run_git(root, "fetch", "--prune", "origin")
+        fetch_code, fetch_stdout, fetch_stderr = run_git(repo_root, "fetch", "--prune", "origin")
     else:
         fetch_code, fetch_stdout, fetch_stderr = None, "", ""
 
-    _, remote_url, _ = run_git(root, "remote", "get-url", "origin")
-    _, branch, _ = run_git(root, "branch", "--show-current")
-    upstream_code, upstream, upstream_err = run_git(root, "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}")
+    _, remote_url, _ = run_git(repo_root, "remote", "get-url", "origin")
+    _, branch, _ = run_git(repo_root, "branch", "--show-current")
+    upstream_code, upstream, upstream_err = run_git(repo_root, "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}")
     if upstream_code != 0:
         upstream = ""
-    _, status_text, _ = run_git(root, "status", "--porcelain")
+    _, status_text, _ = run_git(repo_root, "status", "--porcelain")
 
     ahead = 0
     behind = 0
     if upstream:
-        count_code, count_text, _ = run_git(root, "rev-list", "--left-right", "--count", f"{branch}...{upstream}")
+        count_code, count_text, _ = run_git(repo_root, "rev-list", "--left-right", "--count", f"{branch}...{upstream}")
         if count_code == 0:
             parts = count_text.split()
             if len(parts) == 2:
@@ -120,7 +120,7 @@ def git_catalog_status(root: Path, fetch: bool = False) -> dict[str, Any]:
                 behind = int(parts[1])
 
     return {
-        "root": str(root),
+        "root": str(repo_root),
         "is_git_repo": True,
         "source_of_truth": "github-online",
         "remote": remote_url,
@@ -147,12 +147,12 @@ def tokens(value: str) -> set[str]:
 
 
 def source_label(
-    root: Path,
+    source_root: Path,
     import_roots: set[Path],
     catalog_roots: set[Path],
     multica_roots: set[Path],
 ) -> str:
-    resolved = root.expanduser().resolve()
+    resolved = source_root.expanduser().resolve()
     if resolved in catalog_roots:
         return "github-skill-catalog"
     if resolved in multica_roots:
@@ -243,9 +243,9 @@ def clean_markdown_cell(value: str) -> str:
     return value
 
 
-def skill_display_name(root: Path, skill_name: str) -> str:
+def skill_display_name(catalog_root: Path, skill_name: str) -> str:
     """Prefer the active Skill heading when the v0.3 registry omits a zh-name column."""
-    skill_md = root / "skills" / skill_name / "SKILL.md"
+    skill_md = catalog_root / "skills" / skill_name / "SKILL.md"
     if not skill_md.exists():
         return skill_name
     for raw_line in skill_md.read_text(encoding="utf-8", errors="replace").splitlines():
@@ -255,9 +255,9 @@ def skill_display_name(root: Path, skill_name: str) -> str:
     return skill_name
 
 
-def parse_catalog(root: Path) -> tuple[list[CatalogEntry], list[Category]]:
-    resolved_root = root.expanduser().resolve()
-    registry = root / "SKILL_REGISTRY.md"
+def parse_catalog(catalog_root: Path) -> tuple[list[CatalogEntry], list[Category]]:
+    resolved_root = catalog_root.expanduser().resolve()
+    registry = catalog_root / "SKILL_REGISTRY.md"
     if not registry.exists():
         return [], []
 
@@ -287,7 +287,7 @@ def parse_catalog(root: Path) -> tuple[list[CatalogEntry], list[Category]]:
                 category_id=category_id,
                 label=clean_markdown_cell(cells[1]),
                 boundary=clean_markdown_cell(cells[2]),
-                root=resolved_root,
+                root_path=resolved_root,
             )
             continue
 
@@ -297,7 +297,7 @@ def parse_catalog(root: Path) -> tuple[list[CatalogEntry], list[Category]]:
                 continue
             entries[normalize_name(skill_name)] = CatalogEntry(
                 skill_name=skill_name,
-                root=resolved_root,
+                root_path=resolved_root,
                 category_id="",
                 category_label="",
                 status=clean_markdown_cell(cells[5]),
@@ -313,7 +313,7 @@ def parse_catalog(root: Path) -> tuple[list[CatalogEntry], list[Category]]:
                 continue
             entries[normalize_name(skill_name)] = CatalogEntry(
                 skill_name=skill_name,
-                root=resolved_root,
+                root_path=resolved_root,
                 category_id="private",
                 category_label="私有 Skill",
                 status=clean_markdown_cell(cells[3]),
@@ -329,17 +329,17 @@ def parse_catalog(root: Path) -> tuple[list[CatalogEntry], list[Category]]:
                 continue
             entries[normalize_name(skill_name)] = CatalogEntry(
                 skill_name=skill_name,
-                root=resolved_root,
+                root_path=resolved_root,
                 category_id="",
                 category_label="",
                 status=clean_markdown_cell(cells[2]),
-                zh_name=skill_display_name(root, skill_name),
+                zh_name=skill_display_name(catalog_root, skill_name),
                 trigger=clean_markdown_cell(cells[1]),
                 use_when=clean_markdown_cell(cells[1]),
                 do_not_use_when=clean_markdown_cell(cells[3]),
             )
 
-    categories_root = root / "categories"
+    categories_root = catalog_root / "categories"
     if categories_root.exists():
         for readme in sorted(categories_root.glob("*/README.md")):
             category_id = readme.parent.name
@@ -360,7 +360,7 @@ def parse_catalog(root: Path) -> tuple[list[CatalogEntry], list[Category]]:
                 if existing is None:
                     existing = CatalogEntry(
                         skill_name=link_match.group(1),
-                        root=resolved_root,
+                        root_path=resolved_root,
                         category_id=category_id,
                         category_label=label,
                         status=clean_markdown_cell(cells[3]) if len(cells) > 3 else "",
@@ -377,11 +377,11 @@ def parse_catalog(root: Path) -> tuple[list[CatalogEntry], list[Category]]:
     return list(entries.values()), list(categories.values())
 
 
-def iter_skill_dirs(root: Path) -> list[Path]:
-    if not root.exists():
+def iter_skill_dirs(scan_root: Path) -> list[Path]:
+    if not scan_root.exists():
         return []
     dirs: list[Path] = []
-    for skill_md in root.rglob("SKILL.md"):
+    for skill_md in scan_root.rglob("SKILL.md"):
         parts = set(skill_md.parts)
         if "__pycache__" in parts:
             continue
@@ -410,7 +410,7 @@ def load_skills(
                     name=name,
                     description=description,
                     path=resolved,
-                    root=resolved_root,
+                    root_path=resolved_root,
                     source=source_label(resolved_root, import_roots, catalog_roots, multica_roots),
                     frontmatter=frontmatter,
                 )
@@ -420,7 +420,7 @@ def load_skills(
 
 def catalog_summary(entry: CatalogEntry) -> dict[str, str]:
     return {
-        "root": str(entry.root),
+        "root": str(entry.root_path),
         "category_id": entry.category_id,
         "category_label": entry.category_label,
         "status": entry.status,
@@ -447,7 +447,7 @@ def score_category(category: Category, query_name: str, query_description: str) 
         "category_id": category.category_id,
         "category_label": category.label,
         "boundary": category.boundary,
-        "root": str(category.root),
+        "root": str(category.root_path),
         "score": round(score, 3),
         "token_overlap": round(token_overlap, 3),
     }
@@ -484,7 +484,7 @@ def score_skill(
     return {
         "name": skill.name,
         "path": str(skill.path),
-        "root": str(skill.root),
+        "root": str(skill.root_path),
         "source": skill.source,
         "description": skill.description,
         "frontmatter": frontmatter_summary(skill.frontmatter),
@@ -536,13 +536,13 @@ def main() -> int:
     for root in roots:
         entries, root_categories = parse_catalog(root)
         for entry in entries:
-            key = (entry.root, normalize_name(entry.skill_name))
+            key = (entry.root_path, normalize_name(entry.skill_name))
             if key in seen_catalog_entries:
                 continue
             seen_catalog_entries.add(key)
             catalog_entries.append(entry)
         for category in root_categories:
-            key = (category.root, category.category_id)
+            key = (category.root_path, category.category_id)
             if key in seen_categories:
                 continue
             seen_categories.add(key)
