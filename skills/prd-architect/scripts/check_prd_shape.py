@@ -37,18 +37,228 @@ MARKDOWN_IMAGE_PATTERN = re.compile(
     re.I,
 )
 HTML_IMAGE_PATTERN = re.compile(r"<img\b[^>]*\bsrc\s*=\s*[\"']([^\"']+)[\"']", re.I)
-NON_FEATURE_SECTION_PATTERN = re.compile(
-    r"^(?:本地草稿附录|关联产物|local draft appendix|related artifacts?)\b",
+MARKDOWN_TARGET_IMAGE_PATTERN = re.compile(
+    r"!\[[^\]\n]*(?:目标态|目标状态)[^\]\n]*\]\(\s*(?:<([^>\n]+)>|([^\s)\n]+))(?:\s+[\"'][^)\n]*[\"'])?\s*\)",
     re.I,
 )
+HTML_IMAGE_TAG_PATTERN = re.compile(r"<img\b[^>]*>", re.I)
 
-REQUIRED_BY_TYPE = {
-    "lite": ["功能目标", "用户场景", "关键交互", "验收标准", "待确认"],
-    "standard": ["功能目标", "用户场景", "入口", "核心对象", "交互逻辑", "异常", "验收标准", "待确认"],
-    "ai-native": ["模块定位", "功能目标", "用户场景", "双轨协作", "状态反馈", "人工", "异常", "验收标准", "待确认"],
+REQUIRED_CAPABILITIES = {
+    "lite": {
+        "context_and_scope": ("背景与目标", "功能目标"),
+        "feature_modules": ("功能模块", "功能改动"),
+        "acceptance": ("验收标准", "模块验收", "整体验收"),
+        "open_questions": ("待确认", "待确认事项"),
+    },
+    "standard": {
+        "context_and_scope": ("背景与目标", "功能目标"),
+        "feature_modules": ("功能模块", "功能设计", "功能说明"),
+        "acceptance": ("验收标准", "模块验收", "整体验收"),
+        "open_questions": ("待确认", "待确认事项"),
+    },
+    "ai-native": {
+        "context_and_scope": ("背景与目标", "功能目标"),
+        "ai_collaboration": ("AI 协作边界", "AI 协作", "人机协作", "双轨协作"),
+        "feature_modules": ("功能模块", "功能设计", "功能说明"),
+        "acceptance": ("验收标准", "模块验收", "整体验收"),
+        "open_questions": ("待确认", "待确认事项"),
+    },
 }
 
 BASELINE_KINDS = {"frontend-repo", "design-system", "reference-html", "screenshot"}
+LEGACY_PARALLEL_SECTIONS = {
+    "用户场景",
+    "入口",
+    "入口与触发",
+    "页面结构",
+    "核心对象",
+    "交互逻辑",
+    "关键交互",
+}
+MODULE_DETAIL_SECTIONS = {
+    "目标态 ui",
+    "功能逻辑",
+    "状态语义",
+    "边界与异常",
+    "模块验收",
+}
+MATURITY_ALIASES = {
+    "草稿": "draft",
+    "draft": "draft",
+    "讨论中": "discussing",
+    "discussing": "discussing",
+    "已确认": "confirmed",
+    "confirmed": "confirmed",
+}
+
+
+def heading_matches(title: str, alternatives: tuple[str, ...]) -> bool:
+    canonical = canonical_heading(title).lower()
+    return canonical in {alternative.lower() for alternative in alternatives}
+
+
+def heading_titles(text: str) -> list[str]:
+    return [match.group(1).strip() for match in re.finditer(r"^#{1,6}\s+(.+?)\s*$", text, re.M)]
+
+
+def has_heading_capability(titles: list[str], alternatives: tuple[str, ...]) -> bool:
+    return any(heading_matches(title, alternatives) for title in titles)
+
+
+def canonical_heading(title: str) -> str:
+    canonical = re.sub(r"^[`*_\s]+|[`*_\s]+$", "", title)
+    canonical = re.sub(r"^\d+(?:\.\d+)*[.、)]?\s*", "", canonical)
+    canonical = re.sub(r"\s*(?:（[^）]*）|\([^)]*\))\s*$", "", canonical)
+    return canonical.strip()
+
+
+def heading_sections(text: str) -> list[tuple[int, str, int, int]]:
+    matches = list(re.finditer(r"^(#{1,6})\s+(.+?)\s*$", text, re.M))
+    sections: list[tuple[int, str, int, int]] = []
+    for index, match in enumerate(matches):
+        level = len(match.group(1))
+        end = len(text)
+        for later in matches[index + 1 :]:
+            if len(later.group(1)) <= level:
+                end = later.start()
+                break
+        sections.append((level, match.group(2).strip(), match.start(), end))
+    return sections
+
+
+def extract_feature_modules(text: str, prd_type: str) -> list[tuple[str, str]]:
+    sections = heading_sections(text)
+    alternatives = REQUIRED_CAPABILITIES[prd_type]["feature_modules"]
+    parent_index = next(
+        (index for index, (_, title, _, _) in enumerate(sections) if heading_matches(title, alternatives)),
+        None,
+    )
+    if parent_index is None:
+        return []
+
+    parent_level, _, parent_start, parent_end = sections[parent_index]
+    candidates = [
+        (level, title, start, end)
+        for level, title, start, end in sections[parent_index + 1 :]
+        if parent_start < start < parent_end and level > parent_level
+    ]
+    if not candidates:
+        return []
+
+    module_level = min(level for level, _, _, _ in candidates)
+    modules: list[tuple[str, str]] = []
+    module_candidates = [candidate for candidate in candidates if candidate[0] == module_level]
+    for index, (_, title, start, _) in enumerate(module_candidates):
+        canonical = canonical_heading(title).lower()
+        if canonical in MODULE_DETAIL_SECTIONS:
+            continue
+        end = module_candidates[index + 1][2] if index + 1 < len(module_candidates) else parent_end
+        modules.append((canonical_heading(title), text[start:end]))
+    return modules
+
+
+def module_has_logic_table(module_text: str, prd_type: str) -> bool:
+    lines = module_text.splitlines()
+    for line_index, line in enumerate(lines):
+        if not line.lstrip().startswith("|"):
+            continue
+        cells = [re.sub(r"\s+", "", cell).lower() for cell in line.strip().strip("|").split("|")]
+        condition_index = next((index for index, cell in enumerate(cells) if "条件" in cell or "状态" in cell), None)
+        user_index = next((index for index, cell in enumerate(cells) if "用户操作" in cell or "用户动作" in cell), None)
+        if prd_type == "ai-native":
+            execution_index = next((index for index, cell in enumerate(cells) if "ai动作" in cell or "系统行为" in cell), None)
+            feedback_index = next((index for index, cell in enumerate(cells) if "系统反馈" in cell or "ui反馈" in cell), None)
+        else:
+            execution_index = next((index for index, cell in enumerate(cells) if "系统行为" in cell), None)
+            feedback_index = next((index for index, cell in enumerate(cells) if "ui反馈" in cell), None)
+        required_indexes = (condition_index, user_index, execution_index, feedback_index)
+        if any(index is None for index in required_indexes):
+            continue
+
+        for data_line in lines[line_index + 1 :]:
+            if not data_line.strip():
+                continue
+            if not data_line.lstrip().startswith("|"):
+                break
+            data_cells = [cell.strip() for cell in data_line.strip().strip("|").split("|")]
+            if all(re.fullmatch(r":?-{3,}:?", cell) for cell in data_cells):
+                continue
+            if all(index < len(data_cells) and data_cells[index] for index in required_indexes if index is not None):
+                return True
+    return False
+
+
+def detect_maturity(text: str) -> str | None:
+    first_section = re.search(r"^##\s+", text, re.M)
+    preamble = text[: first_section.start()] if first_section else text
+    explicit = re.search(r"(?:\*\*)?文档状态(?:\*\*)?\s*[：:]\s*(草稿|讨论中|已确认|draft|discussing|confirmed)\b", preamble, re.I)
+    if explicit:
+        return MATURITY_ALIASES[explicit.group(1).lower()]
+
+    for _, title, start, end in heading_sections(text):
+        if canonical_heading(title).lower() != "文档信息":
+            continue
+        section_text = text[start:end]
+        explicit = re.search(r"(?:\*\*)?状态(?:\*\*)?\s*[：:]\s*(草稿|讨论中|已确认|draft|discussing|confirmed)\b", section_text, re.I)
+        if explicit:
+            return MATURITY_ALIASES[explicit.group(1).lower()]
+        rows = [
+            [part.strip().lower() for part in line.strip().strip("|").split("|")]
+            for line in section_text.splitlines()
+            if line.lstrip().startswith("|")
+        ]
+        for index, row in enumerate(rows):
+            status_index = next((cell_index for cell_index, cell in enumerate(row) if cell in {"状态", "文档状态"}), None)
+            if status_index is None:
+                continue
+            for value_row in rows[index + 1 :]:
+                if all(re.fullmatch(r":?-{3,}:?", cell) for cell in value_row):
+                    continue
+                if status_index < len(value_row) and value_row[status_index] in MATURITY_ALIASES:
+                    return MATURITY_ALIASES[value_row[status_index]]
+                break
+    return None
+
+
+def extract_labeled_background(text: str) -> str | None:
+    match = re.search(
+        r"(?:^|\n)\s*(?:[-*]\s*)?(?:\*\*)?背景(?:\*\*)?\s*[：:]\s*(.+?)"
+        r"(?=\n\s*(?:[-*]\s*)?(?:\*\*)?[^\n：:]+(?:\*\*)?\s*[：:]|\n#{1,6}\s|\Z)",
+        text,
+        re.S,
+    )
+    if not match:
+        return None
+    return match.group(1).strip()
+
+
+def extract_background(text: str) -> tuple[bool, str | None]:
+    labeled = extract_labeled_background(text)
+    if labeled is not None:
+        return True, labeled
+
+    sections = heading_sections(text)
+    has_combined_heading = False
+    for _, title, start, end in sections:
+        canonical = canonical_heading(title).lower()
+        if canonical == "背景":
+            heading_end = text.find("\n", start, end)
+            content = text[heading_end + 1 : end].strip() if heading_end != -1 else ""
+            content = re.split(
+                r"(?m)^\s*(?:[-*]\s*)?(?:\*\*)?(?:本期只解决|本期只讲|成功标准|不做)(?:\*\*)?\s*[：:]",
+                content,
+                maxsplit=1,
+            )[0].strip()
+            return True, content or None
+        if canonical == "背景与目标":
+            has_combined_heading = True
+    return has_combined_heading, None
+
+
+def visible_character_count(text: str) -> int:
+    without_links = re.sub(r"!?\[([^\]]*)\]\([^)]*\)", r"\1", text)
+    without_markup = re.sub(r"[`*_>#|~-]", "", without_links)
+    return len(re.sub(r"\s+", "", without_markup))
 
 
 def strip_handoff_appendix(text: str) -> str:
@@ -65,31 +275,20 @@ def strip_handoff_appendix(text: str) -> str:
     return text
 
 
-def strip_non_feature_sections(text: str) -> str:
-    """Remove appendix-style sections that cannot satisfy inline mockup evidence."""
-    kept: list[str] = []
-    excluded_level: int | None = None
-
-    for line in text.splitlines(keepends=True):
-        heading = re.match(r"^(#{1,6})\s+(.+?)\s*$", line)
-        if heading:
-            level = len(heading.group(1))
-            title = heading.group(2).strip()
-            if NON_FEATURE_SECTION_PATTERN.match(title):
-                excluded_level = level
-                continue
-            if excluded_level is not None and level <= excluded_level:
-                excluded_level = None
-
-        if excluded_level is None:
-            kept.append(line)
-
-    return "".join(kept)
-
-
 def extract_image_targets(text: str) -> list[str]:
     targets = [match.group(1) or match.group(2) for match in MARKDOWN_IMAGE_PATTERN.finditer(text)]
     targets.extend(match.group(1) for match in HTML_IMAGE_PATTERN.finditer(text))
+    return targets
+
+
+def extract_target_state_image_targets(text: str) -> list[str]:
+    targets = [match.group(1) or match.group(2) for match in MARKDOWN_TARGET_IMAGE_PATTERN.finditer(text)]
+    for tag_match in HTML_IMAGE_TAG_PATTERN.finditer(text):
+        tag = tag_match.group(0)
+        alt = re.search(r"\balt\s*=\s*[\"']([^\"']+)[\"']", tag, re.I)
+        src = re.search(r"\bsrc\s*=\s*[\"']([^\"']+)[\"']", tag, re.I)
+        if alt and src and re.search(r"目标态|目标状态", alt.group(1), re.I):
+            targets.append(src.group(1))
     return targets
 
 
@@ -262,7 +461,12 @@ def validate_mockup_manifest(manifest_path: Path, prd_path: Path, feature_text: 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Check PRD shape and warn on over-technical drafts.")
     parser.add_argument("path", help="Path to a Markdown PRD")
-    parser.add_argument("--type", choices=sorted(REQUIRED_BY_TYPE), default="standard", help="Expected PRD type")
+    parser.add_argument("--type", choices=sorted(REQUIRED_CAPABILITIES), default="standard", help="Expected PRD type")
+    parser.add_argument(
+        "--maturity",
+        choices=("draft", "discussing", "confirmed"),
+        help="Override auto-detected document maturity for open-question checks",
+    )
     parser.add_argument("--allow-handoff", action="store_true", help="Allow technical schema details in the document")
     parser.add_argument("--publish-ready", action="store_true", help="Check for online-publishing contamination such as local mock links")
     parser.add_argument(
@@ -298,17 +502,36 @@ def main() -> int:
         if pattern.search(body_to_check):
             warnings.append(f"over_technical:{name}")
 
-    for required in REQUIRED_BY_TYPE[args.type]:
-        if args.publish_ready and required == "待确认":
+    titles = heading_titles(body_to_check)
+    maturity = args.maturity or detect_maturity(text)
+    for capability, alternatives in REQUIRED_CAPABILITIES[args.type].items():
+        if capability == "open_questions" and (args.publish_ready or maturity == "confirmed"):
             continue
-        if required not in text:
-            warnings.append(f"missing_expected_section:{required}")
+        if not has_heading_capability(titles, alternatives):
+            warnings.append(f"missing_expected_capability:{capability}")
+
+    background_marker, background = extract_background(body_to_check)
+    if background is not None:
+        background_length = visible_character_count(background)
+        if background_length > 200:
+            warnings.append(f"background_too_long:{background_length}")
+    elif background_marker:
+        warnings.append("background_uncheckable")
+
+    for title in titles:
+        canonical = canonical_heading(title)
+        if canonical in LEGACY_PARALLEL_SECTIONS:
+            warnings.append(f"legacy_parallel_section:{canonical}")
+
+    modules = extract_feature_modules(body_to_check, args.type)
+    if has_heading_capability(titles, REQUIRED_CAPABILITIES[args.type]["feature_modules"]) and not modules:
+        warnings.append("missing_feature_module_entries")
+    for title, module_text in modules:
+        if not module_has_logic_table(module_text, args.type):
+            warnings.append(f"missing_module_logic:{title}")
 
     if "本期只解决" not in text and "本期只讲" not in text:
         warnings.append("missing_scope_sentence")
-
-    if not args.publish_ready and "待确认" not in text:
-        warnings.append("missing_open_questions")
 
     if args.publish_ready:
         for name, pattern in PUBLISH_CONTAMINATION_PATTERNS:
@@ -316,15 +539,17 @@ def main() -> int:
                 warnings.append(f"publish_contamination:{name}")
 
     if args.require_mockup_evidence:
-        feature_text = strip_non_feature_sections(text)
+        feature_text = "\n".join(module_text for _, module_text in modules)
         image_targets = extract_image_targets(feature_text)
-        if not image_targets:
+        if not modules:
             warnings.append("missing_mockup_evidence")
-        else:
-            for target in missing_local_image_targets(path, image_targets):
-                warnings.append(f"missing_mockup_file:{target}")
+        for title, module_text in modules:
+            if not extract_target_state_image_targets(module_text):
+                warnings.append(f"missing_module_target_state_evidence:{title}")
+        for target in missing_local_image_targets(path, image_targets):
+            warnings.append(f"missing_mockup_file:{target}")
     else:
-        feature_text = strip_non_feature_sections(text)
+        feature_text = "\n".join(module_text for _, module_text in modules)
 
     if args.require_current_mockup_evidence and not args.mockup_manifest:
         warnings.append("missing_mockup_manifest_argument")

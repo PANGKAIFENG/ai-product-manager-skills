@@ -5,7 +5,7 @@
       "id": "standard-product-draft-no-schema",
       "type": "trigger",
       "prompt": "帮我写一份 Agent 回答后的下一步行动建议 PRD 初版。下一步行动不是所有回答都有，图片生成后可以改图或生成视频，PPT 成功后下载/编辑是功能按钮，不算 Agent 下一步；点击下一步行动只预填输入框让用户确认。",
-      "expected_output": "选择 PRD-standard 或 PRD-ai-native 的产品讨论稿，重点写场景、触发、不展示条件、功能按钮与 Agent 行动的区别、点击预填输入框、验收标准；不输出 TypeScript interface、JSON schema、metadata 或 adapter 细节。",
+      "expected_output": "选择 PRD-standard 或 PRD-ai-native 的产品讨论稿，用不超过 200 字的短背景说明问题；按功能模块写目标态 UI、触发、不展示条件、功能按钮与 Agent 行动的区别、点击预填输入框和验收，不单列用户场景等重复章节，也不输出 TypeScript interface、JSON schema、metadata 或 adapter 细节。",
       "files": [],
       "should_trigger": true,
       "expected_route": "prd-architect",
@@ -25,7 +25,7 @@
       "id": "lite-existing-page-mockup-handoff",
       "type": "trigger",
       "prompt": "帮我写一个 PRD：在现有聊天页点击发送时，如果沙箱并发已满，要弹出确认提示并保留输入内容。需要说明页面状态和截图承接。",
-      "expected_output": "选择 PRD-lite，加载 mockup handoff，基于真实页面触发点描述弹窗/状态/验收，不强制 Draw.io，不发散成工作区管理页。",
+      "expected_output": "选择 PRD-lite，加载 mockup handoff，以一个功能模块呈现目标态弹窗截图、触发/状态/反馈和验收；不生成用户场景或流程图，不发散成工作区管理页。",
       "files": [],
       "should_trigger": true,
       "expected_route": "prd-architect",
@@ -356,6 +356,122 @@
         },
         {
           "text": "No fake UI artifact is created to satisfy the contract."
+        }
+      ]
+    },
+    {
+      "id": "concise-module-first-prd-regression",
+      "type": "behavior-regression",
+      "prompt": "基于附件中的企业试用当前页参考 HTML 写一份标准 PRD：增加申请弹窗、试用中入口、到期提示和执行拦截。该附件是用户确认的现状基线，请完成可以交给设计、研发和测试阅读的第一版。",
+      "expected_output": "以附件 reference-html 为低置信现状基线；背景不超过 200 字且不为凑字数扩写；不单列用户场景、入口、页面结构、核心对象和交互逻辑，而是按申请、试用中、到期与拦截等功能模块组织；生成目标态 HTML 和截图，每个可见模块包含对应目标态截图和简短功能逻辑；简单页面状态不生成流程图。",
+      "files": [
+        "evals/fixtures/enterprise-trial-current.html"
+      ],
+      "should_trigger": true,
+      "expected_route": "prd-architect",
+      "assertions": [
+        {
+          "text": "Background explains the current problem and scope in no more than 200 visible Chinese characters."
+        },
+        {
+          "text": "The body is organized by feature modules and does not emit standalone user-scenario, entry, page-structure, core-object, or interaction chapters."
+        },
+        {
+          "text": "Every visible feature module pairs target-state UI evidence with concise condition, user action, system behavior, and UI feedback logic."
+        },
+        {
+          "text": "The current screenshot is labeled as current-state reference and cannot satisfy target-state evidence."
+        },
+        {
+          "text": "No process diagram is generated for page-local state changes."
+        }
+      ]
+    },
+    {
+      "id": "complex-flow-uses-drawio-and-module-details",
+      "type": "transfer",
+      "prompt": "基于附件中的供应商管理当前页参考 HTML 写一份供应商准入 PRD：供应商提交资料，采购初审，合规异步核验，不通过退回补充后再次提交，通过后通知财务开通结算；有申请页、审核台和结果页。该附件是用户确认的现状基线。",
+      "expected_output": "以附件 reference-html 为低置信现状基线并选择 Standard；由于跨四类角色/系统、包含异步核验和退回回流，生成并验证 Draw.io 核心流程；正文仍按申请、审核、结果功能模块组织，生成目标态 HTML 和截图，每个页面模块包含对应目标态 UI 和逻辑，不把流程图扩写成重复正文。",
+      "files": [
+        "evals/fixtures/supplier-onboarding-current.html"
+      ],
+      "should_trigger": true,
+      "expected_route": "prd-architect",
+      "assertions": [
+        {
+          "text": "The cross-role asynchronous return loop is represented in an editable and validated Draw.io artifact."
+        },
+        {
+          "text": "Application, review, and result pages remain separate feature modules with target-state UI and local logic."
+        },
+        {
+          "text": "The diagram explains ordering and return edges without duplicating each module's detailed rules."
+        }
+      ]
+    },
+    {
+      "id": "simple-ui-change-does-not-create-diagram",
+      "type": "negative-regression",
+      "prompt": "基于附件中的订单当前页参考 HTML 写一个 PRD：在下载按钮旁增加无权限提示，点击后保留当前筛选条件。该附件是用户确认的现状基线。",
+      "expected_output": "以附件 reference-html 为低置信现状基线并选择 Lite；用短背景、一个功能模块、生成的目标态 UI 截图、功能逻辑和验收完成说明；不生成流程图，也不创建用户场景、入口与触发等独立章节。",
+      "files": [
+        "evals/fixtures/order-download-current.html"
+      ],
+      "should_trigger": true,
+      "expected_route": "prd-architect",
+      "assertions": [
+        {
+          "text": "Selects PRD-lite and keeps the deliverable readable within five minutes."
+        },
+        {
+          "text": "Does not generate Draw.io, Mermaid, ASCII flow, or a standalone user-scenario section."
+        },
+        {
+          "text": "The target-state UI and permission behavior are explained in one feature module."
+        }
+      ]
+    },
+    {
+      "id": "explicit-drawio-overrides-simple-complexity",
+      "type": "boundary-regression",
+      "prompt": "基于附件中的订单当前页参考 HTML 写 PRD：在下载按钮旁增加无权限提示，并按我的明确要求补一张可编辑 Draw.io 流程图，即使这个改动本身很简单。",
+      "expected_output": "因为用户明确要求正式图示，将原本的 Lite 改动升级为 Standard，生成并验证可编辑 Draw.io；复杂度门槛不能覆盖显式请求。页面模块仍生成目标态 UI 和功能逻辑，不用流程图重复 UI 细节。",
+      "files": [
+        "evals/fixtures/order-download-current.html"
+      ],
+      "should_trigger": true,
+      "expected_route": "prd-architect",
+      "assertions": [
+        {
+          "text": "The explicit diagram request produces a validated editable Draw.io artifact even though the flow is simple."
+        },
+        {
+          "text": "The request is upgraded from Lite to Standard instead of being rejected by the automatic complexity threshold."
+        },
+        {
+          "text": "The feature module still pairs target-state UI evidence with concise functional logic."
+        }
+      ]
+    },
+    {
+      "id": "holdout-similar-state-names-split-by-owner-and-scope",
+      "type": "holdout",
+      "prompt": "基于附件中的团队账单当前页参考 HTML 写 PRD。企业可能是“未开通自动续费”，成员个人也可能是“未开启到账提醒”；两者都会显示未开启，但影响范围不同。页面还要新增设置入口和保存结果提示。该附件是用户确认的现状基线。",
+      "expected_output": "以附件 reference-html 为低置信现状基线，以设置入口和保存结果为功能模块，生成目标态 HTML 和截图；把企业续费状态与成员提醒状态按主体、判定时点、影响范围和用途拆开，避免用一个未开启状态控制两类行为；局部页面改动不画流程图。",
+      "files": [
+        "evals/fixtures/team-billing-current.html"
+      ],
+      "should_trigger": true,
+      "expected_route": "prd-architect",
+      "assertions": [
+        {
+          "text": "Enterprise renewal and member notification states are modeled as separate state variables."
+        },
+        {
+          "text": "Each ambiguous state records subject, decision time, affected scope, and purpose."
+        },
+        {
+          "text": "The flow and UI logic do not use one generic disabled state to control both behaviors."
         }
       ]
     }

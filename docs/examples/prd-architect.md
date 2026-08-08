@@ -18,10 +18,12 @@ $prd-architect
 ## Expected Output Shape
 
 - Chooses PRD-lite, PRD-standard, or PRD-ai-native.
-- Defines target user, problem, scope, non-goals, and workflow.
-- Lists states, inputs, outputs, exceptions, and acceptance criteria.
+- Keeps the background within 200 Chinese characters, shorter when sufficient, and states the current scope in one sentence.
+- Organizes the body by feature module instead of separate user-scenario, entry, page-structure, and interaction chapters.
+- Places target-state UI evidence beside concise functional logic for every visible module.
+- Lists only decision-relevant states, exceptions, and acceptance criteria.
 - Adds open questions and handoff notes.
-- Uses Draw.io only when the workflow complexity justifies it.
+- Uses Draw.io only for explicit requests or genuinely complex cross-role/system flows.
 
 ## Good Follow-Up
 

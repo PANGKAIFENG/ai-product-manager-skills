@@ -9,6 +9,8 @@
 3. 再判断当前状态：`草稿`、`讨论中`、`已确认`。
 4. 最后决定是否加载 mockup、diagram 或 handoff 附加资产。
 
+用户明确要求正式 Draw.io 图示时无条件加载 diagram 资产；若需求原本只够 Lite，则升级为 Standard。用户未明确要求时才应用复杂度门槛。
+
 ## PRD-lite
 
 选择条件：
@@ -16,7 +18,7 @@
 - 单点改动。
 - 边界清楚，用户流程短。
 - 不涉及复杂状态和多模块依赖。
-- 只需要让研发理解触发条件、页面反馈、边界和验收。
+- 只需要通过一个功能模块说明目标态 UI、触发、反馈、边界和验收。
 
 典型例子：
 
@@ -31,14 +33,15 @@
 选择条件：
 
 - 常规产品功能。
-- 需要完整描述流程和边界。
+- 需要描述多个功能模块、状态或边界。
 - 涉及多个状态、异常分支或多个页面区域。
 - 需要后续进入设计、研发或测试对齐。
 
 注意：
 
 - Standard 不等于开发 handoff。
-- 默认写产品对象、业务规则、页面状态和验收。
+- 默认用“短背景 + 功能模块”组织正文，页面模块必须就近放目标态 UI 和逻辑。
+- 不单列用户场景、入口、页面结构和交互逻辑来重复同一条规则。
 - 只有用户明确要求开发 handoff 时，才加载 `references/handoff-appendix.md`。
 
 读取：`references/templates/prd-standard.md`
@@ -81,8 +84,7 @@
 | 条件 | 加载资产 |
 | --- | --- |
 | 涉及既有页面、弹窗、按钮、表单、状态提示 | `references/mockup-handoff.md` |
-| 用户要求可编辑流程图 / 架构图 | `references/drawio-templates.md` |
-| 多阶段链路、上下游依赖、对象流转、状态切换 | `references/drawio-templates.md` |
+| 用户明确要求可编辑流程图 / 架构图 | `references/drawio-templates.md` |
+| 跨多角色/系统、含关键判断或回流、异步恢复，或 6 个及以上相互依赖步骤 | `references/drawio-templates.md` |
 | 用户明确要求字段、协议、接口、schema、metadata、adapter | `references/handoff-appendix.md` |
 | 需要避免初版 PRD 过重或过技术 | `references/prd-shape-gates.md` |
-
