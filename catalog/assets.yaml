@@ -1,0 +1,41 @@
+schema_version: 1
+description: v0.3 asset catalog; only skills/ is an atomic Skill discovery surface.
+skills:
+  - {id: agent-trace-diagnoser, path: skills/agent-trace-diagnoser, status: active}
+  - {id: ai-collaboration-calibration, path: skills/ai-collaboration-calibration, status: core}
+  - {id: brainstorming, path: skills/brainstorming, status: core}
+  - {id: customer-requirement-discovery, path: skills/customer-requirement-discovery, status: active}
+  - {id: decision-research, path: skills/decision-research, status: core}
+  - {id: grill-me, path: skills/grill-me, status: core}
+  - {id: prd-architect, path: skills/prd-architect, status: core}
+  - {id: prd-review, path: skills/prd-review, status: core}
+  - {id: prd-to-issues, path: skills/prd-to-issues, status: core}
+  - {id: project-context-steward, path: skills/project-context-steward, status: active}
+  - {id: research-topic-compiler, path: skills/research-topic-compiler, status: core}
+  - {id: skill-reviewer, path: skills/skill-reviewer, status: active}
+  - {id: stylework-requirement-planning, path: skills/stylework-requirement-planning, status: active}
+  - {id: team-skill-creator, path: skills/team-skill-creator, status: active}
+  - {id: ui-mockup-desktop-workbench, path: skills/ui-mockup-desktop-workbench, status: core}
+loops:
+  - {id: research-decision-loop, path: loops/research-decision-loop, status: active, owners: [research-topic-compiler, decision-research]}
+  - {id: solution-challenge-loop, path: loops/solution-challenge-loop, status: active, owners: [brainstorming, grill-me]}
+  - {id: prd-delivery-readiness-loop, path: loops/prd-delivery-readiness-loop, status: active, owners: [prd-architect, ui-mockup-desktop-workbench, prd-review, prd-to-issues]}
+workflows:
+  - {id: product-discovery, path: workflows/product-discovery, status: active}
+  - {id: product-delivery, path: workflows/product-delivery, status: active}
+tools:
+  - {id: product-delivery-validator, kind: validator, path: tools/validators/product-delivery, status: active, side_effects: none}
+  - {id: dingtalk-prd-publisher, kind: publisher, path: tools/publishers/dingtalk-prd-publisher, status: active, side_effects: external-write, runtime_adapter: tools/publishers/dingtalk-prd-publisher/runtime-adapter, runtime_skill_id: dingtalk-prd-publisher}
+  - {id: yunxiao-work-item-publisher, kind: publisher, path: tools/publishers/yunxiao-work-item-publisher, status: active, side_effects: external-write, runtime_adapter: tools/publishers/yunxiao-work-item-publisher/runtime-adapter, runtime_skill_id: stylework-yunxiao-workitem-submitter}
+  - {id: yunxiao-requirement-sheet-sync, kind: automation, path: tools/automations/yunxiao-requirement-sheet-sync, status: active, side_effects: external-write, runtime_adapter: tools/automations/yunxiao-requirement-sheet-sync/runtime-adapter, runtime_skill_id: stylework-yunxiao-requirement-sync}
+packs:
+  - {id: pm-core, path: packs/pm-core.yaml, includes: 9}
+  - {id: stylework-business, path: packs/stylework-business.yaml, includes: 2}
+  - {id: skill-maintainer, path: packs/skill-maintainer.yaml, includes: 2}
+  - {id: engineering, path: packs/engineering.yaml, includes: 2}
+archive:
+  - {id: complex-exploration, replacement: ai-collaboration-calibration + product-discovery}
+  - {id: competitive-analysis, replacement: research-topic-compiler/product-research}
+  - {id: ui-wireframe-to-html, replacement: ui-mockup-desktop-workbench/structure-only}
+  - {id: ai-work-assetization-diagnoser, replacement: team-skill-creator/assetization-gate}
+  - {id: stylework-solution-scoper, replacement: customer-requirement-discovery/stylework-adaptation}

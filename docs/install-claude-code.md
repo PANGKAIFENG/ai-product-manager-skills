@@ -1,123 +1,46 @@
 # Install For Claude Code
 
-This repository uses the common Agent Skill shape: each Skill is a directory with a `SKILL.md` file containing frontmatter, a trigger description, and workflow instructions.
+Claude Code uses the common Agent Skill shape: one directory with a
+`SKILL.md` containing `name` and `description` frontmatter. Copy or symlink the
+15 child directories under `skills/` into the directory your Claude Code setup
+scans.
 
-Claude Code setups can vary by version and organization policy. Use this guide as a conservative installation pattern: put the thirteen Skill directories in the location your Claude Code environment scans for Skills, then verify by explicit invocation.
-
-## Recommended Copy List
-
-Copy or symlink these folders from the repository root:
-
-```text
-skills/ai-collaboration-calibration/
-skills/complex-exploration/
-skills/research-topic-compiler/
-skills/competitive-analysis/
-skills/decision-research/
-skills/brainstorming/
-skills/prd-architect/
-skills/prd-review/
-skills/prd-to-issues/
-skills/ui-wireframe-to-html/
-skills/ui-mockup-desktop-workbench/
-skills/grill-me/
-skills/ai-work-assetization-diagnoser/
-```
-
-Each folder must include its `SKILL.md` file.
-
-## skillshare Path
-
-If your Claude Code setup is managed with `skillshare`, use:
+## Copy Or Symlink
 
 ```bash
-skillshare install https://github.com/PANGKAIFENG/ai-product-manager-skills --track --all
-skillshare sync --dry-run
-skillshare sync
+git clone https://github.com/PANGKAIFENG/ai-product-manager-skills.git
+cd ai-product-manager-skills
+mkdir -p "$HOME/.claude/skills"
+for skill_dir in skills/*; do
+  skill="$(basename "$skill_dir")"
+  ln -sfn "$(pwd)/$skill_dir" "$HOME/.claude/skills/$skill"
+done
 ```
 
-Then check:
+Do not copy `archive/`, `loops/`, `workflows/`, or `tools/` into the atomic
+Skill directory.
 
-```bash
-skillshare status
-skillshare list
-```
+## skillshare
 
-For a single Skill in v0.2 or later, include the canonical `skills/` subdirectory:
+Use metadata-backed installs for individual Skills, then preview the target
+changes before syncing:
 
 ```bash
 skillshare install \
-  PANGKAIFENG/ai-product-manager-skills/skills/prd-review \
+  https://github.com/PANGKAIFENG/ai-product-manager-skills/skills/prd-review \
   --name prd-review
+skillshare update prd-review --dry-run --json
+skillshare sync --dry-run
 ```
-
-For an existing destination, repeat the command with `--force --dry-run` to preview replacement. Keep `--dry-run` attached: `--force` without it can overwrite the local Skill. The [v0.2 migration guide](migration-v0.2.md) explains why an old `subdir: prd-review` source must become `subdir: skills/prd-review` for future updates.
-
-## Manual Path
-
-If you manage Claude Code Skills manually:
-
-1. Clone this repository.
-2. Locate your Claude Code Skills directory.
-3. Copy or symlink the thirteen child folders under `skills/` into that directory; do not copy the `skills/` container itself unless your runtime expects that extra level.
-4. Restart Claude Code if new Skills are not detected.
-5. Test explicit invocation by Skill name.
 
 ## Verify
 
-Try one or both prompts.
-
-PRD review:
-
 ```text
-$prd-review 从研发和测试视角审一下这个 PRD，重点找不可测试点和交付阻断项
+$prd-review 从研发和测试视角审一下这个 PRD
+$research-topic-compiler 系统研究这个产品方向
+$team-skill-creator 判断这类重复工作该沉淀成什么
 ```
 
-Expected behavior:
-
-- The agent uses `prd-review`.
-- It produces findings before summary.
-- It separates blockers, risks, and revision suggestions.
-
-UI structure:
-
-```text
-$ui-wireframe-to-html 基于这份 PRD 先出 UI 结构、状态模型和 ASCII 布局
-```
-
-Expected behavior:
-
-- The agent uses `ui-wireframe-to-html`.
-- It produces screen inventory, state model, and ASCII layout.
-- It does not jump into high-fidelity visual polish.
-
-Complex exploration:
-
-```text
-$complex-exploration 先不要直接写定价方案，帮我判断这个问题是不是问窄了，并规划探索路径
-```
-
-Expected behavior:
-
-- The agent uses `complex-exploration`.
-- It classifies the task type before writing a plan.
-- It surfaces hidden assumptions and reframes the real problem.
-
-Competitive analysis:
-
-```text
-$competitive-analysis 研究这个竞品对我们的产品决策有什么启发，重点看定位、onboarding 和定价
-```
-
-Expected behavior:
-
-- The agent uses `competitive-analysis`.
-- It anchors the product decision before collecting evidence.
-- It outputs a Product Decision Brief rather than a generic feature list.
-
-## Compatibility Notes
-
-- The Skills are Chinese-first but include stable English slug names.
-- Existing v0.1 runtime copies keep working; direct repository symlinks and stored single-Skill source paths need the new `skills/<skill-id>` target only when upgrading.
-- The repository does not require tool-specific wrappers for the first release.
-- If your team needs one-click install, track the future plugin packaging work in issues or releases.
+The Skill should follow its own boundary and output contract. Publishing to
+DingTalk, creating Yunxiao work items, and local distribution remain separate
+authorized Tool operations.

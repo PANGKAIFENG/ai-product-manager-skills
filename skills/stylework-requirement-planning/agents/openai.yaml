@@ -1,0 +1,4 @@
+interface:
+  display_name: "StyleWork 需求排期共创"
+  short_description: "先汇总需求主题，再共创优先级与迭代建议"
+  default_prompt: "使用 $stylework-requirement-planning 先总结这批需求在解决什么，再和我共创优先级及迭代建议。"

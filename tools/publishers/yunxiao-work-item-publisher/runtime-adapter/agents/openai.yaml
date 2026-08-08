@@ -1,0 +1,4 @@
+interface:
+  display_name: "StyleWork 云效工作项提报"
+  short_description: "把排查或讨论整理成证据化云效需求/缺陷，确认后提交"
+  default_prompt: "使用 $stylework-yunxiao-workitem-submitter 把当前结论整理成一个云效需求或缺陷，先给我看完整预览，不要在我确认前提交。"

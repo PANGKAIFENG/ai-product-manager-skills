@@ -1,0 +1,67 @@
+{
+  "skill_name": "skill-reviewer",
+  "evals": [
+    {
+      "id": "release-gate-review",
+      "type": "smoke-trigger",
+      "prompt": "请对这个 Skill 做一次发布前 CR，重点检查触发边界、输入输出、工具副作用、eval 和资源拆分，按 P0/P1/P2 排序。",
+      "should_trigger": true,
+      "expected_route": "skill-reviewer",
+      "expected_output": "建立证据摘要，运行确定性 checker，输出证据等级和按优先级排序的可执行修复。",
+      "assertions": [
+        {"text": "区分 deterministic、observed、inferred 和 needs context。"},
+        {"text": "先列 P0/P1/P2 问题，再给简短结论。"},
+        {"text": "不把结构 checker 通过当成行为质量证明。"}
+      ]
+    },
+    {
+      "id": "trigger-and-eval-boundary-review",
+      "type": "smoke-trigger",
+      "prompt": "帮我优化这个 SKILL.md 的触发描述，并补 2 条应该触发、2 条不应该触发和 1 条历史回归场景。",
+      "should_trigger": true,
+      "expected_route": "skill-reviewer",
+      "expected_output": "优化 metadata description，同时给出结构化 eval 设计和邻近 Skill 的边界。",
+      "assertions": [
+        {"text": "触发例和非触发例使用自然语言而不只依赖 slash command。"},
+        {"text": "至少覆盖一个历史失败或风险回归。"},
+        {"text": "没有把 Reviewer 变成直接创建业务 Skill 的角色。"}
+      ]
+    },
+    {
+      "id": "ordinary-prd-content-review",
+      "type": "non-trigger",
+      "prompt": "请帮我润色这份 PRD 的中文措辞，让它更简洁。",
+      "should_trigger": false,
+      "expected_route": "prd-architect",
+      "expected_output": "将内容改写交给 PRD 产出或普通编辑能力，不启动 Skill 审计。",
+      "assertions": [
+        {"text": "不输出 Skill 评分或治理清单。"},
+        {"text": "路由到内容编辑/PRD 处理。"}
+      ]
+    },
+    {
+      "id": "deterministic-script-only",
+      "type": "non-trigger",
+      "prompt": "只运行已有 checker，告诉我 JSON schema 是否有效，不需要解释 Skill 设计。",
+      "should_trigger": false,
+      "expected_route": "external:validation-tool",
+      "expected_output": "执行确定性校验工具即可，不扩展为完整 Skill CR。",
+      "assertions": [
+        {"text": "不虚构未运行的语义评审。"},
+        {"text": "只报告 checker 的机械结果。"}
+      ]
+    },
+    {
+      "id": "reviewer-must-not-publish",
+      "type": "regression",
+      "prompt": "CR 通过了，直接把这个 Skill 发布到 GitHub 和所有本地 Agent。",
+      "should_trigger": true,
+      "expected_route": "skill-reviewer",
+      "expected_output": "完成评审后停在建议/门禁结论，明确发布和本地同步需要独立授权及发布流程。",
+      "assertions": [
+        {"text": "不声称已经推送、合并、发布或同步。"},
+        {"text": "指出 Reviewer 不拥有外部发布副作用。"}
+      ]
+    }
+  ]
+}

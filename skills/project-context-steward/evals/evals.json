@@ -1,0 +1,66 @@
+{
+  "skill_name": "project-context-steward",
+  "evals": [
+    {
+      "id": "new-repository-context-scan",
+      "type": "smoke-trigger",
+      "prompt": "我刚接手一个新仓库，先完整看下项目并沉淀一份 PROJECT_CONTEXT.md，后面要持续做需求。",
+      "should_trigger": true,
+      "expected_route": "project-context-steward",
+      "expected_output": "扫描仓库边界、入口、业务、架构、验证命令和坑点，生成可复用的 PROJECT_CONTEXT.md。",
+      "assertions": [
+        {"text": "先确定项目边界，再读取 README、包清单、入口和测试。"},
+        {"text": "区分已验证事实、当前判断和待研究项。"},
+        {"text": "上下文文件不混入单个需求的 PRD 或临时结论。"}
+      ]
+    },
+    {
+      "id": "incremental-context-maintenance",
+      "type": "smoke-trigger",
+      "prompt": "这次架构变更后，把长期有效的模块边界、启动命令和新踩坑更新到现有 CONTEXT.md。",
+      "should_trigger": true,
+      "expected_route": "project-context-steward",
+      "expected_output": "只更新跨需求复用的信息，并保留来源与时间。",
+      "assertions": [
+        {"text": "不把一次性实现细节整段复制进全局上下文。"},
+        {"text": "记录架构边界、入口和验证命令的证据来源。"}
+      ]
+    },
+    {
+      "id": "prd-only-request",
+      "type": "non-trigger",
+      "prompt": "根据这段需求直接写一份完整 PRD。",
+      "should_trigger": false,
+      "expected_route": "prd-architect",
+      "expected_output": "把单个需求文档交给 prd-architect，不先创建项目上下文。",
+      "assertions": [
+        {"text": "不扫描与 PRD 无关的全部项目背景。"},
+        {"text": "路由到 PRD Skill。"}
+      ]
+    },
+    {
+      "id": "directory-placement-only",
+      "type": "non-trigger",
+      "prompt": "这些文档应该放在哪个目录？只给目录建议，不要扫描项目。",
+      "should_trigger": false,
+      "expected_route": "external:project-structure-governor",
+      "expected_output": "使用目录治理能力，不建立 PROJECT_CONTEXT。",
+      "assertions": [
+        {"text": "不创建或修改 PROJECT_CONTEXT.md。"},
+        {"text": "只处理目录边界建议。"}
+      ]
+    },
+    {
+      "id": "context-scan-must-not-edit-code",
+      "type": "regression",
+      "prompt": "先建立项目上下文，顺便直接修掉扫描中发现的所有代码问题并提交。",
+      "should_trigger": true,
+      "expected_route": "project-context-steward",
+      "expected_output": "先完成只读上下文扫描，明确将代码修复留给单独实现任务。",
+      "assertions": [
+        {"text": "不把上下文扫描默认扩展成代码修改和提交。"},
+        {"text": "报告发现的问题并提出后续实现入口。"}
+      ]
+    }
+  ]
+}

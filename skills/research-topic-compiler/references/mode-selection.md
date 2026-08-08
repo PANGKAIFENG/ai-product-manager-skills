@@ -16,7 +16,7 @@ Use this reference before loading heavier research assets. The goal is to select
 ## Boundary With Adjacent Skills
 
 - Use `decision-research` when the user needs a final recommendation, exclusion logic, confidence, and overturn conditions.
-- Use `competitive-analysis` when the primary work is competitor evidence collection and a Product Decision Brief.
+- Use Product Research / competitive-evidence mode when the primary work is competitor evidence collection and a Product Decision Brief. Read `product-evidence-channel-guide.md`; also read `browser-walkthrough-boundaries.md` for login-state or screenshot evidence and `product-decision-brief-template.md` for the full artifact.
 - Use `ai-collaboration-calibration` when the topic is still a fuzzy feeling, raw solution, or unclear problem.
 - Use `prd-architect` when the next deliverable is a PRD, not a research artifact.
 

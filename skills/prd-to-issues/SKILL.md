@@ -48,6 +48,7 @@ description: >
    - 优先小而完整的 AFK issue。
    - 需要架构决策、设计确认、产品取舍或人工审查时标为 HITL。
    - 不要把未确认决策伪装成 AFK 任务。
+   - 大需求同时建立 `version_slice`：每个 V1/V2/V3 必须有独立目标、范围、非目标、依赖、验收、风险、回滚点和交付证据；不能只按时间或前后端层级切分。
 6. 建立覆盖矩阵：
    - 每个 PRD section、user story、requirement、验收标准要么被 issue 覆盖，要么明确排除并说明原因。
    - 发现 PRD 缺口时，不要硬拆；标记为 HITL clarification 或建议先 `prd-review`。
@@ -73,6 +74,21 @@ description: >
    - 用临时文件或 `--body-file` 创建多行 Markdown issue body。
    - 按依赖顺序创建，先创建 blocker。
    - 创建完成后回填 issue URL / 编号，不关闭或改写 parent PRD。
+
+## Version Slice Mode
+
+当 PRD 或用户要求拆分版本时，先输出版本地图，再输出每个版本内的 vertical slices：
+
+| 字段 | 必须回答 |
+| --- | --- |
+| `version_id` | V1/V2/V3 或用户指定的稳定版本名 |
+| `outcome` | 该版本单独上线后解决的用户结果 |
+| `in_scope` / `out_of_scope` | 本版本做什么、不做什么 |
+| `dependencies` | 前置版本、系统能力和外部依赖 |
+| `acceptance` | 可独立演示、测试和回读的验收 |
+| `risks` / `rollback` | 失败模式和可恢复路径 |
+
+版本切片只描述产品交付，不自动创建云效工作项。用户明确授权后，才把已确认的版本项交给 `tools/publishers/yunxiao-work-item-publisher`。
 
 ## Decision Rules
 

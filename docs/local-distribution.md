@@ -5,7 +5,7 @@ These notes are for maintainers who sync this public Skill catalog into local ag
 ## Source Of Truth
 
 - Public repository default branch is the reviewable source for shared AI PM Skills.
-- Installable sources live only under `skills/<skill-id>/`; `docs/workflows/` contains orchestration guidance, not installable Skills.
+- Installable atomic Skills live only under `skills/<skill-id>/`; `loops/` and `workflows/` contain orchestration guidance, not installable Skills. Tool compatibility adapters are explicitly located under `tools/*/*/runtime-adapter/`.
 - Local runtime folders should be treated as installation targets, not as the canonical editing surface.
 - When a Skill is changed, update the repository first, validate, then sync to local targets.
 

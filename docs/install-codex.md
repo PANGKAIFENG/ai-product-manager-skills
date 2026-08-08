@@ -1,152 +1,49 @@
 # Install For Codex
 
-Codex supports Agent Skills as directories that contain a `SKILL.md` file. Skills can be discovered from user-level and repo-level locations. This repository keeps all public Skills under `skills/`, with one stable Skill ID per child directory.
+Codex discovers Skills from a directory containing one child folder per Skill.
+This repository keeps all 15 public Skills under `skills/`.
 
-## Option A: User-Level Skills
-
-Use this when you want the Skills available across many repositories.
+## User-Level Symlinks
 
 ```bash
 git clone https://github.com/PANGKAIFENG/ai-product-manager-skills.git
 cd ai-product-manager-skills
 mkdir -p "$HOME/.agents/skills"
-
-for skill in \
-  ai-collaboration-calibration \
-  complex-exploration \
-  research-topic-compiler \
-  competitive-analysis \
-  decision-research \
-  brainstorming \
-  prd-architect \
-  prd-review \
-  prd-to-issues \
-  ui-wireframe-to-html \
-  ui-mockup-desktop-workbench \
-  grill-me \
-  ai-work-assetization-diagnoser
-do
-  ln -sfn "$(pwd)/skills/$skill" "$HOME/.agents/skills/$skill"
+for skill_dir in skills/*; do
+  skill="$(basename "$skill_dir")"
+  ln -sfn "$(pwd)/$skill_dir" "$HOME/.agents/skills/$skill"
 done
 ```
 
-Restart Codex if the Skills do not appear immediately.
+Use the user-level directory reported by your Codex installation if it differs
+from `$HOME/.agents/skills`. Do not symlink `archive/`, `loops/`, `workflows/`,
+or `tools/` as atomic Skills.
 
-## Option B: Repo-Level Skills
+## skillshare
 
-Use this when you want the Skills only inside one project.
-
-```bash
-mkdir -p /path/to/your-project/.agents/skills
-
-for skill in \
-  ai-collaboration-calibration \
-  complex-exploration \
-  research-topic-compiler \
-  competitive-analysis \
-  decision-research \
-  brainstorming \
-  prd-architect \
-  prd-review \
-  prd-to-issues \
-  ui-wireframe-to-html \
-  ui-mockup-desktop-workbench \
-  grill-me \
-  ai-work-assetization-diagnoser
-do
-  cp -R "skills/$skill" "/path/to/your-project/.agents/skills/$skill"
-done
-```
-
-## Option C: skillshare
-
-If you use `skillshare`, install and sync from the GitHub repository:
-
-```bash
-skillshare install https://github.com/PANGKAIFENG/ai-product-manager-skills --track --all
-skillshare sync --dry-run
-skillshare sync
-```
-
-Run:
-
-```bash
-skillshare status
-skillshare list
-```
-
-to inspect what was installed and synced.
-
-For a single Skill in v0.2 or later, include the canonical `skills/` subdirectory:
+For a Skillshare-managed installation, install each public Skill from its
+canonical subdirectory. Existing local changes must be previewed before an
+update:
 
 ```bash
 skillshare install \
-  PANGKAIFENG/ai-product-manager-skills/skills/prd-architect \
+  https://github.com/PANGKAIFENG/ai-product-manager-skills/skills/prd-architect \
   --name prd-architect
+skillshare update prd-architect --dry-run --json
+skillshare sync --dry-run
 ```
 
-Before replacing an existing locally modified Skill, repeat the command with `--force --dry-run` and review the result. Keep `--dry-run` attached: `--force` without it can overwrite the local Skill. See the [v0.2 migration guide](migration-v0.2.md) for the old-root-path compatibility boundary.
+For all 15 Skills, repeat the metadata-backed install/update for each `skills/<id>`.
+Do not use a mixed aggregate source as a GitHub push source.
 
 ## Verify
 
-In Codex, try:
-
 ```text
-$prd-architect 把这个想法整理成 PRD-lite
+$prd-architect 把这个想法整理成 PRD
+$ui-mockup-desktop-workbench 基于 PRD 先出结构，再做 UI handoff
+$prd-to-issues 把 ready PRD 拆成 V1/V2/V3，先不要发布
 ```
 
-or:
-
-```text
-$complex-exploration 先不要直接写 Roadmap，帮我判断这个复杂任务怎么探索
-```
-
-or:
-
-```text
-$prd-to-issues 把这个 PRD 拆成 GitHub issues，先不要发布
-```
-
-or:
-
-```text
-$brainstorming 先不要写 PRD，帮我脑暴 2-3 个设计方案
-```
-
-or:
-
-```text
-$ui-wireframe-to-html 基于这份 PRD 先出 UI 结构、状态模型和 ASCII 布局
-```
-
-or:
-
-```text
-$research-topic-compiler 系统研究“AI 产品经理工作流”，输出 PM 决策输入
-```
-
-or:
-
-```text
-$competitive-analysis 研究这个竞品对我们的产品决策有什么启发
-```
-
-or:
-
-```text
-$ai-work-assetization-diagnoser 这个 prompt 应该沉淀成 workflow 还是 Skill？
-```
-
-Expected behavior:
-
-- Codex recognizes the Skill name.
-- The response follows the workflow in the Skill.
-- It does not jump directly to implementation unless the prompt asks for that.
-
-## Notes
-
-- Keep the Skill directory names stable; they are the public invocation names.
-- Some Codex setups scan `$HOME/.codex/skills` instead of `$HOME/.agents/skills`; use the directory your local Codex reports.
-- If you copy instead of symlink, pull updates from this repository and copy again when upgrading.
-- Existing v0.1 local copies remain usable after the repository moves to `skills/`; only direct repository symlinks or stored single-Skill source paths need rebinding for future updates.
-- For team distribution, consider packaging these Skills as a Codex plugin in a future release.
+Expected behavior: Codex recognizes the named Skill, asks only necessary
+questions, and does not claim external publication without a dedicated Tool and
+current authorization.

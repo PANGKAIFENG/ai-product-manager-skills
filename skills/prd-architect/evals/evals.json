@@ -298,8 +298,8 @@
       "type": "non-trigger",
       "prompt": "桌面工作台 PRD 已可用，但页面结构和状态模型还没确认；请只输出 screen inventory、state model 和 ASCII layout，停在低保真结构阶段。",
       "should_trigger": false,
-      "expected_route": "ui-wireframe-to-html",
-      "expected_output": "Hands the usable PRD to ui-wireframe-to-html for structure-only confirmation.",
+      "expected_route": "ui-mockup-desktop-workbench",
+      "expected_output": "Hands the usable PRD to ui-mockup-desktop-workbench in structure-only mode.",
       "assertions": [
         {
           "text": "Does not continue PRD drafting when the requested artifact is a structure-only wireframe."

@@ -1,0 +1,68 @@
+{
+  "skill_name": "team-skill-creator",
+  "evals": [
+    {
+      "id": "assetization-gate-for-repeated-work",
+      "type": "smoke-trigger",
+      "prompt": "这类需求澄清我每周都会做，失败模式也比较固定。帮我判断应该沉淀成 Skill、Loop、Workflow 还是 Tool，并给出创建计划。",
+      "should_trigger": true,
+      "expected_route": "team-skill-creator",
+      "expected_output": "先做复用频率、稳定性、重叠和形态判断，再给最小资产化建议。",
+      "assertions": [
+        {"text": "检查现有 Skill 是否已覆盖大部分需求。"},
+        {"text": "区分原子 Skill、Loop、Workflow 与确定性 Tool。"},
+        {"text": "不因为一次性工作就创建新 Skill。"}
+      ]
+    },
+    {
+      "id": "public-source-lifecycle-plan",
+      "type": "smoke-trigger",
+      "prompt": "把这个通用的 PRD 交付能力合并进公开仓，做查重、目录更新、eval、CR、PR 和本地同步计划。",
+      "should_trigger": true,
+      "expected_route": "team-skill-creator",
+      "expected_output": "以公开仓为唯一权威源，列出查重、修改、验证、审查、发布和同步边界。",
+      "assertions": [
+        {"text": "先检查远端和本地 checkout 的真实状态。"},
+        {"text": "公开内容不包含本地绝对路径、客户数据或未授权来源。"},
+        {"text": "发布后才通过 Skillshare metadata-backed install/update 同步。"}
+      ]
+    },
+    {
+      "id": "one-off-prompt-no-skill",
+      "type": "non-trigger",
+      "prompt": "今天只帮我写一段一次性的会议邀请文案，不需要复用。",
+      "should_trigger": false,
+      "expected_route": "external:internal-comms",
+      "expected_output": "直接完成一次性文案，不启动 Skill 生命周期治理。",
+      "assertions": [
+        {"text": "不建议创建 Skill。"},
+        {"text": "不扫描仓库或修改 catalog。"}
+      ]
+    },
+    {
+      "id": "review-existing-skill-only",
+      "type": "non-trigger",
+      "prompt": "只帮我检查现有 SKILL.md 有没有触发和 eval 问题，不需要决定是否创建。",
+      "should_trigger": false,
+      "expected_route": "skill-reviewer",
+      "expected_output": "将现有 Skill 审计交给 skill-reviewer。",
+      "assertions": [
+        {"text": "不重复执行生命周期创建决策。"},
+        {"text": "路由到 skill-reviewer。"}
+      ]
+    },
+    {
+      "id": "sensitive-content-stays-local",
+      "type": "regression",
+      "prompt": "这个 Skill 里包含客户数据、内部 URL 和本地凭据占位符，但我也想公开发布。请按正确流程处理。",
+      "should_trigger": true,
+      "expected_route": "team-skill-creator",
+      "expected_output": "阻止直接公开，先去敏/拆分或保留本地，明确 provenance 和发布门禁。",
+      "assertions": [
+        {"text": "不把 private 误解为可以公开。"},
+        {"text": "指出客户数据、内部 URL 和凭据占位符需要去除或留在本地。"},
+        {"text": "不在未处理敏感内容前发布或同步。"}
+      ]
+    }
+  ]
+}

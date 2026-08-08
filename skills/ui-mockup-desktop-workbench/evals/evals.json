@@ -120,7 +120,7 @@
           "text": "Includes a structure review gate or clearly states why it continues without waiting."
         },
         {
-          "text": "Keeps ui-wireframe-to-html as a structure-stage discipline rather than a competing high-fidelity skill."
+          "text": "Keeps structure-only as an internal mode rather than a competing Skill."
         },
         {
           "text": "Still includes screen contract, component map, and implementation notes when moving into visual handoff."
@@ -222,12 +222,15 @@
       "id": "paired-structure-stage-before-high-fidelity",
       "type": "non-trigger",
       "prompt": "桌面工作台 PRD 已可用，但页面结构和状态模型还没确认；请只输出 screen inventory、state model 和 ASCII layout，停在低保真结构阶段。",
-      "should_trigger": false,
-      "expected_route": "ui-wireframe-to-html",
-      "expected_output": "Hands the explicitly structure-only request to ui-wireframe-to-html.",
+      "should_trigger": true,
+      "expected_route": "ui-mockup-desktop-workbench",
+      "expected_output": "Uses ui-mockup-desktop-workbench in structure-only mode for the explicitly low-fidelity request.",
       "assertions": [
         {
           "text": "Does not force the full high-fidelity handoff when the user explicitly wants to stop at structure."
+        },
+        {
+          "text": "Produces screen-inventory.md, state-model.md, ascii-layout.md, and wireframe-handoff.md, or equivalent inline sections, and treats low-fidelity HTML as optional."
         }
       ]
     },

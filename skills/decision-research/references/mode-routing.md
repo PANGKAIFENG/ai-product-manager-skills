@@ -23,7 +23,7 @@ Use this reference after the Startup Gate to keep `decision-research` focused on
 ## Handoff Rules
 
 - Use `research-topic-compiler` when the user wants systematic learning, a candidate pool, a research project, or long-running radar.
-- Use `competitive-analysis` when the primary job is collecting competitor evidence and translating it into a Product Decision Brief.
+- Use `research-topic-compiler` in product-research / competitive-evidence mode when the primary job is collecting competitor evidence and translating it into a Product Decision Brief.
 - Use `ai-collaboration-calibration` when the user is describing a fuzzy feeling, phenomenon, or raw solution without a stable decision question.
 - Use `grill-me` when the user already has a solution and wants interactive pressure testing rather than evidence research.
 

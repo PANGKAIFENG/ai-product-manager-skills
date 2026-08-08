@@ -24,7 +24,7 @@ description: >
 
 使用这个 Skill 把“可讨论的想法”推进成“可交付给 PRD、mockup 或开发计划的设计 spec”。它强调先理解上下文、逐步澄清、提出多个方案、确认设计，再进入下游 artifact。
 
-它的默认下游可以是 `prd-architect`、`ui-mockup-desktop-workbench`、`prd-to-issues` 或实现计划；如果方案涉及 UI/mockup/HTML 可视化，必须先对齐项目已有视觉语言，避免生成与真实产品割裂的通用页面。
+它的默认下游可以是 `prd-architect`、`ui-mockup-desktop-workbench`、`prd-to-issues` 或实现计划；如果方案涉及 UI/mockup/HTML 可视化，必须先对齐项目已有视觉语言，避免生成与真实产品割裂的通用页面。需要反复压测时进入 `solution-challenge-loop`，而不是创建新的方案 mega Skill。
 
 本 Skill 是方案 Maker：拥有真实备选、推荐与取舍、scope、流程、状态、风险和 Design Delta；不拥有 Critic clearance、PRD/实现 readiness 或发布审批。
 

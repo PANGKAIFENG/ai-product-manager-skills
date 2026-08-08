@@ -33,7 +33,7 @@ Which existing Skills might overlap?
 - `prd-review`
 - `ui-mockup-desktop-workbench`
 - `grill-me`
-- `ai-work-assetization-diagnoser`
+- `team-skill-creator`
 
 ## Example prompt
 

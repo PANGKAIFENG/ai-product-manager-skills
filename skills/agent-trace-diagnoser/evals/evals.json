@@ -1,0 +1,69 @@
+{
+  "skill_name": "agent-trace-diagnoser",
+  "evals": [
+    {
+      "id": "trace-pdf-fallback-root-cause",
+      "type": "regression",
+      "prompt": "只读分析这段 trace：用户要求总结 report.pdf。E1 路由到 pdf skill；E2 PDF URL 解析返回 unsupported_url；E3 agent fallback 到 webfetch；E4 webfetch 返回 response exceeds 5MB；E5 最终回复只说文件太大。请定位根因，不要修改文件。",
+      "should_trigger": true,
+      "expected_route": "agent-trace-diagnoser",
+      "expected_output": "中文诊断以 PDF 主链路的 URL/解析失败为主因，把 webfetch 5MB 限制标为 fallback 放大因素，并用可复核的流程图连接执行路径。",
+      "assertions": [
+        {"text": "输出包含 Mermaid 流程图，且关键节点使用证据链一致的 E# 编号。"},
+        {"text": "明确区分主链路首个失败与 fallback 后的 5MB 限制。"},
+        {"text": "核心结论指出主因不是文件大小，而是更早的 PDF URL/解析路径失败。"},
+        {"text": "明确说明未修改文件。"}
+      ]
+    },
+    {
+      "id": "trace-readonly-build-permission",
+      "type": "smoke-trigger",
+      "prompt": "诊断这个 runtime trace：agent 在 /opt/skills/runtime 中运行 npm run build，连续 3 次都因 EROFS 失败，随后尝试 chmod 仍失败，最终退出。只给诊断和修复建议。",
+      "should_trigger": true,
+      "expected_route": "agent-trace-diagnoser",
+      "expected_output": "压缩重复事件，定位只读安装路径为主因，将 chmod 失败标为无效补救，并给出可写构建/缓存或预构建建议。",
+      "assertions": [
+        {"text": "将连续 3 次相同构建失败合并并保留次数。"},
+        {"text": "把只读安装路径标为主因，把 chmod 失败标为后续症状。"},
+        {"text": "修复建议包含预构建产物或可写构建/缓存路径。"}
+      ]
+    },
+    {
+      "id": "trace-incomplete-evidence-boundary",
+      "type": "smoke-trigger",
+      "prompt": "看下这个 trace：只剩最后一行 `webfetch: timeout`，前面的路由和调用记录都缺失。请定位根因，只说明问题。",
+      "should_trigger": true,
+      "expected_route": "agent-trace-diagnoser",
+      "expected_output": "不武断认定 timeout 为根因，明确证据不足，列出需要补齐的前序记录。",
+      "assertions": [
+        {"text": "明确说明证据不足，不能确认根因。"},
+        {"text": "不虚构具体 skill、路由、重试或 fallback。"},
+        {"text": "给出补齐前序 trace 或调用记录的具体待验证项。"}
+      ]
+    },
+    {
+      "id": "trace-fix-implementation-request",
+      "type": "non-trigger",
+      "prompt": "根据这份诊断直接修改代码并提交修复，补充测试后发布。",
+      "should_trigger": false,
+      "expected_route": "external:debug",
+      "expected_output": "把代码修改和发布交给实现/调试流程，不把 trace 诊断 Skill 当成写代码和发布器。",
+      "assertions": [
+        {"text": "不声称已修改代码、提交或发布。"},
+        {"text": "建议将诊断结果交给实现流程继续。"}
+      ]
+    },
+    {
+      "id": "trace-ordinary-log-summary",
+      "type": "non-trigger",
+      "prompt": "把这份没有错误的访问日志按时间整理成三行摘要，不要定位根因。",
+      "should_trigger": false,
+      "expected_route": "external:log-summarization",
+      "expected_output": "使用普通摘要能力，不启动根因诊断流程。",
+      "assertions": [
+        {"text": "不把普通日志摘要扩展成根因诊断报告。"},
+        {"text": "不虚构错误或失败事件。"}
+      ]
+    }
+  ]
+}

@@ -26,23 +26,23 @@ The default output is a **UI implementation contract**, not disposable HTML. The
 
 The workflow combines:
 
-1. `ui-wireframe-to-html` discipline: structure and state before polish.
+1. `structure-only` discipline: structure and state before polish.
 2. Desktop Agent workbench patterns: navigation, task list, execution canvas, artifact/workspace panel, settings, and result surfaces.
 3. User-provided UI specifications: tokens, layout rules, component style, copy tone, and interaction constraints override generic design instincts.
 4. Project-native design discovery: real routes, components, styles, tokens, icons, screenshots, and nearby states must be inspected before claiming production alignment.
 5. Frontend design quality: dense but readable desktop UI, realistic data, stable dimensions, no decorative one-note visual filler.
 
-## Relationship To `ui-wireframe-to-html`
+## Structure-only Mode
 
-`ui-wireframe-to-html` is the lightweight structure-only entrypoint. It is useful when the user only wants UI structure, state model, ASCII layout, or a quick low-fidelity HTML wireframe.
+`structure-only` is the lightweight mode for users who only want UI structure, state model, ASCII layout, or a quick low-fidelity HTML wireframe. It is part of this Skill, so there is only one UI trigger surface.
 
 This Skill owns the full chain:
 
 `PRD -> screen inventory -> state model -> ASCII layout -> structure review gate -> high-fidelity visual handoff or project-native preview -> implementation handoff`
 
-If the user asks for high fidelity, real project alignment, visual handoff, frontend replication, or component mapping, stay in this Skill and include the wireframe stage internally instead of handing off to `ui-wireframe-to-html`.
+If the user asks for high fidelity, real project alignment, visual handoff, frontend replication, or component mapping, stay in this Skill and include the structure stage internally.
 
-If the user explicitly wants only low-fidelity structure and does not need visual polish or implementation mapping, use `ui-wireframe-to-html` instead.
+If the user explicitly wants only low-fidelity structure and does not need visual polish or implementation mapping, select `structure-only` and stop after the structure review gate.
 
 ## Output Modes
 
@@ -126,13 +126,14 @@ If the project cannot be started or inspected fully, say so and mark the mockup 
 
 ## Wireframe Stage And Review Gate
 
-Always model structure before visual fidelity. This stage is the reusable core inherited from `ui-wireframe-to-html`.
+Always model structure before visual fidelity. This is the reusable core of `structure-only` mode.
 
 Create or include:
 
 - `screen-inventory`: pages, modals, popovers, panels, and major regions.
 - `state-model`: empty, draft, loading, queued, running, stopped, success, partial failure, error, permission, and settings states relevant to the PRD.
 - `ascii-layout.md` or an equivalent section: desktop layout zones, fixed/flexible widths, scroll containers, primary actions, and state-specific changes.
+- `wireframe-handoff.md` or an equivalent review note: confirmed structure, assumptions, open questions, and the gate before high fidelity.
 - `interaction-notes`: user actions, agent actions, state transitions, and recovery paths.
 - `prd-traceability`: the PRD section, UI spec rule, screenshot, or assumption that justifies each screen/state.
 
@@ -239,7 +240,9 @@ Read `references/mockup-output-contract.md` before finalizing deliverables.
 Default deliverables:
 
 - `README.md` or handoff note with purpose, assumptions, and open/run instructions.
+- `screen-inventory.md` and `state-model.md` covering the structure-stage contract.
 - `ascii-layout.md` or equivalent wireframe-stage section covering UI structure, layout zones, and state model.
+- `wireframe-handoff.md` or equivalent structure review note before visual polish.
 - `screen-contract.md` or equivalent section describing screens, states, and PRD traceability.
 - `component-map.md` when the result is used for implementation alignment.
 - `implementation-notes.md` when a frontend team will build or convert the UI.
@@ -260,6 +263,7 @@ When a `product-delivery-manifest.yaml` is present, read the canonical contract 
 ## Resource Guide
 
 - `references/output-mode-selection.md`：选择 `project-native-preview`、`visual-handoff` 或 `concept-html`。
+- `references/templates/screen-inventory.md`、`state-model.md`、`ascii-layout.md`、`wireframe-handoff.md`：结构阶段模板；用户只要 `structure-only` 时优先读取。
 - `references/verification-checklist.md`：最终视觉和交付包验证清单。
 - `references/desktop-workbench-ui-principles.md`：桌面 Agent 工作台布局和状态规则。
 - `references/mockup-output-contract.md`：交付物结构、迁移边界和 implementation handoff。
@@ -284,6 +288,7 @@ The Skill run is complete when:
 - Output mode has been selected and justified.
 - `Discovered UI Constraints` are documented when a project path or existing UI is provided.
 - UI structure, screen inventory, state model, and ASCII layout are mapped before visual implementation.
+- The structure-stage screen inventory, state model, ASCII layout, and wireframe handoff can be reviewed independently.
 - The structure review gate has either been passed, explicitly skipped because the user requested final handoff, or converted into PRD feedback.
 - Key UI elements are mapped to production components/styles or marked as new.
 - The mockup is runnable or openable from a local path.

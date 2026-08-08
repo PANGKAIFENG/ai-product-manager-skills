@@ -6,6 +6,29 @@ This project uses semantic-ish release tags for public snapshots. The current fo
 
 ## Unreleased
 
+## [0.3.0] - 2026-08-08
+
+### Added
+
+- A single public asset model: 15 atomic Skills, 3 Loops, 2 Workflows, 4 Tools, and 4 install Packs.
+- `catalog/assets.yaml` plus a v0.3 checker that validates every asset ID, path, contract file, Pack reference, and retired install surface.
+- Six on-demand Skills migrated into the public catalog: customer discovery, StyleWork requirement planning, Skill lifecycle governance, Skill review, trace diagnosis, and project context stewardship.
+- `research-decision-loop`, `solution-challenge-loop`, and `prd-delivery-readiness-loop` with explicit state, return edges, stop conditions, and human gates.
+- `product-discovery` and `product-delivery` stage workflows.
+- Tool-owned side-effect boundaries for Product Delivery validation, DingTalk PRD publishing, Yunxiao work-item creation, and Yunxiao-to-DingTalk Sheet sync.
+
+### Changed
+
+- Converged the former public/private catalog split into `PANGKAIFENG/ai-product-manager-skills` as the single public authority; the old repository becomes a migration tombstone.
+- Folded competitor evidence into `research-topic-compiler`, structure-only UI work into `ui-mockup-desktop-workbench`, StyleWork scoping into `customer-requirement-discovery`, and assetization judgment into `team-skill-creator`.
+- Standardized all 15 Skill eval packages on the repository routing schema with trigger, non-trigger, and regression coverage.
+- Updated Registry, Routing, quickstart, installation, distribution, and Agent guidance to the v0.3 asset model.
+
+### Removed From Active Discovery
+
+- Retired `complex-exploration`, `competitive-analysis`, `ui-wireframe-to-html`, `ai-work-assetization-diagnoser`, and `stylework-solution-scoper` as standalone Skills. Historical content remains under `archive/` or in the old repository tombstone with migration aliases.
+- Archived the B1-only catalog checker so v0.3 no longer locks the repository to the former 13-Skill surface.
+
 ## [0.2.0] - 2026-08-04
 
 ### Added

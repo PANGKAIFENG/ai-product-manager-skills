@@ -84,9 +84,9 @@
       "id": "paired-multiround-complex-exploration",
       "type": "non-trigger",
       "prompt": "这个复杂任务需要多轮定题、探索、收敛和中间产物；请先规划探索路径，不把它压缩成一次问题校准。",
-      "should_trigger": false,
-      "expected_route": "complex-exploration",
-      "expected_output": "Hands the explicitly multi-round task to complex-exploration for exploration planning and intermediate artifacts.",
+      "should_trigger": true,
+      "expected_route": "ai-collaboration-calibration",
+      "expected_output": "Uses calibration to stabilize the explicitly multi-round problem, assumptions, and exploration boundary before a workflow is selected.",
       "assertions": [
         {
           "text": "Does not reduce a multi-round exploration task to one calibration exchange."

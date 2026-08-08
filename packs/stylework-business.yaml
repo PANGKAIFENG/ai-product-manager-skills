@@ -1,0 +1,4 @@
+pack_id: stylework-business
+name_zh: StyleWork 按需业务能力
+skills: [customer-requirement-discovery, stylework-requirement-planning]
+tools: [yunxiao-work-item-publisher, yunxiao-requirement-sheet-sync]

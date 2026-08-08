@@ -1,0 +1,4 @@
+interface:
+  display_name: "StyleWork 云效需求同步"
+  short_description: "把云效需求导出并整理到钉钉表格的新 Sheet"
+  default_prompt: "使用 $stylework-yunxiao-requirement-sync 把本月云效需求导出到既有钉钉表格，按迭代分组并完成表头样式。"

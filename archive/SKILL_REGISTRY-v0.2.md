@@ -1,0 +1,84 @@
+# Skill Registry
+
+这个文件用于解释公开 AI PM Skill catalog 中每个 Skill 是什么、中文怎么叫、什么时候用、什么时候不用、当前维护状态和公开边界。
+
+真实 Skill 统一位于 `skills/<skill-id>/`，稳定的 `skill-id` 仍是运行时触发名称。机器可读的路径、分类与状态由 [`catalog/skills.yaml`](catalog/skills.yaml) 维护；本文件是面向人的 Catalog/status 说明，不作为运行时加载入口。
+
+## 状态含义
+
+- `core`: AI 产品经理主工作流的核心能力，优先维护。
+- `active`: 常用能力，适合加入目标工具白名单。
+- `review`: 需要进一步确认质量、触发边界或公开适用性。
+
+## 分类体系
+
+| 分类标签 | 中文分类 | 适用边界 |
+| --- | --- | --- |
+| `collaboration-thinking` | 认知与协作 | 复杂问题校准、复杂探索资产化、假设挑战、方案压力测试和协作模式选择。 |
+| `research-learning` | 研究学习 | 专题研究、系统学习、概念源流、行业演进、多渠道证据和 PM 决策看板。 |
+| `decision-research` | 决策调研 | 明确具体决策、接入可行性、方案选型、竞品决策简报和一次性决策型调研。 |
+| `product-prd` | 产品与 PRD | 需求结构化、PRD 起草、PRD 图示、PRD 评审、issue backlog、UI 线框、UI mockup 和交付准备。 |
+
+## 中文检索表
+
+| Skill | 中文名 | 你可以这样说 | 适合什么时候用 | 不适合什么时候用 | 状态 |
+| --- | --- | --- | --- | --- | --- |
+| `ai-collaboration-calibration` | 协作校准 / 认知校准 | “先别执行，帮我看清问题”“挑战我的假设”“这个方案是不是想错了” | 复杂问题进入执行前，先校准问题定义、领域定位、隐藏假设和方案裂缝。 | 翻译、摘要、格式转换、明确的小改动。 | core |
+| `complex-exploration` | 复杂探索资产化 / 复杂探索协作 | “先不要直接写方案”“这个 Roadmap 问题是不是问窄了”“这次探索反复很多，帮我复盘沉淀” | 复杂、不确定、多轮迭代的产品策略、Roadmap、商业化定价、竞品定位、复杂 PRD 前置探索、项目复盘和方法论沉淀；先定题、探索、收敛，再沉淀五类资产。 | 简单执行、润色、翻译、摘要；单点认知校准；已有方案压力测试；系统专题研究。 | active |
+| `research-topic-compiler` | 专题研究编译器 / 概念源流研究助手 | “系统研究这个主题”“整理到 Obsidian”“概念解读”“概念源流”“PM 技术评审提问脚本”“行业演进看板”“把我的大白话拆成研究目标” | 拥有证据覆盖与残余 gap，输出 Evidence Pack/Delta；候选排序是决策输入，不是最终选择。 | 创建或评审 Skill；普通即时搜索；替用户做最终选择。 | core |
+| `competitive-analysis` | 竞品决策分析 / 竞品决策简报 | “帮我做竞品分析”“打开这个产品看看对我们有什么启发”“把竞品信息转成 PRD 输入”“分析这个产品的定价和 onboarding” | 围绕一个产品决策，把竞品、替代方案、市场信号、公开页面、定价、评论、文档、更新日志和可选登录态走查转成定位、路线图、定价、功能优先级、差异化或 Go/No-Go 输入。 | 问题还没定义清楚；只要长期候选池；只剩 A/B/C 最终选型；只要高保真 UI mockup。 | active |
+| `decision-research` | 决策调研 / 决策驱动调研 | “有没有现成方案”“这个怎么接”“这个选择可行吗”“帮我选一个” | 拥有最终推荐、排除理由、置信度和颠覆条件；只在单一 material、researchable、closable gap 上返回 Research。 | 问题还没定义清楚；开放式知识沉淀；方案设计或 readiness 审批。 | active |
+| `brainstorming` | 设计脑暴 / 实现前方案校准 | “先脑暴一下方案”“先不要写 PRD，帮我设计几种路径”“参考 brainstorming 把这个需求变成设计 spec” | Maker：比较方案并输出 Design Spec/Delta；Product Work Graph 使用 PUBLIC unqualified `brainstorming`。 | 问题还没定义清楚；已有方案要压力测试；自批 readiness；直接实现代码。 | core |
+| `prd-architect` | PRD 架构师 / 需求文档起草 | “帮我写 PRD”“帮我选 PRD 模板”“把这个需求整理成 PRD”“PRD 里补 Draw.io 流程图” | 从想法、脑暴或需求草稿进入 PRD 结构；需要判断 `PRD-lite`、`PRD-standard`、`PRD-ai-native`、文档成熟度和正式图示。 | 已有完整 PRD 要评审；直接编码；单纯画 UI。 | core |
+| `prd-review` | PRD 评审 / 需求评审 | “帮我审 PRD”“从研发测试视角挑问题”“这个需求文档能不能交付开发”“检查 PRD 图示是否可编辑” | 已有 PRD/handoff，需要找阻断项、冲突、不可实现点、不可测试点、图示缺口，并给修订草案；需要多轮关闭阻断项时可启用 PRD Readiness Loop。 | 从零写 PRD；只做语言润色。 | core |
+| `prd-to-issues` | PRD 到研发 Issue 拆解 | “把 PRD 拆成 issue”“需求文档拆任务”“生成 GitHub issues”“按 vertical slice 拆开发票” | PRD 已经 ready，需要拆成可独立领取、可验收、适合 GitHub Issues 承接的 vertical-slice implementation issues，并输出 coverage matrix。 | 从零写 PRD；评审 PRD 缺口；写文件级 implementation plan、测试策略或提交节奏。 | active |
+| `ui-wireframe-to-html` | PRD 到 UI 线框 / 结构阶段 | “先出 UI 结构”“把 PRD 变成线框”“先做 ASCII 布局”“只确认状态和布局” | PRD 已可用，但只需要先输出 screen inventory、状态模型、ASCII layout 和可选低保真 HTML，确认结构/状态而不是视觉 polish。 | 高保真视觉；开发复刻；真实项目组件映射；project-native preview；implementation notes。 | active |
+| `ui-mockup-desktop-workbench` | 高保真 UI 交付对齐器 / 桌面工作台 UI Mockup 生成器 | “基于 PRD 出高保真 mockup”“从 PRD 先结构再高保真”“开发要完全复刻这个 UI”“做项目原生 preview”“输出 component map” | PRD/UI 方向已确认，需要先承接结构阶段，再把桌面工作台 UI 转成可截图确认、可映射真实组件、可交给前端实现的 `project-native-preview`、`visual-handoff` 或 `concept-html`。 | 问题还没定义清楚；只要 PRD 文案；只做低保真结构且不进入高保真；直接写生产功能不需要视觉确认。 | active |
+| `grill-me` | 方案拷问 / 压力测试 | “拷问我的方案”“压力测试这个设计”“这个方案哪里会翻车” | Critic：输出 Challenge/Critic Handoff，把一个 gap 返回最小责任节点并复查差量。 | 重写完整方案；给 PRD/实现 readiness；不希望互动追问。 | active |
+| `ai-work-assetization-diagnoser` | AI 工作资产化诊断器 / 资产化路由器 | “这段工作是不是值得做成 Skill”“这个 prompt 应该沉淀成 workflow 还是 Skill”“判断该资产化到哪层” | 重复 AI 工作、prompt、协作会话或团队场景需要判断应沉淀为 Prompt、Context Pack、Workflow、Skill、Loop、System，或不值得沉淀。 | 直接创建 Skill；普通 trace 根因定位；一次性事实查询；高责任专业判断。 | active |
+
+## Loop Extension Catalog
+
+Loop Extension 是现有 Skill 内的状态化合约，不是新增公开 Skill，不进入 `skills/` 目录清单。
+
+| Loop Extension | Parent Skill | 触发信号 | 合约文件 |
+| --- | --- | --- | --- |
+| Decision Research Loop | `decision-research` | “持续跟踪这个决策”“多轮收敛”“保存状态”“下一轮继续更新结论” | `skills/decision-research/references/decision-loop-contract.md` |
+| Research Radar Loop | `research-topic-compiler` | “长期雷达”“持续更新这个主题”“定期复盘”“更新已有研究项目” | `skills/research-topic-compiler/references/research-radar-loop-contract.md` |
+| PRD Readiness Loop | `prd-review` | “继续上一轮 review”“关闭阻断项”“判断是否能进 writing-plans”“跟踪修订状态” | `skills/prd-review/references/prd-readiness-loop-contract.md` |
+
+Core Loop handoff 不是第五个 Skill 或自动 Orchestrator。四个 Skill 均在本层完成后停止；跨节点只传唯一 owner、单一 gap、closure criterion、preserved items 和 resume point，两轮不收敛进入 Human Gate。详细专业规则留在各 Skill reference。
+
+## 推荐白名单
+
+当前建议加入 Codex/Claude 常用白名单的公开 Skill：
+
+- `ai-collaboration-calibration`
+- `complex-exploration`
+- `research-topic-compiler`
+- `competitive-analysis`
+- `decision-research`
+- `brainstorming`
+- `prd-architect`
+- `prd-review`
+- `prd-to-issues`
+- `ui-wireframe-to-html`
+- `ui-mockup-desktop-workbench`
+- `grill-me`
+- `ai-work-assetization-diagnoser`
+
+## 公开发布规则
+
+发布到 ClawHub 或公开推广前，至少检查：
+
+1. `SKILL.md` 是否有标准 frontmatter。
+2. 是否包含公司、客户、个人或内部系统敏感信息。
+3. 是否有许可证限制或第三方归属要求。
+4. 触发边界是否足够清楚，避免误触发。
+5. 是否有 `evals/evals.json`，覆盖 trigger、non-trigger 和已知风险样例。
+6. 高风险输出型 Skill 是否有 `scripts/` checker 或确定性验证脚本。
+7. 仓库级审计是否通过：`python3 scripts/audit_skills.py .`。
+
+## 相邻 Skill 路由
+
+当多个 Skill 都可能被中文关键词触发时，先查 [SKILL_ROUTING.md](SKILL_ROUTING.md)。默认按用户当前阶段分流：问题未定义用 `ai-collaboration-calibration`，复杂多轮任务要先定题、探索和沉淀资产用 `complex-exploration`，主题/概念学习用 `research-topic-compiler`，竞品证据要转成产品决策简报用 `competitive-analysis`，单次最终决策调研用 `decision-research`，方案还没定但要进入 PRD / mockup / 开发计划前用 `brainstorming`，PRD 起草用 `prd-architect`，PRD 评审用 `prd-review`，PRD 已 ready 要拆 GitHub implementation issues 用 `prd-to-issues`，只做 UI 结构/状态/ASCII 线框用 `ui-wireframe-to-html`，PRD 后高保真 UI handoff / project-native preview / 组件映射用 `ui-mockup-desktop-workbench`，已有方案压测用 `grill-me`，重复 AI 工作资产化判断用 `ai-work-assetization-diagnoser`。
