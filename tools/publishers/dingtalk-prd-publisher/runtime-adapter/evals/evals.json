@@ -1,0 +1,81 @@
+{
+  "skill_name": "dingtalk-prd-publisher",
+  "evals": [
+    {
+      "id": "EVAL-B2-05",
+      "type": "side-effect-boundary",
+      "prompt": "用这个 product-delivery-manifest.yaml 发布 Package，但 Human approval 里的 payload fingerprint 已经过期。不要真实发布，用 fake/spy 验证调用边界。",
+      "should_trigger": true,
+      "expected_route": "dingtalk-prd-publisher",
+      "expected_output": "Rejects the stale approval before the first DingTalk call and leaves the Manifest unchanged.",
+      "assertions": [
+        {
+          "text": "Canonical validation fails before dws auth or any remote write."
+        },
+        {
+          "text": "The fake/spy dws call log remains empty."
+        },
+        {
+          "text": "The failed preflight does not mutate the Manifest."
+        }
+      ]
+    },
+    {
+      "id": "EVAL-B2-06",
+      "type": "recovery-boundary",
+      "prompt": "发布已批准的 Package。目录里还有一个更新但未列入 Manifest 的 HTML；第一次上传截图中途失败，随后重试。只使用 fake/spy。",
+      "should_trigger": true,
+      "expected_route": "dingtalk-prd-publisher",
+      "expected_output": "Publishes only allowlisted artifacts, records the partial failure, and resumes on the same nodeId without recreating or repeating completed artifacts.",
+      "assertions": [
+        {
+          "text": "The unlisted sibling HTML is never sent to dws."
+        },
+        {
+          "text": "The retry reuses the captured nodeId and creates exactly one remote document."
+        },
+        {
+          "text": "Completed artifacts are skipped while the failed artifact is retried."
+        }
+      ]
+    },
+    {
+      "id": "EVAL-B2-07",
+      "type": "verification-boundary",
+      "prompt": "Package 的 dws read-back 已成功。先报告当前状态，再消费由独立 browser actor 生成的结构化可见性证据。不要真实发布。",
+      "should_trigger": true,
+      "expected_route": "dingtalk-prd-publisher",
+      "expected_output": "Keeps read-back-only delivery at published_unverified and records verified only after valid independent browser evidence.",
+      "assertions": [
+        {
+          "text": "Read-back alone does not produce verified."
+        },
+        {
+          "text": "Browser evidence must identify an independent verifier and pass all required checks."
+        },
+        {
+          "text": "Final verified status requires both read-back and browser visibility evidence."
+        }
+      ]
+    },
+    {
+      "id": "EVAL-B2-08",
+      "type": "allowlist-boundary",
+      "prompt": "尝试在 Package mode 里用 --folder 覆盖 Manifest 目标，并把 content path 改成 ../outside.md。用 fake/spy 证明不会产生副作用。",
+      "should_trigger": true,
+      "expected_route": "dingtalk-prd-publisher",
+      "expected_output": "Rejects CLI target overrides and path traversal before remote calls without changing review or approval records.",
+      "assertions": [
+        {
+          "text": "Both override and traversal cases make zero dws calls."
+        },
+        {
+          "text": "Absolute, traversal, missing, hash-mismatched, and escaping paths fail closed."
+        },
+        {
+          "text": "Publisher failure cannot rewrite review or approval partitions."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,840 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat <<'USAGE'
+Usage:
+  publish-prd <markdown-file> [target-folder-or-workspace] [options]
+  publish-prd --manifest <product-delivery-manifest.yaml> --validator <validator.py> \
+    --expected-payload-fingerprint <sha256> [options]
+
+Options:
+  --mode doc|file       doc: create online DingTalk Doc from Markdown (default)
+                        file: upload the source file as a standalone file
+  --name <title>        DingTalk display title/name (default: file basename)
+  --parent <id|url>     Parent document/folder under which a per-run folder is created
+  --workspace <id|url>  Target DingTalk knowledge base/workspace
+  --folder <id|url>     Target DingTalk folder node URL/ID
+  --run-folder-name <n> Per-run folder name (default: "<title> <YYYYMMDD-HHMM>")
+  --create-run-folder   Create a child folder before publishing, even with --folder
+  --no-create-run-folder
+                        Publish directly to the selected folder/workspace
+  --convert             Convert uploaded file when using --mode file
+  --html <file>         Attach this HTML file as the first document block
+  --no-html             Do not auto-attach a sibling HTML artifact
+  --read-back           After --mode doc create, read back the created document
+  --manifest <file>     Explicit Product Delivery Package mode; consume only its allowlist
+  --validator <file>    Canonical Product Delivery Manifest validator from prd-architect
+  --expected-payload-fingerprint <sha256>
+                        Require the exact Human-approved publish payload
+  --browser-evidence <json>
+                        Structured evidence from an independent browser-capable actor
+  --actor-identity <id> Publisher identity recorded in the Manifest
+  --dry-run             Print and validate the dws call without creating/uploading
+  -h, --help            Show this help
+
+Examples:
+  publish-prd ./PRD.md
+  publish-prd ./PRD.md --folder "https://alidocs.dingtalk.com/i/nodes/xxx"
+  publish-prd ./PRD.md --parent "https://alidocs.dingtalk.com/i/nodes/xxx"
+  publish-prd ./PRD.md --html ./mockup.html --read-back
+  publish-prd ./PRD.md --workspace "workspaceId" --name "PRD v1"
+  publish-prd ./PRD.md --mode file --folder "https://alidocs.dingtalk.com/i/nodes/xxx"
+  publish-prd --manifest ./product-delivery-manifest.yaml \
+    --validator /path/to/validate_product_delivery_manifest.py \
+    --expected-payload-fingerprint "<sha256>" --dry-run
+USAGE
+}
+
+die() {
+  printf 'error: %s\n' "$*" >&2
+  exit 1
+}
+
+require_cmd() {
+  command -v "$1" >/dev/null 2>&1 || die "missing command: $1"
+}
+
+json_get() {
+  local expr="$1"
+  node -e '
+const fs = require("fs");
+const input = fs.readFileSync(0, "utf8");
+let data;
+try {
+  data = JSON.parse(input);
+} catch {
+  process.exit(2);
+}
+const path = process.argv[1].split(".");
+let cur = data;
+for (const key of path) {
+  if (cur == null || !(key in cur)) process.exit(1);
+  cur = cur[key];
+}
+if (typeof cur === "string" || typeof cur === "number" || typeof cur === "boolean") {
+  process.stdout.write(String(cur));
+} else {
+  process.stdout.write(JSON.stringify(cur));
+}
+' "$expr"
+}
+
+json_pick() {
+  node -e '
+const fs = require("fs");
+const input = fs.readFileSync(0, "utf8");
+let data;
+try {
+  data = JSON.parse(input);
+} catch {
+  process.exit(2);
+}
+function get(path) {
+  let cur = data;
+  for (const key of path.split(".")) {
+    if (cur == null || !(key in cur)) return undefined;
+    cur = cur[key];
+  }
+  return cur;
+}
+for (const path of process.argv.slice(1)) {
+  const value = get(path);
+  if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+    process.stdout.write(String(value));
+    process.exit(0);
+  }
+}
+process.exit(1);
+' "$@"
+}
+
+json_payload() {
+  awk 'found || /^\{/ { found=1; print }'
+}
+
+json_array_rows() {
+  local expr="$1"
+  node -e '
+const fs = require("fs");
+const input = fs.readFileSync(0, "utf8");
+const data = JSON.parse(input);
+let cur = data;
+for (const key of process.argv[1].split(".")) cur = cur == null ? undefined : cur[key];
+if (!Array.isArray(cur)) process.exit(1);
+for (const item of cur) {
+  if (!item || typeof item.artifact_id !== "string" || typeof item.path !== "string") process.exit(2);
+  process.stdout.write(`${item.artifact_id}\t${item.path}\n`);
+}
+' "$expr"
+}
+
+validate_doc_readback() {
+  local content_path="$1"
+  local expected_node_id="$2"
+  local expected_title="$3"
+  node -e '
+const crypto = require("crypto");
+const fs = require("fs");
+const payload = JSON.parse(fs.readFileSync(0, "utf8"));
+const data = payload && payload.result && typeof payload.result === "object" ? payload.result : payload;
+const nodeId = data.nodeId;
+const title = data.title ?? data.name;
+const markdown = data.markdown ?? data.content;
+if (data.success !== true) throw new Error("read-back success was not confirmed");
+if (nodeId !== process.argv[2]) throw new Error("read-back nodeId does not match the published node");
+if (title !== process.argv[3]) throw new Error("read-back title does not match the approved title");
+if (typeof markdown !== "string" || markdown.trim() === "") throw new Error("read-back content is empty");
+const source = fs.readFileSync(process.argv[1], "utf8");
+const normalize = (value) => value.replace(/\r/g, "").replace(/[ \t]+/g, " ").trim();
+const headings = source.split(/\r?\n/)
+  .map((line) => line.match(/^#{1,3}\s+(.+?)\s*$/))
+  .filter(Boolean)
+  .map((match) => normalize(match[1]))
+  .filter(Boolean)
+  .slice(0, 5);
+const markers = headings.length > 0 ? headings : source.split(/\r?\n/).map(normalize).filter(Boolean).slice(0, 1);
+const remote = normalize(markdown);
+for (const marker of markers) {
+  if (!remote.includes(marker)) throw new Error(`read-back is missing content marker: ${marker}`);
+}
+process.stdout.write(JSON.stringify({
+  node_id: nodeId,
+  title,
+  content_sha256: crypto.createHash("sha256").update(markdown, "utf8").digest("hex"),
+}));
+' "$content_path" "$expected_node_id" "$expected_title"
+}
+
+validate_file_readback() {
+  local expected_node_id="$1"
+  local expected_title="$2"
+  node -e '
+const fs = require("fs");
+const payload = JSON.parse(fs.readFileSync(0, "utf8"));
+const data = payload && payload.result && typeof payload.result === "object" ? payload.result : payload;
+const nodeId = data.nodeId;
+const title = data.name ?? data.title;
+if (data.success !== true) throw new Error("file read-back success was not confirmed");
+if (nodeId !== process.argv[1]) throw new Error("file read-back nodeId does not match the uploaded node");
+if (title !== process.argv[2]) throw new Error("file read-back title does not match the approved title");
+process.stdout.write(JSON.stringify({node_id: nodeId, title}));
+' "$expected_node_id" "$expected_title"
+}
+
+run_dws() {
+  local output status
+  set +e
+  output="$(dws "$@" 2>&1)"
+  status=$?
+  set -e
+  printf '%s\n' "$output"
+  [[ "$status" -eq 0 ]] || return "$status"
+}
+
+print_dws_command() {
+  printf 'Running: dws'
+  printf ' %q' "$@"
+  printf '\n'
+}
+
+resolve_path() {
+  node -e '
+const path = require("path");
+process.stdout.write(path.resolve(process.argv[1]));
+' "$1"
+}
+
+discover_latest_sibling_html() {
+  node -e '
+const fs = require("fs");
+const path = require("path");
+const directory = process.argv[1];
+const candidates = fs.readdirSync(directory, { withFileTypes: true })
+  .filter((entry) => entry.isFile() && /\.html?$/i.test(entry.name))
+  .map((entry) => {
+    const absolute = path.resolve(directory, entry.name);
+    return { absolute, modifiedAt: fs.statSync(absolute).mtimeMs };
+  })
+  .sort((left, right) => right.modifiedAt - left.modifiedAt || left.absolute.localeCompare(right.absolute));
+if (candidates.length > 0) process.stdout.write(candidates[0].absolute);
+' "$1"
+}
+
+record_manifest_event() {
+  local event="$1"
+  shift
+  local args
+  args=(
+    python3 "$manifest_validator" "$manifest" --json
+    --record-publish-event "$event"
+    --actor-role publisher
+    --actor-identity "$publisher_actor_identity"
+    --expected-payload-fingerprint "$expected_payload_fingerprint"
+    --attempt-id "$package_attempt_id"
+    --occurred-at "$package_occurred_at"
+  )
+  args+=("$@")
+  "${args[@]}"
+}
+
+package_resolve_parent() {
+  local target="$1"
+  local info_output info_status info_json node_id node_type has_children folder_id content_type extension
+  set +e
+  info_output="$(run_dws doc info --node "$target" --format json)"
+  info_status=$?
+  set -e
+  [[ "$info_status" -eq 0 ]] || { printf '%s\n' "$info_output" >&2; return "$info_status"; }
+  info_json="$(printf '%s\n' "$info_output" | json_payload)"
+  node_id="$(printf '%s' "$info_json" | json_pick nodeId result.nodeId || true)"
+  node_type="$(printf '%s' "$info_json" | json_pick nodeType result.nodeType || true)"
+  has_children="$(printf '%s' "$info_json" | json_pick hasChildren result.hasChildren || true)"
+  folder_id="$(printf '%s' "$info_json" | json_pick folderId result.folderId || true)"
+  content_type="$(printf '%s' "$info_json" | json_pick contentType result.contentType || true)"
+  extension="$(printf '%s' "$info_json" | json_pick extension result.extension || true)"
+  if [[ "$content_type" == "ALIDOC" && "$extension" == "adoc" && -n "$node_id" ]]; then
+    printf '%s' "$node_id"
+  elif [[ "$node_type" == "folder" || "$has_children" == "true" ]]; then
+    printf '%s' "${node_id:-$target}"
+  elif [[ -n "$folder_id" ]]; then
+    printf '%s' "$folder_id"
+  else
+    return 1
+  fi
+}
+
+run_package_mode() {
+  local validation_json package_mode package_title target_selector target_value content_id content_path
+  local package_node_id last_failed_step auth_json authenticated output status json node_id doc_url
+  local read_output read_status read_json read_validation read_node_id read_title read_content_sha256 resolved_target
+  local media_id media_path media_output media_status media_json media_success response_success
+  local media_index=0
+  local -a create_args completed_ids media_ids media_paths remote_event_args
+  create_args=()
+  completed_ids=()
+  media_ids=()
+  media_paths=()
+  remote_event_args=()
+
+  require_cmd python3
+  require_cmd node
+  [[ -f "$manifest" ]] || die "Manifest file not found: $manifest"
+  [[ -f "$manifest_validator" ]] || die "Manifest validator not found: $manifest_validator"
+  [[ -n "$expected_payload_fingerprint" ]] || die "Package mode requires --expected-payload-fingerprint"
+  [[ -z "$file" && -z "$positional_target" ]] || die "Package mode does not accept a positional Markdown file or target"
+  [[ -z "$parent" && -z "$folder" && -z "$workspace" ]] || die "Package mode consumes target only from the Manifest"
+  [[ -z "$html" && "$attach_html" == "true" ]] || die "Package mode consumes HTML only from the Manifest allowlist"
+  [[ -z "$name" ]] || die "Package mode consumes the title only from the Manifest"
+  [[ -z "$browser_evidence" || -f "$browser_evidence" ]] || die "browser evidence file not found: $browser_evidence"
+
+  set +e
+  validation_json="$(python3 "$manifest_validator" "$manifest" --json \
+    --require-status publish_approved \
+    --require-status publish_failed \
+    --require-status published_unverified \
+    --expected-payload-fingerprint "$expected_payload_fingerprint" 2>&1)"
+  status=$?
+  set -e
+  if [[ "$status" -ne 0 ]]; then
+    printf '%s\n' "$validation_json" >&2
+    die "Package validation failed before any DingTalk call"
+  fi
+
+  package_mode="$(printf '%s' "$validation_json" | json_get publish_plan.mode)"
+  package_title="$(printf '%s' "$validation_json" | json_get publish_plan.title)"
+  target_selector="$(printf '%s' "$validation_json" | json_get publish_plan.target.selector)"
+  target_value="$(printf '%s' "$validation_json" | json_get publish_plan.target.value)"
+  content_id="$(printf '%s' "$validation_json" | json_get publish_plan.content.artifact_id)"
+  content_path="$(printf '%s' "$validation_json" | json_get publish_plan.content.path)"
+  package_node_id="$(printf '%s' "$validation_json" | json_pick publish_plan.node_id || true)"
+  last_failed_step="$(printf '%s' "$validation_json" | json_pick publish_plan.last_attempt.failed_step || true)"
+
+  while IFS= read -r item; do [[ -n "$item" ]] && completed_ids+=("$item"); done < <(
+    node -e '
+const data = JSON.parse(require("fs").readFileSync(0, "utf8"));
+for (const value of data.publish_plan.completed_artifact_refs || []) process.stdout.write(`${value}\n`);
+' <<< "$validation_json"
+  )
+  while IFS=$'\t' read -r media_id media_path; do
+    [[ -n "$media_id" ]] || continue
+    media_ids+=("$media_id")
+    media_paths+=("$media_path")
+  done < <(
+    { printf '%s' "$validation_json" | json_array_rows publish_plan.html; printf '%s' "$validation_json" | json_array_rows publish_plan.screenshots; }
+  )
+
+  printf 'Package mode validated: %s\n' "$manifest"
+  printf 'Payload fingerprint: %s\n' "$expected_payload_fingerprint"
+  printf 'Content allowlist: %s (%s)\n' "$content_id" "$content_path"
+  for ((i = 0; i < ${#media_ids[@]}; i++)); do
+    printf 'Media allowlist: %s (%s)\n' "${media_ids[$i]}" "${media_paths[$i]}"
+  done
+  if [[ "$dry_run" == "true" ]]; then
+    printf 'Dry run: Package validated; DingTalk call count is 0.\n'
+    return 0
+  fi
+
+  if [[ -z "$package_node_id" && "$last_failed_step" == "create_unknown" ]]; then
+    die "previous create result is unknown; lookup/read-back and record the existing nodeId before retry"
+  fi
+
+  require_cmd dws
+  auth_json="$(dws auth status --format json | json_payload)"
+  authenticated="$(printf '%s' "$auth_json" | json_get authenticated || true)"
+  [[ "$authenticated" == "true" ]] || die "dws is not logged in. Run: dws auth login --device --format json"
+
+  record_manifest_event started >/dev/null || die "failed to record Package publish start"
+
+  if [[ -z "$package_node_id" ]]; then
+    create_args=()
+    if [[ "$package_mode" == "doc" ]]; then
+      create_args=(doc create --name "$package_title" --content-file "$content_path" --content-format markdown --format json)
+    elif [[ "$package_mode" == "file" ]]; then
+      create_args=(drive upload --file "$content_path" --file-name "$package_title" --format json)
+    else
+      die "unsupported Package publish mode: $package_mode"
+    fi
+    if [[ "$target_selector" == "parent" ]]; then
+      set +e
+      resolved_target="$(package_resolve_parent "$target_value")"
+      status=$?
+      set -e
+      if [[ "$status" -ne 0 || -z "$resolved_target" ]]; then
+        record_manifest_event failed --failed-step target_resolution --error-summary "cannot resolve Manifest parent target" >/dev/null || true
+        die "cannot resolve Manifest parent target"
+      fi
+      target_value="$resolved_target"
+      create_args+=(--folder "$target_value")
+    elif [[ "$target_selector" == "folder" ]]; then
+      create_args+=(--folder "$target_value")
+    elif [[ "$target_selector" == "workspace" ]]; then
+      create_args+=(--workspace "$target_value")
+    else
+      die "unsupported Manifest target selector: $target_selector"
+    fi
+
+    set +e
+    output="$(run_dws "${create_args[@]}")"
+    status=$?
+    set -e
+    printf '%s\n' "$output"
+    json="$(printf '%s\n' "$output" | json_payload)"
+    node_id="$(printf '%s' "$json" | json_pick nodeId result.nodeId || true)"
+    doc_url="$(printf '%s' "$json" | json_pick docUrl result.docUrl || true)"
+    response_success="$(printf '%s' "$json" | json_pick success result.success || true)"
+    if [[ -n "$node_id" ]]; then
+      remote_event_args=(--node-id "$node_id")
+      [[ -n "$doc_url" ]] && remote_event_args+=(--doc-url "$doc_url")
+      record_manifest_event remote_created "${remote_event_args[@]}" >/dev/null \
+        || die "failed to record the created DingTalk node"
+      package_node_id="$node_id"
+    fi
+    if [[ "$status" -ne 0 || "$response_success" != "true" ]]; then
+      if [[ -n "$node_id" ]]; then
+        record_manifest_event failed --failed-step create_response_error --error-summary "DingTalk did not confirm create success after nodeId" >/dev/null || true
+      else
+        record_manifest_event failed --failed-step create_unknown --error-summary "DingTalk create success and nodeId were not confirmed" >/dev/null || true
+      fi
+      [[ "$status" -ne 0 ]] && return "$status"
+      die "DingTalk did not confirm create success"
+    fi
+    [[ -n "$package_node_id" ]] || {
+      record_manifest_event failed --failed-step create_unknown --error-summary "successful response contained no nodeId" >/dev/null || true
+      die "DingTalk create result contains no nodeId; lookup before retry"
+    }
+    record_manifest_event artifact_completed --artifact-ref "$content_id" >/dev/null \
+      || die "failed to record the published content artifact"
+  fi
+
+  if [[ "$package_mode" == "doc" ]]; then
+    for ((i = 0; i < ${#media_ids[@]}; i++)); do
+      media_id="${media_ids[$i]}"
+      media_path="${media_paths[$i]}"
+      skip="false"
+      for completed in ${completed_ids[@]+"${completed_ids[@]}"}; do [[ "$completed" == "$media_id" ]] && skip="true"; done
+      if [[ "$skip" == "true" ]]; then
+        media_index=$((media_index + 1))
+        continue
+      fi
+      set +e
+      media_output="$(run_dws doc media insert --node "$package_node_id" --file "$media_path" \
+        --name "$(basename "$media_path")" --index "$media_index" --format json --yes)"
+      media_status=$?
+      set -e
+      printf '%s\n' "$media_output"
+      if [[ "$media_status" -ne 0 ]]; then
+        record_manifest_event failed --failed-step "media:$media_id" --error-summary "dws media insert failed" >/dev/null || true
+        return "$media_status"
+      fi
+      media_json="$(printf '%s\n' "$media_output" | json_payload)"
+      media_success="$(printf '%s' "$media_json" | json_pick success result.success || true)"
+      if [[ "$media_success" != "true" ]]; then
+        record_manifest_event failed --failed-step "media:$media_id" --error-summary "media success was not confirmed" >/dev/null || true
+        die "DingTalk did not confirm media insert for $media_id"
+      fi
+      record_manifest_event artifact_completed --artifact-ref "$media_id" >/dev/null \
+        || die "failed to record completed media $media_id"
+      media_index=$((media_index + 1))
+    done
+
+    set +e
+    read_output="$(run_dws doc read --node "$package_node_id" --content-format markdown --format json)"
+    read_status=$?
+    set -e
+    printf '%s\n' "$read_output"
+    read_json="$(printf '%s\n' "$read_output" | json_payload)"
+    set +e
+    read_validation="$(printf '%s' "$read_json" | validate_doc_readback "$content_path" "$package_node_id" "$package_title" 2>&1)"
+    validation_status=$?
+    set -e
+    if [[ "$read_status" -ne 0 || "$validation_status" -ne 0 ]]; then
+      record_manifest_event failed --failed-step readback --error-summary "DingTalk read-back failed" >/dev/null || true
+      [[ "$read_status" -ne 0 ]] && return "$read_status"
+      die "DingTalk read-back validation failed: $read_validation"
+    fi
+    read_node_id="$(printf '%s' "$read_validation" | json_get node_id)"
+    read_title="$(printf '%s' "$read_validation" | json_get title)"
+    read_content_sha256="$(printf '%s' "$read_validation" | json_get content_sha256)"
+    record_manifest_event readback_passed \
+      --readback-node-id "$read_node_id" \
+      --readback-title "$read_title" \
+      --readback-content-sha256 "$read_content_sha256" >/dev/null \
+      || die "failed to record Package read-back"
+    if [[ -n "$browser_evidence" ]]; then
+      [[ -f "$browser_evidence" ]] || die "browser evidence file not found: $browser_evidence"
+      record_manifest_event browser_verified --browser-evidence "$browser_evidence" >/dev/null \
+        || die "browser evidence is invalid or not independent"
+    fi
+  else
+    set +e
+    read_output="$(run_dws doc info --node "$package_node_id" --format json)"
+    read_status=$?
+    set -e
+    printf '%s\n' "$read_output"
+    read_json="$(printf '%s\n' "$read_output" | json_payload)"
+    set +e
+    read_validation="$(printf '%s' "$read_json" | validate_file_readback "$package_node_id" "$package_title" 2>&1)"
+    validation_status=$?
+    set -e
+    if [[ "$read_status" -ne 0 || "$validation_status" -ne 0 ]]; then
+      record_manifest_event failed --failed-step readback --error-summary "DingTalk file read-back failed" >/dev/null || true
+      [[ "$read_status" -ne 0 ]] && return "$read_status"
+      die "DingTalk file read-back validation failed: $read_validation"
+    fi
+    read_node_id="$(printf '%s' "$read_validation" | json_get node_id)"
+    read_title="$(printf '%s' "$read_validation" | json_get title)"
+    record_manifest_event readback_passed \
+      --readback-node-id "$read_node_id" \
+      --readback-title "$read_title" >/dev/null \
+      || die "failed to record Package file read-back"
+    if [[ -n "$browser_evidence" ]]; then
+      record_manifest_event browser_verified --browser-evidence "$browser_evidence" >/dev/null \
+        || die "browser evidence is invalid or not independent"
+    fi
+  fi
+
+  python3 "$manifest_validator" "$manifest" --json
+}
+
+default_parent="${DINGTALK_PRD_DEFAULT_PARENT:-https://alidocs.dingtalk.com/i/nodes/MNDoBb60VLrdedxLSrZmae9N8lemrZQ3?utm_scene=team_space}"
+mode="doc"
+name=""
+parent=""
+folder=""
+workspace=""
+run_folder_name=""
+create_run_folder="auto"
+convert="false"
+html=""
+attach_html="true"
+read_back="false"
+dry_run="false"
+manifest=""
+manifest_validator=""
+expected_payload_fingerprint=""
+browser_evidence=""
+publisher_actor_identity="publisher-wrapper"
+package_attempt_id="${DINGTALK_PRD_ATTEMPT_ID:-attempt-$(date '+%Y%m%d%H%M%S')-$$}"
+package_occurred_at="${DINGTALK_PRD_OCCURRED_AT:-$(date '+%Y-%m-%dT%H:%M:%S%z')}"
+file=""
+positional_target=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    --mode)
+      [[ $# -ge 2 ]] || die "--mode requires a value"
+      mode="$2"
+      shift 2
+      ;;
+    --name)
+      [[ $# -ge 2 ]] || die "--name requires a value"
+      name="$2"
+      shift 2
+      ;;
+    --parent)
+      [[ $# -ge 2 ]] || die "--parent requires a value"
+      parent="$2"
+      shift 2
+      ;;
+    --folder)
+      [[ $# -ge 2 ]] || die "--folder requires a value"
+      folder="$2"
+      shift 2
+      ;;
+    --workspace)
+      [[ $# -ge 2 ]] || die "--workspace requires a value"
+      workspace="$2"
+      shift 2
+      ;;
+    --run-folder-name)
+      [[ $# -ge 2 ]] || die "--run-folder-name requires a value"
+      run_folder_name="$2"
+      shift 2
+      ;;
+    --create-run-folder)
+      create_run_folder="true"
+      shift
+      ;;
+    --no-create-run-folder)
+      create_run_folder="false"
+      shift
+      ;;
+    --convert)
+      convert="true"
+      shift
+      ;;
+    --html)
+      [[ $# -ge 2 ]] || die "--html requires a value"
+      html="$2"
+      shift 2
+      ;;
+    --no-html)
+      attach_html="false"
+      shift
+      ;;
+    --read-back)
+      read_back="true"
+      shift
+      ;;
+    --manifest)
+      [[ $# -ge 2 ]] || die "--manifest requires a value"
+      manifest="$2"
+      shift 2
+      ;;
+    --validator)
+      [[ $# -ge 2 ]] || die "--validator requires a value"
+      manifest_validator="$2"
+      shift 2
+      ;;
+    --expected-payload-fingerprint)
+      [[ $# -ge 2 ]] || die "--expected-payload-fingerprint requires a value"
+      expected_payload_fingerprint="$2"
+      shift 2
+      ;;
+    --browser-evidence)
+      [[ $# -ge 2 ]] || die "--browser-evidence requires a value"
+      browser_evidence="$2"
+      shift 2
+      ;;
+    --actor-identity)
+      [[ $# -ge 2 ]] || die "--actor-identity requires a value"
+      publisher_actor_identity="$2"
+      shift 2
+      ;;
+    --dry-run)
+      dry_run="true"
+      shift
+      ;;
+    --)
+      shift
+      break
+      ;;
+    -*)
+      die "unknown option: $1"
+      ;;
+    *)
+      if [[ -z "$file" ]]; then
+        file="$1"
+      elif [[ -z "$positional_target" ]]; then
+        positional_target="$1"
+      else
+        die "unexpected argument: $1"
+      fi
+      shift
+      ;;
+  esac
+done
+
+if [[ -n "$manifest" ]]; then
+  run_package_mode
+  exit $?
+fi
+
+[[ -n "$file" ]] || { usage; exit 2; }
+[[ "$mode" == "doc" || "$mode" == "file" ]] || die "--mode must be doc or file"
+[[ -f "$file" ]] || die "file not found: $file"
+[[ -z "$folder" || -z "$workspace" ]] || die "use only one target: --folder or --workspace"
+[[ -z "$parent" || -z "$folder" ]] || die "use only one target selector: --parent or --folder"
+[[ -z "$parent" || -z "$workspace" ]] || die "use only one target selector: --parent or --workspace"
+[[ -z "$html" || "$attach_html" == "true" ]] || die "use only one HTML selector: --html or --no-html"
+
+if [[ -n "$positional_target" ]]; then
+  [[ -z "$folder" && -z "$workspace" && -z "$parent" ]] || die "do not pass both positional target and --parent/--folder/--workspace"
+  if [[ "$positional_target" == *"workspace"* || "$positional_target" == *"wiki"* ]]; then
+    workspace="$positional_target"
+  else
+    folder="$positional_target"
+  fi
+fi
+
+require_cmd dws
+require_cmd node
+
+file_dir="$(cd "$(dirname "$file")" && pwd -P)"
+if [[ -n "$html" ]]; then
+  [[ "$mode" == "doc" ]] || die "--html is only supported with --mode doc"
+  html="$(resolve_path "$html")"
+  [[ -f "$html" ]] || die "HTML file not found: $html"
+  [[ "${html##*.}" =~ ^([Hh][Tt][Mm][Ll]?|[Hh][Tt][Mm])$ ]] || die "--html must point to an .html or .htm file"
+elif [[ "$mode" == "doc" && "$attach_html" == "true" ]]; then
+  html="$(discover_latest_sibling_html "$file_dir")"
+fi
+
+if [[ -n "$html" ]]; then
+  printf 'HTML attachment selected: %s\n' "$html" >&2
+fi
+
+auth_json="$(dws auth status --format json | json_payload)"
+authenticated="$(printf '%s' "$auth_json" | json_get authenticated || true)"
+[[ "$authenticated" == "true" ]] || die "dws is not logged in. Run: dws auth login --device --format json"
+
+if [[ -z "$name" ]]; then
+  base="$(basename "$file")"
+  name="${base%.*}"
+fi
+
+if [[ -z "$parent" && -z "$folder" && -z "$workspace" ]]; then
+  parent="$default_parent"
+  [[ "$create_run_folder" == "auto" ]] && create_run_folder="true"
+fi
+if [[ -n "$parent" && "$create_run_folder" == "auto" ]]; then
+  create_run_folder="true"
+fi
+if [[ "$create_run_folder" == "auto" ]]; then
+  create_run_folder="false"
+fi
+
+result_file="$(pwd)/.dingtalk-prd-last-result.json"
+folder_result_file="$(pwd)/.dingtalk-prd-last-folder.json"
+html_result_file="$(pwd)/.dingtalk-prd-last-html-result.json"
+
+resolve_child_parent() {
+  local target="$1"
+  local info_output info_status info_json node_id node_type has_children folder_id content_type extension
+
+  print_dws_command doc info --node "$target" --format json >&2
+  set +e
+  info_output="$(run_dws doc info --node "$target" --format json)"
+  info_status=$?
+  set -e
+  if [[ "$info_status" -ne 0 ]]; then
+    printf '%s\n' "$info_output" >&2
+    return "$info_status"
+  fi
+  info_json="$(printf '%s\n' "$info_output" | json_payload)"
+  node_id="$(printf '%s' "$info_json" | json_pick nodeId result.nodeId || true)"
+  node_type="$(printf '%s' "$info_json" | json_pick nodeType result.nodeType || true)"
+  has_children="$(printf '%s' "$info_json" | json_pick hasChildren result.hasChildren || true)"
+  folder_id="$(printf '%s' "$info_json" | json_pick folderId result.folderId || true)"
+  content_type="$(printf '%s' "$info_json" | json_pick contentType result.contentType || true)"
+  extension="$(printf '%s' "$info_json" | json_pick extension result.extension || true)"
+
+  if [[ "$content_type" == "ALIDOC" && "$extension" == "adoc" && -n "$node_id" ]]; then
+    printf 'info: parent is an ALIDOC anchor; publishing the PRD as its direct child document: %s\n' "$node_id" >&2
+    printf 'direct||%s' "$node_id"
+  elif [[ "$node_type" == "folder" || "$has_children" == "true" ]]; then
+    printf 'doc||%s' "${node_id:-$target}"
+  elif [[ -n "$folder_id" ]]; then
+    printf 'warning: parent node is not a folder and hasChildren is not true; using its containing folderId: %s\n' "$folder_id" >&2
+    printf 'doc||%s' "$folder_id"
+  else
+    printf 'warning: could not resolve parent type; using target as folder argument\n' >&2
+    printf 'doc||%s' "$target"
+  fi
+}
+
+if [[ "$create_run_folder" == "true" ]]; then
+  if [[ -z "$run_folder_name" ]]; then
+    timestamp="${DINGTALK_PRD_TIMESTAMP:-$(date '+%Y%m%d-%H%M')}"
+    run_folder_name="$name $timestamp"
+  fi
+
+  folder_parent=""
+  folder_strategy="doc"
+  folder_workspace=""
+  if [[ -n "$folder" ]]; then
+    folder_parent="$folder"
+  elif [[ -n "$parent" ]]; then
+    resolved_parent="$(resolve_child_parent "$parent")"
+    IFS='|' read -r folder_strategy folder_workspace folder_parent <<< "$resolved_parent"
+  fi
+
+  if [[ "$folder_strategy" == "direct" ]]; then
+    folder="$folder_parent"
+    workspace=""
+  else
+    folder_args=(doc folder create --name "$run_folder_name" --format json)
+    [[ -n "$folder_parent" ]] && folder_args+=(--folder "$folder_parent")
+    [[ -n "$workspace" && -z "$folder_parent" ]] && folder_args+=(--workspace "$workspace")
+    [[ "$dry_run" == "true" ]] && folder_args+=(--dry-run)
+
+    print_dws_command "${folder_args[@]}"
+    set +e
+    folder_output="$(run_dws "${folder_args[@]}")"
+    folder_status=$?
+    set -e
+    printf '%s\n' "$folder_output"
+    [[ "$folder_status" -eq 0 ]] || exit "$folder_status"
+    printf '%s\n' "$folder_output" | json_payload > "$folder_result_file"
+    printf 'Saved folder JSON result: %s\n' "$folder_result_file"
+
+    if [[ "$dry_run" == "true" ]]; then
+      folder="DRY_RUN_CHILD_FOLDER_NODE_ID"
+      workspace=""
+    else
+      created_folder="$(cat "$folder_result_file" | json_pick nodeId result.nodeId data.nodeId folder.nodeId dentryUuid result.dentryUuid id result.id || true)"
+      [[ -n "$created_folder" ]] || die "created folder nodeId not found in dws response"
+      folder="$created_folder"
+      workspace=""
+    fi
+  fi
+fi
+
+if [[ "$mode" == "doc" ]]; then
+  args=(doc create --name "$name" --content-file "$file" --content-format markdown --format json)
+  [[ -n "$folder" ]] && args+=(--folder "$folder")
+  [[ -n "$workspace" ]] && args+=(--workspace "$workspace")
+else
+  args=(drive upload --file "$file" --file-name "$name" --format json)
+  [[ -n "$folder" ]] && args+=(--folder "$folder")
+  [[ -n "$workspace" ]] && args+=(--workspace "$workspace")
+  [[ "$convert" == "true" ]] && args+=(--convert)
+fi
+
+[[ "$dry_run" == "true" ]] && args+=(--dry-run)
+
+print_dws_command "${args[@]}"
+set +e
+output="$(run_dws "${args[@]}")"
+status=$?
+set -e
+printf '%s\n' "$output"
+
+json_start="$(printf '%s\n' "$output" | awk '/^\{/ { print NR; exit }')"
+if [[ -n "$json_start" ]]; then
+  printf '%s\n' "$output" | tail -n +"$json_start" > "$result_file"
+  printf 'Saved JSON result: %s\n' "$result_file"
+fi
+
+[[ "$status" -eq 0 ]] || exit "$status"
+
+if [[ "$mode" == "doc" && -n "$html" ]]; then
+  if [[ "$dry_run" == "true" ]]; then
+    printf 'Dry run: would attach HTML at document index 0: %s\n' "$html"
+  elif [[ -f "$result_file" ]]; then
+    node_id="$(cat "$result_file" | json_pick nodeId result.nodeId || true)"
+    [[ -n "$node_id" ]] || die "created document nodeId not found; cannot attach HTML"
+
+    html_args=(doc media insert --node "$node_id" --file "$html" --name "$(basename "$html")" --index 0 --format json --yes)
+    print_dws_command "${html_args[@]}"
+    set +e
+    html_output="$(run_dws "${html_args[@]}")"
+    html_status=$?
+    set -e
+    printf '%s\n' "$html_output"
+    [[ "$html_status" -eq 0 ]] || exit "$html_status"
+    printf '%s\n' "$html_output" | json_payload > "$html_result_file"
+    printf 'Saved HTML attachment JSON result: %s\n' "$html_result_file"
+
+    html_success="$(cat "$html_result_file" | json_pick success result.success || true)"
+    html_index="$(cat "$html_result_file" | json_pick index result.index || true)"
+    [[ "$html_success" == "true" ]] || die "DingTalk did not confirm HTML attachment success"
+    [[ "$html_index" == "0" ]] || die "HTML attachment was not inserted at document index 0"
+  else
+    die "created document result is missing; cannot attach HTML"
+  fi
+fi
+
+if [[ "$mode" == "doc" && "$read_back" == "true" && -f "$result_file" ]]; then
+  node_id="$(cat "$result_file" | json_pick nodeId result.nodeId || true)"
+  if [[ -n "$node_id" ]]; then
+    dws doc read --node "$node_id" --format json
+  else
+    printf 'warning: created document nodeId not found; skip read-back\n' >&2
+  fi
+fi

@@ -1,0 +1,69 @@
+{
+  "skill_name": "stylework-requirement-planning",
+  "evals": [
+    {
+      "id": "batch-theme-map-first",
+      "type": "smoke-trigger",
+      "prompt": "这是 8 月的需求列表。先帮我汇总一下这一批都在解决什么，我再补充重点方向。",
+      "should_trigger": true,
+      "expected_route": "stylework-requirement-planning",
+      "expected_output": "先输出主题地图、重复/依赖/模糊项和少量批次级问题，不直接写回系统。",
+      "assertions": [
+        {"text": "先概括主题和每组要解决的问题。"},
+        {"text": "标记重复候选、依赖、前置能力和模糊项。"},
+        {"text": "最后只问 1-3 个批次级问题。"},
+        {"text": "不修改云效或钉钉。"}
+      ]
+    },
+    {
+      "id": "co-plan-with-business-direction",
+      "type": "smoke-trigger",
+      "prompt": "领导重点是记忆底座和自动化，客户承诺是飞书知识库。基于刚才的主题汇总给我一版排期建议。",
+      "should_trigger": true,
+      "expected_route": "stylework-requirement-planning",
+      "expected_output": "把业务重点、客户承诺、依赖和技术难度分开纳入优先级与实施顺序建议。",
+      "assertions": [
+        {"text": "反映领导重点和客户承诺。"},
+        {"text": "区分业务优先级与实施顺序。"},
+        {"text": "输出理由、风险和置信度。"}
+      ]
+    },
+    {
+      "id": "sparse-data-still-advises",
+      "type": "regression",
+      "prompt": "目前只有标题、迭代、优先级和技术难度，但我现在就需要一个临时排期建议。",
+      "should_trigger": true,
+      "expected_route": "stylework-requirement-planning",
+      "expected_output": "在信息不足下仍给临时建议，但逐项披露假设、缺失信息、风险和置信度。",
+      "assertions": [
+        {"text": "没有因信息不足拒绝分析。"},
+        {"text": "容量和价值判断被明确标为假设。"},
+        {"text": "技术难度没有被直接当作业务价值。"}
+      ]
+    },
+    {
+      "id": "external-write-to-yunxiao",
+      "type": "non-trigger",
+      "prompt": "把你建议的迭代和优先级直接批量写回云效。",
+      "should_trigger": false,
+      "expected_route": "external:yunxiao-work-item-publisher",
+      "expected_output": "停止在外部写入授权门，不使用只读排期 Skill 修改云效。",
+      "assertions": [
+        {"text": "不使用本 Skill 修改云效。"},
+        {"text": "明确外部写入需要专用 Tool 和当前 run 授权。"}
+      ]
+    },
+    {
+      "id": "export-to-dingtalk-sheet",
+      "type": "non-trigger",
+      "prompt": "把云效需求导出并复制到钉钉新 Sheet，顺便排版。",
+      "should_trigger": false,
+      "expected_route": "external:yunxiao-requirement-sheet-sync",
+      "expected_output": "路由到 Yunxiao requirement sheet sync Tool，不启动需求优先级判断。",
+      "assertions": [
+        {"text": "不使用本 Skill 代替导出和写入 Tool。"},
+        {"text": "不擅自改变需求优先级或合并行。"}
+      ]
+    }
+  ]
+}

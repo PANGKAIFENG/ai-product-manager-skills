@@ -1,30 +1,26 @@
 ---
 name: research-topic-compiler
 description: >
-  专题研究编译器 / Persona-Adaptive Research-to-Learning Compiler：当用户要围绕一个主题做系统学习、
-  专题研究、行业调研、最佳实践提炼、轻量概念解读、概念源流、语义演化、PM 技术评审提问脚本、行业演进看板、
-  本地 HTML 研究看板、可视化研究报告或跨职能 Dashboard 时使用。
+  Product Research / 产品研究编译器：当用户要围绕一个产品问题做系统调研、竞品证据、替代方案、行业信号、
+  用户与市场研究、最佳实践提炼、产品候选池、本地 HTML 研究看板、可视化研究报告或跨职能 Dashboard 时使用。
   当用户只有大白话、模糊方向、业务愿望或 Roadmap/PRD 前置材料想法，需要先转成清晰研究目标、研究问题和输出要求时也使用。
   适合把研究转成 Research Project、学习报告、证据矩阵、PM 决策看板、候选池、模板、实践任务、业务判断、商业化输入或高门槛应用研究前置。适合“系统研究一个主题”
   “整理到 Obsidian”“做深度专题”“研究行业最佳实践”“概念解读”“概念源流”“PM 技术评审提问脚本”
-  “行业演进看板”“这个主题对我的业务有什么用”。不适合创建 Skill、评审 SKILL.md、普通即时搜索或一次性摘要。
+  “行业演进看板”“这个主题对我的产品决策有什么用”。不适合创建 Skill、评审 SKILL.md、普通即时搜索或一次性摘要。
   当用户已经要在明确候选项中选一个、需要最终推荐和排除理由时，应使用 decision-research。
   当 decision-research 或 grill-me 返回一个可研究、可关闭的精确证据 gap 时，也使用本 Skill 只补 Evidence Delta。
 ---
 
-# 专题研究编译器（research-topic-compiler）
-
+# 产品研究编译器（research-topic-compiler）
 ## 中文速查
 
-- 中文名：专题研究编译器 / 系统学习与概念源流研究助手
+- 中文名：产品研究 / 证据与决策输入
 - 英文稳定名：`research-topic-compiler`
 - 分类：研究学习 / Obsidian 知识编译
 - 你可以这样叫我：`系统研究这个主题`、`帮我整理到 Obsidian`、`做一个深度专题`、`研究行业最佳实践`、`概念解读`、`概念源流`、`PM 技术评审提问脚本`、`行业演进看板`、`把这个大白话拆成研究目标`
-- 适合：围绕研究主题做多渠道证据收集、筛选、证据矩阵、阶段结论、概念源流、轻量 PM 决策看板、候选池、用户画像自适应学习报告和应用转化；也适合把用户的大白话、模糊主题或 Roadmap 前置想法转成研究目标、研究问题和输出要求
+- 适合：围绕产品问题做多渠道证据收集、竞品与替代方案比较、用户/市场信号、证据矩阵、阶段结论、候选池、研究看板和应用转化；也适合把用户的大白话、模糊主题或 Roadmap 前置想法转成研究目标、研究问题和输出要求
 - 不适合：创建或评审 Skill；普通新闻搜索或一次性摘要；明确要“选一个 / 给最终推荐 / 排除其他方案”时改用 `decision-research`
-
 ## Overview
-
 使用这个 Skill 把一个研究主题编译成可学习、可追溯、可继续扩展、并能按用户画像转化为实际工作判断的 Obsidian Research Project 或聊天内研究报告。
 
 核心原则：
@@ -110,6 +106,17 @@ description: >
 | `Application` | 研究要转成方案、PRD、Workflow、Eval、SOP 或路线图输入 | `applied-business-research-contract.md` |
 | `Radar` | 长期变化主题、watchlist、更新日志 | `research-radar-loop-contract.md` |
 | `Product Candidate` | 先发现候选、建候选池、为后续决策提供输入 | `product-decision-mode.md`, `candidate-backlog-schema.md` |
+
+### Product Research / Competitive Evidence
+
+当用户要研究竞品、替代方案、定价、onboarding、公开产品页面、评论、更新日志或行业信号时，使用本 Skill 的 `product-research` mode：
+
+1. 先把产品决策和比较维度写成 research brief，不把“竞品分析”当成无目标功能清单。
+2. 读取 `references/product-evidence-channel-guide.md`，根据当前 Gap 选择渠道；将产品事实、用户/市场信号、推断和建议分开，记录来源、访问时间、直接性和局限。
+3. 需要登录态走查、OAuth、截图、录屏或 Computer Use 时，必须读取 `references/browser-walkthrough-boundaries.md`，先定义最小取证范围和明确禁止动作。
+4. 输出 `Evidence Pack`、差异矩阵和对产品决策的启发。需要完整简报时使用 `references/product-decision-brief-template.md`，并运行 `scripts/check_product_decision_brief.py <brief.md>`。
+5. 简报只对 `Copy / Adapt / Avoid / Monitor / Validate first` 给出证据导向，不替用户做最终候选选择；Top candidates 只是交给 `decision-research` 的输入。
+6. 登录态走查、付费来源、客户资料和外部系统写入仍受当前 run 的授权边界约束。
 
 用户说“选一个”“给最终推荐”“为什么排除其他方案”“基于 Candidate Backlog 下结论”时，转交 `decision-research`。本 Skill 可以给 Top candidates 或排序表，但它们是决策输入，不是最终决策 authority。
 
@@ -306,7 +313,8 @@ L3+、需要用户确认范围/授权、或用户明确要求研究计划时输�
 - 研究入口与路由：`mode-selection.md`、`mode-routing-guide.md`、`research-goal-framing-gate.md`、`research-depth-rubric.md`、`user-context-standards.md`。
 - Normal/Application：`iterative-research-loop.md`、`applied-business-research-contract.md`、`source-quality-rules.md`、`report-writing-standards.md`。
 - 渠道与写回：`pre-research-source-expansion.md`、`channel-selection-rubric.md`、`channel-registry.md`、`obsidian-output-contract.md`。
-- Concept Lens / HTML：相应 `concept-lens-*` references；一般研究 Dashboard 使用 `research-dashboard-output-contract.md` 和 `scripts/validate_html_artifact.py`。
+- Concept Lens / HTML：`concept-lens-output-contract.md`、`concept-lens-html-dashboard-template.md`、`concept-lens-paradigm-framework.md`、`concept-lens-source-and-factuality.md`、`concept-lens-design-quality.md`；一般研究 Dashboard 使用 `research-dashboard-output-contract.md` 和 `scripts/validate_html_artifact.py`。
 - Product Candidate：`product-decision-mode.md`、`project-context-intake.md`、`taxonomy-translation.md`、`candidate-backlog-schema.md`、`cross-session-handoff.md`、`post-research-exits.md`。
+- Product Research：`product-evidence-channel-guide.md`；浏览器取证必须读取 `browser-walkthrough-boundaries.md`；完整简报使用 `product-decision-brief-template.md` 和 `scripts/check_product_decision_brief.py`。
 - Core Loop：`core-loop-research-handoff.md`；只有发生跨 Skill handoff 或 return edge 时读取。
 - Learning/Radar：`learning-pack-standards.md`、`research-radar-loop-contract.md`；回归样例见 `evals/evals.json`。

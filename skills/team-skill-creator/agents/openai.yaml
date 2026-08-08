@@ -1,0 +1,4 @@
+interface:
+  display_name: "Team Skill Creator"
+  short_description: "Govern the full Skill lifecycle"
+  default_prompt: "Use $team-skill-creator to decide the Skill shape, authoritative source, lifecycle, validation, publication, and distribution targets."

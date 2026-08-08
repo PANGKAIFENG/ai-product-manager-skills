@@ -1,0 +1,4 @@
+interface:
+  display_name: "客户需求发现与澄清"
+  short_description: "先内部追问，再生成一次性客户澄清清单与可行性初判"
+  default_prompt: "使用 $customer-requirement-discovery 帮我把这份客户模糊需求先在内部问清楚，再整理客户澄清清单。"

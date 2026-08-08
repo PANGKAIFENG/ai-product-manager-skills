@@ -1,0 +1,4 @@
+interface:
+  display_name: "钉钉 PRD 发布器"
+  short_description: "发布本地 PRD 到钉钉，抓取 mock/Look up 截图并插入对应章节。"
+  default_prompt: "Use $dingtalk-prd-publisher to enrich this PRD with screenshots and publish it to DingTalk."

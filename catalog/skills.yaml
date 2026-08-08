@@ -2,81 +2,18 @@ schema_version: 1
 skills_root: skills
 
 skills:
-  - id: ai-collaboration-calibration
-    path: skills/ai-collaboration-calibration
-    name_zh: 协作校准 / 认知校准
-    category: collaboration-thinking
-    status: core
-    example: docs/examples/ai-collaboration-calibration.md
-  - id: complex-exploration
-    path: skills/complex-exploration
-    name_zh: 复杂探索资产化 / 复杂探索协作
-    category: collaboration-thinking
-    status: active
-    example: docs/examples/complex-exploration.md
-  - id: research-topic-compiler
-    path: skills/research-topic-compiler
-    name_zh: 专题研究编译器 / 概念源流研究助手
-    category: research-learning
-    status: core
-    example: docs/examples/research-topic-compiler.md
-  - id: competitive-analysis
-    path: skills/competitive-analysis
-    name_zh: 竞品决策分析 / 竞品决策简报
-    category: decision-research
-    status: active
-    example: docs/examples/competitive-analysis.md
-  - id: decision-research
-    path: skills/decision-research
-    name_zh: 决策调研 / 决策驱动调研
-    category: decision-research
-    status: active
-    example: docs/examples/decision-research.md
-  - id: brainstorming
-    path: skills/brainstorming
-    name_zh: 设计脑暴 / 实现前方案校准
-    category: collaboration-thinking
-    status: core
-    example: docs/examples/brainstorming.md
-  - id: prd-architect
-    path: skills/prd-architect
-    name_zh: PRD 架构师 / 需求文档起草
-    category: product-prd
-    status: core
-    example: docs/examples/prd-architect.md
-  - id: prd-review
-    path: skills/prd-review
-    name_zh: PRD 评审 / 需求评审
-    category: product-prd
-    status: core
-    example: docs/examples/prd-review.md
-  - id: prd-to-issues
-    path: skills/prd-to-issues
-    name_zh: PRD 到研发 Issue 拆解
-    category: product-prd
-    status: active
-    example: docs/examples/prd-to-issues.md
-  - id: ui-wireframe-to-html
-    path: skills/ui-wireframe-to-html
-    name_zh: PRD 到 UI 线框 / 结构阶段
-    category: product-prd
-    status: active
-    example: docs/examples/ui-wireframe-to-html.md
-  - id: ui-mockup-desktop-workbench
-    path: skills/ui-mockup-desktop-workbench
-    name_zh: 高保真 UI 交付对齐器 / 桌面工作台 UI Mockup 生成器
-    category: product-prd
-    status: active
-    example: docs/examples/ui-mockup-desktop-workbench.md
-  - id: grill-me
-    path: skills/grill-me
-    name_zh: 方案拷问 / 压力测试
-    category: collaboration-thinking
-    status: active
-    example: docs/examples/grill-me.md
-  - id: ai-work-assetization-diagnoser
-    path: skills/ai-work-assetization-diagnoser
-    name_zh: AI 工作资产化诊断器 / 资产化路由器
-    category: collaboration-thinking
-    status: active
-    example: docs/examples/ai-work-assetization-diagnoser.md
+  - {id: ai-collaboration-calibration, path: skills/ai-collaboration-calibration, name_zh: 协作校准 / 认知校准, category: collaboration-thinking, status: core, example: docs/examples/ai-collaboration-calibration.md}
+  - {id: research-topic-compiler, path: skills/research-topic-compiler, name_zh: 产品研究 / 证据与决策输入, category: research-learning, status: core, example: docs/examples/research-topic-compiler.md}
+  - {id: decision-research, path: skills/decision-research, name_zh: 决策调研 / 决策驱动取证, category: decision-research, status: core, example: docs/examples/decision-research.md}
+  - {id: brainstorming, path: skills/brainstorming, name_zh: 产品方案脑暴 / Design Spec, category: collaboration-thinking, status: core, example: docs/examples/brainstorming.md}
+  - {id: grill-me, path: skills/grill-me, name_zh: 方案拷问 / 压力测试, category: collaboration-thinking, status: core, example: docs/examples/grill-me.md}
+  - {id: prd-architect, path: skills/prd-architect, name_zh: PRD 架构师 / Product Delivery Package, category: product-prd, status: core, example: docs/examples/prd-architect.md}
+  - {id: ui-mockup-desktop-workbench, path: skills/ui-mockup-desktop-workbench, name_zh: UI 结构与高保真交付, category: product-prd, status: core, example: docs/examples/ui-mockup-desktop-workbench.md}
+  - {id: prd-review, path: skills/prd-review, name_zh: PRD 评审 / 交付就绪检查, category: product-prd, status: core, example: docs/examples/prd-review.md}
+  - {id: prd-to-issues, path: skills/prd-to-issues, name_zh: PRD 到研发 Issue / 版本切片, category: product-prd, status: core, example: docs/examples/prd-to-issues.md}
+  - {id: customer-requirement-discovery, path: skills/customer-requirement-discovery, name_zh: 客户需求发现与澄清, category: stylework-business, status: active, example: docs/examples/customer-requirement-discovery.md}
+  - {id: stylework-requirement-planning, path: skills/stylework-requirement-planning, name_zh: StyleWork 需求排期共创, category: stylework-business, status: active, example: docs/examples/stylework-requirement-planning.md}
+  - {id: team-skill-creator, path: skills/team-skill-creator, name_zh: Skill 生命周期治理, category: skill-governance, status: active, example: docs/examples/team-skill-creator.md}
+  - {id: skill-reviewer, path: skills/skill-reviewer, name_zh: Skill 评审与审计, category: skill-governance, status: active, example: docs/examples/skill-reviewer.md}
+  - {id: agent-trace-diagnoser, path: skills/agent-trace-diagnoser, name_zh: Agent Trace 诊断, category: engineering-governance, status: active, example: docs/examples/agent-trace-diagnoser.md}
+  - {id: project-context-steward, path: skills/project-context-steward, name_zh: 项目上下文管家, category: engineering-governance, status: active, example: docs/examples/project-context-steward.md}

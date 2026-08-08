@@ -1,0 +1,69 @@
+{
+  "skill_name": "customer-requirement-discovery",
+  "evals": [
+    {
+      "id": "vague-agent-request-discovery",
+      "type": "smoke-trigger",
+      "prompt": "客户说想做一个 AI Agent，帮助门店每天发现异常并给建议。你先帮我把需求问清楚。",
+      "should_trigger": true,
+      "expected_route": "customer-requirement-discovery",
+      "expected_output": "先向内部销售或客户成功提出 1-3 个高信息增益问题，并维护事实、假设和未知项。",
+      "assertions": [
+        {"text": "首轮只提出 1-3 个会改变目标、流程、可行性或验收的问题。"},
+        {"text": "不直接向客户倾倒长问题清单。"},
+        {"text": "区分已确认事实、假设和未知项。"}
+      ]
+    },
+    {
+      "id": "stylework-scope-and-feasibility",
+      "type": "smoke-trigger",
+      "prompt": "客户希望在 StyleWork 里增加趋势洞察和选款建议，但只说了这一句话。先帮我内部判断要问什么，以及大概是复用、配置、扩展还是新建。",
+      "should_trigger": true,
+      "expected_route": "customer-requirement-discovery",
+      "expected_output": "条件加载 StyleWork 证据，先补齐需求，再分开通用技术可行性和 StyleWork 能力映射，不做报价或交付承诺。",
+      "assertions": [
+        {"text": "先进行 1-3 个内部高价值追问。"},
+        {"text": "分开通用技术可行性与 StyleWork 适配判断。"},
+        {"text": "使用现有、复用、配置、扩展、新建或技术验证的范围分类。"},
+        {"text": "不把临时 UI 证据当成正式上线能力。"}
+      ]
+    },
+    {
+      "id": "no-large-question-dump",
+      "type": "regression",
+      "prompt": "客户想做一个全渠道智能运营平台，你帮销售澄清一下。",
+      "should_trigger": true,
+      "expected_route": "customer-requirement-discovery",
+      "expected_output": "内部逐轮澄清，每轮 1-3 个问题；信息足够后再生成一次性客户确认清单。",
+      "assertions": [
+        {"text": "首次响应不直接给客户十几个或几十个问题。"},
+        {"text": "问题围绕业务目标、关键流程、输入输出或验收等高价值缺口。"},
+        {"text": "没有把假设写成客户已确认需求。"}
+      ]
+    },
+    {
+      "id": "ready-requirement-to-prd",
+      "type": "non-trigger",
+      "prompt": "需求已经全部确认，把它写成完整 PRD、用户故事和验收标准。",
+      "should_trigger": false,
+      "expected_route": "prd-architect",
+      "expected_output": "将成熟需求交给 prd-architect，不重复做发现访谈。",
+      "assertions": [
+        {"text": "不重新启动需求发现轮次。"},
+        {"text": "路由到正式 PRD 产出。"}
+      ]
+    },
+    {
+      "id": "requirement-batch-prioritization",
+      "type": "non-trigger",
+      "prompt": "这里有 30 条已经录入的 StyleWork 需求，帮我按主题、依赖、优先级和迭代做一版只读排期建议。",
+      "should_trigger": false,
+      "expected_route": "stylework-requirement-planning",
+      "expected_output": "将已录入需求批次的只读排期分析交给 stylework-requirement-planning。",
+      "assertions": [
+        {"text": "不把批次排期重新变成客户澄清。"},
+        {"text": "不修改云效或钉钉。"}
+      ]
+    }
+  ]
+}

@@ -85,8 +85,8 @@
       "type": "non-trigger",
       "prompt": "这个复杂任务需要多轮定题、探索、收敛和中间产物；请先规划探索路径，不把它压缩成一次问题校准。",
       "should_trigger": false,
-      "expected_route": "complex-exploration",
-      "expected_output": "Hands the multi-round task to complex-exploration instead of reducing it to design-option comparison.",
+      "expected_route": "ai-collaboration-calibration",
+      "expected_output": "Hands the unstable multi-round problem to ai-collaboration-calibration instead of reducing it to design-option comparison.",
       "assertions": [
         {
           "text": "Does not substitute a design-spec exercise for an explicit multi-round exploration program."

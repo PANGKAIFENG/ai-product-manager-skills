@@ -1,68 +1,53 @@
 # Agent Orientation
 
-This is a thin index for agents working in this repository. It does not replace `README.md`, `SKILL_REGISTRY.md`, or `SKILL_ROUTING.md`.
-
-## Start Here
-
-1. Read `SKILL_ROUTING.md` before choosing between adjacent Skills.
-2. Use `SKILL_REGISTRY.md` for catalog status, Chinese names, and public boundaries.
-3. Use `catalog/skills.yaml` for the machine-readable Skill inventory and paths.
-4. Use `README.md` for human-facing workflow orientation.
-5. Load only the relevant Skill and reference files for the user's current stage.
+This is a thin index for agents working in this repository. Read `SKILL_ROUTING.md`
+before choosing between adjacent Skills and `SKILL_REGISTRY.md` for the public
+catalog and boundaries.
 
 ## Role Model
 
 | Role | Primary Skill |
 | --- | --- |
 | Framer | `ai-collaboration-calibration` |
-| Explorer | `complex-exploration` |
 | Researcher | `research-topic-compiler` / `decision-research` |
-| Designer | `brainstorming` |
-| Maker | `prd-architect` |
+| Designer / Maker | `brainstorming` / `prd-architect` |
 | Critic | `grill-me` |
+| UI Handoff | `ui-mockup-desktop-workbench` |
 | Reviewer | `prd-review` |
 | Backlog Splitter | `prd-to-issues` |
-| UI Structure Maker | `ui-wireframe-to-html` |
-| UI Handoff Maker | `ui-mockup-desktop-workbench` |
-| Router / Gate | `ai-work-assetization-diagnoser` |
+| Customer Discovery | `customer-requirement-discovery` |
+| Skill Governance | `team-skill-creator` / `skill-reviewer` |
+| Engineering Context | `project-context-steward` / `agent-trace-diagnoser` |
 
-## Loop Pattern Index
+## Loop And Workflow Index
 
-Loop patterns are orchestration docs, not new Skills:
+Loop contracts live under `loops/` and coordinate state, return edges, and stop
+conditions. Stage composition lives under `workflows/`:
 
-- `docs/workflows/prd-readiness-loop.md`
-- `docs/workflows/decision-research-loop.md`
-- `docs/workflows/research-radar-loop.md`
+- `research-decision-loop`
+- `solution-challenge-loop`
+- `prd-delivery-readiness-loop`
+- `product-discovery`
+- `product-delivery`
 
-Use loop patterns only when the user needs multi-round state, resumability, readiness convergence, or a repeated handoff between Skills.
+Use a Loop only when the user needs multi-round state, resumability, or a
+repeated handoff. Do not run every Skill in a Loop by default.
+
+## External Writes
+
+Only `tools/` publishers and automations own DingTalk/Yunxiao side effects. A
+Skill handoff or Loop return edge is not authorization. Without current explicit
+authorization, stop with `authorization-required`.
 
 ## State Convention
 
-Use `.loop-state/<loop-name>/` only when the user asks to save or resume state. For chat-only work, keep the same fields in the response.
-
-Do not create state folders for ordinary one-pass tasks.
-
-## Stop And Human Handoff
-
-Stop and ask the user when:
-
-- A business or product owner decision is missing.
-- Two loop rounds fail to reduce blockers.
-- A recommendation has high product, legal, financial, or engineering impact.
-- A required private, paid, logged-in, or customer-specific source needs authorization.
-- The task is becoming a system build, not a Skill run.
-
-## Anti-Over-Looping
-
-- Route by current workflow stage, not keyword alone.
-- Do not run every Skill in a loop by default.
-- Do not let a Critic Skill hold long-running state.
-- Do not let a Maker Skill self-approve readiness.
-- Do not hide unresolved decisions inside implementation planning.
+Use `.loop-state/<loop-name>/` only when the user asks to save or resume state.
+For chat-only work, keep the same fields in the response and do not create a
+state folder.
 
 ## Catalog Update Rule
 
-When adding or publicizing a Skill, update the coordinated surfaces together:
+When adding or publicizing a Skill, update these coordinated surfaces together:
 
 - `README.md`
 - `SKILL_REGISTRY.md`
@@ -71,4 +56,5 @@ When adding or publicizing a Skill, update the coordinated surfaces together:
 - install / quickstart docs
 - examples or issue templates when relevant
 
-Keep each stable Skill ID at `skills/<skill-id>/`. Do not add installable Skill directories at the repository root or under documentation categories.
+Keep each stable Skill ID at `skills/<skill-id>/`. `archive/` is historical
+material and is excluded from discovery and installation.

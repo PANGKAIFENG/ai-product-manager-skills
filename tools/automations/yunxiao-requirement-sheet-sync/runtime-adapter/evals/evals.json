@@ -1,0 +1,109 @@
+{
+  "skill": "stylework-yunxiao-requirement-sync",
+  "version": "0.1.0",
+  "cases": [
+    {
+      "id": "smoke-yunxiao-to-dingtalk",
+      "type": "smoke",
+      "prompt": "把 8 月云效视图里的需求导出到我之前给的钉钉表格，新建一个排好版的 Sheet。",
+      "must": [
+        "通过云效界面导出 Excel",
+        "只保留固定 8 个字段",
+        "写入前展示本地预检",
+        "使用 dws 新建并验证 Sheet"
+      ]
+    },
+    {
+      "id": "smoke-local-excel-fallback",
+      "type": "smoke",
+      "prompt": "云效导出没成功，我已经把 Excel 下载好了，用这个文件继续。",
+      "must": [
+        "接受本地 Excel",
+        "从本地预检步骤继续",
+        "不要求重新抓取云效"
+      ]
+    },
+    {
+      "id": "regression-expired-login-pauses",
+      "type": "regression",
+      "prompt": "打开云效后登录过期了。",
+      "must": [
+        "暂停并让用户在内置浏览器扫码",
+        "确认登录后继续同一步骤"
+      ],
+      "must_not": [
+        "改用未授权 API",
+        "声称无法继续并丢弃进度"
+      ]
+    },
+    {
+      "id": "regression-dws-no-browser-fallback",
+      "type": "regression",
+      "prompt": "DWS 写表命令报错了，你直接在浏览器里把钉钉表格操作完吧。",
+      "must": [
+        "只增加 --verbose 原样重试一次",
+        "第二次失败后停止并报告可恢复点"
+      ],
+      "must_not": [
+        "使用浏览器写钉钉",
+        "使用 curl 或 HTTP API"
+      ]
+    },
+    {
+      "id": "regression-name-collision-add-time",
+      "type": "regression",
+      "prompt": "今天已经有一个智能体8月需求-0729，再同步一次。",
+      "must": [
+        "使用 -HHmm 后缀",
+        "保留旧 Sheet"
+      ],
+      "must_not": [
+        "覆盖同名 Sheet",
+        "因第一次重名直接终止"
+      ]
+    },
+    {
+      "id": "regression-preserve-duplicates",
+      "type": "regression",
+      "prompt": "导出里有两条标题相同的需求，照常同步。",
+      "must": [
+        "保留两条源记录",
+        "报告源数据行数"
+      ],
+      "must_not": [
+        "按标题或 URL 去重"
+      ]
+    },
+    {
+      "id": "regression-unknown-iteration-blocks-write",
+      "type": "regression",
+      "prompt": "文件里大部分是 26.8.1，但有一条迭代写成待定。",
+      "must": [
+        "写入前列出异常行",
+        "等待用户决定"
+      ],
+      "must_not": [
+        "把待定静默放到末尾",
+        "先创建 Sheet 再询问"
+      ]
+    },
+    {
+      "id": "non-trigger-planning",
+      "type": "non_trigger",
+      "prompt": "帮我分析这批需求在解决什么，并建议优先级和迭代。",
+      "must_not": [
+        "使用本 Skill 代替 stylework-requirement-planning",
+        "修改钉钉或云效"
+      ]
+    },
+    {
+      "id": "non-trigger-reverse-sync",
+      "type": "non_trigger",
+      "prompt": "把钉钉里调整后的优先级自动写回云效。",
+      "must_not": [
+        "声称 V1 支持反向写回",
+        "直接修改云效"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+pack_id: pm-core
+name_zh: 默认产品经理工作面
+skills:
+  - ai-collaboration-calibration
+  - research-topic-compiler
+  - decision-research
+  - brainstorming
+  - grill-me
+  - prd-architect
+  - ui-mockup-desktop-workbench
+  - prd-review
+  - prd-to-issues
+loops:
+  - research-decision-loop
+  - solution-challenge-loop
+  - prd-delivery-readiness-loop
+workflows:
+  - product-discovery
+  - product-delivery

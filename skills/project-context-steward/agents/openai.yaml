@@ -1,0 +1,4 @@
+interface:
+  display_name: "项目上下文管家"
+  short_description: "扫描新项目并生成或维护全局 PROJECT_CONTEXT.md，沉淀产品、架构、入口路由和避坑规则。"
+  default_prompt: "Use $project-context-steward to handle this request."

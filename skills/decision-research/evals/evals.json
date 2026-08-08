@@ -93,8 +93,8 @@
       "type": "non-trigger",
       "prompt": "我们要判断是否跟进三个竞品的 onboarding 方案；当前还缺官方定价页、产品流程和用户评论证据，请先采集并整理这些竞品证据，不做最终选型。",
       "should_trigger": false,
-      "expected_route": "competitive-analysis",
-      "expected_output": "Hands competitor evidence acquisition to competitive-analysis before final selection.",
+      "expected_route": "research-topic-compiler",
+      "expected_output": "Hands competitor evidence acquisition to research-topic-compiler before final selection.",
       "assertions": [
         {
           "text": "Does not force a final recommendation while material competitor evidence is still missing."
@@ -120,8 +120,8 @@
       "type": "non-trigger",
       "prompt": "我们要决定桌面端 Agent 的产品方向，但真正问题、候选路径和判断标准都还不稳定；先重构问题并设计探索路径，不做最终推荐。",
       "should_trigger": false,
-      "expected_route": "complex-exploration",
-      "expected_output": "Hands the unstable decision framing to complex-exploration before recommendation research.",
+      "expected_route": "ai-collaboration-calibration",
+      "expected_output": "Hands the unstable decision framing to ai-collaboration-calibration before recommendation research.",
       "assertions": [
         {
           "text": "Does not produce a final recommendation before the problem, options, and criteria stabilize."

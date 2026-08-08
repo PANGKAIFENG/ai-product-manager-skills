@@ -28,6 +28,9 @@ jobs:
       - name: Audit catalog and repository structure
         run: python3 scripts/audit_skills.py .
 
+      - name: Validate v0.3 asset catalog
+        run: python3 scripts/check_v03_asset_catalog.py .
+
       - name: Run repository audit regression tests
         run: python3 -m unittest discover -s scripts/tests -p "test_*.py" -v
 
@@ -36,3 +39,17 @@ jobs:
 
       - name: Run research dashboard regression tests
         run: python3 -m unittest discover -s skills/research-topic-compiler/tests -p "test_*.py" -v
+
+      - name: Run Skill governance regression tests
+        run: python3 -m unittest discover -s skills/team-skill-creator/tests -p "test_*.py" -v
+
+      - name: Run UI structure regression tests
+        run: python3 -m unittest discover -s skills/ui-mockup-desktop-workbench/tests -p "test_*.py" -v
+
+      - name: Run DingTalk publisher regression tests
+        env:
+          PRODUCT_DELIVERY_VALIDATOR: ${{ github.workspace }}/skills/prd-architect/scripts/validate_product_delivery_manifest.py
+        run: python3 -m unittest discover -s tools/publishers/dingtalk-prd-publisher/runtime-adapter/scripts -p "test_*.py" -v
+
+      - name: Run Yunxiao publisher regression tests
+        run: python3 -m unittest discover -s tools/publishers/yunxiao-work-item-publisher/runtime-adapter/scripts -p "test_*.py" -v

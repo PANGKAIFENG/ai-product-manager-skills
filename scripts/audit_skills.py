@@ -29,18 +29,21 @@ ALLOWED_CATEGORIES = {
     "research-learning",
     "decision-research",
     "product-prd",
+    "stylework-business",
+    "skill-governance",
+    "engineering-governance",
 }
 ALLOWED_STATUSES = {"core", "active", "review"}
 HIGH_RISK_SCRIPT_SKILLS = {
     "brainstorming",
-    "competitive-analysis",
     "decision-research",
     "prd-architect",
     "prd-review",
     "prd-to-issues",
     "research-topic-compiler",
     "ui-mockup-desktop-workbench",
-    "ui-wireframe-to-html",
+    "skill-reviewer",
+    "team-skill-creator",
 }
 DUPLICATE_PRD_FILES = (
     Path("scripts/check_prd_shape.py"),
@@ -148,8 +151,11 @@ def validate_skill_manifest_locations(root: Path) -> list[str]:
     errors: list[str] = []
     for manifest in sorted(root.rglob("SKILL.md")):
         relative = manifest.relative_to(root)
-        if ".git" in relative.parts:
+        if ".git" in relative.parts or "archive" in relative.parts:
             continue
+        if relative.parts[:2] in (("tools", "publishers"), ("tools", "automations")):
+            if len(relative.parts) >= 4 and relative.parts[-2] == "runtime-adapter":
+                continue
         if (
             len(relative.parts) != 3
             or relative.parts[0] != SKILLS_PATH.as_posix()
@@ -308,9 +314,8 @@ def validate_duplicate_prd_files(root: Path) -> list[str]:
 
 def validate_markdown_links(root: Path) -> list[str]:
     errors: list[str] = []
-    archive = root / "docs" / "archive"
     for markdown in root.rglob("*.md"):
-        if ".git" in markdown.parts or archive in markdown.parents:
+        if ".git" in markdown.parts or "archive" in markdown.parts:
             continue
         text = markdown.read_text(encoding="utf-8")
         for raw_target in MARKDOWN_LINK_RE.findall(text):
@@ -319,6 +324,10 @@ def validate_markdown_links(root: Path) -> list[str]:
                 continue
             target = unquote(target.split("#", 1)[0])
             if not target:
+                continue
+            # This is an intentional placeholder in the public image-placement
+            # contract, not a repository-relative asset.
+            if target in {"path/to/image.png", "path/to/screenshot.png"}:
                 continue
             resolved = (markdown.parent / target).resolve()
             if not resolved.exists():
