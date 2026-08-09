@@ -4,10 +4,24 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import sys
 from pathlib import Path
 
 import yaml
+
+try:
+    from audit_skills import validate_eval_file
+except ModuleNotFoundError:  # Loaded directly by tests outside scripts/.
+    _AUDIT_PATH = Path(__file__).with_name("audit_skills.py")
+    _AUDIT_SPEC = importlib.util.spec_from_file_location(
+        "runtime_entrypoint_audit_contract", _AUDIT_PATH
+    )
+    if _AUDIT_SPEC is None or _AUDIT_SPEC.loader is None:
+        raise RuntimeError(f"cannot load eval validator from {_AUDIT_PATH}")
+    _AUDIT_MODULE = importlib.util.module_from_spec(_AUDIT_SPEC)
+    _AUDIT_SPEC.loader.exec_module(_AUDIT_MODULE)
+    validate_eval_file = _AUDIT_MODULE.validate_eval_file
 
 
 EXPECTED_IDS = {
@@ -29,11 +43,11 @@ EXPECTED_IDS = {
         "ui-mockup-desktop-workbench",
     },
     "loops": {
-        "prd-delivery-readiness-loop",
-        "research-decision-loop",
-        "solution-challenge-loop",
+        "decision-loop",
+        "delivery-loop",
+        "solution-loop",
     },
-    "workflows": {"product-delivery", "product-discovery"},
+    "workflows": {"problem-to-solution", "solution-to-delivery"},
     "tools": {
         "dingtalk-prd-publisher",
         "product-delivery-validator",
@@ -51,18 +65,38 @@ CONTRACT_FILES = {
 }
 
 EXPECTED_RUNTIME_ADAPTERS = {
-    "dingtalk-prd-publisher": "dingtalk-prd-publisher",
-    "yunxiao-work-item-publisher": "stylework-yunxiao-workitem-submitter",
-    "yunxiao-requirement-sheet-sync": "stylework-yunxiao-requirement-sync",
+    "loops": {
+        "decision-loop": "decision-loop",
+        "delivery-loop": "delivery-loop",
+        "solution-loop": "solution-loop",
+    },
+    "workflows": {
+        "problem-to-solution": "problem-to-solution",
+        "solution-to-delivery": "solution-to-delivery",
+    },
+    "tools": {
+        "dingtalk-prd-publisher": "dingtalk-prd-publisher",
+        "yunxiao-work-item-publisher": "stylework-yunxiao-workitem-submitter",
+        "yunxiao-requirement-sheet-sync": "stylework-yunxiao-requirement-sync",
+    },
 }
 
 EXPECTED_ARCHIVE_IDS = {
     "ai-work-assetization-diagnoser",
     "competitive-analysis",
     "complex-exploration",
+    "prd-delivery-readiness-loop",
+    "product-delivery",
+    "product-discovery",
+    "research-decision-loop",
+    "solution-challenge-loop",
     "stylework-solution-scoper",
     "ui-wireframe-to-html",
 }
+
+EXPECTED_ROUTE_IDS = set().union(
+    EXPECTED_IDS["skills"], EXPECTED_IDS["loops"], EXPECTED_IDS["workflows"]
+)
 
 
 def validate_discovery_ignores(text: str) -> list[str]:
@@ -92,6 +126,63 @@ def load_skill_frontmatter(path: Path) -> dict:
     if not isinstance(payload, dict):
         raise ValueError(f"{path} frontmatter must contain a mapping")
     return payload
+
+
+def validate_runtime_adapter(
+    root: Path,
+    kind: str,
+    entry: dict,
+    expected_skill_id: str,
+) -> list[str]:
+    asset_id = str(entry["id"])
+    adapter_relative = entry.get("runtime_adapter")
+    if not isinstance(adapter_relative, str) or not adapter_relative:
+        return [f"{kind}/{asset_id}: missing runtime_adapter"]
+
+    adapter_path = root / adapter_relative
+    skill_file = adapter_path / "SKILL.md"
+    if not skill_file.is_file():
+        return [
+            f"{kind}/{asset_id}: missing runtime adapter SKILL.md at {adapter_relative}"
+        ]
+
+    errors: list[str] = []
+    if entry.get("runtime_skill_id") != expected_skill_id:
+        errors.append(
+            f"{kind}/{asset_id}: runtime_skill_id must be {expected_skill_id}"
+        )
+    frontmatter = load_skill_frontmatter(skill_file)
+    if frontmatter.get("name") != expected_skill_id:
+        errors.append(
+            f"{kind}/{asset_id}: runtime adapter name must be {expected_skill_id}"
+        )
+
+    openai_path = adapter_path / "agents" / "openai.yaml"
+    if not openai_path.is_file():
+        errors.append(f"{kind}/{asset_id}: missing agents/openai.yaml")
+    else:
+        openai = load_yaml(openai_path)
+        policy = openai.get("policy")
+        if (
+            kind in {"loops", "workflows"}
+            and (
+                not isinstance(policy, dict)
+                or policy.get("allow_implicit_invocation") is not False
+            )
+        ):
+            errors.append(
+                f"{kind}/{asset_id}: runtime adapter must disable implicit invocation"
+            )
+
+    eval_path = adapter_path / "evals" / "evals.json"
+    if not eval_path.is_file():
+        errors.append(f"{kind}/{asset_id}: missing evals/evals.json")
+    elif kind in {"loops", "workflows"}:
+        errors.extend(
+            f"{kind}/{asset_id}: {error}"
+            for error in validate_eval_file(adapter_path, EXPECTED_ROUTE_IDS)
+        )
+    return errors
 
 
 def validate_ids(kind: str, entries: object, expected: set[str]) -> list[str]:
@@ -150,29 +241,17 @@ def validate_repository(root: Path) -> tuple[list[str], dict[str, int]]:
             if contract and not (path / contract).is_file():
                 errors.append(f"{kind}/{entry.get('id')}: missing {contract}")
 
-            if kind == "tools" and entry.get("id") in EXPECTED_RUNTIME_ADAPTERS:
+            expected_runtime_ids = EXPECTED_RUNTIME_ADAPTERS.get(kind, {})
+            if entry.get("id") in expected_runtime_ids:
                 tool_id = str(entry["id"])
-                expected_skill_id = EXPECTED_RUNTIME_ADAPTERS[tool_id]
-                adapter_relative = entry.get("runtime_adapter")
-                if not isinstance(adapter_relative, str) or not adapter_relative:
-                    errors.append(f"tools/{tool_id}: missing runtime_adapter")
-                    continue
-                adapter_skill = root / adapter_relative / "SKILL.md"
-                if not adapter_skill.is_file():
-                    errors.append(
-                        f"tools/{tool_id}: missing runtime adapter SKILL.md at {adapter_relative}"
+                errors.extend(
+                    validate_runtime_adapter(
+                        root,
+                        kind,
+                        entry,
+                        expected_runtime_ids[tool_id],
                     )
-                    continue
-                declared_skill_id = entry.get("runtime_skill_id")
-                if declared_skill_id != expected_skill_id:
-                    errors.append(
-                        f"tools/{tool_id}: runtime_skill_id must be {expected_skill_id}"
-                    )
-                frontmatter = load_skill_frontmatter(adapter_skill)
-                if frontmatter.get("name") != expected_skill_id:
-                    errors.append(
-                        f"tools/{tool_id}: runtime adapter name must be {expected_skill_id}"
-                    )
+                )
 
     catalog_skill_ids = {
         str(entry.get("id"))
@@ -190,8 +269,18 @@ def validate_repository(root: Path) -> tuple[list[str], dict[str, int]]:
         if isinstance(entry, dict) and entry.get("id")
     }
     for archived_id in sorted(archived_ids):
-        if (root / "skills" / archived_id).exists():
-            errors.append(f"archive/{archived_id}: retired ID remains installable")
+        install_contracts = {
+            "skills": ("SKILL.md",),
+            "loops": ("SKILL.md", "LOOP.md"),
+            "workflows": ("SKILL.md", "WORKFLOW.md"),
+        }
+        for install_root, contracts in install_contracts.items():
+            retired_root = root / install_root / archived_id
+            if any((retired_root / contract).is_file() for contract in contracts):
+                errors.append(
+                    f"archive/{archived_id}: retired ID remains installable "
+                    f"under {install_root}/"
+                )
 
     valid_refs = {kind: set(ids) for kind, ids in EXPECTED_IDS.items()}
     for pack_entry in assets.get("packs", []):

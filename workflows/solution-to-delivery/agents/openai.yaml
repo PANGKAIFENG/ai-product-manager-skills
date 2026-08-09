@@ -1,0 +1,6 @@
+interface:
+  display_name: "方案到交付"
+  short_description: "把已确认方案转成经过评审的完整产品交付包"
+  default_prompt: "Use $solution-to-delivery to turn this confirmed solution into a reviewed Product Delivery Package with applicable UI, HTML, screenshots, and version planning."
+policy:
+  allow_implicit_invocation: false

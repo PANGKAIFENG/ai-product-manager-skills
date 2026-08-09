@@ -167,6 +167,22 @@
           "text": "The invalid self-review remains changes_requested and cannot authorize publication."
         }
       ]
+    },
+    {
+      "id": "package-pre-split-review-record",
+      "type": "regression",
+      "prompt": "这份 Product Delivery Package 还没有拆版本或 issues。请做拆分前独立 Review，并把结论写回 Manifest；不要生成规划产物。",
+      "should_trigger": true,
+      "expected_route": "prd-review",
+      "expected_output": "评审 PRD 与适用 UI 证据，并把覆盖全部当前生产者的结论绑定到 pre_split_input_fingerprint 后写入 pre_split_review。",
+      "assertions": [
+        {
+          "text": "不把拆分前结论写入最终 review，也不提前生成规划产物。"
+        },
+        {
+          "text": "Reviewer 与 PRD/UI artifact producers 身份独立。"
+        }
+      ]
     }
   ]
 }

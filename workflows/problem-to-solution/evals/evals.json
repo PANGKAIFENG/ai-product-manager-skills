@@ -1,0 +1,53 @@
+{
+  "skill_name": "problem-to-solution",
+  "evals": [
+    {
+      "id": "explicit-fuzzy-problem-to-confirmed-solution",
+      "type": "workflow-trigger",
+      "prompt": "$problem-to-solution 我只有一个模糊想法：Agent 任务太容易中断。帮我推进到确认方案，先不要写 PRD。",
+      "should_trigger": true,
+      "expected_route": "problem-to-solution",
+      "expected_output": "从问题校准开始，按证据需要选择研究或决策，再形成并确认方案，停止在 PRD 前。",
+      "assertions": [
+        {"text": "先稳定问题、目标和判断标准，再生成方案。"},
+        {"text": "只在证据会改变选择时进入研究或 decision-loop。"},
+        {"text": "达到 solution_confirmed 前不进入完整 PRD 交付。"}
+      ]
+    },
+    {
+      "id": "explicit-small-problem-short-route",
+      "type": "routing-regression",
+      "prompt": "$problem-to-solution 搜索结果空状态的问题、目标用户和成功判断都已经明确，但还没有候选方案。请走最短路径确认方案。",
+      "should_trigger": true,
+      "expected_route": "problem-to-solution",
+      "expected_output": "跳过 calibration 和无必要的系统研究，直接进入 brainstorming 比较方案并确认。",
+      "assertions": [
+        {"text": "不为了流程完整而强制运行全部 Skill 或 Loop。"},
+        {"text": "问题、目标和判断标准稳定时不重复运行 ai-collaboration-calibration。"},
+        {"text": "输出方案范围、关键行为和确认状态。"}
+      ]
+    },
+    {
+      "id": "implicit-fuzzy-request-does-not-trigger",
+      "type": "non-trigger",
+      "prompt": "我还没想清楚真正的问题是什么，先帮我校准一下。",
+      "should_trigger": false,
+      "expected_route": "ai-collaboration-calibration",
+      "expected_output": "只进入原子问题校准，不隐式启动完整 Workflow。",
+      "assertions": [
+        {"text": "不自动串联研究、方案和挑战。"}
+      ]
+    },
+    {
+      "id": "confirmed-solution-routes-to-delivery",
+      "type": "negative-boundary",
+      "prompt": "方案已经确认了，现在帮我输出 PRD、HTML、截图并评审。",
+      "should_trigger": false,
+      "expected_route": "solution-to-delivery",
+      "expected_output": "进入方案到交付，而不是重新定义问题。",
+      "assertions": [
+        {"text": "不重新打开已确认的问题和方案。"}
+      ]
+    }
+  ]
+}

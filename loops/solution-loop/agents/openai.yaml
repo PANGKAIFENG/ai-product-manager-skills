@@ -1,0 +1,6 @@
+interface:
+  display_name: "方案闭环"
+  short_description: "在方案挑战与定点修订之间循环，直到方案确认"
+  default_prompt: "Use $solution-loop to challenge and revise this candidate solution until it is confirmed or reaches a human gate."
+policy:
+  allow_implicit_invocation: false

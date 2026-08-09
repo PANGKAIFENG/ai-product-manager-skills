@@ -99,14 +99,14 @@ python3 scripts/validate_drawio.py <path>
 
 ### Product Delivery Package Verdict
 
-Package Review 与普通 PRD readiness 并存但不可混用。输入包含 Product Delivery Manifest 时：
+Package Review 与普通 PRD readiness 并存但不可混用。输入包含 Product Delivery Manifest 时，先确认本轮是拆分前 Review 还是完整 Package 最终 Review：
 
-1. 实际读取 Manifest allowlist 中的 PRD、UI artifact、Action Contract、截图、anchor、baseline 和发布计划，不对未读取的 revision 给 verdict。
-2. 验证 `reviewer_identity` 与当前 revision 的全部 Maker/UI Producer identities 不同；Reviewer 不修改被评审 artifact。
-3. 只输出一条 Package verdict：`ready` 或 `changes_requested`，并包含且只包含 `content`、`artifacts`、`publish` 三项 `passed/failed` 检查。
-4. `ready` 必须绑定 validator 返回的当前 `package_input_fingerprint`，且三项检查全部通过。`Ready with assumptions` 不能产生 `package_ready` 或发布授权。
+1. 拆分前 Review 读取 PRD、适用 UI artifact、Action Contract、截图、anchor 和 baseline；最终 Review 还必须读取版本计划、issue drafts 和 coverage matrix。不要对未读取的 revision 给 verdict。
+2. 验证 `reviewer_identity` 与当前 Review 覆盖的全部 artifact `producer_identity` 不同，且 `maker_identities` 没有遗漏生产者；Reviewer 不修改被评审 artifact。
+3. 只输出一条适用阶段的 verdict：`ready` 或 `changes_requested`，并包含且只包含 `content`、`artifacts`、`publish` 三项 `passed/failed` 检查。
+4. 拆分前 `ready` 必须绑定 validator 返回的当前 `pre_split_input_fingerprint` 并写入 `pre_split_review`；最终 `ready` 必须绑定当前 `package_input_fingerprint` 并写入 `review`。两者都要求三项检查全部通过，`Ready with assumptions` 不能产生 Package readiness 或发布授权。
 5. findings 记录 severity、证据来源、责任节点、受影响对象和最小重跑 scope；输入变化后旧 verdict 立即 stale。
-6. Reviewer 只写 Manifest 的 `review` 分区。Human approval 与 DingTalk release 仍由各自角色负责。
+6. Reviewer 只写本阶段对应的 `pre_split_review` 或 `review` 分区。Human approval 与 DingTalk release 仍由各自角色负责。
 
 ## Writing Rules
 

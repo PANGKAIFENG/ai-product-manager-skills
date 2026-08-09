@@ -1,6 +1,6 @@
 # Skill Registry
 
-v0.3 的公开触发面固定为 15 个原子 Skill。`core` 表示默认 PM 面，`active` 表示按需加载；Loop、Workflow 和 Tool 不在此表中冒充 Skill。
+v0.3 的原子能力固定为 15 个 Skill。`core` 表示默认 PM 面，`active` 表示按需加载；Loop、Workflow 和 Tool 不在此表中冒充原子 Skill。两个 Workflow 和三个 Loop 另有显式 Runtime adapter，方便在 Codex 中通过 `$<id>` 选择。
 
 | Skill | 职责 | 状态 | 合并/边界说明 |
 | --- | --- | --- | --- |
@@ -22,7 +22,17 @@ v0.3 的公开触发面固定为 15 个原子 Skill。`core` 表示默认 PM 面
 
 ## 默认安装面
 
-默认安装 [`packs/pm-core.yaml`](packs/pm-core.yaml) 的 9 个 `core` Skill。StyleWork、维护者和工程 Skill 按需安装，减少触发竞争和运行时噪声。
+默认安装 [`packs/pm-core.yaml`](packs/pm-core.yaml) 的 9 个 `core` Skill，以及需要完整流程入口时按需安装的 2 个 Workflow、3 个 Loop。五个组合入口均禁止隐式调用，不增加自然语言触发竞争。StyleWork、维护者和工程 Skill 按需安装。
+
+## 显式 Runtime 入口
+
+| Kind | Runtime ID | 负责什么 | 不负责 |
+| --- | --- | --- | --- |
+| Workflow | `problem-to-solution` | 模糊问题到已确认方案 | 完整 PRD、研发事项或外部发布 |
+| Workflow | `solution-to-delivery` | 已确认方案到 Product Delivery Package | 重新定义问题或无授权外部写入 |
+| Loop | `decision-loop` | 关闭影响一个明确决策的证据 gap | 开放式领域学习 |
+| Loop | `solution-loop` | 关闭候选方案中的关键 challenge | 从零生成方案 |
+| Loop | `delivery-loop` | 关闭 PRD/UI/截图/Manifest 的 Review finding | 从模糊问题启动或自动发布 |
 
 ## 生命周期
 

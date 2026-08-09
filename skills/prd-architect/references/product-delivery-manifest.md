@@ -8,12 +8,13 @@ Use this contract when a PRD must become a reviewable and publishable Product De
 | --- | --- | --- |
 | Maker | Package identity, revision, UI applicability, sources, decisions, PRD artifact | Review, approval, or release facts |
 | UI Producer | Action Contract, HTML/preview, screenshots, UI baselines, anchors | Product decisions or verdict |
+| Backlog Splitter | Requested version plan, issue drafts, and PRD-to-issue coverage matrix | PRD, UI evidence, review, approval, or release facts |
 | Validator | Computed fingerprints, validation result, derived state, last transition | Professional judgment |
-| Independent Reviewer | One `review` record with `content`, `artifacts`, and `publish` checks | Artifacts under review |
+| Independent Reviewer | `pre_split_review` before planning and final `review` for the complete Package | Artifacts under review |
 | Human Approver | `approvals.publish` bound to the exact payload fingerprint | Review or release facts |
 | Publisher | `release.dingtalk` attempts and remote/read-back facts through the validator | Product decisions, artifacts, review, or approval |
 
-Maker and Reviewer identities must differ for the current revision. `review.maker_identities` must include the authoritative `ui_requirement.decided_by`; changing the Reviewer-owned list cannot hide self-review. An Agent identity is a non-empty task, thread, or run ID. A human identity uses `human:<stable-label>`.
+Every artifact records its authoritative `producer_identity`. Each Review's `maker_identities` must include every producer covered by that Review plus `ui_requirement.decided_by`; changing the Reviewer-owned list cannot hide self-review. The Reviewer identity must differ from all covered producers for the current revision. An Agent identity is a non-empty task, thread, or run ID. A human identity uses `human:<stable-label>`.
 
 ## Minimal Shape
 
@@ -36,25 +37,45 @@ decisions: []
 artifacts:
   prd:
     artifact_id: ART-PRD
+    producer_identity: run-maker-1
     path: PRD.md
     sha256: "<sha256>"
   action_contract:
     artifact_id: ART-ACTION
+    producer_identity: run-ui-1
     path: ui/screen-contract.md
     sha256: "<sha256>"
   html:
     - artifact_id: ART-HTML
+      producer_identity: run-ui-1
       path: ui/mockup.html
       sha256: "<sha256>"
       baseline_ref: BASE-1
   screenshots:
     - artifact_id: ART-SHOT-DEFAULT
+      producer_identity: run-ui-1
       path: ui/screenshots/default.png
       sha256: "<sha256>"
       source_html_ref: ART-HTML
       source_html_sha256: "<sha256>"
       state: default
       viewport: 1440x900
+  # Include all three groups before Review when version/issue splitting is requested.
+  version_plan:
+    artifact_id: ART-VERSION-PLAN
+    producer_identity: run-backlog-1
+    path: delivery/version-plan.md
+    sha256: "<sha256>"
+  issue_drafts:
+    - artifact_id: ART-ISSUES
+      producer_identity: run-backlog-1
+      path: delivery/issues.md
+      sha256: "<sha256>"
+  coverage_matrix:
+    artifact_id: ART-COVERAGE
+    producer_identity: run-backlog-1
+    path: delivery/prd-issue-coverage.md
+    sha256: "<sha256>"
 
 ui_baselines:
   - baseline_id: BASE-1
@@ -71,6 +92,17 @@ anchors:
     state_refs: [default]
 
 validations: []
+pre_split_review:
+  review_id: REVIEW-PRE-SPLIT-1
+  reviewer_identity: run-pre-split-reviewer-1
+  maker_identities: [run-maker-1, run-ui-1]
+  input_fingerprint: "<pre_split_input_fingerprint>"
+  verdict: ready
+  checks:
+    content: passed
+    artifacts: passed
+    publish: passed
+  findings: []
 review: null
 approvals:
   publish: null
@@ -116,33 +148,54 @@ The validator resolves `heading_path` against current ATX Markdown headings. A l
 - Absolute paths, `..` traversal, missing files, symlink escapes, and SHA-256 mismatches fail closed.
 - `ui_baselines.source` is provenance text and is not an artifact allowlist path.
 - Artifact IDs are unique across all artifact kinds.
+- Every PRD, UI, and planning artifact records its actual producer's
+  `producer_identity`; a Reviewer cannot delete that identity or omit it from
+  `maker_identities` to manufacture independence.
+- When version or issue splitting is requested, a current `pre_split_review`
+  with `verdict: ready` must exist before the Backlog Splitter adds `version_plan`,
+  `issue_drafts`, or `coverage_matrix`.
+- Actor-scoped validation binds every changed Maker, UI Producer, or Backlog
+  Splitter artifact's `producer_identity` to `--actor-identity`; a removed
+  artifact must belong to that actor. All three planning groups then become
+  Package inputs even when they are not part of the DingTalk publish allowlist.
 
 ## Fingerprints
 
 The validator serializes fingerprint inputs as UTF-8 canonical JSON with sorted keys and compact separators.
+
+`pre_split_input_fingerprint` uses the same canonical input shape but excludes
+`version_plan`, `issue_drafts`, and `coverage_matrix`. `pre_split_review` must
+bind this computed value before any planning artifact is added.
 
 `package_input_fingerprint` covers:
 
 - schema version, work item ID, revision;
 - UI applicability;
 - sources and decisions;
-- artifact IDs, kinds, paths, and verified hashes;
+- artifact IDs, kinds, paths, verified hashes, and producer identities for all
+  PRD, UI, version-plan, issue-draft, and coverage artifacts;
 - UI baselines and anchors;
 - validator contract version.
 
-It excludes timestamps, review, approval, release results, status, and last transition. A changed input makes the old review and approval stale.
+It excludes timestamps, both Review records, approval, release results, status, and last transition. A changed input makes the affected Review stale and makes any old approval unusable.
 
 `publish_payload_fingerprint` covers the DingTalk mode, title, target selector/value, ordered content/HTML/screenshot allowlist, and each allowlisted artifact's verified hash. Approval must bind this exact value.
 
-## Package Verdict
+## Review Gates
 
-There is one Package verdict: `ready` or `changes_requested`. It contains all three checks:
+`pre_split_review` covers the PRD and applicable UI artifacts before planning.
+It is required only when planning artifacts will be added and must bind the
+current `pre_split_input_fingerprint`.
+
+The final `review` covers the complete Package, including all planning artifacts
+and every authoritative producer. Both records use `ready` or
+`changes_requested` and contain all three checks:
 
 ```yaml
 review:
   review_id: REVIEW-1
   reviewer_identity: run-reviewer-1
-  maker_identities: [run-maker-1, run-ui-1]
+  maker_identities: [run-maker-1, run-ui-1, run-backlog-1]
   input_fingerprint: "<package_input_fingerprint>"
   verdict: ready
   checks:
@@ -152,7 +205,11 @@ review:
   findings: []
 ```
 
-`ready` is valid only when all checks are `passed`, the fingerprint is current, and the Reviewer is independent. `Ready with assumptions` may be ordinary PRD advice but cannot create Package readiness.
+`ready` is valid only when all checks are `passed`, the fingerprint is current,
+all covered producer identities are listed, and the Reviewer is independent.
+`Ready with assumptions` may be ordinary PRD advice but cannot create Package
+readiness. Planning artifacts without a current ready `pre_split_review` fail
+closed; a final Review cannot retroactively authorize the split.
 
 ## Publish Approval And Recovery
 
@@ -163,6 +220,12 @@ approvals:
     payload_fingerprint: "<publish_payload_fingerprint>"
     approved_at: "2026-08-06T12:00:00+08:00"
 ```
+
+An approval whose `payload_fingerprint` is stale is ignored as non-current
+authorization. It does not invalidate a current independently reviewed Package:
+the Package remains `package_ready`, while publication remains
+`authorization_required`. Publisher preflight still fails closed unless a
+current approval raises the derived state to `publish_approved`.
 
 Package mode consumes only `content_artifact_ref`, `html_artifact_refs`, `screenshot_artifact_refs`, and `target`. It never discovers the newest sibling HTML.
 
@@ -214,6 +277,15 @@ Check an actor-scoped edit against the previous Manifest:
 ```bash
 python3 scripts/validate_product_delivery_manifest.py product-delivery-manifest.yaml \
   --previous-manifest previous.yaml --actor-role reviewer
+```
+
+Producer changes must bind the runtime identity recorded on every changed
+artifact. For example, Backlog Splitter changes use:
+
+```bash
+python3 scripts/validate_product_delivery_manifest.py product-delivery-manifest.yaml \
+  --previous-manifest previous.yaml --actor-role backlog_splitter \
+  --actor-identity run-backlog-1
 ```
 
 Publisher preflight:

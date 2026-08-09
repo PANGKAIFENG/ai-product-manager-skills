@@ -35,7 +35,7 @@
 
 - 只有问题未定义清楚时才用 `ai-collaboration-calibration`；研究不是漫无边界地搜索，而是循环到证据足够支持决策。
 - 研究、方案和 PRD 各自拥有自己的判断责任；Loop 只负责状态、回流和停止条件，不复制专业内容。
-- 小需求可以直接走 `prd-architect -> ui-mockup-desktop-workbench -> prd-review`；中需求加一轮 `grill-me`；大需求先走 `workflows/product-discovery`，收敛后再走 `workflows/product-delivery`。
+- 小需求可以直接调用原子 Skill；需要完整推进时，显式使用 `$problem-to-solution` 或 `$solution-to-delivery`。Loop 只在存在真实回流时使用。
 - PRD 交付包可以包含 HTML 和截图，但 HTML/截图是证据与 handoff，不等于生产代码。
 - DingTalk、Yunxiao 和其他外部写入只由 `tools/` 的专用 publisher 在当前 run 取得明确授权后执行；Skill handoff 本身不构成授权。
 
@@ -43,16 +43,16 @@
 
 | Loop | 负责什么 | 终止条件 |
 | --- | --- | --- |
-| `research-decision-loop` | Research 与 Decision 之间往返，维护 evidence gap 和 decision record | 证据满足闭环、用户决策或两轮无有效收敛 |
-| `solution-challenge-loop` | Maker 方案与 Critic 压测之间往返 | 方案差量关闭、用户确认或两轮无有效收敛 |
-| `prd-delivery-readiness-loop` | PRD、UI、Review、Issue 拆解之间往返 | readiness 达标、用户确认或出现人工门 |
+| [`decision-loop`](loops/decision-loop/) | Research 与 Decision 之间往返，关闭一个影响决策的 evidence gap | 决策成立、三轮上限、两轮无有效差量或 Human Gate |
+| [`solution-loop`](loops/solution-loop/) | Maker 与 Critic 之间往返，关闭一个方案 challenge | 方案确认、三轮上限、两轮无有效差量或 Human Gate |
+| [`delivery-loop`](loops/delivery-loop/) | PRD/UI Maker 与独立 Reviewer 之间往返，关闭交付 finding | package ready、三轮上限、两轮无有效差量或 Human Gate |
 
 ## Workflow
 
-- [`product-discovery`](workflows/product-discovery/WORKFLOW.md)：问题校准、研究/决策、方案和压力测试的组合流程。
-- [`product-delivery`](workflows/product-delivery/WORKFLOW.md)：PRD、HTML、截图、Review、版本拆分和发布器的组合流程。
+- [`problem-to-solution`](workflows/problem-to-solution/)（问题到方案）：把模糊问题推进为可进入 PRD 的已确认方案。
+- [`solution-to-delivery`](workflows/solution-to-delivery/)（方案到交付）：把已确认方案转成经过 Review 的完整产品交付包。
 
-Workflow 是可读的组合规则，不是一个需要被触发的 mega Skill。
+Workflow 和 Loop 在语义上仍是组合资产，不是原子 Skill；目录中的 `SKILL.md` 只是 Runtime 适配入口。五个入口均关闭隐式调用，只有显式选择 `$<id>` 才运行完整编排。
 
 ## Tool / Publisher
 
@@ -61,14 +61,14 @@ Workflow 是可读的组合规则，不是一个需要被触发的 mega Skill。
 - `tools/publishers/yunxiao-work-item-publisher`：创建并回读云效工作项。
 - `tools/automations/yunxiao-requirement-sheet-sync`：把云效需求批次同步到钉钉 Sheet。
 
-工具目录里的 `runtime-adapter/` 是为本地 Agent 分发保留的兼容入口，不计入 15 个原子 Skill。
+Workflow、Loop 和工具目录里的 Runtime adapter 不计入 15 个原子 Skill。
 
 ## 目录
 
 ```text
-skills/<skill-id>/                 # 15 个原子 Skill，唯一公开触发面
-loops/<loop-id>/LOOP.md             # 3 个可恢复 Loop 合同
-workflows/<workflow-id>/            # 2 个阶段组合流程
+skills/<skill-id>/                       # 15 个原子 Skill
+loops/<loop-id>/{SKILL,LOOP}.md           # 3 个显式 Runtime 入口 + 可恢复合同
+workflows/<workflow-id>/{SKILL,WORKFLOW}.md # 2 个显式 Runtime 入口 + 阶段组合
 tools/{validators,publishers,automations}/
 packs/*.yaml                        # 安装组合建议
 catalog/skills.yaml                 # 15 个 Skill 机器目录
@@ -84,7 +84,7 @@ cd ai-product-manager-skills
 python3 scripts/audit_skills.py .
 ```
 
-本地多 Runtime 使用 Skillshare 时，从已合并的 `skills/<id>/` 或明确的 `tools/*/runtime-adapter/` 安装；不要把混合的 Skillshare 聚合目录当作 GitHub 仓库整体 push。详见 [迁移说明](docs/migration-v0.3.md) 和 [Registry](SKILL_REGISTRY.md)。
+本地多 Runtime 使用 Skillshare 时，从已合并的 `skills/<id>/`、`loops/<id>/`、`workflows/<id>/` 或明确的 `tools/*/runtime-adapter/` 安装；不要把混合的 Skillshare 聚合目录当作 GitHub 仓库整体 push。详见 [迁移说明](docs/migration-v0.3.md) 和 [Registry](SKILL_REGISTRY.md)。
 
 ## 许可证
 

@@ -1,8 +1,9 @@
 # Quickstart
 
-This repository has one installable root: `skills/`. It contains 15 atomic
-Skills. `loops/`, `workflows/`, and `tools/` are composition and side-effect
-contracts, not extra Skill discovery roots.
+This repository contains 15 atomic Skills plus five optional explicit Runtime
+entry adapters: two Workflows under `workflows/` and three Loops under `loops/`.
+Tools keep separate side-effect adapters. Runtime adapters do not change the
+catalog kind of their owning asset.
 
 ## Clone And Audit
 
@@ -30,21 +31,17 @@ python3 scripts/audit_skills.py .
 
 ## Typical Product Path
 
-小需求可以直接走 `prd-architect -> ui-mockup-desktop-workbench -> prd-review`。
-中需求增加 `grill-me`。大需求先走 `workflows/product-discovery`，在研究/决策和方案
-收敛后再走 `workflows/product-delivery`。需要外部写入时才显式调用对应
-`tools/` publisher，并在当前 run 再次确认授权。
+小需求直接调用原子 Skill。需要从模糊问题完整推进到确认方案时使用
+`$problem-to-solution`；方案确认后需要完整产品交付包时使用
+`$solution-to-delivery`。只有局部节点需要多轮回流时，才显式使用三个 Loop。
+外部写入仍需调用对应 `tools/` publisher，并在当前 run 确认授权。
 
 ```text
-$ai-collaboration-calibration 先校准问题
-$research-topic-compiler 做证据研究
-$decision-research 给出具体取舍
-$brainstorming 形成方案
-$grill-me 压测方案
-$prd-architect 生成 PRD Delivery Package
-$ui-mockup-desktop-workbench 输出结构、HTML、截图和 handoff
-$prd-review 做独立评审
-$prd-to-issues 拆版本与研发事项
+$problem-to-solution 从模糊问题推进到已确认方案
+$decision-loop 为一个明确决策补齐关键证据
+$solution-loop 对候选方案反复挑战和定点修订
+$solution-to-delivery 从已确认方案生成完整产品交付包
+$delivery-loop 对现有 PRD/UI/截图做 Review 和修订闭环
 ```
 
 ## Install

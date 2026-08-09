@@ -18,6 +18,10 @@ except ImportError:  # pragma: no cover - exercised by the setup check below
 
 CATALOG_PATH = Path("catalog/skills.yaml")
 SKILLS_PATH = Path("skills")
+COMPOSITION_RUNTIME_ROOTS = {
+    "loops": "LOOP.md",
+    "workflows": "WORKFLOW.md",
+}
 SKILL_ID_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 MARKDOWN_LINK_RE = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
 LOCAL_PATH_RE = re.compile(
@@ -147,11 +151,42 @@ def list_skill_dirs(root: Path) -> list[Path]:
     )
 
 
+def list_composition_runtime_dirs(root: Path) -> list[Path]:
+    runtime_dirs: list[Path] = []
+    for directory, contract in COMPOSITION_RUNTIME_ROOTS.items():
+        runtime_root = root / directory
+        if not runtime_root.is_dir():
+            continue
+        runtime_dirs.extend(
+            path
+            for path in runtime_root.iterdir()
+            if path.is_dir()
+            and (path / "SKILL.md").is_file()
+            and (path / contract).is_file()
+        )
+    return sorted(runtime_dirs)
+
+
+def list_repository_route_ids(root: Path) -> set[str]:
+    return {
+        path.name
+        for path in [*list_skill_dirs(root), *list_composition_runtime_dirs(root)]
+    }
+
+
 def validate_skill_manifest_locations(root: Path) -> list[str]:
     errors: list[str] = []
     for manifest in sorted(root.rglob("SKILL.md")):
         relative = manifest.relative_to(root)
         if ".git" in relative.parts or "archive" in relative.parts:
+            continue
+        if (
+            len(relative.parts) == 3
+            and relative.parts[0] in COMPOSITION_RUNTIME_ROOTS
+            and relative.parts[2] == "SKILL.md"
+            and SKILL_ID_RE.fullmatch(relative.parts[1])
+            and (manifest.parent / COMPOSITION_RUNTIME_ROOTS[relative.parts[0]]).is_file()
+        ):
             continue
         if relative.parts[:2] in (("tools", "publishers"), ("tools", "automations")):
             if len(relative.parts) >= 4 and relative.parts[-2] == "runtime-adapter":
@@ -165,7 +200,9 @@ def validate_skill_manifest_locations(root: Path) -> list[str]:
     return errors
 
 
-def validate_eval_file(skill_dir: Path) -> list[str]:
+def validate_eval_file(
+    skill_dir: Path, repository_route_ids: set[str] | None = None
+) -> list[str]:
     errors: list[str] = []
     eval_path = skill_dir / "evals" / "evals.json"
     if not eval_path.exists():
@@ -185,9 +222,9 @@ def validate_eval_file(skill_dir: Path) -> list[str]:
         return errors
 
     seen_ids: set[str] = set()
-    repository_skill_ids = {
-        path.name for path in list_skill_dirs(skill_dir.parent.parent)
-    }
+    repository_route_ids = repository_route_ids or list_repository_route_ids(
+        skill_dir.parent.parent
+    )
     trigger_count = 0
     non_trigger_count = 0
     known_risk_count = 0
@@ -231,13 +268,13 @@ def validate_eval_file(skill_dir: Path) -> list[str]:
                 if expected_route.startswith("external:")
                 else None
             )
-            route_is_valid = expected_route in repository_skill_ids or (
+            route_is_valid = expected_route in repository_route_ids or (
                 external_skill_id is not None
                 and SKILL_ID_RE.fullmatch(external_skill_id) is not None
             )
             if not route_is_valid:
                 errors.append(
-                    f"eval {case_id} expected_route must name a repository Skill "
+                    f"eval {case_id} expected_route must name a repository Runtime entry "
                     "or use external:<skill-id>"
                 )
 
@@ -369,6 +406,8 @@ def audit(root: Path) -> int:
     catalog, catalog_errors = load_catalog(root)
     errors.extend(catalog_errors)
     skill_dirs = list_skill_dirs(root)
+    composition_runtime_dirs = list_composition_runtime_dirs(root)
+    repository_route_ids = list_repository_route_ids(root)
     actual_ids = {path.name for path in skill_dirs}
 
     if not skill_dirs:
@@ -395,17 +434,27 @@ def audit(root: Path) -> int:
             warnings.append(f"{skill_id}: public SKILL.md contains local/private runtime reference(s)")
 
         errors.extend(
-            f"{skill_id}: {warning}" for warning in validate_eval_file(skill_dir)
+            f"{skill_id}: {warning}"
+            for warning in validate_eval_file(skill_dir, repository_route_ids)
         )
         if skill_id in HIGH_RISK_SCRIPT_SKILLS and not (skill_dir / "scripts").exists():
             errors.append(f"{skill_id}: high-risk output Skill has no scripts/ checker")
+
+    for runtime_dir in composition_runtime_dirs:
+        errors.extend(
+            f"{runtime_dir.name}: {warning}"
+            for warning in validate_eval_file(runtime_dir, repository_route_ids)
+        )
 
     if catalog:
         errors.extend(validate_catalog_surfaces(root, catalog, actual_ids))
     errors.extend(validate_duplicate_prd_files(root))
     errors.extend(validate_markdown_links(root))
 
-    print(f"Audited {len(skill_dirs)} Skill(s) under {SKILLS_PATH}/.")
+    print(
+        f"Audited {len(skill_dirs)} Skill(s) and "
+        f"{len(composition_runtime_dirs)} composition Runtime adapter(s)."
+    )
     if warnings:
         print("\nWarnings:")
         for warning in warnings:

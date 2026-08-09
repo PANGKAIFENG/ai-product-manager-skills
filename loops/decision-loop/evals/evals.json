@@ -1,0 +1,63 @@
+{
+  "skill_name": "decision-loop",
+  "evals": [
+    {
+      "id": "explicit-evidence-gap-loop",
+      "type": "loop-trigger",
+      "prompt": "$decision-loop 我们要决定自研还是接入第三方搜索。当前缺少真实接入成本证据，请循环到可以做决定。",
+      "should_trigger": true,
+      "expected_route": "decision-loop",
+      "expected_output": "维护单一决策问题和 material gap，在 Research/Decision 之间返回 Evidence Delta，最多三轮。",
+      "assertions": [
+        {"text": "每轮只关闭一个会改变决策的证据缺口。"},
+        {"text": "状态包含 cycle、closure criterion、preserved items 和 resume point。"},
+        {"text": "三轮上限或连续两轮无差量时进入 Human Gate。"}
+      ]
+    },
+    {
+      "id": "resume-existing-decision-state",
+      "type": "loop-transfer",
+      "prompt": "$decision-loop 继续上次 cycle 2：推荐第三方，唯一 gap 是峰值延迟，其他成本和合规结论保持不变。",
+      "should_trigger": true,
+      "expected_route": "decision-loop",
+      "expected_output": "恢复 cycle 2，只研究峰值延迟，不重开已确认结论。",
+      "assertions": [
+        {"text": "保留已确认的成本和合规判断。"},
+        {"text": "不从 cycle 1 重新开始。"}
+      ]
+    },
+    {
+      "id": "open-domain-research-does-not-trigger",
+      "type": "non-trigger",
+      "prompt": "系统调研一下 Agent Memory 的概念、演进和最佳实践。",
+      "should_trigger": false,
+      "expected_route": "research-topic-compiler",
+      "expected_output": "进入开放式专题研究，不启动决策闭环。",
+      "assertions": [
+        {"text": "不虚构一个具体决策问题。"}
+      ]
+    },
+    {
+      "id": "single-decision-pass-does-not-trigger",
+      "type": "non-trigger",
+      "prompt": "证据已经齐了，只比较这三个候选并给我一次性推荐，不需要继续研究。",
+      "should_trigger": false,
+      "expected_route": "decision-research",
+      "expected_output": "由 decision-research 完成单次决策，不建立循环状态。",
+      "assertions": [
+        {"text": "不在没有 material evidence gap 时启动决策闭环。"}
+      ]
+    },
+    {
+      "id": "business-tradeoff-human-gate",
+      "type": "boundary-risk",
+      "prompt": "$decision-loop 证据已经齐了，但增长和毛利哪个优先只能由业务负责人决定。你替我们选一个。",
+      "should_trigger": true,
+      "expected_route": "decision-loop",
+      "expected_output": "整理取舍后进入 Human Gate，不把价值偏好伪装成研究结论。",
+      "assertions": [
+        {"text": "不替责任人做无法从证据推断的业务取舍。"}
+      ]
+    }
+  ]
+}

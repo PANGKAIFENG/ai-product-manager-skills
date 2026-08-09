@@ -156,6 +156,43 @@ class AuditSkillsTests(unittest.TestCase):
                 output,
             )
 
+    def test_composition_runtime_manifests_with_contracts_pass(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            loop = root / "loops" / "decision-loop"
+            workflow = root / "workflows" / "problem-to-solution"
+            loop.mkdir(parents=True)
+            workflow.mkdir(parents=True)
+            (loop / "SKILL.md").write_text("# Runtime adapter\n", encoding="utf-8")
+            (loop / "LOOP.md").write_text("# Loop contract\n", encoding="utf-8")
+            (workflow / "SKILL.md").write_text(
+                "# Runtime adapter\n", encoding="utf-8"
+            )
+            (workflow / "WORKFLOW.md").write_text(
+                "# Workflow contract\n", encoding="utf-8"
+            )
+
+            errors = audit_skills.validate_skill_manifest_locations(root)
+
+            self.assertEqual(errors, [])
+
+    def test_composition_runtime_manifest_without_contract_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            adapter = root / "loops" / "decision-loop" / "SKILL.md"
+            adapter.parent.mkdir(parents=True)
+            adapter.write_text("# Runtime adapter\n", encoding="utf-8")
+
+            errors = audit_skills.validate_skill_manifest_locations(root)
+
+            self.assertEqual(
+                errors,
+                [
+                    "SKILL.md outside canonical installable root: "
+                    "loops/decision-loop/SKILL.md"
+                ],
+            )
+
     def test_missing_eval_file_fails(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -260,7 +297,7 @@ class AuditSkillsTests(unittest.TestCase):
                 self.assertEqual(result, 1, output)
                 self.assertIn(
                     "eval smoke-non-trigger-1 expected_route must name a "
-                    "repository Skill or use external:<skill-id>",
+                    "repository Runtime entry or use external:<skill-id>",
                     output,
                 )
 

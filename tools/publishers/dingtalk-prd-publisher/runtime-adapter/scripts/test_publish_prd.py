@@ -186,13 +186,21 @@ class PublishPrdTest(unittest.TestCase):
             "PRD.md",
             b"# Package PRD\n\n## Default\nBody.\n\n![Default](ui/screenshots/default.png)\n",
             "ART-PRD",
+            producer_identity="run-maker",
         )
-        action = self.artifact(temp_root, "ui/screen-contract.md", b"# Action Contract\n", "ART-ACTION")
+        action = self.artifact(
+            temp_root,
+            "ui/screen-contract.md",
+            b"# Action Contract\n",
+            "ART-ACTION",
+            producer_identity="run-ui",
+        )
         html = self.artifact(
             temp_root,
             "ui/approved.html",
             b"<html><body>approved</body></html>\n",
             "ART-HTML",
+            producer_identity="run-ui",
             baseline_ref="BASE-1",
         )
         shot = self.artifact(
@@ -200,6 +208,7 @@ class PublishPrdTest(unittest.TestCase):
             "ui/screenshots/default.png",
             b"fake-approved-screenshot",
             "ART-SHOT",
+            producer_identity="run-ui",
             source_html_ref="ART-HTML",
             source_html_sha256=html["sha256"],
             state="default",
@@ -246,6 +255,7 @@ class PublishPrdTest(unittest.TestCase):
                 }
             ],
             "validations": [],
+            "pre_split_review": None,
             "review": None,
             "approvals": {"publish": None},
             "release": {

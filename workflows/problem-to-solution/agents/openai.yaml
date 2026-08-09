@@ -1,0 +1,6 @@
+interface:
+  display_name: "问题到方案"
+  short_description: "把模糊产品问题推进为可进入 PRD 的已确认方案"
+  default_prompt: "Use $problem-to-solution to turn this fuzzy product problem into a confirmed solution. Stop before PRD delivery."
+policy:
+  allow_implicit_invocation: false

@@ -6,6 +6,23 @@ This project uses semantic-ish release tags for public snapshots. The current fo
 
 ## Unreleased
 
+## [0.3.3] - 2026-08-10
+
+### Added
+
+- Added explicit-only Codex Runtime entrypoints for two Workflows, `$problem-to-solution` and `$solution-to-delivery`, and three Loops, `$decision-loop`, `$solution-loop`, and `$delivery-loop`.
+- Added co-located runtime metadata and routing evals for all five composition entries while preserving their Workflow or Loop catalog kind.
+
+### Changed
+
+- Renamed the former v0.3 composition IDs to shorter, outcome-oriented names and recorded one-way migration aliases without keeping duplicate Runtime entrypoints.
+- Bounded every Loop to three cycles, with a Human Gate after two consecutive cycles without a meaningful delta, and standardized recoverable state, preserved items, and resume points.
+- Extended the v0.3 asset checker to validate composition Runtime adapters, stable IDs, explicit-only policy, eval schema/routes, and minimum trigger/non-trigger/risk coverage.
+- Included requested version plans, issue drafts, and PRD coverage matrices in the Product Delivery Manifest fingerprint before independent Review.
+- Bound every PRD, UI, and planning artifact to its producer identity, added a validator-enforced pre-split Review gate, and made the final Review cover every Package producer.
+- Kept an independently reviewed Package at `package_ready` when a persisted publish approval is stale while preserving fail-closed Publisher authorization.
+- Updated the core Pack, Registry, Routing, quickstart, install, distribution, migration, and Agent guidance for the new Runtime surface.
+
 ## [0.3.2] - 2026-08-09
 
 ### Changed
