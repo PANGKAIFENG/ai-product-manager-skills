@@ -264,6 +264,13 @@ def is_nonempty_string(value: Any) -> bool:
     return isinstance(value, str) and bool(value.strip())
 
 
+def is_human_identity(value: Any) -> bool:
+    if not is_nonempty_string(value) or not value.startswith("human:"):
+        return False
+    label = value.removeprefix("human:")
+    return bool(label.strip()) and label == label.strip()
+
+
 def require_mapping(value: Any, location: str, result: ValidationResult) -> dict[str, Any]:
     if not isinstance(value, dict):
         result.errors.append(f"{location}: must be a mapping")
@@ -678,8 +685,13 @@ def validate_approval(manifest: dict[str, Any], payload_fingerprint: str | None,
     if approval is None:
         return False
     approval = require_mapping(approval, "approvals.publish", result)
-    if not is_nonempty_string(approval.get("approver_identity")):
+    approver_identity = approval.get("approver_identity")
+    if not is_nonempty_string(approver_identity):
         result.errors.append("approvals.publish.approver_identity: required")
+    elif not is_human_identity(approver_identity):
+        result.errors.append(
+            "approvals.publish.approver_identity: must use human:<stable-label>"
+        )
     if not is_nonempty_string(approval.get("approved_at")):
         result.errors.append("approvals.publish.approved_at: required")
     if payload_fingerprint is None or approval.get("payload_fingerprint") != payload_fingerprint:
@@ -848,6 +860,79 @@ def validate_actor_changes(
     )
     if unauthorized:
         result.errors.append(f"actor_role.{actor_role}: unauthorized changes: {', '.join(unauthorized)}")
+
+    if actor_role == "reviewer":
+        changed_review_fields = [
+            field_name
+            for field_name in ("pre_split_review", "review")
+            if any(
+                path == field_name or path.startswith(f"{field_name}.")
+                for path in changes
+            )
+        ]
+        if changed_review_fields and not is_nonempty_string(actor_identity):
+            result.errors.append(
+                "actor_role.reviewer: actor_identity is required for Review changes"
+            )
+        for field_name in changed_review_fields:
+            if field_name == "pre_split_review":
+                previous_artifacts = previous.get("artifacts", {})
+                if isinstance(previous_artifacts, dict) and any(
+                    previous_artifacts.get(group) not in (None, [], {})
+                    for group in PLANNING_ARTIFACT_GROUPS
+                ):
+                    result.errors.append(
+                        "actor_role.reviewer: pre_split_review cannot be added or changed after planning artifacts exist"
+                    )
+            current_record = current.get(field_name)
+            previous_record = previous.get(field_name)
+            authoritative = (
+                current_record if isinstance(current_record, dict) else previous_record
+            )
+            if (
+                is_nonempty_string(actor_identity)
+                and isinstance(authoritative, dict)
+                and authoritative.get("reviewer_identity") != actor_identity
+            ):
+                result.errors.append(
+                    f"actor_role.reviewer: {field_name}.reviewer_identity must match actor_identity"
+                )
+
+    if actor_role == "approver" and any(
+        path == "approvals.publish" or path.startswith("approvals.publish.")
+        for path in changes
+    ):
+        if not is_nonempty_string(actor_identity):
+            result.errors.append(
+                "actor_role.approver: actor_identity is required for approval changes"
+            )
+        elif not is_human_identity(actor_identity):
+            result.errors.append(
+                "actor_role.approver: actor_identity must use human:<stable-label>"
+            )
+        current_approvals = current.get("approvals")
+        previous_approvals = previous.get("approvals")
+        current_approval = (
+            current_approvals.get("publish")
+            if isinstance(current_approvals, dict)
+            else None
+        )
+        previous_approval = (
+            previous_approvals.get("publish")
+            if isinstance(previous_approvals, dict)
+            else None
+        )
+        authoritative = (
+            current_approval if isinstance(current_approval, dict) else previous_approval
+        )
+        if (
+            is_nonempty_string(actor_identity)
+            and isinstance(authoritative, dict)
+            and authoritative.get("approver_identity") != actor_identity
+        ):
+            result.errors.append(
+                "actor_role.approver: approvals.publish.approver_identity must match actor_identity"
+            )
 
     owned_groups = ROLE_ARTIFACT_GROUPS.get(actor_role)
     if not owned_groups:

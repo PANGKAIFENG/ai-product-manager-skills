@@ -381,6 +381,143 @@ class ProductDeliveryManifestTest(unittest.TestCase):
                 result.errors,
             )
 
+    def test_reviewer_cannot_retroactively_authorize_existing_planning_artifacts(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            previous = self.base_manifest(root, ui_required=False)
+            self.add_delivery_plan_artifacts(root, previous)
+            fingerprint = validator.validate_manifest(
+                previous, root
+            ).pre_split_input_fingerprint
+            current = json.loads(json.dumps(previous))
+            current["pre_split_review"] = {
+                "review_id": "REVIEW-RETROACTIVE",
+                "reviewer_identity": "run-pre-split-reviewer",
+                "maker_identities": ["run-maker"],
+                "input_fingerprint": fingerprint,
+                "verdict": "ready",
+                "checks": {
+                    "content": "passed",
+                    "artifacts": "passed",
+                    "publish": "passed",
+                },
+                "findings": [],
+            }
+
+            result = validator.validate_manifest(
+                current,
+                root,
+                previous=previous,
+                actor_role="reviewer",
+                actor_identity="run-pre-split-reviewer",
+            )
+
+            self.assertFalse(result.valid)
+            self.assertTrue(
+                any("cannot be added or changed after planning artifacts exist" in item for item in result.errors),
+                result.errors,
+            )
+
+    def test_reviewer_actor_identity_is_bound_to_review_record(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            previous = self.base_manifest(root, ui_required=False)
+            initial = validator.validate_manifest(previous, root)
+            current = json.loads(json.dumps(previous))
+            current["review"] = {
+                "review_id": "REVIEW-FORGED-ACTOR",
+                "reviewer_identity": "run-independent-reviewer",
+                "maker_identities": ["run-maker"],
+                "input_fingerprint": initial.package_input_fingerprint,
+                "verdict": "ready",
+                "checks": {
+                    "content": "passed",
+                    "artifacts": "passed",
+                    "publish": "passed",
+                },
+                "findings": [],
+            }
+
+            forged = validator.validate_manifest(
+                current,
+                root,
+                previous=previous,
+                actor_role="reviewer",
+                actor_identity="run-maker",
+            )
+            legitimate = validator.validate_manifest(
+                current,
+                root,
+                previous=previous,
+                actor_role="reviewer",
+                actor_identity="run-independent-reviewer",
+            )
+
+            self.assertFalse(forged.valid)
+            self.assertTrue(
+                any("review.reviewer_identity must match actor_identity" in item for item in forged.errors),
+                forged.errors,
+            )
+            self.assertTrue(legitimate.valid, legitimate.errors)
+            self.assertEqual(legitimate.derived_status, "package_ready")
+
+    def test_approver_actor_identity_is_bound_and_must_be_human(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            previous = self.make_approved(root, ui_required=False)
+            previous["approvals"]["publish"] = None
+            previous["package_status"] = "package_ready"
+            previous["current_stage"] = "approval"
+            self.assertTrue(validator.validate_manifest(previous, root).valid)
+
+            forged_label = json.loads(json.dumps(previous))
+            forged_label["approvals"]["publish"] = {
+                "approver_identity": "human:owner",
+                "payload_fingerprint": previous["release"]["dingtalk"]["payload_fingerprint"],
+                "approved_at": "2026-08-06T12:00:00+08:00",
+            }
+            mismatch = validator.validate_manifest(
+                forged_label,
+                root,
+                previous=previous,
+                actor_role="approver",
+                actor_identity="run-maker",
+            )
+            legitimate = validator.validate_manifest(
+                forged_label,
+                root,
+                previous=previous,
+                actor_role="approver",
+                actor_identity="human:owner",
+            )
+
+            nonhuman = json.loads(json.dumps(previous))
+            nonhuman["approvals"]["publish"] = {
+                "approver_identity": "run-maker",
+                "payload_fingerprint": previous["release"]["dingtalk"]["payload_fingerprint"],
+                "approved_at": "2026-08-06T12:00:00+08:00",
+            }
+            nonhuman_result = validator.validate_manifest(
+                nonhuman,
+                root,
+                previous=previous,
+                actor_role="approver",
+                actor_identity="run-maker",
+            )
+
+            self.assertFalse(mismatch.valid)
+            self.assertTrue(
+                any("approver_identity must match actor_identity" in item for item in mismatch.errors),
+                mismatch.errors,
+            )
+            self.assertTrue(legitimate.valid, legitimate.errors)
+            self.assertEqual(legitimate.derived_status, "publish_approved")
+            self.assertFalse(nonhuman_result.valid)
+            self.assertTrue(
+                any("must use human:<stable-label>" in item for item in nonhuman_result.errors),
+                nonhuman_result.errors,
+            )
+
     def test_eval_b2_04_reviewer_must_be_independent_and_all_checks_pass(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

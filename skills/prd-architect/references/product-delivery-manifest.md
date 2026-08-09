@@ -14,7 +14,7 @@ Use this contract when a PRD must become a reviewable and publishable Product De
 | Human Approver | `approvals.publish` bound to the exact payload fingerprint | Review or release facts |
 | Publisher | `release.dingtalk` attempts and remote/read-back facts through the validator | Product decisions, artifacts, review, or approval |
 
-Every artifact records its authoritative `producer_identity`. Each Review's `maker_identities` must include every producer covered by that Review plus `ui_requirement.decided_by`; changing the Reviewer-owned list cannot hide self-review. The Reviewer identity must differ from all covered producers for the current revision. An Agent identity is a non-empty task, thread, or run ID. A human identity uses `human:<stable-label>`.
+Every artifact records its authoritative `producer_identity`. Each Review's `maker_identities` must include every producer covered by that Review plus `ui_requirement.decided_by`; changing the Reviewer-owned list cannot hide self-review. The Reviewer identity must differ from all covered producers for the current revision. Actor-scoped Reviewer and Approver writes bind `--actor-identity` to the identity persisted in their record. An Agent identity is a non-empty task, thread, or run ID. A Human Approver identity must use `human:<stable-label>`.
 
 ## Minimal Shape
 
@@ -154,6 +154,8 @@ The validator resolves `heading_path` against current ATX Markdown headings. A l
 - When version or issue splitting is requested, a current `pre_split_review`
   with `verdict: ready` must exist before the Backlog Splitter adds `version_plan`,
   `issue_drafts`, or `coverage_matrix`.
+- Once any planning artifact exists, `pre_split_review` is immutable; a Reviewer
+  cannot add or rewrite it to retroactively authorize the split.
 - Actor-scoped validation binds every changed Maker, UI Producer, or Backlog
   Splitter artifact's `producer_identity` to `--actor-identity`; a removed
   artifact must belong to that actor. All three planning groups then become
@@ -225,7 +227,9 @@ An approval whose `payload_fingerprint` is stale is ignored as non-current
 authorization. It does not invalidate a current independently reviewed Package:
 the Package remains `package_ready`, while publication remains
 `authorization_required`. Publisher preflight still fails closed unless a
-current approval raises the derived state to `publish_approved`.
+current approval raises the derived state to `publish_approved`. Actor-scoped
+approval changes require a matching `human:<stable-label>` actor and persisted
+`approver_identity`; an Agent producer cannot approve its own payload.
 
 Package mode consumes only `content_artifact_ref`, `html_artifact_refs`, `screenshot_artifact_refs`, and `target`. It never discovers the newest sibling HTML.
 
