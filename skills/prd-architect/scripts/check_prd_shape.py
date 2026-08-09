@@ -47,20 +47,17 @@ REQUIRED_CAPABILITIES = {
     "lite": {
         "context_and_scope": ("背景与目标", "功能目标"),
         "feature_modules": ("功能模块", "功能改动"),
-        "acceptance": ("验收标准", "模块验收", "整体验收"),
         "open_questions": ("待确认", "待确认事项"),
     },
     "standard": {
         "context_and_scope": ("背景与目标", "功能目标"),
         "feature_modules": ("功能模块", "功能设计", "功能说明"),
-        "acceptance": ("验收标准", "模块验收", "整体验收"),
         "open_questions": ("待确认", "待确认事项"),
     },
     "ai-native": {
         "context_and_scope": ("背景与目标", "功能目标"),
         "ai_collaboration": ("AI 协作边界", "AI 协作", "人机协作", "双轨协作"),
         "feature_modules": ("功能模块", "功能设计", "功能说明"),
-        "acceptance": ("验收标准", "模块验收", "整体验收"),
         "open_questions": ("待确认", "待确认事项"),
     },
 }
@@ -74,6 +71,9 @@ LEGACY_PARALLEL_SECTIONS = {
     "核心对象",
     "交互逻辑",
     "关键交互",
+    "验收标准",
+    "模块验收",
+    "整体验收",
 }
 MODULE_DETAIL_SECTIONS = {
     "目标态 ui",

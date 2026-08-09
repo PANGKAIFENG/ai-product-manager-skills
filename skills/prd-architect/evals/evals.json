@@ -5,13 +5,13 @@
       "id": "standard-product-draft-no-schema",
       "type": "trigger",
       "prompt": "帮我写一份 Agent 回答后的下一步行动建议 PRD 初版。下一步行动不是所有回答都有，图片生成后可以改图或生成视频，PPT 成功后下载/编辑是功能按钮，不算 Agent 下一步；点击下一步行动只预填输入框让用户确认。",
-      "expected_output": "选择 PRD-standard 或 PRD-ai-native 的产品讨论稿，用不超过 200 字的短背景说明问题；按功能模块写目标态 UI、触发、不展示条件、功能按钮与 Agent 行动的区别、点击预填输入框和验收，不单列用户场景等重复章节，也不输出 TypeScript interface、JSON schema、metadata 或 adapter 细节。",
+      "expected_output": "选择 PRD-standard 或 PRD-ai-native 的产品讨论稿，用不超过 200 字的短背景说明问题；按功能模块写目标态 UI、触发、不展示条件、功能按钮与 Agent 行动的区别、点击预填输入框和可验证结果，不单列用户场景或验收等重复章节，也不输出 TypeScript interface、JSON schema、metadata 或 adapter 细节。",
       "files": [],
       "should_trigger": true,
       "expected_route": "prd-architect",
       "assertions": [
         {
-          "text": "Selects PRD-standard or PRD-ai-native and keeps the main draft focused on product behavior and acceptance criteria."
+          "text": "Selects PRD-standard or PRD-ai-native and keeps observable, verifiable results inside the relevant feature logic instead of a standalone acceptance section."
         },
         {
           "text": "Distinguishes Agent next actions from ordinary function buttons and preserves click-to-prefill confirmation behavior."
@@ -25,13 +25,13 @@
       "id": "lite-existing-page-mockup-handoff",
       "type": "trigger",
       "prompt": "帮我写一个 PRD：在现有聊天页点击发送时，如果沙箱并发已满，要弹出确认提示并保留输入内容。需要说明页面状态和截图承接。",
-      "expected_output": "选择 PRD-lite，加载 mockup handoff，以一个功能模块呈现目标态弹窗截图、触发/状态/反馈和验收；不生成用户场景或流程图，不发散成工作区管理页。",
+      "expected_output": "选择 PRD-lite，加载 mockup handoff，以一个功能模块呈现目标态弹窗截图、触发、状态、反馈和可验证结果；不生成独立验收章节、用户场景或流程图，不发散成工作区管理页。",
       "files": [],
       "should_trigger": true,
       "expected_route": "prd-architect",
       "assertions": [
         {
-          "text": "Selects PRD-lite and describes the existing-page trigger, preserved input, modal states, and acceptance criteria."
+          "text": "Selects PRD-lite and describes the existing-page trigger, preserved input, modal states, and observable results without a standalone acceptance section."
         },
         {
           "text": "Loads the mockup handoff without forcing Draw.io or expanding into workspace management."
@@ -413,7 +413,7 @@
       "id": "simple-ui-change-does-not-create-diagram",
       "type": "negative-regression",
       "prompt": "基于附件中的订单当前页参考 HTML 写一个 PRD：在下载按钮旁增加无权限提示，点击后保留当前筛选条件。该附件是用户确认的现状基线。",
-      "expected_output": "以附件 reference-html 为低置信现状基线并选择 Lite；用短背景、一个功能模块、生成的目标态 UI 截图、功能逻辑和验收完成说明；不生成流程图，也不创建用户场景、入口与触发等独立章节。",
+      "expected_output": "以附件 reference-html 为低置信现状基线并选择 Lite；用短背景、一个功能模块、生成的目标态 UI 截图、功能逻辑和可验证结果完成说明；不生成流程图，也不创建验收、用户场景、入口与触发等独立章节。",
       "files": [
         "evals/fixtures/order-download-current.html"
       ],

@@ -57,7 +57,7 @@ description: >
 它不负责：
 
 - 直接决定 UI 视觉细节。
-- 把 standalone HTML 当成生产代码；正式视觉实现由 `ui-mockup-desktop-workbench` 负责，但本 Skill 负责触发、收口和验收这条交付链。
+- 把 standalone HTML 当成生产代码；正式视觉实现由 `ui-mockup-desktop-workbench` 负责，但本 Skill 负责触发、收口和验证这条交付链。
 - 直接开始编码。
 - 把核心规则外包给单独 guide 再让用户自己跳转理解。
 - 在用户只要“初版 PRD”时展开接口字段、TypeScript、JSON schema、adapter 或 metadata 结构。
@@ -113,7 +113,7 @@ description: >
 2. 先定位真实项目、app/路由、组件、样式 token、图标和相邻页面状态，再调用 `ui-mockup-desktop-workbench`。
 3. 默认选择 `visual-handoff`，在 PRD 产物目录生成独立 HTML，不修改生产前端；只有用户明确要求项目内 preview 或真实实现承接时才选择 `project-native-preview`。
 4. 讨论中 PRD 可以生成“目标态草稿” HTML，但必须把未决内容标成假设；只有阻断性的页面信息架构或状态决策未关闭时才跳过。
-5. 至少截取每个实质变化页面的默认态；PRD 明确定义的关键拦截、失败、确认或成功态按验收需要补图。
+5. 至少截取每个实质变化页面的默认态；PRD 明确定义的关键拦截、失败、确认或成功态按关键状态覆盖需要补图。
 6. 截图直接插入它解释的功能或状态章节，不在文末集中堆放。
 7. standalone HTML 必须明确标记为视觉交付参考，不得声称它是生产代码。
 8. 只有用户明确要求纯文本、需求完全无界面、阻断性页面决策未关闭、或真实项目不可访问且无法形成有证据的静态复刻时可以跳过。最终说明要写清原因、受影响页面和待补动作。
@@ -250,8 +250,8 @@ python3 scripts/check_prd_shape.py <prd.md> --type <lite|standard|ai-native> \
 
 当用户提供 `prd-review` findings、revision draft、open blockers 或 readiness status 时，可以进入修订模式：
 
-1. 先识别本轮 patch scope：只修 blocker、补验收、补异常、补图示，还是重组章节。
-2. 把 review finding 分成事实缺口、表达缺口、验收缺口、图示缺口和待确认决策。
+1. 先识别本轮 patch scope：只修 blocker、补可验证结果、补异常、补图示，还是重组章节。
+2. 把 review finding 分成事实缺口、表达缺口、可验证性缺口、图示缺口和待确认决策。
 3. 只改能从输入中支撑的内容；缺失业务判断写成待确认项。
 4. 输出最小可替换章节或段落，不默认重写整份 PRD。
 5. 修订后建议回到 `prd-review` 做 readiness re-check；readiness verdict 不由本 Skill 给出。
@@ -262,7 +262,7 @@ python3 scripts/check_prd_shape.py <prd.md> --type <lite|standard|ai-native> \
 
 - 目标用户、问题、范围边界和非目标已经明确。
 - 主流程、关键状态、输入输出、异常或人工接管点已经写清。
-- 验收标准能被测试、人工检查或通过具体 artifact 验证。
+- 关键动作的系统行为、用户可见反馈、失败结果和恢复方式已经写清，并可被测试、人工检查或通过具体 artifact 验证。
 - 阻断性待确认项已经关闭；若仍有假设，必须明确写成 implementation plan 的前置假设。
 
 如果不满足这些条件，下一步应继续深化 PRD、补 handoff 或做 `prd-review`。
@@ -274,7 +274,7 @@ python3 scripts/check_prd_shape.py <prd.md> --type <lite|standard|ai-native> \
 - 已选定且只加载一个 PRD 类型模板。
 - 当前状态明确，正文成熟度与状态一致。
 - 背景不超过 200 字且不为凑字数扩写，正文以功能模块为主，没有模板填空式的用户场景或重复章节。
-- 页面型模块的目标态 UI 与功能逻辑就近呈现；同一规则没有跨背景、流程、模块和验收重复。
+- 页面型模块的目标态 UI 与功能逻辑就近呈现；同一规则没有跨背景、流程、模块和其他章节重复。
 - 只有复杂度门槛成立或用户明确要求时才生成 Draw.io；简单需求没有装饰性流程图。
 - 待确认项和假设没有混在一起。
 - mockup / 图示 / handoff 附加资产只在需要时启用。
