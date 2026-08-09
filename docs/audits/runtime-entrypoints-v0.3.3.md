@@ -31,6 +31,7 @@
 - 修正 `problem-to-solution` 的条件路由：稳定输入跳过 Calibration；已有候选方案可以直接进入 Solution Loop。
 - 将五个组合入口的 route universe、trigger/non-trigger/risk 最低覆盖和 retired-ID 共存检查纳入确定性门禁。
 - 将三项独立 CR 缺陷转成确定性合同与回归：stale approval 只撤销发布授权；全部 artifact 记录生产者身份；规划产物必须由当前 `pre_split_review: ready` 前置授权。
+- 修复独立 CR 发现的 Publisher 授权缺口：当前 Agent Runtime 的 Package mode 只允许完整 dry-run；非 dry-run 在首个 `dws` 调用和 Manifest 写入前返回 `authorization_required`。不接受 CLI/env、普通 receipt/nonce、调用方 previous Manifest 或 Manifest 自声明 approval 作为可信 host capability，Legacy direct mode 不变。
 
 ## Migration Map
 
@@ -51,7 +52,7 @@
 | Repository structure and catalog | PASS | `audit_skills.py`：15 Skills + 5 composition adapters，无 hard error；`check_v03_asset_catalog.py`：15/3/2/4/4 |
 | Five package structure checks | PASS | `skill-reviewer/check_skill.py` 对 2 Workflow + 3 Loop 全部通过 |
 | Routing regression and holdout | No P0/P1 | 新入口 15/15，v0.3.2 基线 12/15；3 项有效区分，12 项回归保护 |
-| Full Python regression | PASS | 12 个活跃测试文件，163/163；显式设置 validator 后 0 skipped |
+| Full Python regression | PASS | 12 个活跃测试文件，162/162；显式设置 validator 后 0 skipped |
 | Independent CR | `Ready` | Pending |
 | GitHub PR and CI | Merged / green | Pending |
 | `v0.3.3` tag and Release | Published and read back | Pending |
@@ -64,7 +65,7 @@
 - 发布源只允许远端 `main` 的合并提交；不得从 feature branch 或 Skillshare 聚合目录发布。
 - Git 回滚点为 `v0.3.2` tag。回滚代码不自动恢复本地 Runtime，需使用 Skillshare 已登记来源重新安装旧版或回退到新入口发布前的本地备份。
 - 如果 Skillshare dry-run 出现目标五项之外的 create/update/prune，停止正式同步，不通过临时隐藏其他 Skill 绕过。
-- 外部 Publisher 不在本次执行范围；没有 DingTalk/Yunxiao 数据恢复责任。
+- 本次只验证 Package Publisher 的 dry-run 与 fail-closed 边界，不执行 DingTalk/Yunxiao 写入；没有外部数据恢复责任。
 
 ## Final Evidence
 

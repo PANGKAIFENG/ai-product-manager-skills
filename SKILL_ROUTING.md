@@ -31,7 +31,7 @@
 
 ## 外部写入边界
 
-`tools/` 下的 publisher/automation 是副作用拥有者。任何 Skill handoff、Loop return edge 或 Workflow 串联都不能代替当前 run 的明确授权；Package 已就绪但没有发布授权时保持 `status: package_ready`，返回 `publish_status: authorization_required` 并停止。
+`tools/` 下的 publisher/automation 是副作用拥有者。任何 Skill handoff、Loop return edge、Workflow 串联或 Manifest approval 都不能代替可信宿主授权。当前 Agent Runtime 的 Package Publisher 只允许 dry-run；真实写入保持 `status: package_ready`，返回 `publish_status: authorization_required` 并停止。Legacy direct publish 仍需用户当前明确确认，且不能作为 Package 绕过路径。
 
 ## 迁移别名
 

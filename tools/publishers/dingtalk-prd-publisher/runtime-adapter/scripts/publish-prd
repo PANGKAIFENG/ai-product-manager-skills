@@ -31,6 +31,7 @@ Options:
                         Structured evidence from an independent browser-capable actor
   --actor-identity <id> Publisher identity recorded in the Manifest
   --dry-run             Print and validate the dws call without creating/uploading
+                        Required for Package mode in the current Agent runtime
   -h, --help            Show this help
 
 Examples:
@@ -334,6 +335,8 @@ for (const value of data.publish_plan.completed_artifact_refs || []) process.std
     printf 'Dry run: Package validated; DingTalk call count is 0.\n'
     return 0
   fi
+
+  die "authorization_required: Package mode real publishing requires a trusted host approval capability; this Agent runtime supports --dry-run only"
 
   if [[ -z "$package_node_id" && "$last_failed_step" == "create_unknown" ]]; then
     die "previous create result is unknown; lookup/read-back and record the existing nodeId before retry"

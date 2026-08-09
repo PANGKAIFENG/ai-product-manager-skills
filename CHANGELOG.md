@@ -22,6 +22,7 @@ This project uses semantic-ish release tags for public snapshots. The current fo
 - Bound every PRD, UI, and planning artifact to its producer identity, added a validator-enforced pre-split Review gate, and made the final Review cover every Package producer.
 - Bound actor-scoped Reviewer and Human Approver writes to their persisted identities, and prevented `pre_split_review` from being added after planning artifacts already exist.
 - Kept an independently reviewed Package at `package_ready` when a persisted publish approval is stale while preserving fail-closed Publisher authorization.
+- Limited Product Delivery Package publishing to complete dry-run in the current Agent Runtime; non-dry-run now returns `authorization_required` before any `dws` call or Manifest mutation, while Legacy explicit direct publishing remains unchanged.
 - Updated the core Pack, Registry, Routing, quickstart, install, distribution, migration, and Agent guidance for the new Runtime surface.
 
 ## [0.3.2] - 2026-08-09

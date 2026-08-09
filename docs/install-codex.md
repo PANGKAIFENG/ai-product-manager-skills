@@ -71,5 +71,6 @@ $delivery-loop Review 并修订这份 PRD/UI 交付包
 ```
 
 Expected behavior: Codex lists all five composition entries for explicit use,
-does not invoke them implicitly, asks only necessary questions, and does not
-claim external publication without a dedicated Tool and current authorization.
+does not invoke them implicitly, asks only necessary questions, and keeps
+Package publishing at dry-run / `authorization_required` until a trusted host
+approval capability exists.

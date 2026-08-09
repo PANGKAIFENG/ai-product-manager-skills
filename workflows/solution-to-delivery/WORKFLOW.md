@@ -12,7 +12,8 @@
   -> delivery-loop (完整 Package 的最终 Review)
   -> product-delivery validator
   -> 可交付产品包
-  -> publisher? (当前 run 明确授权后)
+  -> Package publisher dry-run
+  -> authorization_required (真实写入等待可信宿主能力)
 ```
 
 ## Entry Gate
@@ -44,7 +45,7 @@ PRD 和 UI artifacts 必须先记录各自的 `producer_identity`。`prd-review`
 - Manifest 与文件 hash、全部生产者身份、最终 Review 结论和依赖状态一致；最终 Reviewer 已覆盖全部 artifact producers 且与其身份独立；版本拆分产物或生产者身份如有变化，旧 Review 必须失效；
 - 需要研发拆分时，版本与事项覆盖 PRD 且仍处于用户要求的 draft/publish 状态。
 
-Publisher 只在当前 run 获得明确的目标、内容和写入授权后执行。Workflow 串联本身不构成 DingTalk 或 Yunxiao 授权；Package 已就绪但未获授权或 Manifest 里只剩 stale approval 时保持 `status: package_ready`，并单独返回 `publish_status: authorization_required`。Publisher 仍必须在写入前校验当前 approval 和 payload fingerprint。
+Workflow 可以调用 Package Publisher 完成无副作用 dry-run，但当前 Agent Runtime 不能执行 Package 真实写入。Workflow 串联、当前 run 的自然语言确认、Manifest approval、CLI/env 或普通 receipt 都不构成可信 host approval capability；Package 保持 `status: package_ready`，并单独返回 `publish_status: authorization_required`。不得回退到 Legacy direct mode 绕过 Package 边界。
 
 ## Output
 

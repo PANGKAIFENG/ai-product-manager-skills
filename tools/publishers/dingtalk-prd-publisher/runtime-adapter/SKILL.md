@@ -1,6 +1,6 @@
 ---
 name: dingtalk-prd-publisher
-description: "Use when publishing local PRD Markdown files or an approved Product Delivery Package manifest to DingTalk Docs or Drive, especially when the delivery has an explicit content/HTML/screenshot allowlist, payload fingerprint, related prototype, or browser verification requirement."
+description: "Use when publishing a local PRD Markdown file to DingTalk Docs or Drive, or when validating an approved Product Delivery Package through its fail-closed dry-run path. Package mode real writes require a trusted host approval capability and are unavailable in the current Agent runtime."
 ---
 
 # 钉钉 PRD 发布器（dingtalk-prd-publisher）
@@ -17,7 +17,7 @@ description: "Use when publishing local PRD Markdown files or an approved Produc
 
 这个 Skill 把“本地 PRD → 发布版清理 → 关联页面截图 → 插图后的 PRD copy → 最新 HTML 前置附件 → 钉钉文档/钉盘发布 → 浏览器可见性验证”固化成可重复流程。默认保护源文件：不覆盖原 PRD。用户没有指定钉钉目标时，默认在“智能体需求文档”锚点下创建一篇需求专属二级文档并写入 PRD，避免每次重复粘贴目录地址。
 
-对 Product Delivery Package，必须使用显式 `--manifest` mode。它只消费 `product-delivery-manifest.yaml` 中通过确定性 validator 校验的 content / HTML / screenshot allowlist 和目标，不执行 sibling discovery，也不接受 CLI 改写 title、target 或 artifact。Legacy direct mode 保持兼容，但不能替代 Package approval、payload fingerprint 或状态记录。
+对 Product Delivery Package，必须使用显式 `--manifest` mode。它只消费 `product-delivery-manifest.yaml` 中通过确定性 validator 校验的 content / HTML / screenshot allowlist 和目标，不执行 sibling discovery，也不接受 CLI 改写 title、target 或 artifact。当前 Agent Runtime 只允许 Package 完整 dry-run；非 dry-run 必须 fail closed 为 `authorization_required`。Legacy direct mode 保持兼容，但不能替代 Package approval、payload fingerprint 或状态记录。
 
 真实钉钉操作必须加载并遵守 `dws` Skill；浏览器截图问题需要加载 `playwright` Skill排查。DingTalk 写入以本地 `dws --help/schema` 为准，不猜命令或 flag。
 
@@ -48,10 +48,9 @@ Product Delivery Package 先走独立分支：
 ```
 
 - Dry-run 必须完成 Manifest、Package verdict、publish approval、payload fingerprint、artifact 路径/hash 和 allowlist 校验，且 `dws` 调用数为 0。
-- 真实执行仅允许在相同参数去掉 `--dry-run` 后发生；CLI 不得再传 Markdown、target、title 或 HTML override。
-- 创建成功后立即记录 `nodeId`；媒体失败时记录 attempt，重试复用同一 `nodeId` 并跳过 `completed_artifact_refs`。
-- create 结果未知且没有 `nodeId` 时 fail closed，必须先 lookup/read-back 并把远端身份记录回 Manifest，不能盲目重建。
-- `doc` 模式的 read-back 必须匹配当前 `nodeId`、批准标题和正文关键标题；`file` 模式必须用 `doc info` 匹配 node 和文件名。通过后只进入 `published_unverified`。只有独立 browser actor 生成且绑定当前 node、URL 和 payload fingerprint 的结构化证据通过后，才可用 `--browser-evidence <json>` 进入 `verified`；Publisher 不能自证可见性。
+- 当前 Agent Runtime 没有 Agent 无法伪造的一次性 host approval capability，因此去掉 `--dry-run` 必须返回 `authorization_required`，且不得调用 `dws` 或改写 Manifest。
+- CLI 参数、环境变量、普通 receipt/nonce 文件、Manifest 中的 Human approval 和调用方提供的 previous Manifest 都不是可信 host capability。
+- 不得回退到 Legacy direct mode 绕过 Package 边界。Legacy real publish 只用于用户明确选择的非 Package 直发流程。
 
 以下步骤用于 Legacy direct mode 和 Package 上游的 enriched copy 准备：
 
@@ -123,9 +122,8 @@ This resolves the default parent anchor. For the default `ALIDOC/adoc` anchor, i
 - Package mode 只接受 canonical validator 输出的 allowlist；禁止自动发现最新 sibling HTML，禁止上传未列入 Manifest 的文件。
 - Package mode 的 `file` 只上传正文文件，因此 HTML / screenshot allowlist 必须为空；需要媒体交付时必须使用 `doc`，不能批准后静默漏发。
 - Package mode 在任何 `dws` 调用前校验独立 Reviewer 的 `ready` verdict、`content` / `artifacts` / `publish` 三项检查、Human approval 和精确 payload fingerprint；失败时不得改写 Manifest。
-- Package mode 的 Publisher 只能通过 validator 记录 `release.dingtalk`、`last_transition` 和派生状态，不能改 artifacts、review 或 approval。
-- Package mode 只保留最近一次状态迁移和最多 20 次 publish attempts；部分失败恢复必须复用已有 `nodeId`。
-- Package mode 的 parent 解析失败必须记录 `target_resolution` failure，使下一 attempt 可从 `publish_failed` 恢复，不能卡在 `publishing`。
+- 当前 Agent Runtime 的 Package mode 即使通过上述 preflight，也只能完成 dry-run；真实写入必须返回 `authorization_required`，调用数和 Manifest 变更数都为 0。
+- 只有未来可信宿主注入 Agent 无法生成、一次性且绑定 payload 的 approval capability 后，才可启用 validator 已定义的 publish event、read-back 和恢复状态机；本版本不实现该宿主能力。
 - 写钉钉前先确认 `dws auth status --format json` 已登录。
 - 命令输出必须用 `--format json`；不确定命令时先跑 `dws <cmd> --help`。
 - `doc create` 用于在线文档；`drive upload` 用于上传文件。
@@ -144,7 +142,7 @@ This resolves the default parent anchor. For the default `ALIDOC/adoc` anchor, i
 ## Resource Guide
 
 - `scripts/enrich_prd_with_screenshots.py`：发现 PRD lookup/mock/HTML 链接，Playwright 截图，默认清理本地-only 发布污染，生成 enriched Markdown copy。
-- `scripts/publish-prd`：封装 `dws doc create` / `dws drive upload`；Legacy direct mode 支持 sibling HTML，显式 Package mode 只消费 Manifest allowlist，并记录 attempt、恢复和 read-back 状态。
+- `scripts/publish-prd`：封装 `dws doc create` / `dws drive upload`；Legacy direct mode 支持真实直发和 sibling HTML，显式 Package mode 在当前 Agent Runtime 只做 allowlist dry-run，非 dry-run fail closed。
 - `scripts/test_enrich_prd_with_screenshots.py`：本地回归测试，覆盖重复 mock 链接去重、语义章节优先插图和发布版清理。
 - `scripts/test_publish_prd.py`：本地回归测试，覆盖默认 `ALIDOC/adoc` 父节点下直接创建二级文档，以及普通 `--folder` 的直接发布和可选子目录行为。
 - `references/prd-image-placement-rules.md`：截图识别、去重、插入位置和 marker 规则。
@@ -161,7 +159,7 @@ This resolves the default parent anchor. For the default `ALIDOC/adoc` anchor, i
 - HTML attachment：选中的 HTML 路径、选择方式（显式 / 最新同目录）、附件文件名、插入索引与验证结果；没有候选或主动关闭时明确说明。
 - DingTalk publish：目标 folder/workspace、创建方式、`nodeId` / `docUrl`。
 - Verification：dry-run / screenshot / dws read-back / media insert / browser visibility 结果。
-- Package mode：Manifest 路径、input / payload fingerprint、三项 Package verdict、最近 transition、attempt 结果和最终 `published_unverified` / `verified` 状态。
+- Package mode：Manifest 路径、input / payload fingerprint、三项 Package verdict、dry-run 结果；请求真实写入时返回 `authorization_required`，不生成 attempt 或远端状态。
 - Remaining gaps：登录态、图片未渲染、目标目录不明确或权限失败等。
 
 ## Definition Of Done
@@ -175,9 +173,8 @@ This resolves the default parent anchor. For the default `ALIDOC/adoc` anchor, i
 - 发布后已 read-back；关键标题和截图/附件存在性已验证。
 - 如果钉钉正文图片未渲染，已用 `doc media insert` 补齐或把该问题列为未完成 blocker。
 - 已用浏览器打开钉钉 `docUrl` 做可见性验证；确认关键模块图片可见、没有失败图、底部没有 `待确认事项` / `关联产物` / 本地 mock 链接等不应发布内容。若登录态或权限阻止浏览器验证，必须作为未完成 blocker 报告。
-- Package mode 发布前已由 canonical validator 确认 current verdict、Human approval、payload fingerprint、allowlist 路径/hash；任何失败均发生在首个 `dws` 调用前。
-- Package mode 的 read-back 已匹配当前 node、批准标题及正文关键标题或文件元信息，且未被误报为 `verified`；独立且绑定当前 payload 的 browser evidence 缺失时停在 `published_unverified`。
-- Package mode 的失败 attempt 可在同一 `nodeId` 上恢复，且未重复发布已完成 artifact；未知 create 结果未触发第二次创建。
+- Package mode dry-run 已由 canonical validator 确认 current verdict、Human approval、payload fingerprint、allowlist 路径/hash，且 `dws` 调用数和 Manifest 变更数均为 0。
+- Package mode 非 dry-run 在首个 `dws` 调用和 Manifest 写入前返回 `authorization_required`；没有把 CLI/env/receipt/Manifest 自声明当作可信宿主授权，也没有回退到 Legacy direct mode。
 
 ## Evaluation
 
@@ -198,11 +195,10 @@ Non-trigger prompts:
 Regression checks:
 
 - `EVAL-B2-05`：失效 approval 或 payload fingerprint 必须使 `dws` 调用数为 0，Manifest 不变。
-- `EVAL-B2-06`：只发布 allowlist artifact；媒体中途失败后复用同一 `nodeId`，跳过已完成 artifact，不上传更新但未列入清单的 sibling HTML。
-- `EVAL-B2-07`：read-back 后状态只能是 `published_unverified`；独立结构化 browser evidence 通过后才进入 `verified`。
+- `EVAL-B2-06`：通过 Package preflight 后尝试真实写入仍返回 `authorization_required`，`dws` 调用数为 0，Manifest 不变。
+- `EVAL-B2-07`：Package dry-run 完整校验 verdict、approval、payload、路径/hash 和 allowlist，`dws` 调用数为 0，Manifest 不变。
 - `EVAL-B2-08`：路径 traversal 或 CLI target override 在任何副作用前失败，且不改 review / approval 分区。
 - Package `file` mode 带非空 HTML / screenshot allowlist 时必须在首个 `dws` 调用前失败。
-- Package parent 解析失败必须进入可重试的 `publish_failed`，修复 target 后下一 attempt 可以继续且不重复 create。
 - 同一 mock 链接同时出现在文档信息表、功能模块和“关联产物”时，只截图一次，并优先插到功能模块。
 - enriched copy 默认去掉 `待确认事项`、`关联产物` 和文档信息表里的本地 `关联 mock` 行。
 - 相对 HTML 路径必须按 PRD 目录解析，而不是当前 shell 目录。

@@ -37,7 +37,7 @@
 - 研究、方案和 PRD 各自拥有自己的判断责任；Loop 只负责状态、回流和停止条件，不复制专业内容。
 - 小需求可以直接调用原子 Skill；需要完整推进时，显式使用 `$problem-to-solution` 或 `$solution-to-delivery`。Loop 只在存在真实回流时使用。
 - PRD 交付包可以包含 HTML 和截图，但 HTML/截图是证据与 handoff，不等于生产代码。
-- DingTalk、Yunxiao 和其他外部写入只由 `tools/` 的专用 publisher 在当前 run 取得明确授权后执行；Skill handoff 本身不构成授权。
+- DingTalk、Yunxiao 和其他外部写入只由 `tools/` 的专用 publisher 执行；Skill handoff 本身不构成授权。当前 Agent Runtime 的 Product Delivery Package 只支持完整 dry-run，真实写入需要未来的可信宿主能力；Legacy 明确直发不等于 Package 发布。
 
 ## Loop
 

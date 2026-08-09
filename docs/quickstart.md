@@ -34,7 +34,7 @@ python3 scripts/audit_skills.py .
 小需求直接调用原子 Skill。需要从模糊问题完整推进到确认方案时使用
 `$problem-to-solution`；方案确认后需要完整产品交付包时使用
 `$solution-to-delivery`。只有局部节点需要多轮回流时，才显式使用三个 Loop。
-外部写入仍需调用对应 `tools/` publisher，并在当前 run 确认授权。
+外部写入仍需调用对应 `tools/` publisher。当前 Agent Runtime 的 Package Publisher 只做完整 dry-run，真实 Package 写入返回 `authorization_required`；Legacy 直发是单独的明确选择，不能绕过 Package 合同。
 
 ```text
 $problem-to-solution 从模糊问题推进到已确认方案

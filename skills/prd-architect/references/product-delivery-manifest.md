@@ -224,18 +224,28 @@ approvals:
 ```
 
 An approval whose `payload_fingerprint` is stale is ignored as non-current
-authorization. It does not invalidate a current independently reviewed Package:
+Package intent. It does not invalidate a current independently reviewed Package:
 the Package remains `package_ready`, while publication remains
-`authorization_required`. Publisher preflight still fails closed unless a
-current approval raises the derived state to `publish_approved`. Actor-scoped
-approval changes require a matching `human:<stable-label>` actor and persisted
-`approver_identity`; an Agent producer cannot approve its own payload.
+`authorization_required`. A current approval may raise the deterministic state
+to `publish_approved`, but it is still data inside an Agent-writable Manifest and
+does not authorize a real external write. Actor-scoped approval changes require
+a matching `human:<stable-label>` actor and persisted `approver_identity`; an
+Agent producer cannot approve its own payload.
+
+In the current Agent Runtime, Package mode supports complete `--dry-run` only.
+Real DingTalk writes require a trusted host capability that the Agent cannot
+generate, that is one-time, and that is bound to the exact payload. Until such a
+host integration exists, non-dry-run Package publication returns
+`authorization_required` before `dws` or Manifest mutation. CLI flags,
+environment variables, ordinary receipt or nonce files, caller-supplied
+previous Manifests, and the Manifest approval itself are not that capability.
 
 Package mode consumes only `content_artifact_ref`, `html_artifact_refs`, `screenshot_artifact_refs`, and `target`. It never discovers the newest sibling HTML.
 
 `mode: file` uploads only `content_artifact_ref`, so its HTML and screenshot allowlists must both be empty. A Package that needs HTML or screenshots uses `mode: doc`; the validator rejects a file-mode payload that would silently omit media.
 
-The validator records Publisher events atomically:
+The validator defines and records Publisher events atomically for a future
+trusted host integration:
 
 ```bash
 python3 scripts/validate_product_delivery_manifest.py product-delivery-manifest.yaml \
@@ -243,7 +253,7 @@ python3 scripts/validate_product_delivery_manifest.py product-delivery-manifest.
   --expected-payload-fingerprint <sha256> --attempt-id attempt-1
 ```
 
-Supported events are `started`, `remote_created`, `artifact_completed`, `failed`, `readback_passed`, and `browser_verified`. Every event requires the current Human approval and payload fingerprint; non-start events also require the current attempt to have started and must follow the allowed state transition. A retry reuses `release.dingtalk.node_id` and skips `completed_artifact_refs`. Only the most recent transition and at most 20 publish attempts are retained.
+Supported events are `started`, `remote_created`, `artifact_completed`, `failed`, `readback_passed`, and `browser_verified`. Every event requires the current Human approval and payload fingerprint; non-start events also require the current attempt to have started and must follow the allowed state transition. A retry reuses `release.dingtalk.node_id` and skips `completed_artifact_refs`. Only the most recent transition and at most 20 publish attempts are retained. The v0.3.3 Agent wrapper cannot start these events because it has no trusted host capability.
 
 Document read-back records the matching `node_id`, approved title, and returned Markdown hash. File-mode read-back records the matching node and approved file name. A successful API flag without these identity checks cannot create `readback_passed`.
 
@@ -300,4 +310,4 @@ python3 scripts/validate_product_delivery_manifest.py product-delivery-manifest.
   --expected-payload-fingerprint <sha256> --json
 ```
 
-The validator is a deterministic gate, not an independent Product Reviewer and not authorization for a real DingTalk write.
+The validator is a deterministic gate, not an independent Product Reviewer and not authorization for a real DingTalk write. In v0.3.3 this command supports Package dry-run evidence only; a real Package write remains `authorization_required`.

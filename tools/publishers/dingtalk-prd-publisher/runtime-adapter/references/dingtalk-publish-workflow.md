@@ -21,20 +21,11 @@ Package mode consumes only the ordered content / HTML / screenshot allowlist, ti
 
 Package `file` mode accepts an empty HTML/screenshot allowlist only because it uploads the content file as one Drive object. Use `doc` mode when the approved payload includes HTML or screenshots; fail before any `dws` call rather than silently dropping media.
 
-For an actual authorized publish, rerun without `--dry-run`. The Publisher records transitions through the validator:
+The current Agent Runtime stops here. Removing `--dry-run` returns `authorization_required` before any `dws` call or Manifest mutation because the host cannot inject an approval capability that the Agent cannot forge. CLI flags, environment variables, ordinary receipt or nonce files, caller-supplied previous Manifests, and the approval object inside the current Manifest are not trusted host capabilities.
 
-1. Record `started`, then create only when no `release.dingtalk.node_id` exists.
-2. Record `remote_created` as soon as a response contains `nodeId`, even if the response later fails.
-3. Record each confirmed allowlisted artifact in `completed_artifact_refs`.
-4. On failure, record the step and retain the attempt. Retry against the same `nodeId` and skip completed artifacts.
-5. If create success is unknown and no `nodeId` was captured, record `create_unknown` and stop. Lookup/read-back must establish the existing remote identity before another create is allowed.
-   If a parent target cannot be resolved, record `failed_step: target_resolution`; a later attempt may retry from `publish_failed` without creating a duplicate.
-6. Document mode records `readback_passed` only when `dws doc read` matches the current node, approved title, and local content headings. File mode uses `dws doc info` to match the uploaded node and approved file name. Either mode then remains `published_unverified`.
-7. Only an evidence JSON produced by a separate browser-capable identity may record `browser_verified` and move the Package to `verified`.
+Do not fall back to Legacy direct mode for a Package. The validator retains a publish-event, retry, read-back, and browser-verification state model for a future trusted host integration, but this wrapper does not execute that state model in v0.3.3.
 
-Browser evidence must have `passed: true`, a non-Publisher `verifier_identity`, `checked_at`, the current `node_id`, `doc_url`, and `payload_fingerprint`, plus all four checks set to true: `title_visible`, `content_visible`, `artifacts_visible`, and `publish_pollution_absent`. API read-back never substitutes for this evidence. The Manifest retains only the most recent transition and at most 20 publish attempts.
-
-Legacy direct mode below remains available for non-Package publishing. Its sibling HTML discovery and direct CLI target selection do not apply to Package mode.
+Legacy direct mode below remains available only when the user explicitly chooses non-Package direct publishing. Its sibling HTML discovery and direct CLI target selection do not apply to Package mode and cannot be used as a Package bypass.
 
 ## Preflight
 

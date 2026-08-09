@@ -541,6 +541,38 @@ class PublishPrdTest(unittest.TestCase):
             self.assertEqual(calls, [])
             self.assertEqual(manifest_path.read_bytes(), before)
 
+    def test_eval_b2_06_package_real_publish_requires_host_approval_capability(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest_path, payload = self.make_approved_package(root)
+            before = manifest_path.read_bytes()
+
+            result, calls = self.run_manifest_publish(root, manifest_path, payload)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("authorization_required", result.stderr)
+            self.assertEqual(calls, [])
+            self.assertEqual(manifest_path.read_bytes(), before)
+
+    def test_eval_b2_07_package_dry_run_validates_without_side_effects(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest_path, payload = self.make_approved_package(root)
+            before = manifest_path.read_bytes()
+
+            result, calls = self.run_manifest_publish(
+                root,
+                manifest_path,
+                payload,
+                "--dry-run",
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
+            self.assertIn("Package mode validated", result.stdout)
+            self.assertIn("DingTalk call count is 0", result.stdout)
+            self.assertEqual(calls, [])
+            self.assertEqual(manifest_path.read_bytes(), before)
+
     def test_package_file_mode_with_media_refs_fails_before_dws_calls(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -554,149 +586,6 @@ class PublishPrdTest(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("file mode cannot publish HTML or screenshot", result.stderr)
             self.assertEqual(calls, [])
-
-    def test_parent_resolution_failure_records_recoverable_publish_failure(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            manifest_path, _ = self.make_approved_package(root)
-            manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
-            release = manifest["release"]["dingtalk"]
-            release["target"] = {"selector": "parent", "value": "broken-parent"}
-            release["payload_fingerprint"] = None
-            manifest["approvals"]["publish"] = None
-            manifest["package_status"] = "package_ready"
-            manifest_path.write_text(yaml.safe_dump(manifest, sort_keys=False), encoding="utf-8")
-            preflight = subprocess.run(
-                [sys.executable, PRODUCT_DELIVERY_VALIDATOR, str(manifest_path), "--json"],
-                text=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                check=False,
-            )
-            self.assertEqual(preflight.returncode, 0, preflight.stderr + preflight.stdout)
-            payload = json.loads(preflight.stdout)["publish_payload_fingerprint"]
-            manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
-            manifest["release"]["dingtalk"]["payload_fingerprint"] = payload
-            manifest["approvals"]["publish"] = {
-                "approver_identity": "human:owner",
-                "payload_fingerprint": payload,
-                "approved_at": "2026-08-06T12:00:00+08:00",
-            }
-            manifest["package_status"] = "publish_approved"
-            manifest_path.write_text(yaml.safe_dump(manifest, sort_keys=False), encoding="utf-8")
-
-            first, first_calls = self.run_manifest_publish(
-                root,
-                manifest_path,
-                payload,
-                attempt_id="attempt-parent-1",
-                fake_env={"DWS_FAKE_FAIL_PARENT_INFO": "1"},
-            )
-
-            self.assertNotEqual(first.returncode, 0)
-            self.assertFalse(any(call[:2] == ["doc", "create"] for call in first_calls))
-            failed = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
-            self.assertEqual(failed["package_status"], "publish_failed")
-            self.assertEqual(failed["release"]["dingtalk"]["attempts"][-1]["failed_step"], "target_resolution")
-
-            second, all_calls = self.run_manifest_publish(
-                root,
-                manifest_path,
-                payload,
-                attempt_id="attempt-parent-2",
-            )
-            self.assertEqual(second.returncode, 0, second.stderr + second.stdout)
-            self.assertEqual(1, sum(call[:2] == ["doc", "create"] for call in all_calls))
-
-    def test_eval_b2_06_allowlist_and_media_failure_resume_same_node(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            manifest_path, payload = self.make_approved_package(root)
-            unrelated = root / "unrelated-newer.html"
-            unrelated.write_text("<html>must not publish</html>\n", encoding="utf-8")
-
-            first, first_calls = self.run_manifest_publish(
-                root,
-                manifest_path,
-                payload,
-                attempt_id="attempt-1",
-                fail_media_once="default.png",
-            )
-            self.assertEqual(first.returncode, 73, first.stderr + first.stdout)
-            after_failure = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
-            release = after_failure["release"]["dingtalk"]
-            self.assertEqual(release["node_id"], "created-doc")
-            self.assertEqual(release["status"], "publish_failed")
-            self.assertIn("ART-HTML", release["completed_artifact_refs"])
-
-            second, all_calls = self.run_manifest_publish(
-                root,
-                manifest_path,
-                payload,
-                attempt_id="attempt-2",
-            )
-            self.assertEqual(second.returncode, 0, second.stderr + second.stdout)
-            self.assertEqual(1, sum(call[:2] == ["doc", "create"] for call in all_calls), all_calls)
-            media_files = [
-                call[call.index("--file") + 1]
-                for call in all_calls
-                if call[:3] == ["doc", "media", "insert"]
-            ]
-            self.assertEqual(1, sum(Path(value).name == "approved.html" for value in media_files))
-            self.assertEqual(2, sum(Path(value).name == "default.png" for value in media_files))
-            self.assertFalse(any(Path(value).name == unrelated.name for value in media_files))
-            final = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
-            self.assertEqual(final["release"]["dingtalk"]["node_id"], "created-doc")
-            self.assertEqual(final["release"]["dingtalk"]["status"], "published_unverified")
-
-    def test_eval_b2_07_readback_alone_is_unverified_and_external_browser_evidence_finishes(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            manifest_path, payload = self.make_approved_package(root)
-
-            first, calls = self.run_manifest_publish(root, manifest_path, payload, attempt_id="attempt-1")
-            self.assertEqual(first.returncode, 0, first.stderr + first.stdout)
-            manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
-            self.assertEqual(manifest["package_status"], "published_unverified")
-            self.assertIsNone(manifest["release"]["dingtalk"]["browser_visibility"])
-
-            browser = root / "browser-evidence.json"
-            browser.write_text(
-                json.dumps(
-                    {
-                        "passed": True,
-                        "verifier_identity": "human:browser-checker",
-                        "checked_at": "2026-08-06T12:10:00+08:00",
-                        "node_id": "created-doc",
-                        "doc_url": "https://alidocs.dingtalk.com/i/nodes/created-doc",
-                        "payload_fingerprint": payload,
-                        "checks": {
-                            "title_visible": True,
-                            "content_visible": True,
-                            "artifacts_visible": True,
-                            "publish_pollution_absent": True,
-                        },
-                    }
-                ),
-                encoding="utf-8",
-            )
-            second, all_calls = self.run_manifest_publish(
-                root,
-                manifest_path,
-                payload,
-                "--browser-evidence",
-                str(browser),
-                attempt_id="attempt-2",
-            )
-            self.assertEqual(second.returncode, 0, second.stderr + second.stdout)
-            self.assertEqual(1, sum(call[:2] == ["doc", "create"] for call in all_calls), all_calls)
-            verified = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
-            self.assertEqual(verified["package_status"], "verified")
-            self.assertTrue(verified["release"]["dingtalk"]["readback"]["passed"])
-            self.assertEqual(
-                verified["release"]["dingtalk"]["browser_visibility"]["verifier_identity"],
-                "human:browser-checker",
-            )
 
     def test_eval_b2_08_traversal_and_cli_override_fail_without_side_effects(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -720,83 +609,6 @@ class PublishPrdTest(unittest.TestCase):
             after = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
             self.assertEqual(after["review"], escaped["review"])
             self.assertEqual(after["approvals"], escaped["approvals"])
-
-    def test_package_readback_rejects_wrong_title_and_content(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            manifest_path, payload = self.make_approved_package(root)
-
-            result, calls = self.run_manifest_publish(
-                root,
-                manifest_path,
-                payload,
-                fake_env={"DWS_FAKE_WRONG_READBACK": "1"},
-            )
-
-            self.assertNotEqual(result.returncode, 0)
-            self.assertTrue(any(call[:2] == ["doc", "read"] for call in calls))
-            manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
-            self.assertEqual(manifest["release"]["dingtalk"]["status"], "publish_failed")
-            self.assertIsNone(manifest["release"]["dingtalk"]["readback"])
-
-    def test_create_nonzero_with_node_does_not_mark_content_complete(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            manifest_path, payload = self.make_approved_package(root)
-
-            result, _ = self.run_manifest_publish(
-                root,
-                manifest_path,
-                payload,
-                fake_env={"DWS_FAKE_CREATE_NONZERO_WITH_NODE": "1"},
-            )
-
-            self.assertEqual(result.returncode, 74, result.stderr + result.stdout)
-            manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
-            release = manifest["release"]["dingtalk"]
-            self.assertEqual(release["node_id"], "created-doc")
-            self.assertEqual(release["status"], "publish_failed")
-            self.assertNotIn("ART-PRD", release["completed_artifact_refs"])
-
-    def test_package_file_mode_reaches_published_unverified_after_metadata_readback(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            manifest_path, _ = self.make_approved_package(root)
-            manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
-            manifest["release"]["dingtalk"]["mode"] = "file"
-            manifest["release"]["dingtalk"]["html_artifact_refs"] = []
-            manifest["release"]["dingtalk"]["screenshot_artifact_refs"] = []
-            manifest["release"]["dingtalk"]["payload_fingerprint"] = None
-            manifest["approvals"]["publish"] = None
-            manifest["package_status"] = "package_ready"
-            manifest_path.write_text(yaml.safe_dump(manifest, sort_keys=False), encoding="utf-8")
-            recalculated = subprocess.run(
-                [sys.executable, PRODUCT_DELIVERY_VALIDATOR, str(manifest_path), "--json"],
-                text=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                check=False,
-            )
-            self.assertEqual(recalculated.returncode, 0, recalculated.stderr + recalculated.stdout)
-            payload = json.loads(recalculated.stdout)["publish_payload_fingerprint"]
-            manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
-            manifest["release"]["dingtalk"]["payload_fingerprint"] = payload
-            manifest["approvals"]["publish"] = {
-                "approver_identity": "human:owner",
-                "payload_fingerprint": payload,
-                "approved_at": "2026-08-06T12:00:00+08:00",
-            }
-            manifest["package_status"] = "publish_approved"
-            manifest_path.write_text(yaml.safe_dump(manifest, sort_keys=False), encoding="utf-8")
-
-            result, calls = self.run_manifest_publish(root, manifest_path, payload)
-
-            self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
-            self.assertTrue(any(call[:2] == ["drive", "upload"] for call in calls))
-            self.assertIn(["doc", "info", "--node", "uploaded-file", "--format", "json"], calls)
-            published = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
-            self.assertEqual(published["package_status"], "published_unverified")
-
 
 if __name__ == "__main__":
     unittest.main()

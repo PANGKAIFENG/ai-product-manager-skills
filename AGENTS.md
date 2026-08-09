@@ -38,8 +38,10 @@ in a Loop by default.
 ## External Writes
 
 Only `tools/` publishers and automations own DingTalk/Yunxiao side effects. A
-Skill handoff or Loop return edge is not authorization. Without current explicit
-authorization, stop with `authorization-required`.
+Skill handoff, Loop return edge, Workflow chain, or Manifest approval is not a
+trusted host capability. Package mode is dry-run-only in the current Agent
+runtime; real Package writes stop with `authorization_required`. Legacy direct
+publishing remains a separate explicitly confirmed path, never a Package bypass.
 
 ## State Convention
 

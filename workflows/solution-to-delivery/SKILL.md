@@ -2,7 +2,7 @@
 name: solution-to-delivery
 description: >
   方案到交付 Workflow：当用户显式调用 `$solution-to-delivery`，或明确要求运行“方案到交付”完整流程时使用。
-  把已确认产品方案转成经过独立 Review 的 PRD、适用的 UI/HTML/截图、版本拆分和 Product Delivery Package；外部发布仍需当前 run 的明确授权。
+  把已确认产品方案转成经过独立 Review 的 PRD、适用的 UI/HTML/截图、版本拆分和 Product Delivery Package；当前 Agent Runtime 只做 Package 发布 dry-run，真实写入保持 authorization_required。
 ---
 
 # 方案到交付
@@ -28,7 +28,7 @@ description: >
 6. 把版本拆分产物写入 Manifest；Backlog Splitter 必须用 actor-scoped validator 把当前 identity 绑定到每项规划产物，再更新文件 hash 和 package fingerprint。
 7. 使用 `$delivery-loop` 对这份完整 Package 做最终独立 Review；最终 Reviewer 必须覆盖全部 artifact producers 且与其身份独立，循环到 `package_ready`、Human Gate 或阻塞。
 8. 运行 Product Delivery validator，确保最终 Manifest、artifacts、生产者身份和 Review fingerprint 一致。
-9. 只有用户在当前 run 明确授权具体外部目标和 payload 时，才交给相应 Publisher；否则保持 `status: package_ready`，并返回 `publish_status: authorization_required` 或 `not_requested`。
+9. 用户要求发布时，交给 Package Publisher 做完整 dry-run；当前 Agent Runtime 无可信 host approval capability，真实写入保持 `status: package_ready` 并返回 `publish_status: authorization_required`。不得改走 Legacy direct mode 绕过 Package 合同。
 
 ## 边界
 
@@ -37,7 +37,7 @@ description: >
 - 不让 PRD Maker 自评 ready。
 - 不让 UI Producer、Backlog Splitter 或其他 artifact Producer 自评或从 Review 覆盖范围中被省略。
 - 不在独立 PRD readiness Review 通过前生成版本或事项拆分。
-- 不因为 Workflow 被调用就自动发布钉钉、创建云效事项或同步 Runtime。
+- 不因为 Workflow 或 Manifest approval 被创建就发布钉钉、创建云效事项或同步 Runtime；Package 真实写入等待可信宿主能力。
 
 ## 输出
 
@@ -45,7 +45,7 @@ description: >
 
 ## 完成定义
 
-只有 `WORKFLOW.md` 的 Delivery Ready Gate 全部成立，独立 Review 没有 P0/P1，且 Manifest 与当前 artifacts/producer identities 一致，才输出 `package_ready`。外部写入未获当前授权或只存在 stale approval 时，`package_ready` 仍必须保持，发布状态为 `authorization_required` 或 `not_requested`。
+只有 `WORKFLOW.md` 的 Delivery Ready Gate 全部成立，独立 Review 没有 P0/P1，且 Manifest 与当前 artifacts/producer identities 一致，才输出 `package_ready`。Package dry-run 可以验证发布输入；真实写入在当前 Agent Runtime 始终保持 `authorization_required`，不改变 Package readiness。
 
 ## 资源与验证
 

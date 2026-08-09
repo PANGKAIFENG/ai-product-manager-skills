@@ -26,15 +26,15 @@ description: >
 - 不重新定义已经确认且未被新证据推翻的方案。
 - Validator 只能证明结构和一致性，不能替代独立 Review。
 - 页面型需求缺少当前 UI/HTML/截图时不得标记 ready；真正无用户可见界面时可以记录不适用原因。
-- 不自动发布钉钉、创建云效事项或同步 Runtime。
+- 不自动发布钉钉、创建云效事项或同步 Runtime；Package 只能做无副作用 dry-run，真实写入保持 `authorization_required`。
 
 ## 输出
 
-每轮返回 cycle、Package 根目录、active finding、return owner、closure criterion、Artifact Delta、保留项、Review verdict、状态和恢复点。用户同时要求发布但没有当前授权时，另行返回 `publish_status: authorization_required`，不改变 Package readiness。
+每轮返回 cycle、Package 根目录、active finding、return owner、closure criterion、Artifact Delta、保留项、Review verdict、状态和恢复点。用户同时要求发布时可以补做 Package dry-run，但真实写入返回 `publish_status: authorization_required`，不改变 Package readiness。
 
 ## 完成定义
 
-只有独立 `prd-review` 关闭当前阻断 finding、没有其他 P0/P1，且适用 validator 证明 Manifest 与 artifacts 一致，才输出 `package_ready`。三轮上限、连续两轮无有效 Artifact Delta 或交付事实缺失时进入 Human Gate。发布授权不属于交付缺口；Package 已 ready 但没有当前授权时保持 `status: package_ready`，并返回 `publish_status: authorization_required`。
+只有独立 `prd-review` 关闭当前阻断 finding、没有其他 P0/P1，且适用 validator 证明 Manifest 与 artifacts 一致，才输出 `package_ready`。三轮上限、连续两轮无有效 Artifact Delta 或交付事实缺失时进入 Human Gate。可信宿主授权不属于交付缺口；当前 Agent Runtime 中 Package 已 ready 时保持 `status: package_ready`，并对真实写入返回 `publish_status: authorization_required`。
 
 ## 资源与验证
 

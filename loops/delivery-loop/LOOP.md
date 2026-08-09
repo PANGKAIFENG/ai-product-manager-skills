@@ -20,7 +20,7 @@ delivery_package_incomplete
 - `prd-review` 负责 readiness；Maker 和 validator 都不能自评通过。
 - Manifest 中每个 artifact 的 `producer_identity` 都是最终 Review 的权威 Maker 输入；`maker_identities` 不得省略生产者，Reviewer 不得与任一生产者同身份。
 - 连续两轮没有有效 Artifact Delta、达到三轮上限或交付事实缺失时进入 Human Gate。
-- 发布授权独立于 Package readiness；内容已 ready 但没有当前授权时保持 `status: package_ready`，并返回 `publish_status: authorization_required`，不得仅因缺少发布授权进入 Human Gate。
+- 发布授权独立于 Package readiness；当前 Agent Runtime 只允许 Package dry-run，内容 ready 后保持 `status: package_ready` 并返回 `publish_status: authorization_required`，不得仅因缺少可信宿主能力进入 Human Gate。
 
 ## Recoverable State
 
@@ -40,4 +40,4 @@ publish_status: not_requested | authorization_required
 resume_point: <下一节点>
 ```
 
-只有用户要求保存或恢复时才写 `.loop-state/delivery-loop/`。发布器调用、钉钉/云效写入和 Runtime 同步永远是单独授权动作。
+只有用户要求保存或恢复时才写 `.loop-state/delivery-loop/`。Package Publisher dry-run 可以作为本地验证；真实钉钉/云效写入和 Runtime 同步不属于 Loop，且不能用 Manifest 或 Loop 状态替代可信宿主授权。

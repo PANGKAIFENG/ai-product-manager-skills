@@ -50,6 +50,7 @@ $problem-to-solution 把这个模糊问题推进到确认方案
 $delivery-loop 继续 Review 这份已有交付包并定点修订
 ```
 
-The Skill should follow its own boundary and output contract. Publishing to
-DingTalk, creating Yunxiao work items, and local distribution remain separate
-authorized Tool operations.
+The Skill should follow its own boundary and output contract. Product Delivery
+Package publishing is dry-run-only in the current Agent runtime and returns
+`authorization_required` for real writes; DingTalk Legacy direct publishing,
+Yunxiao work items, and local distribution remain separate Tool operations.
