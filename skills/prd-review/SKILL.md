@@ -14,7 +14,7 @@ description: >
 - 中文名：PRD 评审 / 需求评审
 - 英文稳定名：`prd-review`
 - 你可以这样叫我：`帮我审 PRD`、`从研发测试视角挑问题`、`这个需求文档能不能交付开发`、`帮我补一版修订草案`、`检查 PRD 图示是否可编辑`
-- 适合：已经有 PRD/handoff，需要发现阻断项、重要缺口、验收不可测、工程无法落地的地方
+- 适合：已经有 PRD/handoff，需要发现阻断项、重要缺口、用户结果不可验证、工程无法落地的地方
 - 不适合：从零写 PRD，改用 `prd-architect`；PRD 背后的方案可行性压测改用 `grill-me`；只做语言润色时不需要触发
 
 ## Overview
@@ -93,7 +93,7 @@ python3 scripts/validate_drawio.py <path>
 
 5. **Produce repair-ready output**
    - Findings 按严重程度排序。
-   - 必须给 revision draft：最小可替换章节、段落、验收/边界/异常清单三者至少一种。
+   - 必须给 revision draft：最小可替换章节、段落、可验证结果/边界/异常清单三者至少一种。
    - 必须列 open questions。
    - 必须给 `Implementation-Plan Readiness` verdict：`Ready for writing-plans`、`Ready with assumptions` 或 `Not ready`。
 

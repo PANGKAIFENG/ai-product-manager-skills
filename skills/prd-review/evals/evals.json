@@ -7,7 +7,7 @@
       "prompt": "帮我 review 这份 Agent 下一步行动建议 PRD。它是初版产品讨论稿，但正文里有 TypeScript interface、JSON 示例、metadata 和 adapter 章节。",
       "should_trigger": true,
       "expected_route": "prd-review",
-      "expected_output": "指出阶段混淆和过早技术化，建议把 schema/metadata/adapter 移到开发 handoff 附录，并把主文档压缩为短背景和功能模块，在对应模块内说明目标态 UI、触发、系统行为、UI 反馈、异常和验收。",
+      "expected_output": "指出阶段混淆和过早技术化，建议把 schema/metadata/adapter 移到开发 handoff 附录，并把主文档压缩为短背景和功能模块，在对应模块内说明目标态 UI、触发、系统行为、UI 反馈、异常和可验证结果，不新增独立验收章节。",
       "assertions": [
         {
           "text": "Flags over-technical content as a PRD shape issue."

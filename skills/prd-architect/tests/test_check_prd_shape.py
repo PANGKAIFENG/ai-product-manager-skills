@@ -8,6 +8,7 @@ import hashlib
 import io
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -53,9 +54,6 @@ def standard_prd(body: str, *, background: str = "当前页面缺少本期目标
 | 条件 / 状态 | 用户操作 | 系统行为 | UI 反馈 |
 | --- | --- | --- | --- |
 | 默认 | 打开页面 | 展示目标状态 | 页面可见 |
-
-## 整体验收
-验收。
 
 ## 待确认事项
 无。
@@ -473,7 +471,7 @@ class FlexibleTemplateShapeTest(unittest.TestCase):
             "- **成功标准**：功能模块可直接验证。",
             "- **成功标准**：功能模块可直接验证。\n\n![现状参考](./assets/current.png)",
         ).replace(
-            "## 整体验收",
+            "## 待确认事项",
             """### 模块二
 
 **模块目的**：展示第二个状态。
@@ -482,7 +480,7 @@ class FlexibleTemplateShapeTest(unittest.TestCase):
 | --- | --- | --- | --- |
 | 默认 | 打开页面 | 展示状态 | 页面可见 |
 
-## 整体验收""",
+## 待确认事项""",
         )
 
         result = run_check(markdown, ("assets/current.png",))
@@ -535,9 +533,6 @@ class FlexibleTemplateShapeTest(unittest.TestCase):
 | --- | --- | --- | --- |
 | 无权限 | 点击下载 | 保留筛选条件 | 展示权限提示 |
 
-## 验收标准
-- 无权限用户看到提示。
-
 ## 待确认事项
 无。
 """
@@ -561,15 +556,33 @@ class FlexibleTemplateShapeTest(unittest.TestCase):
 | --- | --- | --- | --- | --- |
 | 待确认 | 确认结果 | 保存确认 | 展示成功 | 可回退 |
 
-## 整体验收
-- 确认和回退可验证。
-
 ## 待确认事项
 无。
 """
         result = run_shape_only(markdown, prd_type="ai-native")
 
         self.assertEqual(result.returncode, 0, result.stdout)
+
+    def test_standalone_acceptance_sections_are_reported(self) -> None:
+        for heading in ("验收标准", "模块验收", "整体验收"):
+            with self.subTest(heading=heading):
+                markdown = standard_prd("功能逻辑已写入模块。").replace(
+                    "## 待确认事项",
+                    f"## {heading}\n\n不应单列。\n\n## 待确认事项",
+                )
+
+                result = run_shape_only(markdown)
+
+                self.assertEqual(result.returncode, 1)
+                self.assertIn(f"legacy_parallel_section:{heading}", result.stdout)
+
+    def test_all_templates_omit_standalone_acceptance_sections(self) -> None:
+        template_root = Path(__file__).resolve().parents[1] / "references" / "templates"
+        forbidden = re.compile(r"^(?:#{1,6}\s+(?:\d+\.\s*)?)?(?:\*\*)?(?:验收标准|模块验收|整体验收)(?:\*\*)?\s*$", re.M)
+
+        for template in sorted(template_root.glob("prd-*.md")):
+            with self.subTest(template=template.name):
+                self.assertIsNone(forbidden.search(template.read_text(encoding="utf-8")))
 
 
 if __name__ == "__main__":

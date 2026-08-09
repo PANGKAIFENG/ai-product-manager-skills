@@ -38,7 +38,7 @@ Do not use this contract for:
 - Key states
 - Input and output definitions
 - Exception paths
-- Acceptance criteria
+- Observable and verifiable results for key actions
 - Existing review findings, if any
 - Diagrams or diagram expectations, if relevant
 
@@ -100,7 +100,7 @@ Use the same three verdicts as `implementation-plan-readiness.md`:
 Stop the loop when:
 
 1. No open blockers remain.
-2. Acceptance criteria are testable.
+2. Key actions state testable system behavior, user-visible results, and failure or recovery outcomes.
 3. Core flow and exception flow are clear.
 4. Scope and non-goals are explicit.
 5. Required diagrams are present, validated, or explicitly unnecessary.

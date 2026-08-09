@@ -6,6 +6,14 @@ This project uses semantic-ish release tags for public snapshots. The current fo
 
 ## Unreleased
 
+## [0.3.2] - 2026-08-09
+
+### Changed
+
+- Removed standalone module-level, overall, and equivalent acceptance sections from all three PRD templates; observable and verifiable outcomes now live beside the relevant feature logic, UI feedback, and failure or recovery behavior.
+- Updated `prd-architect` and `prd-review` guidance and evals so reviews preserve testability without recreating a separate acceptance checklist.
+- Updated the mirrored PRD shape checker to report legacy standalone acceptance headings, with regression coverage across every bundled PRD template.
+
 ## [0.3.1] - 2026-08-08
 
 ### Changed
