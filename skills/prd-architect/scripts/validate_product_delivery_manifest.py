@@ -37,13 +37,31 @@ TOP_LEVEL_FIELDS = {
     "ui_baselines",
     "anchors",
     "validations",
+    "pre_split_review",
     "review",
     "approvals",
     "release",
     "last_transition",
     "extensions",
 }
-ARTIFACT_GROUPS = {"prd", "publish_body", "action_contract", "html", "screenshots"}
+ARTIFACT_GROUPS = {
+    "prd",
+    "publish_body",
+    "action_contract",
+    "html",
+    "screenshots",
+    "version_plan",
+    "issue_drafts",
+    "coverage_matrix",
+}
+COLLECTION_ARTIFACT_GROUPS = {"html", "screenshots", "issue_drafts"}
+PLANNING_ARTIFACT_GROUPS = {"version_plan", "issue_drafts", "coverage_matrix"}
+PRE_SPLIT_ARTIFACT_GROUPS = ARTIFACT_GROUPS - PLANNING_ARTIFACT_GROUPS
+ROLE_ARTIFACT_GROUPS = {
+    "maker": {"prd", "publish_body"},
+    "ui_producer": {"action_contract", "html", "screenshots"},
+    "backlog_splitter": PLANNING_ARTIFACT_GROUPS,
+}
 RELEASE_FIELDS = {
     "mode",
     "title",
@@ -94,7 +112,13 @@ ROLE_PREFIXES = {
         "anchors",
         "extensions",
     ),
-    "reviewer": ("updated_at", "review"),
+    "backlog_splitter": (
+        "updated_at",
+        "artifacts.version_plan",
+        "artifacts.issue_drafts",
+        "artifacts.coverage_matrix",
+    ),
+    "reviewer": ("updated_at", "pre_split_review", "review"),
     "approver": ("updated_at", "approvals.publish"),
     "publisher": ("updated_at", "release.dingtalk", "last_transition", "package_status", "current_stage"),
     "validator": (
@@ -112,6 +136,7 @@ ROLE_PREFIXES = {
 class ValidationResult:
     errors: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
+    pre_split_input_fingerprint: str | None = None
     package_input_fingerprint: str | None = None
     publish_payload_fingerprint: str | None = None
     derived_status: str = "invalid"
@@ -126,6 +151,7 @@ class ValidationResult:
         return {
             "valid": self.valid,
             "contract_version": CONTRACT_VERSION,
+            "pre_split_input_fingerprint": self.pre_split_input_fingerprint,
             "package_input_fingerprint": self.package_input_fingerprint,
             "publish_payload_fingerprint": self.publish_payload_fingerprint,
             "derived_status": self.derived_status,
@@ -238,6 +264,13 @@ def is_nonempty_string(value: Any) -> bool:
     return isinstance(value, str) and bool(value.strip())
 
 
+def is_human_identity(value: Any) -> bool:
+    if not is_nonempty_string(value) or not value.startswith("human:"):
+        return False
+    label = value.removeprefix("human:")
+    return bool(label.strip()) and label == label.strip()
+
+
 def require_mapping(value: Any, location: str, result: ValidationResult) -> dict[str, Any]:
     if not isinstance(value, dict):
         result.errors.append(f"{location}: must be a mapping")
@@ -257,7 +290,7 @@ def artifact_records(artifacts: dict[str, Any], result: ValidationResult) -> Ite
         value = artifacts.get(group)
         if value is None:
             continue
-        if group in {"html", "screenshots"}:
+        if group in COLLECTION_ARTIFACT_GROUPS:
             records = require_list(value, f"artifacts.{group}", result)
             for index, record in enumerate(records):
                 if isinstance(record, dict):
@@ -332,20 +365,25 @@ def validate_artifacts(
         enriched["_resolved_path"] = str(resolved) if resolved else None
         enriched["_actual_sha256"] = actual_hash
         by_id[artifact_id] = enriched
-        fingerprint_records.append(
-            {
-                "artifact_id": artifact_id,
-                "kind": group,
-                "path": record.get("path"),
-                "sha256": actual_hash or expected_hash,
-                "baseline_ref": record.get("baseline_ref"),
-                "source_html_ref": record.get("source_html_ref"),
-                "source_html_sha256": record.get("source_html_sha256"),
-                "state": record.get("state"),
-                "action_refs": record.get("action_refs", []),
-                "viewport": record.get("viewport"),
-            }
-        )
+        producer_identity = record.get("producer_identity")
+        if not is_nonempty_string(producer_identity):
+            result.errors.append(
+                f"artifacts.{group}[{artifact_id}].producer_identity: required"
+            )
+        fingerprint_record = {
+            "artifact_id": artifact_id,
+            "kind": group,
+            "path": record.get("path"),
+            "sha256": actual_hash or expected_hash,
+            "baseline_ref": record.get("baseline_ref"),
+            "source_html_ref": record.get("source_html_ref"),
+            "source_html_sha256": record.get("source_html_sha256"),
+            "state": record.get("state"),
+            "action_refs": record.get("action_refs", []),
+            "viewport": record.get("viewport"),
+        }
+        fingerprint_record["producer_identity"] = producer_identity
+        fingerprint_records.append(fingerprint_record)
     if not any(record.get("_group") == "prd" for record in by_id.values()):
         result.errors.append("artifacts.prd: a Product Delivery Package requires a valid PRD artifact")
     return by_id, sorted(fingerprint_records, key=lambda item: (str(item["kind"]), str(item["artifact_id"])))
@@ -469,39 +507,71 @@ def compute_input_fingerprint(
     return canonical_fingerprint(value)
 
 
-def validate_review(manifest: dict[str, Any], input_fingerprint: str, result: ValidationResult) -> str:
-    review = manifest.get("review")
+def validate_review(
+    manifest: dict[str, Any],
+    field_name: str,
+    input_fingerprint: str,
+    by_id: dict[str, dict[str, Any]],
+    producer_groups: set[str],
+    result: ValidationResult,
+) -> str:
+    review = manifest.get(field_name)
     if review is None:
         return "missing"
-    review = require_mapping(review, "review", result)
+    review = require_mapping(review, field_name, result)
     unknown = sorted(set(review) - REVIEW_FIELDS)
     if unknown:
-        result.errors.append(f"review: unknown fields: {', '.join(unknown)}")
+        result.errors.append(f"{field_name}: unknown fields: {', '.join(unknown)}")
     reviewer = review.get("reviewer_identity")
-    makers = require_list(review.get("maker_identities"), "review.maker_identities", result)
+    makers = require_list(
+        review.get("maker_identities"), f"{field_name}.maker_identities", result
+    )
     if not is_nonempty_string(reviewer):
-        result.errors.append("review.reviewer_identity: required")
+        result.errors.append(f"{field_name}.reviewer_identity: required")
     if not makers or not all(is_nonempty_string(item) for item in makers):
-        result.errors.append("review.maker_identities: at least one non-empty identity is required")
+        result.errors.append(
+            f"{field_name}.maker_identities: at least one non-empty identity is required"
+        )
     decided_by = manifest.get("ui_requirement", {}).get("decided_by")
-    if is_nonempty_string(decided_by) and decided_by not in makers:
-        result.errors.append("review.maker_identities: must include ui_requirement.decided_by")
-    if reviewer in makers or (is_nonempty_string(decided_by) and reviewer == decided_by):
-        result.errors.append("review: Reviewer identity must be independent from Maker identities")
+    artifact_producers = {
+        record.get("producer_identity")
+        for record in by_id.values()
+        if record.get("_group") in producer_groups
+        and is_nonempty_string(record.get("producer_identity"))
+    }
+    declared_makers = {item for item in makers if is_nonempty_string(item)}
+    if is_nonempty_string(decided_by) and decided_by not in declared_makers:
+        result.errors.append(
+            f"{field_name}.maker_identities: must include ui_requirement.decided_by"
+        )
+    missing_producers = sorted(artifact_producers - declared_makers)
+    if missing_producers:
+        result.errors.append(
+            f"{field_name}.maker_identities: must include authoritative producer identities: "
+            + ", ".join(missing_producers)
+        )
+    if reviewer in declared_makers or reviewer in artifact_producers or reviewer == decided_by:
+        result.errors.append(
+            f"{field_name}: Reviewer identity must be independent from Maker identities"
+        )
     if review.get("input_fingerprint") != input_fingerprint:
-        result.errors.append("review.input_fingerprint: stale or incorrect")
+        result.errors.append(f"{field_name}.input_fingerprint: stale or incorrect")
     verdict = review.get("verdict")
     if verdict not in {"ready", "changes_requested"}:
-        result.errors.append("review.verdict: must be ready or changes_requested")
-    checks = require_mapping(review.get("checks"), "review.checks", result)
+        result.errors.append(f"{field_name}.verdict: must be ready or changes_requested")
+    checks = require_mapping(review.get("checks"), f"{field_name}.checks", result)
     required_checks = {"content", "artifacts", "publish"}
     if set(checks) != required_checks:
-        result.errors.append("review.checks: must contain exactly content, artifacts, and publish")
+        result.errors.append(
+            f"{field_name}.checks: must contain exactly content, artifacts, and publish"
+        )
     for check in sorted(required_checks):
         if checks.get(check) not in {"passed", "failed"}:
-            result.errors.append(f"review.checks.{check}: must be passed or failed")
+            result.errors.append(
+                f"{field_name}.checks.{check}: must be passed or failed"
+            )
     if verdict == "ready" and any(checks.get(check) != "passed" for check in required_checks):
-        result.errors.append("review: ready requires all three checks to pass")
+        result.errors.append(f"{field_name}: ready requires all three checks to pass")
     if verdict == "changes_requested" or any(checks.get(check) == "failed" for check in required_checks):
         return "changes_requested"
     return "ready"
@@ -615,12 +685,19 @@ def validate_approval(manifest: dict[str, Any], payload_fingerprint: str | None,
     if approval is None:
         return False
     approval = require_mapping(approval, "approvals.publish", result)
-    if not is_nonempty_string(approval.get("approver_identity")):
+    approver_identity = approval.get("approver_identity")
+    if not is_nonempty_string(approver_identity):
         result.errors.append("approvals.publish.approver_identity: required")
+    elif not is_human_identity(approver_identity):
+        result.errors.append(
+            "approvals.publish.approver_identity: must use human:<stable-label>"
+        )
     if not is_nonempty_string(approval.get("approved_at")):
         result.errors.append("approvals.publish.approved_at: required")
     if payload_fingerprint is None or approval.get("payload_fingerprint") != payload_fingerprint:
-        result.errors.append("approvals.publish.payload_fingerprint: stale or incorrect")
+        result.warnings.append(
+            "approvals.publish.payload_fingerprint: stale or incorrect; approval ignored"
+        )
         return False
     return True
 
@@ -770,7 +847,11 @@ def flattened_changes(before: Any, after: Any, prefix: str = "") -> set[str]:
 
 
 def validate_actor_changes(
-    previous: dict[str, Any], current: dict[str, Any], actor_role: str, result: ValidationResult
+    previous: dict[str, Any],
+    current: dict[str, Any],
+    actor_role: str,
+    actor_identity: str | None,
+    result: ValidationResult,
 ) -> None:
     prefixes = ROLE_PREFIXES[actor_role]
     changes = flattened_changes(previous, current)
@@ -780,9 +861,140 @@ def validate_actor_changes(
     if unauthorized:
         result.errors.append(f"actor_role.{actor_role}: unauthorized changes: {', '.join(unauthorized)}")
 
+    if actor_role == "reviewer":
+        changed_review_fields = [
+            field_name
+            for field_name in ("pre_split_review", "review")
+            if any(
+                path == field_name or path.startswith(f"{field_name}.")
+                for path in changes
+            )
+        ]
+        if changed_review_fields and not is_nonempty_string(actor_identity):
+            result.errors.append(
+                "actor_role.reviewer: actor_identity is required for Review changes"
+            )
+        for field_name in changed_review_fields:
+            if field_name == "pre_split_review":
+                previous_artifacts = previous.get("artifacts", {})
+                if isinstance(previous_artifacts, dict) and any(
+                    previous_artifacts.get(group) not in (None, [], {})
+                    for group in PLANNING_ARTIFACT_GROUPS
+                ):
+                    result.errors.append(
+                        "actor_role.reviewer: pre_split_review cannot be added or changed after planning artifacts exist"
+                    )
+            current_record = current.get(field_name)
+            previous_record = previous.get(field_name)
+            authoritative = (
+                current_record if isinstance(current_record, dict) else previous_record
+            )
+            if (
+                is_nonempty_string(actor_identity)
+                and isinstance(authoritative, dict)
+                and authoritative.get("reviewer_identity") != actor_identity
+            ):
+                result.errors.append(
+                    f"actor_role.reviewer: {field_name}.reviewer_identity must match actor_identity"
+                )
+
+    if actor_role == "approver" and any(
+        path == "approvals.publish" or path.startswith("approvals.publish.")
+        for path in changes
+    ):
+        if not is_nonempty_string(actor_identity):
+            result.errors.append(
+                "actor_role.approver: actor_identity is required for approval changes"
+            )
+        elif not is_human_identity(actor_identity):
+            result.errors.append(
+                "actor_role.approver: actor_identity must use human:<stable-label>"
+            )
+        current_approvals = current.get("approvals")
+        previous_approvals = previous.get("approvals")
+        current_approval = (
+            current_approvals.get("publish")
+            if isinstance(current_approvals, dict)
+            else None
+        )
+        previous_approval = (
+            previous_approvals.get("publish")
+            if isinstance(previous_approvals, dict)
+            else None
+        )
+        authoritative = (
+            current_approval if isinstance(current_approval, dict) else previous_approval
+        )
+        if (
+            is_nonempty_string(actor_identity)
+            and isinstance(authoritative, dict)
+            and authoritative.get("approver_identity") != actor_identity
+        ):
+            result.errors.append(
+                "actor_role.approver: approvals.publish.approver_identity must match actor_identity"
+            )
+
+    owned_groups = ROLE_ARTIFACT_GROUPS.get(actor_role)
+    if not owned_groups:
+        return
+    changed_groups = {
+        group
+        for group in owned_groups
+        if any(
+            path == "artifacts"
+            or path == f"artifacts.{group}"
+            or path.startswith(f"artifacts.{group}.")
+            for path in changes
+        )
+    }
+    if not changed_groups:
+        return
+    if not is_nonempty_string(actor_identity):
+        result.errors.append(
+            f"actor_role.{actor_role}: actor_identity is required for artifact changes"
+        )
+        return
+
+    previous_artifacts = previous.get("artifacts", {})
+    current_artifacts = current.get("artifacts", {})
+    for group in sorted(changed_groups):
+        previous_value = previous_artifacts.get(group)
+        current_value = current_artifacts.get(group)
+        previous_records = (
+            previous_value if group in COLLECTION_ARTIFACT_GROUPS else [previous_value]
+        )
+        current_records = (
+            current_value if group in COLLECTION_ARTIFACT_GROUPS else [current_value]
+        )
+        previous_by_id = {
+            record.get("artifact_id"): record
+            for record in previous_records
+            if isinstance(record, dict) and is_nonempty_string(record.get("artifact_id"))
+        } if isinstance(previous_records, list) else {}
+        current_by_id = {
+            record.get("artifact_id"): record
+            for record in current_records
+            if isinstance(record, dict) and is_nonempty_string(record.get("artifact_id"))
+        } if isinstance(current_records, list) else {}
+
+        for artifact_id in sorted(set(previous_by_id) | set(current_by_id)):
+            before = previous_by_id.get(artifact_id)
+            after = current_by_id.get(artifact_id)
+            if before == after:
+                continue
+            authoritative = after if after is not None else before
+            if authoritative.get("producer_identity") != actor_identity:
+                result.errors.append(
+                    f"actor_role.{actor_role}: artifacts.{group}[{artifact_id}] must record actor_identity"
+                )
+
 
 def validate_manifest(
-    manifest: dict[str, Any], root: Path, previous: dict[str, Any] | None = None, actor_role: str | None = None
+    manifest: dict[str, Any],
+    root: Path,
+    previous: dict[str, Any] | None = None,
+    actor_role: str | None = None,
+    actor_identity: str | None = None,
 ) -> ValidationResult:
     result = ValidationResult()
     if manifest.get("schema_version") != 1:
@@ -810,7 +1022,40 @@ def validate_manifest(
     if recorded_input is not None and recorded_input != input_fingerprint:
         result.errors.append("package_input_fingerprint: stale or incorrect")
 
-    review_state = validate_review(manifest, input_fingerprint, result)
+    pre_split_artifact_inputs = [
+        record
+        for record in artifact_inputs
+        if record.get("kind") in PRE_SPLIT_ARTIFACT_GROUPS
+    ]
+    pre_split_input_fingerprint = compute_input_fingerprint(
+        manifest, pre_split_artifact_inputs
+    )
+    result.pre_split_input_fingerprint = pre_split_input_fingerprint
+    pre_split_review_state = validate_review(
+        manifest,
+        "pre_split_review",
+        pre_split_input_fingerprint,
+        by_id,
+        PRE_SPLIT_ARTIFACT_GROUPS,
+        result,
+    )
+    planning_artifacts_present = any(
+        record.get("_group") in PLANNING_ARTIFACT_GROUPS
+        for record in by_id.values()
+    )
+    if planning_artifacts_present and pre_split_review_state != "ready":
+        result.errors.append(
+            "pre_split_review: current ready review is required before planning artifacts"
+        )
+
+    review_state = validate_review(
+        manifest,
+        "review",
+        input_fingerprint,
+        by_id,
+        ARTIFACT_GROUPS,
+        result,
+    )
     dingtalk = validate_publish_plan(manifest, by_id, result)
     approval_valid = validate_approval(manifest, result.publish_payload_fingerprint, result)
     current_release_status = release_status(manifest, dingtalk, result)
@@ -819,7 +1064,9 @@ def validate_manifest(
         if actor_role is None:
             result.errors.append("actor_role: required with previous manifest")
         else:
-            validate_actor_changes(previous, manifest, actor_role, result)
+            validate_actor_changes(
+                previous, manifest, actor_role, actor_identity, result
+            )
     derive_state(result, review_state, approval_valid, current_release_status)
 
     recorded_status = manifest.get("package_status")
@@ -1039,7 +1286,13 @@ def record_publish_event(path: Path, manifest: dict[str, Any], args: argparse.Na
     updated["current_stage"] = stage_for_status(interim.derived_status)
     updated["last_transition"]["to_status"] = interim.derived_status
     updated["last_transition"]["input_fingerprint"] = interim.package_input_fingerprint
-    scoped = validate_manifest(updated, path.parent, previous=manifest, actor_role=args.actor_role)
+    scoped = validate_manifest(
+        updated,
+        path.parent,
+        previous=manifest,
+        actor_role=args.actor_role,
+        actor_identity=args.actor_identity,
+    )
     if scoped.errors:
         return scoped
     atomic_write_yaml(path, updated)
@@ -1083,7 +1336,13 @@ def main() -> int:
             result = record_publish_event(args.manifest, manifest, args)
         else:
             previous = load_manifest(args.previous_manifest) if args.previous_manifest else None
-            result = validate_manifest(manifest, args.manifest.parent, previous, args.actor_role)
+            result = validate_manifest(
+                manifest,
+                args.manifest.parent,
+                previous,
+                args.actor_role,
+                args.actor_identity,
+            )
     except ValueError as exc:
         result = ValidationResult(errors=[str(exc)])
 

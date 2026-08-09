@@ -17,24 +17,29 @@ skills:
   - {id: team-skill-creator, path: skills/team-skill-creator, status: active}
   - {id: ui-mockup-desktop-workbench, path: skills/ui-mockup-desktop-workbench, status: core}
 loops:
-  - {id: research-decision-loop, path: loops/research-decision-loop, status: active, owners: [research-topic-compiler, decision-research]}
-  - {id: solution-challenge-loop, path: loops/solution-challenge-loop, status: active, owners: [brainstorming, grill-me]}
-  - {id: prd-delivery-readiness-loop, path: loops/prd-delivery-readiness-loop, status: active, owners: [prd-architect, ui-mockup-desktop-workbench, prd-review, prd-to-issues]}
+  - {id: decision-loop, path: loops/decision-loop, status: active, owners: [research-topic-compiler, decision-research], runtime_adapter: loops/decision-loop, runtime_skill_id: decision-loop}
+  - {id: solution-loop, path: loops/solution-loop, status: active, owners: [brainstorming, grill-me], runtime_adapter: loops/solution-loop, runtime_skill_id: solution-loop}
+  - {id: delivery-loop, path: loops/delivery-loop, status: active, owners: [prd-architect, ui-mockup-desktop-workbench, prd-review, prd-to-issues], runtime_adapter: loops/delivery-loop, runtime_skill_id: delivery-loop}
 workflows:
-  - {id: product-discovery, path: workflows/product-discovery, status: active}
-  - {id: product-delivery, path: workflows/product-delivery, status: active}
+  - {id: problem-to-solution, path: workflows/problem-to-solution, status: active, runtime_adapter: workflows/problem-to-solution, runtime_skill_id: problem-to-solution}
+  - {id: solution-to-delivery, path: workflows/solution-to-delivery, status: active, runtime_adapter: workflows/solution-to-delivery, runtime_skill_id: solution-to-delivery}
 tools:
   - {id: product-delivery-validator, kind: validator, path: tools/validators/product-delivery, status: active, side_effects: none}
   - {id: dingtalk-prd-publisher, kind: publisher, path: tools/publishers/dingtalk-prd-publisher, status: active, side_effects: external-write, runtime_adapter: tools/publishers/dingtalk-prd-publisher/runtime-adapter, runtime_skill_id: dingtalk-prd-publisher}
   - {id: yunxiao-work-item-publisher, kind: publisher, path: tools/publishers/yunxiao-work-item-publisher, status: active, side_effects: external-write, runtime_adapter: tools/publishers/yunxiao-work-item-publisher/runtime-adapter, runtime_skill_id: stylework-yunxiao-workitem-submitter}
   - {id: yunxiao-requirement-sheet-sync, kind: automation, path: tools/automations/yunxiao-requirement-sheet-sync, status: active, side_effects: external-write, runtime_adapter: tools/automations/yunxiao-requirement-sheet-sync/runtime-adapter, runtime_skill_id: stylework-yunxiao-requirement-sync}
 packs:
-  - {id: pm-core, path: packs/pm-core.yaml, includes: 9}
+  - {id: pm-core, path: packs/pm-core.yaml, includes: 14}
   - {id: stylework-business, path: packs/stylework-business.yaml, includes: 2}
   - {id: skill-maintainer, path: packs/skill-maintainer.yaml, includes: 2}
   - {id: engineering, path: packs/engineering.yaml, includes: 2}
 archive:
-  - {id: complex-exploration, replacement: ai-collaboration-calibration + product-discovery}
+  - {id: product-discovery, replacement: problem-to-solution}
+  - {id: product-delivery, replacement: solution-to-delivery}
+  - {id: research-decision-loop, replacement: decision-loop}
+  - {id: solution-challenge-loop, replacement: solution-loop}
+  - {id: prd-delivery-readiness-loop, replacement: delivery-loop}
+  - {id: complex-exploration, replacement: ai-collaboration-calibration + problem-to-solution}
   - {id: competitive-analysis, replacement: research-topic-compiler/product-research}
   - {id: ui-wireframe-to-html, replacement: ui-mockup-desktop-workbench/structure-only}
   - {id: ai-work-assetization-diagnoser, replacement: team-skill-creator/assetization-gate}

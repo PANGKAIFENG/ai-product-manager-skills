@@ -11,9 +11,9 @@ skills:
   - prd-review
   - prd-to-issues
 loops:
-  - research-decision-loop
-  - solution-challenge-loop
-  - prd-delivery-readiness-loop
+  - decision-loop
+  - solution-loop
+  - delivery-loop
 workflows:
-  - product-discovery
-  - product-delivery
+  - problem-to-solution
+  - solution-to-delivery

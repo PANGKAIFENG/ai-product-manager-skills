@@ -1,0 +1,6 @@
+interface:
+  display_name: "决策闭环"
+  short_description: "围绕一个明确决策补齐关键证据，最多循环三轮"
+  default_prompt: "Use $decision-loop to close the material evidence gap for this decision and stop at decision_ready or a human gate."
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,76 @@
+{
+  "skill_name": "solution-loop",
+  "evals": [
+    {
+      "id": "explicit-maker-critic-loop",
+      "type": "loop-trigger",
+      "prompt": "$solution-loop 方案 DS-3/v1 已成形，请连续挑战和定点修订，直到确认或进入人工门。",
+      "should_trigger": true,
+      "expected_route": "solution-loop",
+      "expected_output": "Critic 每轮给一个 Challenge Record，Maker 返回最小 Design Delta，最多三轮。",
+      "assertions": [
+        {"text": "Maker 和 Critic 的责任分离。"},
+        {"text": "每轮只处理一个阻断 challenge 并保留未受影响内容。"},
+        {"text": "Maker 不自评 challenge 已关闭。"}
+      ]
+    },
+    {
+      "id": "resume-preserves-confirmed-scope",
+      "type": "loop-transfer",
+      "prompt": "$solution-loop 继续 cycle 2。CH-7 只质疑失败恢复，用户范围、角色和主流程都已经确认，不要重写。",
+      "should_trigger": true,
+      "expected_route": "solution-loop",
+      "expected_output": "恢复现有状态，只修订失败恢复并保留已确认范围。",
+      "assertions": [
+        {"text": "Design Delta 只覆盖 CH-7 对应部分。"},
+        {"text": "不重新发散用户范围、角色或主流程。"}
+      ]
+    },
+    {
+      "id": "no-candidate-does-not-trigger",
+      "type": "non-trigger",
+      "prompt": "问题已经明确，但我还没有任何方案，帮我比较三种设计方向。",
+      "should_trigger": false,
+      "expected_route": "brainstorming",
+      "expected_output": "先由 brainstorming 形成候选方案，不隐式启动方案闭环。",
+      "assertions": [
+        {"text": "不在没有方案版本时伪造 Challenge Record。"}
+      ]
+    },
+    {
+      "id": "explicit-loop-without-candidate-hands-off",
+      "type": "routing-regression",
+      "prompt": "$solution-loop 我还没有候选方案，直接开始循环挑战并替我补出方案。",
+      "should_trigger": true,
+      "expected_route": "solution-loop",
+      "expected_output": "入口通过 Entry Gate 后转交 brainstorming 先形成候选方案，不伪造 Challenge Record。",
+      "assertions": [
+        {"text": "显式调用仍进入 solution-loop，但 Entry Gate 不成立时返回 brainstorming。"},
+        {"text": "没有可识别方案版本时不启动 Maker/Critic 循环。"}
+      ]
+    },
+    {
+      "id": "prd-review-does-not-trigger",
+      "type": "non-trigger",
+      "prompt": "方案已经确认并写成 PRD，只评审这份 PRD 的遗漏，不要再挑战产品方案。",
+      "should_trigger": false,
+      "expected_route": "prd-review",
+      "expected_output": "进入单次 PRD Review，不启动方案闭环。",
+      "assertions": [
+        {"text": "不把交付文档评审误路由为方案挑战。"}
+      ]
+    },
+    {
+      "id": "cycle-limit-human-gate",
+      "type": "boundary-risk",
+      "prompt": "$solution-loop 已经三轮了，每轮都因为同一个商业取舍没有差量。继续无限循环直到你替我决定。",
+      "should_trigger": true,
+      "expected_route": "solution-loop",
+      "expected_output": "停止循环并进入 Human Gate。",
+      "assertions": [
+        {"text": "不突破三轮上限。"},
+        {"text": "不替用户做无法从事实推断的商业取舍。"}
+      ]
+    }
+  ]
+}

@@ -24,20 +24,24 @@ catalog and boundaries.
 Loop contracts live under `loops/` and coordinate state, return edges, and stop
 conditions. Stage composition lives under `workflows/`:
 
-- `research-decision-loop`
-- `solution-challenge-loop`
-- `prd-delivery-readiness-loop`
-- `product-discovery`
-- `product-delivery`
+- `decision-loop`
+- `solution-loop`
+- `delivery-loop`
+- `problem-to-solution`
+- `solution-to-delivery`
 
-Use a Loop only when the user needs multi-round state, resumability, or a
-repeated handoff. Do not run every Skill in a Loop by default.
+The two Workflows and three Loops expose explicit-only Codex Runtime adapters
+through their co-located `SKILL.md` files. Use a Loop only when the user needs
+multi-round state, resumability, or a repeated handoff. Do not run every Skill
+in a Loop by default.
 
 ## External Writes
 
 Only `tools/` publishers and automations own DingTalk/Yunxiao side effects. A
-Skill handoff or Loop return edge is not authorization. Without current explicit
-authorization, stop with `authorization-required`.
+Skill handoff, Loop return edge, Workflow chain, or Manifest approval is not a
+trusted host capability. Package mode is dry-run-only in the current Agent
+runtime; real Package writes stop with `authorization_required`. Legacy direct
+publishing remains a separate explicitly confirmed path, never a Package bypass.
 
 ## State Convention
 
@@ -53,6 +57,7 @@ When adding or publicizing a Skill, update these coordinated surfaces together:
 - `SKILL_REGISTRY.md`
 - `SKILL_ROUTING.md`
 - `catalog/skills.yaml`
+- `catalog/assets.yaml`
 - install / quickstart docs
 - examples or issue templates when relevant
 

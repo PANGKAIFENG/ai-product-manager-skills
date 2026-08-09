@@ -33,7 +33,11 @@ class ProductDeliveryManifestTest(unittest.TestCase):
             b"# PRD\n\n## Default state\nReady.\n\n![Default state](ui/screenshots/default.png)\n",
         )
         artifacts: dict = {
-            "prd": {"artifact_id": "ART-PRD", **prd},
+            "prd": {
+                "artifact_id": "ART-PRD",
+                "producer_identity": "run-maker",
+                **prd,
+            },
         }
         baselines: list[dict] = []
         anchors: list[dict] = []
@@ -43,10 +47,15 @@ class ProductDeliveryManifestTest(unittest.TestCase):
             screenshot = self.write_artifact(root, "ui/screenshots/default.png", b"fake-png-default")
             artifacts.update(
                 {
-                    "action_contract": {"artifact_id": "ART-ACTION", **contract},
+                    "action_contract": {
+                        "artifact_id": "ART-ACTION",
+                        "producer_identity": "run-ui",
+                        **contract,
+                    },
                     "html": [
                         {
                             "artifact_id": "ART-HTML",
+                            "producer_identity": "run-ui",
                             **html,
                             "baseline_ref": "BASE-1",
                         }
@@ -54,6 +63,7 @@ class ProductDeliveryManifestTest(unittest.TestCase):
                     "screenshots": [
                         {
                             "artifact_id": "ART-SHOT",
+                            "producer_identity": "run-ui",
                             **screenshot,
                             "source_html_ref": "ART-HTML",
                             "source_html_sha256": html["sha256"],
@@ -104,6 +114,7 @@ class ProductDeliveryManifestTest(unittest.TestCase):
             "ui_baselines": baselines,
             "anchors": anchors,
             "validations": [],
+            "pre_split_review": None,
             "review": None,
             "approvals": {"publish": None},
             "release": {
@@ -127,6 +138,27 @@ class ProductDeliveryManifestTest(unittest.TestCase):
             "last_transition": None,
             "extensions": {},
         }
+
+    def add_pre_split_review(self, root: Path, manifest: dict) -> None:
+        initial = validator.validate_manifest(manifest, root)
+        self.assertTrue(initial.valid, initial.errors)
+        manifest["pre_split_review"] = {
+            "review_id": "REVIEW-PRE-SPLIT",
+            "reviewer_identity": "run-pre-split-reviewer",
+            "maker_identities": ["run-maker", "run-ui"]
+            if manifest["ui_requirement"]["required"]
+            else ["run-maker"],
+            "input_fingerprint": initial.pre_split_input_fingerprint,
+            "verdict": "ready",
+            "checks": {
+                "content": "passed",
+                "artifacts": "passed",
+                "publish": "passed",
+            },
+            "findings": [],
+        }
+        reviewed = validator.validate_manifest(manifest, root)
+        self.assertTrue(reviewed.valid, reviewed.errors)
 
     def make_approved(self, root: Path, *, ui_required: bool = True) -> dict:
         manifest = self.base_manifest(root, ui_required=ui_required)
@@ -156,6 +188,42 @@ class ProductDeliveryManifestTest(unittest.TestCase):
         self.assertTrue(approved.valid, approved.errors)
         self.assertEqual(approved.derived_status, "publish_approved")
         return manifest
+
+    def add_delivery_plan_artifacts(
+        self, root: Path, manifest: dict, *, producer_identity: str = "run-backlog"
+    ) -> None:
+        version_plan = self.write_artifact(
+            root, "delivery/version-plan.md", b"# Version plan\n\nV1 first.\n"
+        )
+        issue_drafts = self.write_artifact(
+            root, "delivery/issues.md", b"# Issues\n\n- Slice 1\n"
+        )
+        coverage = self.write_artifact(
+            root,
+            "delivery/prd-issue-coverage.md",
+            b"# Coverage\n\nPRD section -> Slice 1\n",
+        )
+        manifest["artifacts"].update(
+            {
+                "version_plan": {
+                    "artifact_id": "ART-VERSION-PLAN",
+                    "producer_identity": producer_identity,
+                    **version_plan,
+                },
+                "issue_drafts": [
+                    {
+                        "artifact_id": "ART-ISSUES",
+                        "producer_identity": producer_identity,
+                        **issue_drafts,
+                    }
+                ],
+                "coverage_matrix": {
+                    "artifact_id": "ART-COVERAGE",
+                    "producer_identity": producer_identity,
+                    **coverage,
+                },
+            }
+        )
 
     def save_manifest(self, root: Path, manifest: dict) -> Path:
         path = root / "product-delivery-manifest.yaml"
@@ -236,6 +304,220 @@ class ProductDeliveryManifestTest(unittest.TestCase):
             self.assertTrue(any("content mismatch" in item for item in result.errors))
             self.assertTrue(any("stale or incorrect" in item for item in result.errors))
 
+    def test_stale_approval_preserves_package_readiness(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = self.make_approved(root)
+            manifest["approvals"]["publish"]["payload_fingerprint"] = "0" * 64
+
+            result = validator.validate_manifest(manifest, root)
+
+            self.assertTrue(result.valid, result.errors)
+            self.assertEqual(result.derived_status, "package_ready")
+            self.assertEqual(result.earliest_recovery_node, "approval")
+            self.assertTrue(
+                any("approval ignored" in item for item in result.warnings),
+                result.warnings,
+            )
+
+    def test_delivery_plan_changes_invalidate_independent_review(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = self.base_manifest(root, ui_required=False)
+            self.add_pre_split_review(root, manifest)
+            self.add_delivery_plan_artifacts(root, manifest)
+            current = validator.validate_manifest(manifest, root)
+            self.assertTrue(current.valid, current.errors)
+            manifest["package_input_fingerprint"] = current.package_input_fingerprint
+            manifest["review"] = {
+                "review_id": "REVIEW-PLAN",
+                "reviewer_identity": "run-reviewer",
+                "maker_identities": ["run-maker", "run-backlog"],
+                "input_fingerprint": current.package_input_fingerprint,
+                "verdict": "ready",
+                "checks": {
+                    "content": "passed",
+                    "artifacts": "passed",
+                    "publish": "passed",
+                },
+                "findings": [],
+            }
+            reviewed = validator.validate_manifest(manifest, root)
+            self.assertTrue(reviewed.valid, reviewed.errors)
+            self.assertEqual(reviewed.derived_status, "package_ready")
+
+            (root / "delivery" / "issues.md").write_text(
+                "# Issues\n\n- Changed after Review\n", encoding="utf-8"
+            )
+            changed = validator.validate_manifest(manifest, root)
+
+            self.assertFalse(changed.valid)
+            self.assertNotEqual(
+                changed.package_input_fingerprint, current.package_input_fingerprint
+            )
+            self.assertTrue(
+                any("review.input_fingerprint: stale" in item for item in changed.errors),
+                changed.errors,
+            )
+
+    def test_planning_artifacts_require_current_pre_split_review(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            previous = self.base_manifest(root, ui_required=False)
+            current = json.loads(json.dumps(previous))
+            self.add_delivery_plan_artifacts(root, current)
+
+            result = validator.validate_manifest(
+                current,
+                root,
+                previous=previous,
+                actor_role="backlog_splitter",
+                actor_identity="run-backlog",
+            )
+
+            self.assertFalse(result.valid)
+            self.assertTrue(
+                any("pre_split_review" in item and "required" in item for item in result.errors),
+                result.errors,
+            )
+
+    def test_reviewer_cannot_retroactively_authorize_existing_planning_artifacts(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            previous = self.base_manifest(root, ui_required=False)
+            self.add_delivery_plan_artifacts(root, previous)
+            fingerprint = validator.validate_manifest(
+                previous, root
+            ).pre_split_input_fingerprint
+            current = json.loads(json.dumps(previous))
+            current["pre_split_review"] = {
+                "review_id": "REVIEW-RETROACTIVE",
+                "reviewer_identity": "run-pre-split-reviewer",
+                "maker_identities": ["run-maker"],
+                "input_fingerprint": fingerprint,
+                "verdict": "ready",
+                "checks": {
+                    "content": "passed",
+                    "artifacts": "passed",
+                    "publish": "passed",
+                },
+                "findings": [],
+            }
+
+            result = validator.validate_manifest(
+                current,
+                root,
+                previous=previous,
+                actor_role="reviewer",
+                actor_identity="run-pre-split-reviewer",
+            )
+
+            self.assertFalse(result.valid)
+            self.assertTrue(
+                any("cannot be added or changed after planning artifacts exist" in item for item in result.errors),
+                result.errors,
+            )
+
+    def test_reviewer_actor_identity_is_bound_to_review_record(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            previous = self.base_manifest(root, ui_required=False)
+            initial = validator.validate_manifest(previous, root)
+            current = json.loads(json.dumps(previous))
+            current["review"] = {
+                "review_id": "REVIEW-FORGED-ACTOR",
+                "reviewer_identity": "run-independent-reviewer",
+                "maker_identities": ["run-maker"],
+                "input_fingerprint": initial.package_input_fingerprint,
+                "verdict": "ready",
+                "checks": {
+                    "content": "passed",
+                    "artifacts": "passed",
+                    "publish": "passed",
+                },
+                "findings": [],
+            }
+
+            forged = validator.validate_manifest(
+                current,
+                root,
+                previous=previous,
+                actor_role="reviewer",
+                actor_identity="run-maker",
+            )
+            legitimate = validator.validate_manifest(
+                current,
+                root,
+                previous=previous,
+                actor_role="reviewer",
+                actor_identity="run-independent-reviewer",
+            )
+
+            self.assertFalse(forged.valid)
+            self.assertTrue(
+                any("review.reviewer_identity must match actor_identity" in item for item in forged.errors),
+                forged.errors,
+            )
+            self.assertTrue(legitimate.valid, legitimate.errors)
+            self.assertEqual(legitimate.derived_status, "package_ready")
+
+    def test_approver_actor_identity_is_bound_and_must_be_human(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            previous = self.make_approved(root, ui_required=False)
+            previous["approvals"]["publish"] = None
+            previous["package_status"] = "package_ready"
+            previous["current_stage"] = "approval"
+            self.assertTrue(validator.validate_manifest(previous, root).valid)
+
+            forged_label = json.loads(json.dumps(previous))
+            forged_label["approvals"]["publish"] = {
+                "approver_identity": "human:owner",
+                "payload_fingerprint": previous["release"]["dingtalk"]["payload_fingerprint"],
+                "approved_at": "2026-08-06T12:00:00+08:00",
+            }
+            mismatch = validator.validate_manifest(
+                forged_label,
+                root,
+                previous=previous,
+                actor_role="approver",
+                actor_identity="run-maker",
+            )
+            legitimate = validator.validate_manifest(
+                forged_label,
+                root,
+                previous=previous,
+                actor_role="approver",
+                actor_identity="human:owner",
+            )
+
+            nonhuman = json.loads(json.dumps(previous))
+            nonhuman["approvals"]["publish"] = {
+                "approver_identity": "run-maker",
+                "payload_fingerprint": previous["release"]["dingtalk"]["payload_fingerprint"],
+                "approved_at": "2026-08-06T12:00:00+08:00",
+            }
+            nonhuman_result = validator.validate_manifest(
+                nonhuman,
+                root,
+                previous=previous,
+                actor_role="approver",
+                actor_identity="run-maker",
+            )
+
+            self.assertFalse(mismatch.valid)
+            self.assertTrue(
+                any("approver_identity must match actor_identity" in item for item in mismatch.errors),
+                mismatch.errors,
+            )
+            self.assertTrue(legitimate.valid, legitimate.errors)
+            self.assertEqual(legitimate.derived_status, "publish_approved")
+            self.assertFalse(nonhuman_result.valid)
+            self.assertTrue(
+                any("must use human:<stable-label>" in item for item in nonhuman_result.errors),
+                nonhuman_result.errors,
+            )
+
     def test_eval_b2_04_reviewer_must_be_independent_and_all_checks_pass(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -300,6 +582,63 @@ class ProductDeliveryManifestTest(unittest.TestCase):
             self.assertFalse(result.valid)
             self.assertTrue(any("must include ui_requirement.decided_by" in item for item in result.errors))
             self.assertTrue(any("independent" in item for item in result.errors))
+
+    def test_ui_producer_identity_is_authoritative_for_review_independence(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = self.base_manifest(root)
+            current = validator.validate_manifest(manifest, root)
+            manifest["review"] = {
+                "review_id": "REVIEW-UI-SELF",
+                "reviewer_identity": "run-ui",
+                "maker_identities": ["run-maker"],
+                "input_fingerprint": current.package_input_fingerprint,
+                "verdict": "ready",
+                "checks": {
+                    "content": "passed",
+                    "artifacts": "passed",
+                    "publish": "passed",
+                },
+                "findings": [],
+            }
+
+            result = validator.validate_manifest(manifest, root)
+
+            self.assertFalse(result.valid)
+            self.assertTrue(
+                any("authoritative producer identities" in item for item in result.errors),
+                result.errors,
+            )
+            self.assertTrue(any("independent" in item for item in result.errors), result.errors)
+
+            previous = self.base_manifest(root)
+            forged_ui = json.loads(json.dumps(previous))
+            forged_ui["artifacts"]["html"][0]["producer_identity"] = "forged-ui"
+            forged_ui_result = validator.validate_manifest(
+                forged_ui,
+                root,
+                previous=previous,
+                actor_role="ui_producer",
+                actor_identity="run-ui",
+            )
+            self.assertTrue(
+                any("actor_role.ui_producer" in item and "actor_identity" in item for item in forged_ui_result.errors),
+                forged_ui_result.errors,
+            )
+
+            forged_maker = json.loads(json.dumps(previous))
+            forged_maker["artifacts"]["prd"]["producer_identity"] = "forged-maker"
+            forged_maker_result = validator.validate_manifest(
+                forged_maker,
+                root,
+                previous=previous,
+                actor_role="maker",
+                actor_identity="run-maker",
+            )
+            self.assertTrue(
+                any("actor_role.maker" in item and "actor_identity" in item for item in forged_maker_result.errors),
+                forged_maker_result.errors,
+            )
 
     def test_anchor_requires_screenshot_to_be_embedded_in_current_prd_section(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -396,6 +735,122 @@ class ProductDeliveryManifestTest(unittest.TestCase):
             current["review"] = {"verdict": "ready"}
             scoped = validator.validate_manifest(current, root, previous=previous, actor_role="maker")
             self.assertTrue(any("unauthorized changes" in item for item in scoped.errors))
+
+    def test_backlog_splitter_can_only_change_delivery_planning_artifacts(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            previous = self.base_manifest(root, ui_required=False)
+            self.add_pre_split_review(root, previous)
+            current = json.loads(json.dumps(previous))
+            self.add_delivery_plan_artifacts(root, current)
+
+            allowed = validator.validate_manifest(
+                current,
+                root,
+                previous=previous,
+                actor_role="backlog_splitter",
+                actor_identity="run-backlog",
+            )
+
+            self.assertTrue(allowed.valid, allowed.errors)
+
+            current["title"] = "Backlog Splitter must not rewrite the package"
+            overreach = validator.validate_manifest(
+                current,
+                root,
+                previous=previous,
+                actor_role="backlog_splitter",
+                actor_identity="run-backlog",
+            )
+
+            self.assertTrue(
+                any(
+                    "actor_role.backlog_splitter: unauthorized changes: title" in item
+                    for item in overreach.errors
+                ),
+                overreach.errors,
+            )
+
+    def test_backlog_splitter_identity_is_bound_to_planning_artifacts(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            previous = self.base_manifest(root, ui_required=False)
+            self.add_pre_split_review(root, previous)
+            current = json.loads(json.dumps(previous))
+            self.add_delivery_plan_artifacts(root, current, producer_identity="forged-actor")
+
+            missing_identity = validator.validate_manifest(
+                current, root, previous=previous, actor_role="backlog_splitter"
+            )
+            forged_identity = validator.validate_manifest(
+                current,
+                root,
+                previous=previous,
+                actor_role="backlog_splitter",
+                actor_identity="run-backlog",
+            )
+
+            self.assertTrue(
+                any("actor_identity is required" in item for item in missing_identity.errors),
+                missing_identity.errors,
+            )
+            self.assertTrue(
+                any("must record actor_identity" in item for item in forged_identity.errors),
+                forged_identity.errors,
+            )
+
+    def test_planning_producer_cannot_self_review_or_be_omitted(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = self.base_manifest(root, ui_required=False)
+            self.add_pre_split_review(root, manifest)
+            self.add_delivery_plan_artifacts(root, manifest)
+            current = validator.validate_manifest(manifest, root)
+            self.assertTrue(current.valid, current.errors)
+            manifest["package_input_fingerprint"] = current.package_input_fingerprint
+            manifest["review"] = {
+                "review_id": "REVIEW-PLANNING",
+                "reviewer_identity": "run-backlog",
+                "maker_identities": ["run-maker"],
+                "input_fingerprint": current.package_input_fingerprint,
+                "verdict": "ready",
+                "checks": {
+                    "content": "passed",
+                    "artifacts": "passed",
+                    "publish": "passed",
+                },
+                "findings": [],
+            }
+
+            result = validator.validate_manifest(manifest, root)
+
+            self.assertFalse(result.valid)
+            self.assertTrue(
+                any("must include authoritative producer identities" in item for item in result.errors),
+                result.errors,
+            )
+            self.assertTrue(
+                any("Reviewer identity must be independent" in item for item in result.errors),
+                result.errors,
+            )
+
+    def test_planning_producer_identity_is_part_of_package_fingerprint(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = self.base_manifest(root, ui_required=False)
+            self.add_pre_split_review(root, manifest)
+            self.add_delivery_plan_artifacts(root, manifest)
+
+            original = validator.validate_manifest(manifest, root)
+            manifest["artifacts"]["version_plan"]["producer_identity"] = "run-backlog-2"
+            changed = validator.validate_manifest(manifest, root)
+
+            self.assertTrue(original.valid, original.errors)
+            self.assertTrue(changed.valid, changed.errors)
+            self.assertNotEqual(
+                original.package_input_fingerprint,
+                changed.package_input_fingerprint,
+            )
 
     def test_publish_events_reuse_node_and_require_external_browser_evidence(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

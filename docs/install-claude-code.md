@@ -3,7 +3,8 @@
 Claude Code uses the common Agent Skill shape: one directory with a
 `SKILL.md` containing `name` and `description` frontmatter. Copy or symlink the
 15 child directories under `skills/` into the directory your Claude Code setup
-scans.
+scans. The two Workflows and three Loops also contain compatibility `SKILL.md`
+entrypoints and may be installed explicitly from `workflows/` and `loops/`.
 
 ## Copy Or Symlink
 
@@ -15,10 +16,16 @@ for skill_dir in skills/*; do
   skill="$(basename "$skill_dir")"
   ln -sfn "$(pwd)/$skill_dir" "$HOME/.claude/skills/$skill"
 done
+for entry_dir in workflows/* loops/*; do
+  if [ -f "$entry_dir/SKILL.md" ]; then
+    entry="$(basename "$entry_dir")"
+    ln -sfn "$(pwd)/$entry_dir" "$HOME/.claude/skills/$entry"
+  fi
+done
 ```
 
-Do not copy `archive/`, `loops/`, `workflows/`, or `tools/` into the atomic
-Skill directory.
+Do not copy `archive/`. Keep Workflow and Loop adapters separate from the 15
+atomic Skills and invoke them by their stable IDs.
 
 ## skillshare
 
@@ -39,8 +46,11 @@ skillshare sync --dry-run
 $prd-review 从研发和测试视角审一下这个 PRD
 $research-topic-compiler 系统研究这个产品方向
 $team-skill-creator 判断这类重复工作该沉淀成什么
+$problem-to-solution 把这个模糊问题推进到确认方案
+$delivery-loop 继续 Review 这份已有交付包并定点修订
 ```
 
-The Skill should follow its own boundary and output contract. Publishing to
-DingTalk, creating Yunxiao work items, and local distribution remain separate
-authorized Tool operations.
+The Skill should follow its own boundary and output contract. Product Delivery
+Package publishing is dry-run-only in the current Agent runtime and returns
+`authorization_required` for real writes; DingTalk Legacy direct publishing,
+Yunxiao work items, and local distribution remain separate Tool operations.

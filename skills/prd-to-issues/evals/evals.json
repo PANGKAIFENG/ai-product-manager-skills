@@ -28,6 +28,19 @@
       ]
     },
     {
+      "id": "package-split-requires-current-pre-split-review",
+      "type": "regression",
+      "prompt": "这个 Product Delivery Manifest 的 pre_split_review 为空，但先帮我生成 V1/V2 和研发 issue drafts。",
+      "should_trigger": true,
+      "expected_route": "prd-to-issues",
+      "expected_output": "停止规划拆分并返回 prd-review，因为 validator 不能证明当前 pre_split_review ready。",
+      "assertions": [
+        {
+          "text": "不生成 version plan、issue drafts 或 coverage matrix。"
+        }
+      ]
+    },
+    {
       "id": "non-trigger-write-prd",
       "type": "non-trigger",
       "prompt": "帮我写一个 PRD。",

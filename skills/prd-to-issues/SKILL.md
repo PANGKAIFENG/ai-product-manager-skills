@@ -39,6 +39,7 @@ description: >
 3. 运行 PRD readiness gate。按 `references/prd-readiness-checklist.md` 判断 PRD 是否足够拆 issue：
    - 目标用户、问题、非目标、主流程、验收口径、关键约束、未决问题。
    - 如果阻断信息缺失，先提出最少问题或建议回到 `prd-review`。
+   - 输入属于 Product Delivery Package 时，必须先运行 canonical Manifest validator，并只消费它证明为 current/ready 的 `pre_split_review`；缺失、stale、`changes_requested` 或自审都立即停止拆分。
 4. 读取必要工程上下文：
    - 项目 README、架构说明、ADR、领域词汇、已有 routes/schema/API/UI 约定。
    - `.github/ISSUE_TEMPLATE/`、label/type/milestone 约定。
@@ -52,6 +53,7 @@ description: >
 6. 建立覆盖矩阵：
    - 每个 PRD section、user story、requirement、验收标准要么被 issue 覆盖，要么明确排除并说明原因。
    - 发现 PRD 缺口时，不要硬拆；标记为 HITL clarification 或建议先 `prd-review`。
+   - Product Delivery Package 模式下，把 version plan、issue drafts 和 coverage matrix 写入 Manifest，全部记录当前 Backlog Splitter 的 `producer_identity`，并用 actor-scoped validator 校验；这只形成待最终 Review 的 Package，不自行声明 `package_ready`。
 7. 输出 draft issue plan。每个 issue 至少包含：
    - Title
    - Type: AFK / HITL

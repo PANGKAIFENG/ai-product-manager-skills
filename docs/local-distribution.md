@@ -5,7 +5,7 @@ These notes are for maintainers who sync this public Skill catalog into local ag
 ## Source Of Truth
 
 - Public repository default branch is the reviewable source for shared AI PM Skills.
-- Installable atomic Skills live only under `skills/<skill-id>/`; `loops/` and `workflows/` contain orchestration guidance, not installable Skills. Tool compatibility adapters are explicitly located under `tools/*/*/runtime-adapter/`.
+- Installable atomic Skills live only under `skills/<skill-id>/`. Two Workflows and three Loops expose explicit-only Runtime adapters through co-located `SKILL.md` files while retaining their catalog kinds. Tool compatibility adapters remain under `tools/*/*/runtime-adapter/`.
 - Local runtime folders should be treated as installation targets, not as the canonical editing surface.
 - When a Skill is changed, update the repository first, validate, then sync to local targets.
 
@@ -29,6 +29,10 @@ python3 scripts/audit_skills.py .
 ```
 
 After sync, verify target runtimes can see the updated Skill metadata and that no runtime points at a stale copy.
+
+For composition entries, also verify `agents/openai.yaml` sets
+`policy.allow_implicit_invocation: false`, the old v0.3.0 IDs are absent from
+Runtime targets, and the five current IDs are discoverable by Codex.
 
 ## v0.1 To v0.2 Source Rebinding
 
