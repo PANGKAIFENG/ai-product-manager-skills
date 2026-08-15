@@ -1,6 +1,19 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+version_history_validator="${PRD_VERSION_HISTORY_VALIDATOR:-}"
+if [[ -z "$version_history_validator" ]]; then
+  for candidate in \
+    "$script_dir/../../prd-architect/scripts/check_prd_version_history.py" \
+    "$script_dir/../../../../../skills/prd-architect/scripts/check_prd_version_history.py"; do
+    if [[ -f "$candidate" ]]; then
+      version_history_validator="$candidate"
+      break
+    fi
+  done
+fi
+
 usage() {
   cat <<'USAGE'
 Usage:
@@ -54,6 +67,23 @@ die() {
 
 require_cmd() {
   command -v "$1" >/dev/null 2>&1 || die "missing command: $1"
+}
+
+validate_prd_version_history_file() {
+  local content_path="$1"
+  local output status
+  require_cmd python3
+  [[ -n "$version_history_validator" && -f "$version_history_validator" ]] \
+    || die "PRD version history validator not found; set PRD_VERSION_HISTORY_VALIDATOR"
+  set +e
+  output="$(python3 "$version_history_validator" "$content_path" 2>&1)"
+  status=$?
+  set -e
+  if [[ "$status" -ne 0 ]]; then
+    printf '%s\n' "$output" >&2
+    die "PRD version history validation failed before any DingTalk call"
+  fi
+  printf '%s\n' "$output" >&2
 }
 
 json_get() {
@@ -148,6 +178,25 @@ if (title !== process.argv[3]) throw new Error("read-back title does not match t
 if (typeof markdown !== "string" || markdown.trim() === "") throw new Error("read-back content is empty");
 const source = fs.readFileSync(process.argv[1], "utf8");
 const normalize = (value) => value.replace(/\r/g, "").replace(/[ \t]+/g, " ").trim();
+const latestVersionRow = (value) => {
+  const lines = value.replace(/\r/g, "").split("\n");
+  const headingIndex = lines.findIndex((line) => /^##\s+(?:\d+(?:\.\d+)*[.、)]?\s*)?版本记录\s*$/.test(line.trim()));
+  if (headingIndex < 0) return null;
+  const headerIndex = lines.findIndex((line, index) => {
+    if (index <= headingIndex || !line.trim().startsWith("|")) return false;
+    const cells = line.trim().replace(/^\||\|$/g, "").split("|").map((cell) => cell.replace(/\s+/g, ""));
+    return cells.length >= 3 && cells[0] === "版本" && cells[1] === "日期" && cells[2] === "修改内容";
+  });
+  if (headerIndex < 0) return null;
+  for (const line of lines.slice(headerIndex + 1)) {
+    if (!line.trim()) continue;
+    if (!line.trim().startsWith("|")) break;
+    const cells = line.trim().replace(/^\||\|$/g, "").split("|").map((cell) => normalize(cell));
+    if (cells.every((cell) => /^:?-{3,}:?$/.test(cell))) continue;
+    return cells.slice(0, 3);
+  }
+  return null;
+};
 const headings = source.split(/\r?\n/)
   .map((line) => line.match(/^#{1,3}\s+(.+?)\s*$/))
   .filter(Boolean)
@@ -159,9 +208,17 @@ const remote = normalize(markdown);
 for (const marker of markers) {
   if (!remote.includes(marker)) throw new Error(`read-back is missing content marker: ${marker}`);
 }
+const sourceVersion = latestVersionRow(source);
+const remoteVersion = latestVersionRow(markdown);
+if (!sourceVersion) throw new Error("source PRD is missing a readable latest version row");
+if (!remoteVersion) throw new Error("read-back is missing the PRD version history table");
+if (JSON.stringify(sourceVersion) !== JSON.stringify(remoteVersion)) {
+  throw new Error(`read-back latest version row does not match source: ${sourceVersion[0]}`);
+}
 process.stdout.write(JSON.stringify({
   node_id: nodeId,
   title,
+  latest_version: sourceVersion[0],
   content_sha256: crypto.createHash("sha256").update(markdown, "utf8").digest("hex"),
 }));
 ' "$content_path" "$expected_node_id" "$expected_title"
@@ -310,6 +367,8 @@ run_package_mode() {
   content_path="$(printf '%s' "$validation_json" | json_get publish_plan.content.path)"
   package_node_id="$(printf '%s' "$validation_json" | json_pick publish_plan.node_id || true)"
   last_failed_step="$(printf '%s' "$validation_json" | json_pick publish_plan.last_attempt.failed_step || true)"
+
+  validate_prd_version_history_file "$content_path"
 
   while IFS= read -r item; do [[ -n "$item" ]] && completed_ids+=("$item"); done < <(
     node -e '
@@ -641,6 +700,7 @@ fi
 [[ -n "$file" ]] || { usage; exit 2; }
 [[ "$mode" == "doc" || "$mode" == "file" ]] || die "--mode must be doc or file"
 [[ -f "$file" ]] || die "file not found: $file"
+validate_prd_version_history_file "$file"
 [[ -z "$folder" || -z "$workspace" ]] || die "use only one target: --folder or --workspace"
 [[ -z "$parent" || -z "$folder" ]] || die "use only one target selector: --parent or --folder"
 [[ -z "$parent" || -z "$workspace" ]] || die "use only one target selector: --parent or --workspace"
@@ -836,7 +896,22 @@ fi
 if [[ "$mode" == "doc" && "$read_back" == "true" && -f "$result_file" ]]; then
   node_id="$(cat "$result_file" | json_pick nodeId result.nodeId || true)"
   if [[ -n "$node_id" ]]; then
-    dws doc read --node "$node_id" --format json
+    set +e
+    read_output="$(run_dws doc read --node "$node_id" --content-format markdown --format json)"
+    read_status=$?
+    set -e
+    printf '%s\n' "$read_output"
+    [[ "$read_status" -eq 0 ]] || exit "$read_status"
+    read_json="$(printf '%s\n' "$read_output" | json_payload)"
+    set +e
+    read_validation="$(printf '%s' "$read_json" | validate_doc_readback "$file" "$node_id" "$name" 2>&1)"
+    validation_status=$?
+    set -e
+    if [[ "$validation_status" -ne 0 ]]; then
+      printf '%s\n' "$read_validation" >&2
+      die "DingTalk read-back validation failed"
+    fi
+    printf 'Read-back validated: %s\n' "$read_validation"
   else
     printf 'warning: created document nodeId not found; skip read-back\n' >&2
   fi

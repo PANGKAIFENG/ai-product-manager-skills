@@ -2,6 +2,60 @@
   "skill_name": "prd-architect",
   "evals": [
     {
+      "id": "new-prd-initializes-version-history",
+      "type": "behavior-regression",
+      "prompt": "帮我新建一份 PRD，并准备后续发布到钉钉。",
+      "expected_output": "The PRD starts with a version history table immediately after the title. Its first row is V1.0, uses today's date, and records 首次创建.",
+      "files": [],
+      "should_trigger": true,
+      "expected_route": "prd-architect",
+      "assertions": [
+        {
+          "text": "The first H2 after the PRD title is 版本记录."
+        },
+        {
+          "text": "The table columns are 版本, 日期, and 修改内容, with a V1.0 initial row."
+        },
+        {
+          "text": "The initial change summary contains 首次创建."
+        }
+      ]
+    },
+    {
+      "id": "existing-prd-prepends-concrete-minor-version",
+      "type": "behavior-regression",
+      "prompt": "这份 PRD 当前最新版本是 V1.1。补充企业成员安装和取消连接器的规则，其他产品范围不变。",
+      "expected_output": "Reads the existing version history, keeps all old rows, prepends V1.2 with today's date, and summarizes the member install and disconnect changes concretely.",
+      "files": [],
+      "should_trigger": true,
+      "expected_route": "prd-architect",
+      "assertions": [
+        {
+          "text": "The new top row is V1.2 and older rows remain unchanged below it."
+        },
+        {
+          "text": "The change summary names the actual member installation and disconnect rule changes rather than saying only 更新 PRD."
+        },
+        {
+          "text": "The change remains a minor version because the product goal and core workflow did not materially change."
+        }
+      ]
+    },
+    {
+      "id": "publish-retry-does-not-create-version",
+      "type": "boundary-risk",
+      "prompt": "钉钉发布刚才超时了，PRD 内容没有任何变化。重新发布前帮我处理一下版本。",
+      "expected_output": "Does not add a new version row because this is a publish retry with unchanged product content.",
+      "files": [],
+      "should_trigger": true,
+      "expected_route": "prd-architect",
+      "assertions": [
+        {
+          "text": "No new version row is created for an unchanged publish retry."
+        }
+      ]
+    },
+    {
       "id": "standard-product-draft-no-schema",
       "type": "trigger",
       "prompt": "帮我写一份 Agent 回答后的下一步行动建议 PRD 初版。下一步行动不是所有回答都有，图片生成后可以改图或生成视频，PPT 成功后下载/编辑是功能按钮，不算 Agent 下一步；点击下一步行动只预填输入框让用户确认。",

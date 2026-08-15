@@ -11,6 +11,12 @@ import subprocess
 import sys
 from pathlib import Path
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+from check_prd_version_history import validate_version_history
+
 
 OVER_TECH_PATTERNS = [
     ("typescript_code_fence", re.compile(r"```(?:ts|typescript)\b", re.I)),
@@ -470,6 +476,11 @@ def main() -> int:
     parser.add_argument("--allow-handoff", action="store_true", help="Allow technical schema details in the document")
     parser.add_argument("--publish-ready", action="store_true", help="Check for online-publishing contamination such as local mock links")
     parser.add_argument(
+        "--require-version-history",
+        action="store_true",
+        help="Require the canonical newest-first PRD version history table near the top of the document",
+    )
+    parser.add_argument(
         "--require-mockup-evidence",
         action="store_true",
         help="Require a real screenshot reference in a feature section, not only in a local appendix",
@@ -497,6 +508,10 @@ def main() -> int:
     text = path.read_text(encoding="utf-8")
     body_to_check = text if args.allow_handoff else strip_handoff_appendix(text)
     warnings: list[str] = []
+
+    if args.require_version_history or args.publish_ready:
+        _, version_warnings = validate_version_history(text)
+        warnings.extend(version_warnings)
 
     for name, pattern in OVER_TECH_PATTERNS:
         if pattern.search(body_to_check):

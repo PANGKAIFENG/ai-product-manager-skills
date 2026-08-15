@@ -81,6 +81,7 @@ python3 scripts/check_prd_shape.py <prd.md> --type <lite|standard|ai-native>
 ```
 
    - PRD 明确是开发 handoff 时加 `--allow-handoff`。
+   - 评审发布版时加 `--publish-ready`；该模式会同时要求有效的顶部版本记录。只评审版本历史时可加 `--require-version-history`。
    - 有 `.drawio` 源文件时运行：
 
 ```bash
@@ -128,6 +129,7 @@ Package Review 与普通 PRD readiness 并存但不可混用。输入包含 Prod
 - `references/prd-shape-gates.md`：阶段混淆、过早技术化、模板章节误激活。
 - `references/prd-readiness-loop-contract.md`：多轮 review / revision / re-review 状态化合约。
 - `scripts/check_prd_shape.py`：PRD 形状和过技术化 warning。
+- `scripts/check_prd_version_history.py`：与 `prd-architect` 保持一致的版本历史校验器。
 - `scripts/validate_drawio.py`：Draw.io XML 基础结构验证。
 
 ## Definition of Done
