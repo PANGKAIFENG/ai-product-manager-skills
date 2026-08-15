@@ -97,8 +97,11 @@ class PublishPrdTest(unittest.TestCase):
                         print(json.dumps({
                             "success": True,
                             "nodeId": "created-doc",
-                            "title": "Package PRD",
-                            "markdown": "# Package PRD\\n\\n## Default\\nBody.\\n",
+                            "title": os.environ.get("DWS_FAKE_READBACK_TITLE", "Package PRD"),
+                            "markdown": os.environ.get(
+                                "DWS_FAKE_READBACK_MARKDOWN",
+                                "# Package PRD\\n\\n## 版本记录\\n\\n| 版本 | 日期 | 修改内容 |\\n| --- | --- | --- |\\n| V1.0 | 2026-08-15 | 首次创建 |\\n\\n## Default\\nBody.\\n",
+                            ),
                         }))
                 elif args[:3] == ["doc", "media", "insert"]:
                     fail_name = os.environ.get("DWS_FAKE_FAIL_MEDIA_ONCE")
@@ -136,10 +139,16 @@ class PublishPrdTest(unittest.TestCase):
         log_name: str = "dws-calls.jsonl",
         default_parent: str | None = "https://alidocs.dingtalk.com/i/nodes/default-parent",
         html_files: list[tuple[str, int]] | None = None,
+        prd_content: str | None = None,
+        fake_env: dict[str, str] | None = None,
     ) -> tuple[subprocess.CompletedProcess[str], list[list[str]]]:
         bin_dir, log = self.make_fake_dws(temp_root, log_name=log_name)
         prd = temp_root / "PRD.md"
-        prd.write_text("# My PRD\n\nBody.\n", encoding="utf-8")
+        prd.write_text(
+            prd_content
+            or "# My PRD\n\n## 版本记录\n\n| 版本 | 日期 | 修改内容 |\n| --- | --- | --- |\n| V1.0 | 2026-08-15 | 首次创建 |\n\nBody.\n",
+            encoding="utf-8",
+        )
         for relative_path, modified_at in html_files or []:
             html = temp_root / relative_path
             html.parent.mkdir(parents=True, exist_ok=True)
@@ -153,6 +162,9 @@ class PublishPrdTest(unittest.TestCase):
         else:
             env.pop("DINGTALK_PRD_DEFAULT_PARENT", None)
         env["DINGTALK_PRD_TIMESTAMP"] = "20260702-1700"
+        env["DWS_FAKE_READBACK_TITLE"] = "My PRD"
+        env["DWS_FAKE_READBACK_MARKDOWN"] = prd.read_text(encoding="utf-8")
+        env.update(fake_env or {})
         result = subprocess.run(
             ["/bin/bash", str(SCRIPT), str(prd), "--name", "My PRD", *args],
             cwd=str(temp_root),
@@ -184,7 +196,15 @@ class PublishPrdTest(unittest.TestCase):
         prd = self.artifact(
             temp_root,
             "PRD.md",
-            b"# Package PRD\n\n## Default\nBody.\n\n![Default](ui/screenshots/default.png)\n",
+            (
+                "# Package PRD\n\n"
+                "## 版本记录\n\n"
+                "| 版本 | 日期 | 修改内容 |\n"
+                "| --- | --- | --- |\n"
+                "| V1.0 | 2026-08-15 | 首次创建 |\n\n"
+                "## Default\nBody.\n\n"
+                "![Default](ui/screenshots/default.png)\n"
+            ).encode("utf-8"),
             "ART-PRD",
             producer_identity="run-maker",
         )
@@ -373,7 +393,31 @@ class PublishPrdTest(unittest.TestCase):
             create_call = next(call for call in calls if call[:2] == ["doc", "create"])
             self.assertIn("--folder", create_call)
             self.assertEqual(create_call[create_call.index("--folder") + 1], "anchor-node")
-            self.assertIn(["doc", "read", "--node", "created-doc", "--format", "json"], calls)
+            self.assertIn(
+                ["doc", "read", "--node", "created-doc", "--content-format", "markdown", "--format", "json"],
+                calls,
+            )
+
+    def test_missing_version_history_fails_before_any_dws_call(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            result, calls = self.run_publish(Path(tmp), prd_content="# My PRD\n\nBody.\n")
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("missing_version_history", result.stderr)
+            self.assertEqual(calls, [])
+
+    def test_readback_rejects_mismatched_latest_version_row(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            remote = "# My PRD\n\n## 版本记录\n\n| 版本 | 日期 | 修改内容 |\n| --- | --- | --- |\n| V1.1 | 2026-08-15 | 不一致的修改 |\n| V1.0 | 2026-08-01 | 首次创建 |\n\nBody.\n"
+            result, calls = self.run_publish(
+                Path(tmp),
+                "--read-back",
+                fake_env={"DWS_FAKE_READBACK_MARKDOWN": remote},
+            )
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("latest version row does not match source", result.stderr)
+            self.assertTrue(any(call[:2] == ["doc", "read"] for call in calls))
 
     def test_builtin_default_parent_is_agent_requirements_anchor(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

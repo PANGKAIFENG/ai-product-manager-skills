@@ -37,6 +37,12 @@ class CheckResult:
 def standard_prd(body: str, *, background: str = "当前页面缺少本期目标状态，研发和测试无法直接对齐改动结果。") -> str:
     return f"""# Test PRD
 
+## 版本记录
+
+| 版本 | 日期 | 修改内容 |
+| --- | --- | --- |
+| V1.0 | 2026-08-15 | 首次创建 |
+
 ## 背景与目标
 
 - **背景**：{background}
@@ -66,6 +72,7 @@ def run_shape_only(
     prd_type: str = "standard",
     publish_ready: bool = False,
     maturity: str | None = None,
+    require_version_history: bool = False,
 ) -> CheckResult:
     with tempfile.TemporaryDirectory() as tmpdir:
         path = Path(tmpdir) / "prd.md"
@@ -73,6 +80,8 @@ def run_shape_only(
         argv = [str(SCRIPT), str(path), "--type", prd_type]
         if publish_ready:
             argv.append("--publish-ready")
+        if require_version_history:
+            argv.append("--require-version-history")
         if maturity:
             argv.extend(["--maturity", maturity])
         stdout = io.StringIO()
@@ -356,6 +365,59 @@ class FlexibleTemplateShapeTest(unittest.TestCase):
 
         self.assertEqual(result.returncode, 0, result.stdout)
 
+    def test_required_version_history_passes_for_new_prd(self) -> None:
+        result = run_shape_only(standard_prd("功能逻辑已写入模块。"), require_version_history=True)
+
+        self.assertEqual(result.returncode, 0, result.stdout)
+
+    def test_missing_version_history_is_reported(self) -> None:
+        markdown = standard_prd("功能逻辑已写入模块。").replace(
+            "## 版本记录\n\n| 版本 | 日期 | 修改内容 |\n| --- | --- | --- |\n| V1.0 | 2026-08-15 | 首次创建 |\n\n",
+            "",
+        )
+
+        result = run_shape_only(markdown, require_version_history=True)
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("missing_version_history", result.stdout)
+
+    def test_publish_ready_implicitly_requires_version_history(self) -> None:
+        markdown = standard_prd("功能逻辑已写入模块。").replace(
+            "## 版本记录\n\n| 版本 | 日期 | 修改内容 |\n| --- | --- | --- |\n| V1.0 | 2026-08-15 | 首次创建 |\n\n",
+            "",
+        )
+
+        result = run_shape_only(markdown, publish_ready=True)
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("missing_version_history", result.stdout)
+
+    def test_version_history_must_be_newest_first_with_concrete_changes(self) -> None:
+        markdown = standard_prd("功能逻辑已写入模块。").replace(
+            "| V1.0 | 2026-08-15 | 首次创建 |",
+            "| V1.0 | 2026-08-01 | 首次创建 |\n| V1.1 | 2026-08-15 | 更新 PRD |",
+        )
+
+        result = run_shape_only(markdown, require_version_history=True)
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("version_history_not_newest_first", result.stdout)
+        self.assertIn("generic_version_changes:V1.1", result.stdout)
+
+    def test_version_history_must_be_the_first_h2(self) -> None:
+        markdown = standard_prd("功能逻辑已写入模块。").replace(
+            "## 版本记录\n\n| 版本 | 日期 | 修改内容 |\n| --- | --- | --- |\n| V1.0 | 2026-08-15 | 首次创建 |\n\n",
+            "",
+        ).replace(
+            "## 背景与目标",
+            "## 背景与目标\n\n## 版本记录\n\n| 版本 | 日期 | 修改内容 |\n| --- | --- | --- |\n| V1.0 | 2026-08-15 | 首次创建 |\n",
+        )
+
+        result = run_shape_only(markdown, require_version_history=True)
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("version_history_not_at_top", result.stdout)
+
     def test_missing_feature_module_capability_is_reported(self) -> None:
         markdown = standard_prd("功能逻辑已写入模块。").replace("## 功能模块", "## 方案说明")
         result = run_shape_only(markdown)
@@ -523,6 +585,11 @@ class FlexibleTemplateShapeTest(unittest.TestCase):
     def test_lite_module_first_shape_passes(self) -> None:
         markdown = """# Lite PRD
 
+## 版本记录
+| 版本 | 日期 | 修改内容 |
+| --- | --- | --- |
+| V1.0 | 2026-08-15 | 首次创建 |
+
 ## 背景与目标
 - **背景**：当前按钮缺少权限反馈。
 - **本期只解决**：补充无权限提示。
@@ -542,6 +609,11 @@ class FlexibleTemplateShapeTest(unittest.TestCase):
 
     def test_ai_native_module_first_shape_passes(self) -> None:
         markdown = """# AI PRD
+
+## 版本记录
+| 版本 | 日期 | 修改内容 |
+| --- | --- | --- |
+| V1.0 | 2026-08-15 | 首次创建 |
 
 ## 背景与目标
 - **背景**：当前生成结果缺少人工确认。
@@ -583,6 +655,15 @@ class FlexibleTemplateShapeTest(unittest.TestCase):
         for template in sorted(template_root.glob("prd-*.md")):
             with self.subTest(template=template.name):
                 self.assertIsNone(forbidden.search(template.read_text(encoding="utf-8")))
+
+    def test_all_templates_include_version_history(self) -> None:
+        template_root = Path(__file__).resolve().parents[1] / "references" / "templates"
+
+        for template in sorted(template_root.glob("prd-*.md")):
+            with self.subTest(template=template.name):
+                text = template.read_text(encoding="utf-8")
+                self.assertIn("| 版本 | 日期 | 修改内容 |", text)
+                self.assertIn("| V1.0 | YYYY-MM-DD | 首次创建 |", text)
 
 
 if __name__ == "__main__":

@@ -2,6 +2,25 @@
   "skill_name": "dingtalk-prd-publisher",
   "evals": [
     {
+      "id": "version-history-preflight-and-readback",
+      "type": "side-effect-boundary",
+      "prompt": "发布一份 PRD 到钉钉。先用缺失版本表的文件验证无远端调用，再用有效 V1.2 文件发布并让线上回读返回不一致的 V1.1。只使用 fake/spy。",
+      "should_trigger": true,
+      "expected_route": "dingtalk-prd-publisher",
+      "expected_output": "Rejects the missing version table before any DingTalk call and rejects a successful remote write whose latest version row does not match the local PRD.",
+      "assertions": [
+        {
+          "text": "Missing or invalid version history fails before dws auth and leaves the fake dws call log empty."
+        },
+        {
+          "text": "The publisher never invents or increments a PRD version."
+        },
+        {
+          "text": "Read-back compares the complete latest version row and fails when version, date, or change summary differs."
+        }
+      ]
+    },
+    {
       "id": "EVAL-B2-05",
       "type": "side-effect-boundary",
       "prompt": "用这个 product-delivery-manifest.yaml 发布 Package，但 Human approval 里的 payload fingerprint 已经过期。不要真实发布，用 fake/spy 验证调用边界。",
