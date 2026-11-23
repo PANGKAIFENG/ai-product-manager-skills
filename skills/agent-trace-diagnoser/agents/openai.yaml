@@ -1,4 +1,4 @@
 interface:
   display_name: "Agent Trace Diagnoser"
-  short_description: "从 agent trace 或日志定位核心根因，用流程图展示执行路径，并给出证据链、可能文件/行和修复建议。"
-  default_prompt: "Use $agent-trace-diagnoser to diagnose this trace without editing files."
+  short_description: "先复原案例事实，再从 Agent trace 定位失败点与根因候选；按需生成可追溯的可视化报告。"
+  default_prompt: "Use $agent-trace-diagnoser to present the case facts and diagnose this trace without changing business code or creating files unless requested."

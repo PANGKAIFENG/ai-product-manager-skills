@@ -17,7 +17,7 @@ v0.3 的原子能力固定为 15 个 Skill。`core` 表示默认 PM 面，`activ
 | `stylework-requirement-planning` | 只读分析需求批次、主题、依赖、优先级和迭代建议 | active | 不导出 Sheet、不修改云效或钉钉 |
 | `team-skill-creator` | Skill 查重、权威源、生命周期、发布和分发治理 | active | 合入 assetization/improvement 的治理入口 |
 | `skill-reviewer` | 审计 Skill 触发、结构、安全、资源和 eval | active | 不负责创建或发布决策 |
-| `agent-trace-diagnoser` | 基于 trace 和日志做证据链根因诊断 | active | 只读，不直接修改代码 |
+| `agent-trace-diagnoser` | 案例事实、证据链与根因置信度诊断，按需生成可视化报告 | active | 默认只读；固定渲染器不直接修改业务代码 |
 | `project-context-steward` | 建立和维护跨需求复用的 PROJECT_CONTEXT | active | 不替代 PRD、目录治理或一次性实现 |
 
 ## 默认安装面

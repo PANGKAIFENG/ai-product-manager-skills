@@ -7,11 +7,12 @@
       "prompt": "只读分析这段 trace：用户要求总结 report.pdf。E1 路由到 pdf skill；E2 PDF URL 解析返回 unsupported_url；E3 agent fallback 到 webfetch；E4 webfetch 返回 response exceeds 5MB；E5 最终回复只说文件太大。请定位根因，不要修改文件。",
       "should_trigger": true,
       "expected_route": "agent-trace-diagnoser",
-      "expected_output": "中文诊断以 PDF 主链路的 URL/解析失败为主因，把 webfetch 5MB 限制标为 fallback 放大因素，并用可复核的流程图连接执行路径。",
+      "expected_output": "先呈现案例事实，定位更早的 PDF URL/解析路径失败及后续 webfetch 限制；解析失败的具体机制未取得时，不武断认定实现根因。",
       "assertions": [
         {"text": "输出包含 Mermaid 流程图，且关键节点使用证据链一致的 E# 编号。"},
         {"text": "明确区分主链路首个失败与 fallback 后的 5MB 限制。"},
-        {"text": "核心结论指出主因不是文件大小，而是更早的 PDF URL/解析路径失败。"},
+        {"text": "不能只归因文件大小；定位更早的解析路径失败，并区分失败点与尚未确认的机制根因。"},
+        {"text": "默认快速诊断也含用户要求、输入文件、预期和实际结果的事实层。"},
         {"text": "明确说明未修改文件。"}
       ]
     },
@@ -38,7 +39,73 @@
       "assertions": [
         {"text": "明确说明证据不足，不能确认根因。"},
         {"text": "不虚构具体 skill、路由、重试或 fallback。"},
-        {"text": "给出补齐前序 trace 或调用记录的具体待验证项。"}
+        {"text": "给出补齐前序 trace 或调用记录的具体待验证项。"},
+        {"text": "案例事实层明确用户要求和交付结果未取得，不补造完整会话。"}
+      ]
+    },
+    {
+      "id": "trace-default-facts-before-diagnosis",
+      "type": "regression",
+      "prompt": "快速诊断，不创建文件：用户原话‘保留印花和尺寸，只改黑底’，附了一张 input.jpg，附件字节没捞到。模型查询选项 auto，create 请求 modelVersion=example-v1；工具返回 retryable=false、submission=not-submitted，最终文字‘请重发图片’，无产物。只取得了服务端 trace，未看客户端。",
+      "should_trigger": true,
+      "expected_route": "agent-trace-diagnoser",
+      "expected_output": "即使快速模式也先交代案例事实，区分附件元信息与未取得的内容、请求模型与未执行模型、trace 输出与用户实际看到。",
+      "assertions": [
+        {"text": "先交代用户原话、附件缺失、预期改图和实际未提交无产物。"},
+        {"text": "不声称实际使用了 example-v1、不声称图片重复扣费或客户端已显示失败。"},
+        {"text": "不创建 HTML、不下载附件、不重跑生成。"}
+      ]
+    },
+    {
+      "id": "trace-first-error-recovered",
+      "type": "regression",
+      "prompt": "只读分析：用户要求生成一张图并存到指定共享盘。第一次查询模型选项网络超时，第二次成功；create 接受 job-1，wait 返回成功和图片下载结果。最后向共享盘写文件时返回 EACCES，最终没有可用的共享盘文件。不要把调用顺序当成根因证据。",
+      "should_trigger": true,
+      "expected_route": "agent-trace-diagnoser",
+      "expected_output": "事实层区分生成成功与共享盘交付失败；已恢复的查询超时不是最终交付失败根因。",
+      "assertions": [
+        {"text": "不把最早查询超时标为最终失败主因。"},
+        {"text": "定位共享盘写入 EACCES，具体权限配置机制仍需要核验。"},
+        {"text": "明确图片生成已成功，但目标交付未完成。"}
+      ]
+    },
+    {
+      "id": "trace-normal-wait-is-not-wasted",
+      "type": "regression",
+      "prompt": "诊断是否存在多余调用：用户要两张图片，create 返回两个 job，随后 wait 工具在内部轮询 8 次，每次 running，最终成功下载两张图；没有额外主模型参与轮询。trace 没有用户端打开文件的证据。",
+      "should_trigger": true,
+      "expected_route": "agent-trace-diagnoser",
+      "expected_output": "保留事实层，不把正常程序轮询算成八轮主 LLM 或无进展故障。",
+      "assertions": [
+        {"text": "区分 wait 内部轮询、主模型轮次及重复创建。"},
+        {"text": "可以得出未发现不合理调用，而不是强行列出故障。"},
+        {"text": "下载成功不直接写成用户已查看或验收通过。"}
+      ]
+    },
+    {
+      "id": "trace-current-code-not-historical-root",
+      "type": "regression",
+      "prompt": "历史 trace 中 create 双层 arguments 返回 input-mismatch。今天读到的本地源码只检查顶层图片字段，但拿不到历史部署 commit。请分析根因置信度，不修改代码。",
+      "should_trigger": true,
+      "expected_route": "agent-trace-diagnoser",
+      "expected_output": "可把错层校验列为候选，不根据今天源码确认历史线上唯一根因。",
+      "assertions": [
+        {"text": "将历史失败事实与当前源码解释分开，指出部署版本未绑定。"},
+        {"text": "流程图不把首个失败自动标成已确认根因。"},
+        {"text": "给出匹配历史版本或受控复现的验证方法。"}
+      ]
+    },
+    {
+      "id": "trace-html-fixed-renderer",
+      "type": "regression",
+      "prompt": "用随包 tests/fixtures/case.json 生成一份本地 HTML 诊断报告。不要接触生产或自动公开；输出目录用新的临时目录。",
+      "should_trigger": true,
+      "expected_route": "agent-trace-diagnoser",
+      "expected_output": "调用固定渲染器，不重写每案 HTML；原始问答、过程、参数、分析四层独立。",
+      "assertions": [
+        {"text": "调用 scripts/render_report.py 并先验证数据，不自行编写另一份页面模板。"},
+        {"text": "默认输入输出可见，过程/参数/JSON/分析按需展开，证据链接有效。"},
+        {"text": "输出仅是本地合成报告，不称为真实生产复现或公开分享。"}
       ]
     },
     {

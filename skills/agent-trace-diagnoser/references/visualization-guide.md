@@ -11,7 +11,7 @@ Include only nodes that exist in the available evidence:
 1. User intent or input.
 2. Selected route, capability, or Skill.
 3. Intended main-path tool or operation.
-4. Earliest failure on that intended path.
+4. Relevant observed failure on that intended path, noting if it later recovered.
 5. Retry, branch, or fallback transition.
 6. Final tool result or user-visible result.
 
@@ -32,7 +32,7 @@ Visually distinguish causal roles instead of coloring every tool differently:
 ```mermaid
 flowchart LR
   A["E1 用户请求"] --> B["E2 主链路调用"]
-  B --> C["E3 主因：首个失败"]
+  B --> C["E3 失败点：主链路被拒"]
   C --> D["E4 fallback"]
   D --> E["E5 最终错误"]
   class C root
@@ -41,9 +41,11 @@ flowchart LR
   classDef amplifier fill:#FFF4E5,stroke:#B54708,color:#7A2E0E
 ```
 
-- `root`: the earliest supported failure that explains why the intended path stopped.
+- `root`: a causal mechanism supported by evidence, not simply the earliest error. If only the failure is known, label it `失败点`; if its cause is inferred, label it `根因候选 / 待验证`.
 - `amplifier`: downstream fallback limits, retries, or output-policy problems that worsen or obscure the failure.
 - Do not classify a node as `root` solely because it is the final visible error.
+- Do not classify a node as `root` solely because it is the first error either. Check recovery, relevance to delivery and competing causes. A successful guard rejection may be correct behavior, while malformed parameters or subsequent recovery policy may be separate issues.
+- Put diagnostic diagrams inside the independent analysis section of visual reports. The neutral conversation and execution list must not inherit root-cause labels from the diagram.
 
 ## Compression Rules
 
