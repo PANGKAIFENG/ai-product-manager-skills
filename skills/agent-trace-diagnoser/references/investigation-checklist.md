@@ -7,6 +7,7 @@ Use this checklist when diagnosing an agent trace.
 - Identify the user request and the expected successful path.
 - Note explicit constraints such as "read only", "do not modify files", "latest", or "only explain".
 - Record the trace source path, timestamp if present, runtime path, workspace path, and relevant environment.
+- Establish the case facts before diagnosis: exact request or explicitly labeled summary, attachments and user choices, expected artifact, recorded reply, service acceptance and delivery evidence. Mark missing input and unverified client visibility.
 
 ## Timeline
 
@@ -21,7 +22,7 @@ Use this checklist when diagnosing an agent trace.
 
 - Draw the observed path from intent/input to final result with stable `E#` evidence IDs.
 - Show the intended main path and fallback as separate branches when the trace contains both.
-- Mark the earliest supported failure as `主因`; mark downstream limits or errors as `放大因素`.
+- Mark an observed failure as `失败点`; distinguish inferred candidates from confirmed mechanisms. Downstream errors need their own impact assessment, not an automatic amplifier label.
 - Use solid arrows for observed transitions and dashed arrows for inferred transitions.
 - Collapse repeated retries, polling, or duplicated tool calls and retain their count or duration.
 - Keep the diagram under 12 nodes unless the user asks for a full event map.
@@ -30,7 +31,7 @@ Use this checklist when diagnosing an agent trace.
 
 ## Root-Cause Ranking
 
-Prefer this order unless the evidence says otherwise:
+Use the following as investigation entry points, not a causal ranking:
 
 1. Earliest failure in the intended path.
 2. Wrong routing or capability selection.
@@ -40,7 +41,7 @@ Prefer this order unless the evidence says otherwise:
 6. Fallback tool limitation.
 7. Final user-visible error.
 
-Do not label the final error as the root cause if it only happened after an earlier intended path failed.
+Neither first nor last error automatically establishes root cause. Check whether the first error recovered, whether it prevented the requested delivery, and what evidence supports a specific mechanism. Keep competing explanations and confirmation gaps explicit.
 
 ## Evidence Types
 
@@ -78,6 +79,15 @@ When reporting file and line:
 - Use exact line numbers only after reading the file locally.
 - Use "likely source location" when runtime paths and local repo paths differ.
 - Explain whether the line likely causes the root issue, the fallback issue, or only a contributing issue.
+- A current checkout is not the historical deployed build. Do not use present code alone to confirm the cause of a past production event.
+
+## Visual Report Validation
+
+- Use the fixed renderer and its versioned data contract; do not hand-write per-case pages.
+- Neutral messages and tool records are separate from analyst findings, and all references resolve.
+- Default view includes actual input/output; processes, parameters, raw JSON and analysis are independently disclosed.
+- Include all projected records or explicitly state coverage. A smaller projection is not a complete trace.
+- Test failed submission, recovered error, normal wait, missing messages, unknown actual model and local attachment portability. Validate escaping and reject path traversal.
 
 ## Fix Recommendation
 

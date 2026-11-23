@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self'; style-src 'sha256-$style_hash'; script-src 'sha256-$script_hash'; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<title>$title · Agent 案例诊断</title>
+<style>$css</style>
+</head>
+<body>
+<header class="topbar"><strong>Agent 案例诊断</strong><nav aria-label="页面导航"><a href="#facts">案例事实</a><a href="#conversation">对话记录</a><a href="#analysis">问题分析</a></nav></header>
+<main>
+<section id="facts"><h1>$title</h1><dl class="facts">$facts</dl></section>
+<section id="conversation"><h2>对话记录</h2><p class="muted">$counts</p>$conversation</section>
+<details class="analysis" id="analysis"><summary><h2>问题分析</h2></summary><div class="analysis-body"><p class="conclusion">$conclusion</p>$flow$findings<h2>证据链</h2>$evidence</div></details>
+<details class="sources" id="sources"><summary>记录来源</summary><ol>$sources</ol><p>本页是日志投影，不是前端录屏。未补写隐性思考。工具返回、服务接受、交付与用户已看到是不同状态。</p></details>
+</main>
+<div id="location-bar" class="location-bar" hidden><span id="location-label"></span><a id="location-return" href="#analysis">返回证据</a><button id="clear-location" type="button" title="清除定位" aria-label="清除定位">×</button></div>
+<script>$script</script>
+</body>
+</html>

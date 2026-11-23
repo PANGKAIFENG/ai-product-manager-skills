@@ -40,6 +40,9 @@ jobs:
       - name: Run research dashboard regression tests
         run: python3 -m unittest discover -s skills/research-topic-compiler/tests -p "test_*.py" -v
 
+      - name: Run trace report regression tests
+        run: python3 -m unittest discover -s skills/agent-trace-diagnoser/tests -p "test_*.py" -v
+
       - name: Run Skill governance regression tests
         run: python3 -m unittest discover -s skills/team-skill-creator/tests -p "test_*.py" -v
 

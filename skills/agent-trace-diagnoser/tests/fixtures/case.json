@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "case": {
+    "id": "synthetic-edit",
+    "title": "合成案例：保留图案，只改底色",
+    "request": "用户要求保留图案和尺寸，只改底色。下方消息为合成原文。",
+    "inputs": "提供一张图，fixture 不含真实附件。",
+    "expected": "得到底色修改后的图片。",
+    "actual": "请求在参数校验阶段被拒，未提交；记录中最后是失败说明。未验证客户端显示。",
+    "coverage": "合成测试投影：2 次模型记录、2 次工具事件。不是生产数据或完整线上会话。"
+  },
+  "sources": [{"id": "S1", "label": "合成 trace", "locator": "fixture://synthetic-edit"}],
+  "messages": [
+    {"id": "M1", "role": "user", "origin": "trace", "text": "保持图案与尺寸，把底色改成黑色。", "source_ids": ["S1"], "attachments": [{"id": "A1", "name": "input.jpg", "status": "missing", "note": "fixture 不含真实图片。"}]},
+    {"id": "M2", "role": "assistant", "origin": "trace", "text": "本次修改没有提交成功，没有结果图。", "source_ids": ["S1"]}
+  ],
+  "events": [
+    {"id": "R1", "kind": "model", "name": "example-reasoner", "status": "recorded", "after_message_id": "M1", "source_ids": ["S1"], "input": {"request": "保持图案与尺寸，把底色改成黑色。"}},
+    {"id": "T1", "kind": "tool", "name": "image_options", "status": "returned", "after_message_id": "M1", "source_ids": ["S1"], "parent_id": "R1", "input": {}, "output": {"modelId": "auto"}, "fields": [{"label": "返回的模型选项", "pointer": "/output/modelId"}]},
+    {"id": "R2", "kind": "model", "name": "example-reasoner", "status": "recorded", "after_message_id": "M1", "source_ids": ["S1"]},
+    {"id": "T2", "kind": "tool", "name": "image_create", "status": "rejected", "after_message_id": "M1", "source_ids": ["S1"], "parent_id": "R2", "input": {"arguments": {"arguments": {"modelVersion": "example-image-v1", "size": "3:2", "batch": 1}}}, "output": {"submission": "not-submitted", "error": "input-mismatch", "retryable": false}, "fields": [{"label": "请求模型", "pointer": "/input/arguments/arguments/modelVersion"}, {"label": "请求画幅", "pointer": "/input/arguments/arguments/size"}, {"label": "请求张数", "pointer": "/input/arguments/arguments/batch"}, {"label": "提交状态", "pointer": "/output/submission"}, {"label": "可重试标记", "pointer": "/output/retryable"}]}
+  ],
+  "evidence": [
+    {"id": "E1", "status": "confirmed", "text": "用户要求仅修改底色。", "source_ids": ["S1"], "message_ids": ["M1"], "event_ids": []},
+    {"id": "E2", "status": "confirmed", "text": "选项工具返回 auto；不是实际生成型号。", "source_ids": ["S1"], "message_ids": [], "event_ids": ["T1"]},
+    {"id": "E3", "status": "confirmed", "text": "创建调用返回 not-submitted 和 retryable=false；实际生成模型未执行。双层参数可见，但不能仅据此确认历史校验实现。", "source_ids": ["S1"], "message_ids": [], "event_ids": ["T2"]},
+    {"id": "E4", "status": "confirmed", "text": "记录最后是一段失败说明，没有图片产物。", "source_ids": ["S1"], "message_ids": ["M2"], "event_ids": []}
+  ],
+  "analysis": {
+    "conclusion": "可确认请求未提交，不能称为生成过程中失败。参数层级是排查候选；fixture 没有部署源码证据，不能确认实现根因。",
+    "findings": [
+      {"id": "F1", "title": "修改请求未提交", "role": "failure-point", "certainty": "confirmed", "fact": "创建工具明确返回 not-submitted。", "impact": "没有服务接受任务，无法交付结果图；不能据此声称图片扣费。", "recommendation": "区分调用被拒与生成失败，按错误语义终止或有限纠正。", "verification": "回放校验失败分支，确认不创建 job、不进入 wait。", "evidence_ids": ["E3", "E4"]},
+      {"id": "F2", "title": "参数层级可能与校验读取不一致", "role": "root-cause-candidate", "certainty": "inferred", "fact": "输入中存在 arguments.arguments。", "impact": "与错误同时出现，但现有证据不能确定校验器读了哪一层。", "recommendation": "核对当时部署的参数解包和验证规则，不直接删除安全校验。", "verification": "用匹配部署版本的校验器对同一输入复现，再排除其他解释。", "evidence_ids": ["E3"]}
+    ],
+    "flow": {
+      "note": "这是执行事实概览，不把首个错误直接升级成根因。",
+      "nodes": [
+        {"id": "N1", "label": "用户要求改底色", "evidence_ids": ["E1"]},
+        {"id": "N2", "label": "查询选项：auto", "evidence_ids": ["E2"]},
+        {"id": "N3", "label": "创建请求未提交", "evidence_ids": ["E3"], "finding_id": "F1"},
+        {"id": "N4", "label": "最终说明失败，无结果图", "evidence_ids": ["E4"]}
+      ],
+      "edges": [
+        {"from": "N1", "to": "N2", "relation": "observed"},
+        {"from": "N2", "to": "N3", "relation": "observed"},
+        {"from": "N3", "to": "N4", "relation": "observed"}
+      ]
+    }
+  }
+}

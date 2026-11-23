@@ -28,7 +28,7 @@
 | `stylework-requirement-planning` | StyleWork 需求批次的只读主题与排期共创 | [Skill](skills/stylework-requirement-planning/) · [示例](docs/examples/stylework-requirement-planning.md) |
 | `team-skill-creator` | Skill 查重、形态判断、生命周期与发布治理 | [Skill](skills/team-skill-creator/) · [示例](docs/examples/team-skill-creator.md) |
 | `skill-reviewer` | Skill 触发、结构、安全和 eval 发布前审计 | [Skill](skills/skill-reviewer/) · [示例](docs/examples/skill-reviewer.md) |
-| `agent-trace-diagnoser` | 基于 trace 的证据链和根因诊断 | [Skill](skills/agent-trace-diagnoser/) · [示例](docs/examples/agent-trace-diagnoser.md) |
+| `agent-trace-diagnoser` | 案例事实、证据链、根因置信度与按需可视化报告 | [Skill](skills/agent-trace-diagnoser/) · [示例](docs/examples/agent-trace-diagnoser.md) |
 | `project-context-steward` | 建立和维护可复用的 PROJECT_CONTEXT | [Skill](skills/project-context-steward/) · [示例](docs/examples/project-context-steward.md) |
 
 ## 工作方式

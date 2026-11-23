@@ -1,0 +1,40 @@
+:root{--ink:#283c30;--muted:#7c8981;--line:#e3e8e4;--blue:#1768c2;--red:#b33946;--amber:#946d21}
+*{box-sizing:border-box;min-width:0;letter-spacing:0}
+html{scroll-padding-top:84px;scroll-behavior:smooth}
+body{margin:0;background:#fff;color:var(--ink);font:14px/1.85 'PingFang SC','Microsoft YaHei',sans-serif;overflow-wrap:anywhere}
+a,a:visited{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
+a:focus-visible,summary:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offset:4px}
+[hidden]{display:none!important}
+.topbar{position:sticky;top:0;background:#fff;z-index:10;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:13px max(20px,calc((100% - 960px)/2));border-bottom:1px solid var(--line);font-size:12px}
+.topbar>strong{font-weight:600;white-space:nowrap}nav{display:flex;gap:20px}
+main{max-width:900px;padding:27px 25px 55px;margin:auto}
+section,.analysis,.sources,.message,.event,.evidence-item,.finding{scroll-margin-top:85px}
+h1{font-size:23px;line-height:1.6;margin:0 0 20px;font-weight:600}h2{font-size:18px;line-height:1.7;margin:0 0 13px;font-weight:600}h3{font-size:15px;margin:4px 0 10px;font-weight:600}
+dt,dd,dl{margin:0}dt{color:var(--muted);font-size:11px}dd{font-size:13px;white-space:pre-wrap}
+.facts{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0;margin-bottom:31px}
+.facts>div,.finding dl>div{display:grid;grid-template-columns:82px minmax(0,1fr);gap:15px;margin:9px 0}
+.muted{color:var(--muted);font-size:11px;line-height:1.9}
+.message{margin:23px 0;max-width:100%}.message>header{color:#6b7c70;font-size:11px;display:flex;gap:13px;margin-bottom:7px}.message>header>small{font-size:10px;color:#919c94}
+.message-text{white-space:pre-wrap;font-size:14px;line-height:1.95}
+.message.user{margin-left:auto;width:fit-content;max-width:92%;padding:11px 15px;background:#f4f6f4;border-radius:6px}
+.message.user>header{justify-content:flex-end}.message.assistant{padding-left:20px;border-left:2px solid #e3ece5}
+details>summary{color:var(--blue);cursor:pointer;font-size:12px;list-style-position:inside}
+details>summary::marker{font-size:9px}
+.process{margin:8px 0 22px 20px}.process>summary>span{color:var(--muted);font-size:10px;margin-left:8px}
+.process>ol{list-style:none;padding:7px 0 0 12px;margin:7px 0 0;border-left:1px solid var(--line)}
+.event{margin-bottom:3px}.event>summary{display:flex;align-items:baseline;gap:9px;padding:7px 5px;font-size:12px}
+.event>summary:after{content:'›';font-size:16px;line-height:1;color:var(--blue)}.event[open]>summary:after{content:'⌄'}
+.kind{font-size:9px;color:#94a097;flex:0 0 auto}.event-name{flex:1}.state{font-size:10px;white-space:nowrap;color:var(--muted)}.state.error{color:var(--amber)}.state.rejected{color:var(--red)}
+.event-body{border:1px solid #e0e7e1;background:#fafbf9;border-radius:4px;padding:10px 14px;margin-bottom:11px}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px 20px;margin:12px 0}.fields dd{font-size:12px}
+.raw{border-top:1px solid var(--line);padding-top:9px}.raw>summary{font-size:11px}
+pre{padding:12px;border:1px solid #e1e6df;background:#f1f4f0;border-radius:3px;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;font:11px/1.8 ui-monospace,SFMono-Regular,Menlo,monospace;max-height:350px;overflow:auto}
+.attachment{margin-top:10px}.attachment img{display:block;max-width:100%;height:auto;max-height:400px;object-fit:contain;margin:9px 0}.attachment>a{font-size:11px}.attachment-missing{font-size:11px;color:var(--muted)}
+.analysis{margin-top:32px;border-top:1px solid #ccd8cf;padding-top:22px}.analysis>summary{display:flex;align-items:center;justify-content:space-between}.analysis>summary:after{content:'+';color:var(--blue);font-size:20px}.analysis[open]>summary:after{content:'−'}.analysis>summary h2{color:var(--blue);margin:0}.analysis-body{padding-top:14px}.conclusion{font-size:14px;line-height:2;margin:0 0 22px}
+.finding,.evidence-item{border-top:1px solid var(--line);padding:20px 0}.certainty{font-size:10px;color:var(--blue);margin:0}.certainty.root-cause{color:var(--red)}.certainty.root-cause-candidate{color:var(--amber)}.evidence-links,.evidence-item p{font-size:12px}.evidence-item h3{font-family:ui-monospace,monospace}.evidence-item h3 small{font-family:'PingFang SC',sans-serif;color:var(--muted);font-size:10px;margin-left:7px}
+.flow-scroll{max-width:100%;overflow:auto;border:1px solid var(--line);border-radius:4px;background:#fcfdfc}.flow{display:block;margin:auto}.node rect{fill:#f4f7f4;stroke:#ccd8cf}.node text{font-size:12px;fill:#36523e;font-family:'PingFang SC','Microsoft YaHei',sans-serif}.node .node-meta{font-size:9px;fill:#6b8372}.node.root-cause rect{fill:#fff1f1;stroke:#cd8a91}.node.root-cause-candidate rect{fill:#fff8e9;stroke:#c2a665}.node.amplifier rect{fill:#fff7ef;stroke:#d3b18d}
+.sources{padding-top:19px;border-top:1px solid var(--line);margin-top:28px;font-size:11px;color:var(--muted)}.sources ol{padding-left:20px}.sources li{margin:13px 0;scroll-margin-top:85px}.sources p{white-space:pre-wrap}
+.location-bar{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);display:flex;align-items:center;gap:16px;max-width:calc(100% - 24px);width:max-content;padding:9px 14px;background:#f5faff;border:1px solid #bdd4ea;border-radius:5px;font-size:11px;z-index:20}.location-bar button{border:0;padding:0;background:none;color:#748999;font:20px/1 sans-serif;cursor:pointer}.located{outline:2px solid #8bb7dc;outline-offset:4px}
+@media(max-width:600px){.topbar{padding:11px 14px;font-size:11px}nav{gap:12px;font-size:10px}main{padding:22px 16px 45px}h1{font-size:21px}.facts>div,.finding dl>div{grid-template-columns:66px minmax(0,1fr);gap:10px}.message-text{font-size:13px}.event>summary{gap:6px;font-size:11px}.process{margin-left:10px}.process>summary>span{display:block;margin:3px 0 0 14px}.fields{grid-template-columns:minmax(0,1fr)}.fields dd{font-size:11px}.event-body{padding:9px}.state{font-size:9px}.kind{font-size:8px}.flow text{font-size:12px}.location-bar{gap:12px}.location-bar span{max-width:190px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{.topbar{position:static}.location-bar{display:none!important}.analysis{break-before:page}.finding{break-inside:avoid}.flow-scroll{overflow:visible}.flow{max-width:100%;height:auto}pre{max-height:none}}
